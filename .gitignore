@@ -2,7 +2,9 @@
 .idea
 *.swp
 
+configuration.json
 debug
 dist
 node_modules
 npm-debug.log
+golang123
