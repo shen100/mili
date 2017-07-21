@@ -1,0 +1,41 @@
+{
+	"webPoweredBy": "golang123",    /*前端node.js加的X-Powered-By*/
+	"apiPoweredBy": "golang123 api",/*后台go加的X-Powered-By*/
+	"database": {
+		"Dialect"      : "mysql",
+		"Database"     : "golang123",
+		"User"	       : "root",
+		"Password"     : "test1234",
+		"Charset"      : "utf8",
+		"URL"          : "",   /*数据库连接地址*/
+		"MaxIdleConns" : 5,    /*空闲时最大的连接数*/
+		"MaxOpenConns" : 10    /*最大的连接数*/
+	},
+	"nodejs": {
+		"page": {
+			"title"            : "golang社区",       /*网站标题*/
+			"jsPath"           : "/javascripts",    /*前端JS请求地址前缀*/
+			"imagePath"        : "/images",         /*前端图片请求地址前缀*/
+			"cssPath"          : "/styles"          /*前端css请求地址前缀*/
+		},
+		"env"          : "development",             /*模式(开发，测试，产品)*/
+		"useProxy"     : false,                     /*node.js发请求是否使用代理*/
+		"proxyUri"     : "http://127.0.0.1:8881",   /*代理地址及端口*/
+		"port"         : 8020,                      /*前端node.js监听的端口*/
+		"staticPort"   : 8021                       /*前端静态文件服务器监听的端口（本地开发时使用）*/
+	},
+	"go": {
+		"Env"                 : "development", /*模式(开发，测试，产品)*/
+		"UploadImgDir"        : "/Users/liushen/dev/workspace/go/src/golang123/upload/img",/*图片上传的目录*/
+		"ImgPath"             : "/upload/img", /*上传后的图片请求地址前缀*/
+		"Port"                : 8022,          /*go监听的端口*/
+		"SessionID"           : "golang123sid",/*后台设置的session id*/
+		"MaxOrder"            : 10000,      /*最大的排序号*/
+		"MinOrder"            : 0,          /*最小的排序号*/
+		"PageSize"            : 20,         /*默认每页的条数*/
+		"MaxPageSize"         : 200,        /*每页最大的条数*/
+		"MinPageSize"         : 10,         /*每页最小的条数*/
+		"MaxNameLen"          : 100,        /*最大的名称长度*/
+		"MaxContentLen"       : 10000       /*最大的内容长度*/
+	}
+}
