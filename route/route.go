@@ -18,7 +18,9 @@ func Route(app *iris.Framework) {
 
 	adminRouter := app.Party(apiPrefix + "/admin", admin.Authentication) 
 	{
-		adminRouter.Get("/categories",              category.AllList)
-		adminRouter.Get("/category/create",         category.Create)
+		adminRouter.Get("/categories",               category.AllList)
+		adminRouter.Post("/category/create",         category.Create)
+		adminRouter.Post("/category/update",         category.Update)
+		adminRouter.Post("/category/status/update",  category.UpdateStatus)
     }
 }
