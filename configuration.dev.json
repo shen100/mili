@@ -37,5 +37,9 @@
 		"MinPageSize"         : 20,         /*每页最小的条数*/
 		"MaxNameLen"          : 100,        /*最大的名称长度*/
 		"MaxContentLen"       : 10000       /*最大的内容长度*/
+	},
+	"api": {
+		"Prefix" : "/api",                     /*api服务请求前缀*/
+		"URL"    : "http://127.0.0.1:8012/api" /*api服务请求地址(给node.js调用)*/
 	}
 }
