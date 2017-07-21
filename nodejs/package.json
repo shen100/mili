@@ -1,0 +1,14 @@
+{
+  "name": "golang123",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "debug": "node --inspect app.js",
+    "staticServ": "node staticServ.js"
+  },
+  "dependencies": {
+    "express": "4.15.3"
+  },
+  "devDependencies": {}
+}
