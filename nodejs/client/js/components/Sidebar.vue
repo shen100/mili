@@ -1,11 +1,13 @@
     <template>
     <Menu theme="dark" active-name="1">
         <Menu-group title="内容管理">
-            <Menu-item name="1">
-                <Icon type="document-text"></Icon>
-                文章管理
-            </Menu-item>
-            <router-link to="tag/manage">
+            <router-link to="/article/edit">
+                <Menu-item name="1">
+                    <Icon type="document-text"></Icon>
+                    文章管理
+                </Menu-item>
+            </router-link>
+            <router-link to="/tag/manage">
                 <Menu-item name="2">
                     <Icon type="pricetags"></Icon>
                     标签管理

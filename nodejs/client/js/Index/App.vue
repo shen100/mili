@@ -1,12 +1,14 @@
 <template>
 	<div>
 		<admin-header />
-		<div class="admin-body">
-			<admin-sidebar class="admin-sidebar-container" />
-			<div class="admin-body-container">
+		<Row class="admin-body">
+			<Col :span="5">
+				<admin-sidebar class="admin-sidebar-container" />
+			</Col>
+			<Col class="admin-body-container" :span="18">
 				<router-view></router-view>
-			</div>
-		</div>
+			</Col>
+		</Row>
 	</div>
 </template>
 
@@ -26,8 +28,5 @@
 	@import '~iview/dist/styles/iview.css';
 	.admin-sidebar-container, .admin-body-container {
 		float: left;
-	}
-	.admin-body-container {
-		padding-left: 10px;
 	}
 </style>
