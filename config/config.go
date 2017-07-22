@@ -65,6 +65,7 @@ type serverConfig struct {
 	MinPageSize         int
 	MaxNameLen          int
 	MaxContentLen       int
+	MaxArticleCateCount int
 }
 
 // ServerConfig 服务器相关配置
