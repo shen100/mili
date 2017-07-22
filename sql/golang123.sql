@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-07-21 18:09:30 +0000
+# Generation Time: 2017-07-22 16:02:29 +0000
 # ************************************************************
 
 
@@ -18,6 +18,25 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+# Dump of table article
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `article`;
+
+CREATE TABLE `article` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `browse_count` int(11) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL,
+  `content` longtext NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 
 # Dump of table article_category
@@ -53,17 +72,18 @@ CREATE TABLE `categories` (
 
 
 
-# Dump of table products
+# Dump of table comment
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `products`;
+DROP TABLE IF EXISTS `comment`;
 
-CREATE TABLE `products` (
+CREATE TABLE `comment` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `browse_count` int(11) NOT NULL DEFAULT '0',
+  `content` varchar(10000) NOT NULL,
+  `parent_id` int(11) NOT NULL DEFAULT '0',
+  `article_id` int(11) NOT NULL,
   `status` int(11) NOT NULL,
-  `content` longtext NOT NULL,
+  `ups` int(11) NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
