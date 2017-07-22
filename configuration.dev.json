@@ -37,7 +37,8 @@
 		"MinPageSize"         : 20,         /*每页最小的条数*/
 		"MaxNameLen"          : 100,        /*最大的名称长度*/
 		"MaxContentLen"       : 10000,      /*最大的内容长度*/
-		"MaxArticleCateCount" : 6           /*文章最多的分类个数*/
+		"MaxArticleCateCount" : 6,          /*文章最多的分类个数*/
+		"MaxCommentLen"       : 5000        /*最大的评论长度*/
 	},
 	"api": {
 		"Prefix" : "/api",                     /*api服务请求前缀*/

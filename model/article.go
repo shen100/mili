@@ -13,6 +13,7 @@ type Article struct {
     Status         int                `json:"status"`
     Content        string             `json:"content"`
     Categories     []Category         `gorm:"many2many:article_category;ForeignKey:ID;AssociationForeignKey:ID" json:"categories"`
+    Comments       []Comment          `json:"comments"` 
 }
 
 const (

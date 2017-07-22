@@ -240,6 +240,12 @@ func Info(ctx *iris.Context) {
 		return
 	}
 
+	if err = model.DB.Model(&article).Related(&article.Comments, "comments").Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+
 	fmt.Println("duration: ", time.Now().Sub(reqStartTime).Seconds())
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,

@@ -11,7 +11,7 @@ import (
 )
 
 // Save 保存分类（创建或更新）
-func Save(ctx *iris.Context, isEdit bool) {
+func Save(isEdit bool, ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 
 	minOrder := config.ServerConfig.MinOrder
@@ -97,12 +97,12 @@ func Save(ctx *iris.Context, isEdit bool) {
 
 // Create 创建分类
 func Create(ctx *iris.Context) {
-	Save(ctx, false)
+	Save(false, ctx)
 }
 
 // Update 更新分类
 func Update(ctx *iris.Context) {
-	Save(ctx, true)	
+	Save(true, ctx)	
 }
 
 // Info 获取分类信息
