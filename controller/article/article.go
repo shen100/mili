@@ -246,6 +246,21 @@ func Info(ctx *iris.Context) {
 		return
 	}
 
+	for i := 0; i < len(article.Comments); i++ {
+		parentID := article.Comments[i].ParentID
+		var parents []model.Comment
+		for parentID != 0 {
+			var parent model.Comment
+			if err := model.DB.Where("parent_id = ?", parentID).Find(&parent).Error; err != nil {
+				SendErrJSON("error", ctx)
+				return
+			}
+			parents = append(parents, parent)
+			parentID = parent.ParentID
+		}
+		article.Comments[i].Parents = parents
+	}
+
 	fmt.Println("duration: ", time.Now().Sub(reqStartTime).Seconds())
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
