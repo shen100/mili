@@ -55,14 +55,19 @@ func queryList(isBackend bool, ctx *iris.Context) {
 			SendErrJSON("分类ID不正确", ctx)
 			return
 		}
-		var sql = `SELECT distinct(article.id), article.name, article.browse_count, article.status,  
-					article.created_at, article.updated_at 
-				FROM article, article_category  
-				WHERE article.id = article_category.article_id AND article_category.category_id = ? 
-				ORDER BY ? ?   
-				LIMIT(?, ?)  
-				`
-		err = model.DB.Exec(sql, categoryID, orderField, orderASC, offset, pageSize).Scan(&articles).Error
+		var sql = `SELECT distinct(articles.id), articles.name, articles.browse_count, articles.status,  
+					articles.created_at, articles.updated_at 
+				FROM articles, article_category  
+				WHERE articles.id = article_category.article_id  
+				AND article_category.category_id = {categoryID} 
+				ORDER BY {orderField} {orderASC}
+				LIMIT {offset}, {pageSize}`
+		sql = strings.Replace(sql, "{categoryID}", strconv.Itoa(categoryID), -1)
+		sql = strings.Replace(sql, "{orderField}", orderField, -1)
+		sql = strings.Replace(sql, "{orderASC}",   orderASC, -1)
+		sql = strings.Replace(sql, "{offset}",     strconv.Itoa(offset), -1)
+		sql = strings.Replace(sql, "{pageSize}",   strconv.Itoa(pageSize), -1)
+		err = model.DB.Raw(sql).Scan(&articles).Error
 		if err != nil {
 			SendErrJSON("error", ctx)
 			return
