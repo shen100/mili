@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-07-22 16:02:29 +0000
+# Generation Time: 2017-07-23 03:26:24 +0000
 # ************************************************************
 
 
@@ -84,6 +84,39 @@ CREATE TABLE `comment` (
   `article_id` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `ups` int(11) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table up
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `up`;
+
+CREATE TABLE `up` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  `target_id` int(11) unsigned NOT NULL COMMENT '文章id或评论id',
+  `type` int(11) NOT NULL COMMENT '1:为文章点赞;2:为评论点赞;',
+  `user_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table user
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user`;
+
+CREATE TABLE `user` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
