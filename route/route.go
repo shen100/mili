@@ -3,7 +3,7 @@ package route
 import (
 	"gopkg.in/kataras/iris.v6"
 	"golang123/config"
-	"golang123/controller/admin"
+	"golang123/controller/auth"
 	"golang123/controller/category"
 	"golang123/controller/article"
 	"golang123/controller/user"
@@ -25,7 +25,7 @@ func Route(app *iris.Framework) {
 		router.Post("/article/update",  article.Update)
     }
 
-	adminRouter := app.Party(apiPrefix + "/admin", admin.Authentication) 
+	adminRouter := app.Party(apiPrefix + "/admin", auth.AdminRequired)
 	{
 		adminRouter.Get("/categories",               category.AllList)
 		adminRouter.Post("/category/create",         category.Create)

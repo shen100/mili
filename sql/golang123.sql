@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-07-23 09:21:42 +0000
+# Generation Time: 2017-07-23 10:07:51 +0000
 # ************************************************************
 
 
@@ -70,6 +70,17 @@ CREATE TABLE `categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+LOCK TABLES `categories` WRITE;
+/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
+
+INSERT INTO `categories` (`id`, `name`, `sequence`, `parent_id`, `status`, `created_at`, `updated_at`, `deleted_at`)
+VALUES
+	(1,'精华',0,0,1,'2017-07-23 18:03:15','2017-07-23 18:03:15',NULL),
+	(2,'招聘',0,0,1,'2017-07-23 18:03:32','2017-07-23 18:03:32',NULL),
+	(3,'分享',0,0,1,'2017-07-23 18:04:39','2017-07-23 18:04:39',NULL);
+
+/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table comment
@@ -133,7 +144,8 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `role`)
 VALUES
-	(1,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,'shen100','liushen_shen@163.com',NULL,'15007996840b0a81d5bbf6cdcfaeff1f6305475c88',4);
+	(1,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,'shen100','liushen_shen@163.com',NULL,'15007996840b0a81d5bbf6cdcfaeff1f6305475c88',4),
+	(2,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,'','675611281@qq.com',NULL,'15007996840b0a81d5bbf6cdcfaeff1f6305475c88',1);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
