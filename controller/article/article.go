@@ -40,13 +40,16 @@ func queryList(isBackend bool, ctx *iris.Context) {
 		orderASC = "DESC"	
 	}
 
-	if categoryID, err = strconv.Atoi(ctx.FormValue("cateId")); err != nil {
+	cateIDStr := ctx.FormValue("cateId")
+	if cateIDStr == "" {
+		categoryID = 0	
+	} else if categoryID, err = strconv.Atoi(cateIDStr); err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("分类ID不正确", ctx)
 		return
 	}
 
-	if categoryID > 0 {
+	if categoryID != 0 {
 		var category model.Category
 		if model.DB.First(&category, categoryID).Error != nil {
 			SendErrJSON("分类ID不正确", ctx)
