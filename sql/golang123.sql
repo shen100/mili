@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-07-23 03:26:24 +0000
+# Generation Time: 2017-07-23 09:21:42 +0000
 # ************************************************************
 
 
@@ -110,19 +110,33 @@ CREATE TABLE `up` (
 
 
 
-# Dump of table user
+# Dump of table users
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `users`;
 
-CREATE TABLE `user` (
+CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `email` varchar(50) NOT NULL DEFAULT '',
+  `phone` varchar(50) DEFAULT NULL,
+  `pass` varchar(100) NOT NULL DEFAULT '',
+  `role` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+
+INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `role`)
+VALUES
+	(1,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,'shen100','liushen_shen@163.com',NULL,'15007996840b0a81d5bbf6cdcfaeff1f6305475c88',4);
+
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 

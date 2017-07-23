@@ -6,6 +6,7 @@ import (
 	"golang123/controller/admin"
 	"golang123/controller/category"
 	"golang123/controller/article"
+	"golang123/controller/user"
 )
 
 // Route 路由
@@ -13,7 +14,9 @@ func Route(app *iris.Framework) {
 	apiPrefix   := config.APIConfig.Prefix
 
 	router := app.Party(apiPrefix) 
-	{
+	{	
+		router.Post("/login",           user.Login)
+
 		router.Get("/categories",       category.List)
 
 		router.Get("/articles",         article.List)

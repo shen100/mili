@@ -67,6 +67,7 @@ type serverConfig struct {
 	MaxContentLen       int
 	MaxArticleCateCount int
 	MaxCommentLen       int
+	PassSalt            string
 }
 
 // ServerConfig 服务器相关配置

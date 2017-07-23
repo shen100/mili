@@ -21,7 +21,7 @@ func init() {
 		fmt.Println(err.Error())
 		os.Exit(-1)
 	}
-
+	
 	if config.ServerConfig.Env == model.DevelopmentMode {
 		db.LogMode(true)
 	}
@@ -70,6 +70,7 @@ func main() {
 
 	app.Listen(":" + strconv.Itoa(config.ServerConfig.Port))
 }
+
 
 
 
