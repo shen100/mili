@@ -4,15 +4,15 @@ import iView     from 'iView';
 import axios     from 'axios';
 import 'iview/dist/styles/iview.css';
 
-import App		 	from './Index/App';
-import TagManage 	from './Index/TagManage';
-import ArticleEdit  from './Index/ArticleEdit';
-import ArticleList  from './Index/ArticleList';
+import App		 	  from './Index/App';
+import ArticleEdit    from './Index/ArticleEdit';
+import ArticleList    from './Index/ArticleList';
+import CategoryManage from './Index/CategoryManage';
 
 const routes = [
 	{
-		path: '/tag/manage',
-		component: TagManage
+		path: '/category/manage',
+		component: CategoryManage
 	},
 	{
 		path: '/article',

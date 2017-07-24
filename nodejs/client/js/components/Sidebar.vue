@@ -7,7 +7,7 @@
                     文章管理
                 </Menu-item>
             </router-link>
-            <router-link to="/tag/manage">
+            <router-link to="/category/manage">
                 <Menu-item name="2">
                     <Icon type="pricetags"></Icon>
                      分类管理
