@@ -7,6 +7,7 @@ import 'iview/dist/styles/iview.css';
 import App		 	from './Index/App';
 import TagManage 	from './Index/TagManage';
 import ArticleEdit  from './Index/ArticleEdit';
+import ArticleList  from './Index/ArticleList';
 
 const routes = [
 	{
@@ -14,7 +15,15 @@ const routes = [
 		component: TagManage
 	},
 	{
-		path: '/article/edit',
+		path: '/article',
+		component: ArticleList
+	},
+	{
+		path: '/article/add',
+		component: ArticleEdit
+	},
+	{
+		path: '/article/edit/:id',
 		component: ArticleEdit
 	}
 ];
