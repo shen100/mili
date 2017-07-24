@@ -15,7 +15,8 @@ func Route(app *iris.Framework) {
 
 	router := app.Party(apiPrefix) 
 	{	
-		router.Post("/login",           user.Login)
+		router.Post("/signin",           user.Signin)
+		router.Post("/signup",           user.Signup)
 
 		router.Get("/categories",       category.List)
 

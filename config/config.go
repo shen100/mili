@@ -53,6 +53,8 @@ func initDB() {
 }
 
 type serverConfig struct {
+	SiteName            string
+	Host                string
 	Env                 string
 	ImgPath             string
 	UploadImgDir        string
@@ -68,6 +70,10 @@ type serverConfig struct {
 	MaxArticleCateCount int
 	MaxCommentLen       int
 	PassSalt            string
+	MailUser            string  //域名邮箱账号
+	MailPass            string  //域名邮箱密码
+	MailHost            string  //smtp邮箱域名
+	MailPort            int     //smtp邮箱端口
 }
 
 // ServerConfig 服务器相关配置

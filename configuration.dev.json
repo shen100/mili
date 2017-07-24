@@ -25,21 +25,27 @@
 		"staticPort"   : 8021                       /*前端静态文件服务器监听的端口（本地开发时使用）*/
 	},
 	"go": {
-		"Env"                 : "development", /*模式(开发，测试，产品)*/
-		"UploadImgDir"        : "",            /*图片上传的目录*/
-		"ImgPath"             : "/upload/img", /*上传后的图片请求地址前缀*/
-		"Port"                : 8022,          /*go监听的端口*/
-		"SessionID"           : "golang123sid",/*后台设置的session id*/
-		"MaxOrder"            : 10000,      /*最大的排序号*/
-		"MinOrder"            : 0,          /*最小的排序号*/
-		"PageSize"            : 20,         /*默认每页的条数*/
-		"MaxPageSize"         : 100,        /*每页最大的条数*/
-		"MinPageSize"         : 20,         /*每页最小的条数*/
-		"MaxNameLen"          : 100,        /*最大的名称长度*/
-		"MaxContentLen"       : 10000,      /*最大的内容长度*/
-		"MaxArticleCateCount" : 6,          /*文章最多的分类个数*/
-		"MaxCommentLen"       : 5000,       /*最大的评论长度*/
-		"PassSalt"            : ""          /*用户密码加盐*/
+		"SiteName"            : "golang技术社区",/*网站名称*/
+		"Host"                : "",             /*网站域名*/
+		"Env"                 : "development",  /*模式(开发，测试，产品)*/
+		"UploadImgDir"        : "",             /*图片上传的目录*/
+		"ImgPath"             : "/upload/img",  /*上传后的图片请求地址前缀*/
+		"Port"                : 8022,           /*go监听的端口*/
+		"SessionID"           : "golang123sid", /*后台设置的session id*/
+		"MaxOrder"            : 10000,        /*最大的排序号*/
+		"MinOrder"            : 0,            /*最小的排序号*/
+		"PageSize"            : 20,           /*默认每页的条数*/
+		"MaxPageSize"         : 100,          /*每页最大的条数*/
+		"MinPageSize"         : 20,           /*每页最小的条数*/
+		"MaxNameLen"          : 100,          /*最大的名称长度*/
+		"MaxContentLen"       : 10000,        /*最大的内容长度*/
+		"MaxArticleCateCount" : 6,            /*文章最多的分类个数*/
+		"MaxCommentLen"       : 5000,         /*最大的评论长度*/
+		"PassSalt"            : "",           /*用户密码加盐*/
+		"MailUser"            : "",           /*域名邮箱账号*/
+		"MailPass"            : "",           /*域名邮箱密码*/
+		"MailHost"            : "smtp.qq.com",/*smtp邮箱*/
+		"MailPort"            : 465           /*smtp邮箱端口*/
 	},
 	"api": {
 		"Prefix" : "/api",                     /*api服务请求前缀*/

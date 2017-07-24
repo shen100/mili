@@ -19,6 +19,7 @@ type User struct {
     Email          string             `json:"email"`
     Phone          string             `json:"phone"`
     Role           int                `json:"role"`
+    Status         int                `json:"status"`    
 }
 
 // CheckPassword 验证密码是否正确
@@ -26,19 +27,24 @@ func (user User) CheckPassword(password string) bool {
     if password == "" || user.Pass == "" {
         return false
     }
-    return user.EncryptPassword(password) == user.Pass
+    return user.EncryptPassword(password, user.Salt()) == user.Pass
 }
 
-// EncryptPassword 给密码加密
-func (user User) EncryptPassword(password string) (hash string) {
+// Salt 每个用户都有一个不同的盐
+func (user User) Salt() string {
     var userSalt string
     if user.Pass == "" {
         userSalt = strconv.Itoa(int(time.Now().Unix()))
     } else {
         userSalt = user.Pass[0:10]   
     }
-    hash = userSalt + password + config.ServerConfig.PassSalt
-    hash = userSalt + fmt.Sprintf("%x", md5.Sum([]byte(hash)))
+    return userSalt
+}
+
+// EncryptPassword 给密码加密
+func (user User) EncryptPassword(password, salt string) (hash string) {
+    hash = salt + password + config.ServerConfig.PassSalt
+    hash = salt + fmt.Sprintf("%x", md5.Sum([]byte(hash)))
     return
 }
 
@@ -51,8 +57,8 @@ func (user User) ToJSON() map[string]interface{} {
         "deletedAt" : user.DeletedAt,
         "name"      : user.Name,
         "email"     : user.Email,
-        "phone"     : user.Phone,
         "role"      : user.Role,
+        "status"    : user.Status,
     }
 }
 
@@ -68,4 +74,15 @@ const (
 
     // UserRoleSuperAdmin 超级管理员
     UserRoleSuperAdmin  = 4
+)
+
+const (
+    // UserStatusInActive 未激活
+    UserStatusInActive  = 1
+
+    // UserStatusActived 已激活
+    UserStatusActived   = 2
+
+    // UserStatusFrozen 已冻结
+    UserStatusFrozen    = 3
 )

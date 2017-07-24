@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-07-23 10:07:51 +0000
+# Generation Time: 2017-07-24 16:37:53 +0000
 # ************************************************************
 
 
@@ -20,25 +20,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-# Dump of table article
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `article`;
-
-CREATE TABLE `article` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `browse_count` int(11) NOT NULL DEFAULT '0',
-  `status` int(11) NOT NULL,
-  `content` longtext NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `deleted_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-
 # Dump of table article_category
 # ------------------------------------------------------------
 
@@ -48,6 +29,25 @@ CREATE TABLE `article_category` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `article_id` int(11) unsigned NOT NULL,
   `category_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table articles
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `articles`;
+
+CREATE TABLE `articles` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `browse_count` int(11) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL,
+  `content` longtext NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -77,18 +77,18 @@ INSERT INTO `categories` (`id`, `name`, `sequence`, `parent_id`, `status`, `crea
 VALUES
 	(1,'精华',0,0,1,'2017-07-23 18:03:15','2017-07-23 18:03:15',NULL),
 	(2,'招聘',0,0,1,'2017-07-23 18:03:32','2017-07-23 18:03:32',NULL),
-	(3,'分享',0,0,1,'2017-07-23 18:04:39','2017-07-23 18:04:39',NULL);
+	(3,'分享',0,0,1,'2017-07-23 18:04:39','2017-07-23 18:54:32',NULL);
 
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Dump of table comment
+# Dump of table comments
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `comment`;
+DROP TABLE IF EXISTS `comments`;
 
-CREATE TABLE `comment` (
+CREATE TABLE `comments` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `content` varchar(10000) NOT NULL,
   `parent_id` int(11) NOT NULL DEFAULT '0',
@@ -103,12 +103,12 @@ CREATE TABLE `comment` (
 
 
 
-# Dump of table up
+# Dump of table ups
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `up`;
+DROP TABLE IF EXISTS `ups`;
 
-CREATE TABLE `up` (
+CREATE TABLE `ups` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
@@ -136,16 +136,17 @@ CREATE TABLE `users` (
   `phone` varchar(50) DEFAULT NULL,
   `pass` varchar(100) NOT NULL DEFAULT '',
   `role` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `role`)
+INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `role`, `status`)
 VALUES
-	(1,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,'shen100','liushen_shen@163.com',NULL,'15007996840b0a81d5bbf6cdcfaeff1f6305475c88',4),
-	(2,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,'','675611281@qq.com',NULL,'15007996840b0a81d5bbf6cdcfaeff1f6305475c88',1);
+	(2,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,'','675611281@qq.com',NULL,'15007996840b0a81d5bbf6cdcfaeff1f6305475c88',1,0),
+	(10,'2017-07-25 00:28:52','2017-07-25 00:28:52',NULL,'jack','liushen_shen@163.com','','15009137317501d69018352aa4c1e4e66453b9b58d',1,1);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
