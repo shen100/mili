@@ -26,10 +26,7 @@
 </template>
 
 <script>
-	import config from '../config';
-
-	const categoriesAPI = config.api.categories;
-	const articleAPI    = config.api.article;
+    import Request from '../utils/Request';
 
     export default {
         data () {
@@ -56,29 +53,29 @@
         },
         methods: {
             handleSubmit(name) {
+                const self = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                     	const params = this.$route.params || {};
-                    	const id = params.id || null
-                    		this.$http
-                    			.post(id ? articleAPI.update : articleAPI.create, {
-                    				id,
-                    				name: this.articleInline.title,
-                    				content: this.articleInline.content,
-                    				categories: [
-                    					{
-                    						id: parseInt(this.articleInline.categories)
-                    					}
-                    				]
-                    			})
-                    			.then(res => {
-                    				if (res.data.errNo === 0) {
-                    					this.$Message.success('提交成功!');
-                    					this.back();
-                    				} else {
-                    					this.$Message.error(res.data.msg);
-                    				}
-                    			});
+                    	const id = params.id || null;
+                        const requestFunc = id ? Request.updateArticle : Request.createArticle;
+                		requestFunc({
+            				id,
+            				name: this.articleInline.title,
+            				content: this.articleInline.content,
+            				categories: [
+            					{
+            						id: parseInt(this.articleInline.categories)
+            					}
+            				]
+            			})
+            			.then(res => {
+        					self.$Message.success('提交成功!');
+        					self.back();
+            			})
+                        .catch(err => {
+                            self.$Message.error(err.msg);
+                        });
 
                     }
                 })
@@ -88,27 +85,28 @@
 	        },
         },
         mounted() {
-        	const params = this.$router.params || {};
+            const self = this;
+        	const params = this.$route.params || {};
         	const id = params.id || '';
-        	this.$http
-        		.get(categoriesAPI.list)
+        	Request.getCategories()
         		.then(res => {
-        			if (res.data.errNo === 0) {
-						this.select = res.data.data.categories;
-					}
+					this.select = res.categories;
         		})
+                .catch(err => {
+                    self.$Message.error(err.msg);
+                })
         	if (id) {
-        		this.$http
-        			.get(articleAPI.item + id)
+        		Request.getArticleItem({params: id})
         			.then(res => {
-        				if (res.data.errNo === 0) {
-        					this.articleInline = {
-        						title: res.data.data.article.name,
-        						categories: res.data.data.article.categories[0].id + '',
-        						content: res.data.data.article.content
-        					}
-        				}
+    					self.articleInline = {
+    						title: res.article.name,
+    						categories: res.article.categories[0].id + '',
+    						content: res.article.content
+    					}
         			})
+                    .catch(err => {
+                        self.$Message.error(err.msg)
+                    })
         	}
         }
     }

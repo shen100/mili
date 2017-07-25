@@ -22,14 +22,11 @@
 
 <script>
 	import moment from 'moment';
-	import config from '../config';
-
-	const categoriesAPI = config.api.categories;
-	const articleAdminAPI = config.api.articleAdmin;
+	import Request from '../utils/Request';
 
 	// 分类管理
-	// 1 审核通过
-	// 2 审核中
+	// 2 审核通过
+	// 1 审核中
 	// 3 审核未通过
 
 	export default {
@@ -88,7 +85,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.changeStatus(obj.row.id, 1)
+                                            this.changeStatus(obj.row.id, 2)
                                         }
                                     }
                                 }, '通过'),
@@ -112,42 +109,37 @@
 		},
 		methods: {
 			changeStatus(id, status) {
-				this.$http
-					.post(articleAdminAPI.update, {
+				const self = this;
+				Request
+					.updateAdminArticles({
 						id,
 						status
 					})
 					.then(res => {
-						if (res.data.errNo === 0) {
-							this.$Message.success('操作成功');
-							this.list.map((item, index) => {
-								if (item.id === res.data.data.id) {
-									item.status = res.data.data.status;
-								}
-							})
-						} else {
-							this.$Message.error(res.data.msg);
-						}
+						self.$Message.success('操作成功');
+						self.list.map((item, index) => {
+							if (item.id === res.id) {
+								item.status = res.status;
+							}
+						});
+					})
+					.catch(err => {
+						self.$Message.error(err.msg);
 					})
 			}
 		},
 		mounted() {
+			const self = this;
 			Promise.all([
-					this.$http.get(categoriesAPI.list), 
-					this.$http.get(articleAdminAPI.list)
+					Request.getCategories(), 
+					Request.getAdminArticles()
 				])
 				.then(arr => {
-					if (arr[0].data.errNo === 0) {
-						this.select = arr[0].data.data.categories;
-					} else {
-						this.$Message.error(arr[0].data.msg);
-					}
-					if (arr[1].data.errNo === 0) {
-						this.list = arr[1].data.data.articles;
-					} else {
-						this.$Message.error(arr[1].data.msg);
-					}
-					console.log(this);
+					this.select = arr[0].categories;
+					this.list = arr[1].articles;
+				})
+				.catch(err => {
+					self.$Message.error(err.msg)
 				})
 		}
 	}
