@@ -21,12 +21,19 @@ func Route(app *iris.Framework) {
 		router.Post("/reset",             user.ResetPasswordMail)
 		router.Post("/reset/:id/:secret", user.ResetPassword)
 
-		router.Get("/categories",       category.List)
+		router.Post("/user/update",          auth.SigninRequired,       
+										     user.UpdateInfo)
+		router.Post("/user/password/update", auth.SigninRequired,       
+										     user.UpdatePassword)
 
-		router.Get("/articles",         article.List)
-		router.Get("/article/:id",      article.Info)
-		router.Post("/article/create",  article.Create)
-		router.Post("/article/update",  article.Update)
+		router.Get("/categories",          category.List)
+
+		router.Get("/articles",            article.List)
+		router.Get("/articles/maxcomment", article.ListMaxComment)
+		router.Get("/articles/maxbrowse",  article.ListMaxBrowse)
+		router.Get("/article/:id",         article.Info)
+		router.Post("/article/create",     article.Create)
+		router.Post("/article/update",     article.Update)
     }
 
 	adminRouter := app.Party(apiPrefix + "/admin", auth.AdminRequired)

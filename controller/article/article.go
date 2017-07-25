@@ -115,6 +115,42 @@ func AllList(ctx *iris.Context) {
 	queryList(true, ctx)
 }
 
+// ListMaxComment 评论最多的文章，返回5条
+func ListMaxComment(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var articles []model.Article
+	if err := model.DB.Order("comment_count DESC").Limit(5).Find(&articles).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"articles": articles,
+		},
+	})
+}
+
+// ListMaxBrowse 访问量最多的文章，返回5条
+func ListMaxBrowse(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var articles []model.Article
+	if err := model.DB.Order("browse_count DESC").Limit(5).Find(&articles).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"articles": articles,
+		},
+	})
+}
+
 func save(isEdit bool, ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var article model.Article
