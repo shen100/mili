@@ -17,7 +17,7 @@ func SendMail(toEmail, subject, content string) error {
 	password := config.ServerConfig.MailPass
 
     headers                := make(map[string]string)
-    headers["From"]         = config.ServerConfig.SiteName +  "<" + email + ">"
+    headers["From"]         = "golang123<" + email + ">"
     headers["To"]           = toEmail
     headers["Subject"]      = subject
     headers["Content-Type"] = "text/html; charset=UTF-8"

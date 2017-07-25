@@ -6,6 +6,18 @@ import (
 	"golang123/controller/common"
 )
 
+// SigninRequired 必须是登录用户
+func SigninRequired(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	session     := ctx.Session();
+	user        := session.Get("user")
+	if user == nil {
+		SendErrJSON("未登录", ctx)
+		return	
+	}
+	ctx.Next()
+}
+
 // AdminRequired 授权
 func AdminRequired(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
