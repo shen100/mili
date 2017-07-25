@@ -3,7 +3,7 @@
 		<h1 class="admin-common-line">文章列表</h1>
 		<Row class="admin-common-line" type="flex" justify="end">
 			<Col>
-				<router-link to="/article/add">
+				<router-link to="/admin/article/add">
 					<Button type="primary">新增</Button>
 				</router-link>
 			</Col>

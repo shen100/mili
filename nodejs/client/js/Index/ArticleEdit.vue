@@ -81,7 +81,7 @@
                 })
             },
             back() {
-	        	this.$router.push('/article');
+	        	this.$router.push('/admin/article');
 	        },
         },
         mounted() {

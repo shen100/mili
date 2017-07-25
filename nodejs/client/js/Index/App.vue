@@ -1,32 +1,7 @@
 <template>
-	<div>
-		<admin-header />
-		<Row class="admin-body">
-			<Col :span="5">
-				<admin-sidebar class="admin-sidebar-container" />
-			</Col>
-			<Col class="admin-body-container" :span="18">
-				<router-view></router-view>
-			</Col>
-		</Row>
-	</div>
+	<router-view></router-view>
 </template>
-
-<script>
-	import Header  from '../components/Header';
-	import Sidebar from '../components/Sidebar';
-
-	export default {
-		components: {
-			adminHeader: Header,
-			adminSidebar: Sidebar
-		}
-	}
-</script>
 
 <style>
 	@import '~iview/dist/styles/iview.css';
-	.admin-sidebar-container, .admin-body-container {
-		float: left;
-	}
 </style>

@@ -56,10 +56,9 @@
     </Row>
 </template>
 <script>
-	import config from '../config';
-
-	const categoriesAPI = config.api.categories;
-	let   request = false;
+    import Request from '../utils/Request';
+    
+    let request = false;
 
     export default {
         data () {
@@ -80,25 +79,22 @@
                 this.$refs[name].validate((valid) => {
                     if (valid && !request) {
                     	request = true;
-                    	self.$http
-                    		.post(categoriesAPI.create, {
+                    	Request
+                    		.categoryCreate({
                     			parentId: 0,
                     			name: self.formDynamic.items[0].value,
                     			status: 1
                     		})
                     		.then(res => {
                     			request = false;
-                    			if (res.data.errNo === 0) { 
-                    				self.$Message.success('提交成功!');
-                    				self.editStatus = 'common';
-                    				self.list.push(res.data.data.category);
-                    				self.formDynamic.items = [];
-                    			} else {
-                    				self.$Message.error(res.data.msg);
-                    			}
+                				self.$Message.success('提交成功!');
+                				self.editStatus = 'common';
+                				self.list.push(res.category);
+                				self.formDynamic.items = [];
                     		})
                     		.catch(err => {
                     			request = false;
+                                self.$Message.error(res.msg);
                     		})
                     }
                 })
@@ -118,8 +114,8 @@
             	this.$refs[name][0].validate((valid) => {
             		if (valid && !request) {
             			request = true;
-            			self.$http
-                    		.post(categoriesAPI.update, {
+            			Request
+                    		.categoryUpdate({
                     			parentId: 0,
                     			name: self.editDynamic.value,
                     			status: self.list[self.editIndex].status,
@@ -127,19 +123,16 @@
                     		})
                     		.then(res => {
                     			request = false;
-                    			if (res.data.errNo === 0) { 
-                    				self.$Message.success('提交成功!');
-                    				self.editStatus = 'common';
-                    				self.list[self.editIndex] = res.data.data.category;
-                    				this.editStatus = 'common';
-					            	this.editDynamic = {};
-					            	this.editIndex = '';
-                    			} else {
-                    				self.$Message.error(res.data.msg);
-                    			}
+                				self.$Message.success('提交成功!');
+                				self.editStatus = 'common';
+                				self.list[self.editIndex] = res.category;
+                				this.editStatus = 'common';
+				            	this.editDynamic = {};
+				            	this.editIndex = '';
                     		})
                     		.catch(err => {
                     			request = false;
+                                self.$Message.error(err.msg);
                     		})
             		}
             	})
@@ -168,31 +161,34 @@
             				return;
             			}
             			request = true;
-            			this.$http
-            				.post(categoriesAPI.statusUpdate, {
+            			Request.
+            				categoryStatus({
             					id,
             					status
             				})
             				.then(res => {
             					request = false;
-            					if (res.data.errNo === 0){
-            						self.list[index].status = res.data.data.status;
-            					} else {
-            						self.$Message.error(res.data.msg);
-            					}
+        						self.list[index].status = res.status;
             					self.$Modal.remove();
             				})
-            				.catch(err => request = false);
+            				.catch(err => {
+                                request = false;
+                                self.$Message.error(err.msg);
+                            });
             		}
             	})
             }
         },
         mounted() {
-        	this.$http
-        		.get(categoriesAPI.list)
+            const self = this;
+        	Request
+        		.getCategories()
         		.then(res => {
-        			this.list = res.data.data.categories || [];
+        			this.list = res.categories || [];
         		})
+                .catch(err => {
+                    self.$Message.error(err.msg);
+                })
         }
     }
 </script>
