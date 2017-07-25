@@ -33,14 +33,13 @@ func sendMail(action string, title string, curTime int64, user model.User, ctx *
 		
 	if action == "/reset" {
 		content = "<p><b>亲爱的" + user.Name + ":</b></p>" +
-        "<p>你的密码重设要求已经得到验证。请点击以下链接, 或粘贴到浏览器地址栏来设置新的密码：</p>" +
+        "<p>你的密码重设要求已经得到验证。请点击以下链接, 或粘贴到浏览器地址栏来设置新的密码: </p>" +
         "<a href=\"" + actionURL + "\">" + actionURL + "</a>" +
 		"<p>感谢你对" + siteName + "的支持，希望你在" + siteName + "的体验有益且愉快。</p>" +
-		"<p>" + siteName + "&nbsp;&nbsp;" + siteURL + "</p>" + 
 		"<p>(这是一封自动产生的email，请勿回复。)</p>"
 	}
-
-	fmt.Println(content)
+	content += "<p><img src=\"http://ab.testin.cn/images/go.jpg\" style=\"width: 120px;\"/></p>"
+	//fmt.Println(content)
 	
 	mail.SendMail(user.Email, title, content)
 }
@@ -323,4 +322,80 @@ func Signup(ctx *iris.Context) {
 		"msg"   : "success",
 		"data"  : newUser.ToJSON(),
 	})
+}
+
+// UpdateInfo 更新用户信息
+func UpdateInfo(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var userReqData model.User
+	if err := ctx.ReadJSON(&userReqData); err != nil {
+		SendErrJSON("参数无效", ctx)
+		return
+	}
+
+	session     := ctx.Session();
+	user        := session.Get("user").(model.User)
+
+	user.Signature = strings.TrimSpace(userReqData.Signature)
+	if len(user.Signature) > 100 {
+		SendErrJSON("个性签名不能超过100个字符", ctx)
+		return
+	}
+	if err := model.DB.Save(&user).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{},
+	})
+}
+
+// UpdatePassword 更新用户密码
+func UpdatePassword(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	type userReqData struct {
+		Password  string  `json:"password"`
+		NewPwd    string  `json:"newPwd"`
+	}
+	var userData userReqData
+	if err := ctx.ReadJSON(&userData); err != nil {
+		SendErrJSON("参数无效", ctx)
+		return
+	}
+
+	if userData.Password == "" {
+		SendErrJSON("原密码不能为空", ctx)
+		return	
+	}
+
+	if userData.NewPwd == "" {
+		SendErrJSON("新密码不能为空", ctx)
+		return	
+	}
+
+	session  := ctx.Session();
+	user     := session.Get("user").(model.User)
+
+	if err := model.DB.First(&user, user.ID).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return	
+	}
+
+	if user.CheckPassword(userData.Password) {
+		user.Pass = user.EncryptPassword(userData.NewPwd, user.Salt())	
+		if err := model.DB.Save(&user).Error; err != nil {
+			SendErrJSON("error", ctx)
+			return
+		}
+		ctx.JSON(iris.StatusOK, iris.Map{
+			"errNo" : model.ErrorCode.SUCCESS,
+			"msg"   : "success",
+			"data"  : iris.Map{},
+		})
+	} else {
+		SendErrJSON("原密码错误", ctx)
+		return	
+	}
 }

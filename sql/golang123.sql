@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-07-24 16:37:53 +0000
+# Generation Time: 2017-07-25 15:55:31 +0000
 # ************************************************************
 
 
@@ -43,6 +43,7 @@ CREATE TABLE `articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `browse_count` int(11) NOT NULL DEFAULT '0',
+  `comment_count` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL,
   `content` longtext NOT NULL,
   `created_at` datetime NOT NULL,
@@ -51,6 +52,17 @@ CREATE TABLE `articles` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+LOCK TABLES `articles` WRITE;
+/*!40000 ALTER TABLE `articles` DISABLE KEYS */;
+
+INSERT INTO `articles` (`id`, `name`, `browse_count`, `comment_count`, `status`, `content`, `created_at`, `updated_at`, `deleted_at`)
+VALUES
+	(1,'xxxxx',5,3,0,'','2001-01-01 00:00:00','0000-00-00 00:00:00',NULL),
+	(2,'aaaaaaa',2,1,0,'','2000-01-01 00:00:00','0000-00-00 00:00:00',NULL),
+	(3,'ccccc',4,2,0,'','2002-01-01 00:00:00','0000-00-00 00:00:00',NULL);
+
+/*!40000 ALTER TABLE `articles` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table categories
@@ -135,6 +147,7 @@ CREATE TABLE `users` (
   `email` varchar(50) NOT NULL DEFAULT '',
   `phone` varchar(50) DEFAULT NULL,
   `pass` varchar(100) NOT NULL DEFAULT '',
+  `signature` varchar(200) DEFAULT NULL,
   `role` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -143,10 +156,9 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `role`, `status`)
+INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `signature`, `role`, `status`)
 VALUES
-	(2,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,'','675611281@qq.com',NULL,'15007996840b0a81d5bbf6cdcfaeff1f6305475c88',1,0),
-	(10,'2017-07-25 00:28:52','2017-07-25 00:28:52',NULL,'jack','liushen_shen@163.com','','15009137317501d69018352aa4c1e4e66453b9b58d',1,1);
+	(31,'2017-07-25 18:25:54','2017-07-25 23:55:01',NULL,'jack','liushen_shen@163.com','','15009783546021268569e284facf59b9c4d0aa8cf2','a',4,2);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

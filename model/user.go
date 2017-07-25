@@ -18,6 +18,7 @@ type User struct {
     Pass           string             `json:"pass"`
     Email          string             `json:"email"`
     Phone          string             `json:"phone"`
+    Signature      string             `json:"signature"`
     Role           int                `json:"role"`
     Status         int                `json:"status"`    
 }
