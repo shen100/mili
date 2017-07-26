@@ -8,7 +8,9 @@
     "staticServ": "node staticServ.js"
   },
   "dependencies": {
-    "express": "4.15.3"
+    "express": "4.15.3",
+    "hbs": "^4.0.1",
+    "request": "^2.81.0"
   },
   "devDependencies": {
     "axios": "^0.16.2",
