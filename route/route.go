@@ -7,6 +7,7 @@ import (
 	"golang123/controller/category"
 	"golang123/controller/article"
 	"golang123/controller/user"
+	"golang123/controller/timeline"
 )
 
 // Route 路由
@@ -24,7 +25,9 @@ func Route(app *iris.Framework) {
 		router.Post("/user/update",          auth.SigninRequired,       
 										     user.UpdateInfo)
 		router.Post("/user/password/update", auth.SigninRequired,       
-										     user.UpdatePassword)
+											 user.UpdatePassword)
+												  
+		router.Get("timeline",               timeline.List)
 
 		router.Get("/categories",          category.List)
 
