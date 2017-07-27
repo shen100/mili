@@ -56,7 +56,7 @@
     </Row>
 </template>
 <script>
-    import Request from '../utils/Request';
+    import Request from '../../utils/Request';
     
     let request = false;
 

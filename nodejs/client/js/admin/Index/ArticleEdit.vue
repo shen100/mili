@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    import Request from '../utils/Request';
+    import Request from '../../utils/Request';
 
     export default {
         data () {

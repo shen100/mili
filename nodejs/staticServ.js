@@ -31,6 +31,7 @@ app.use(webpackDevMiddleware(compiler, {
     }
 }));
 
+
 app.use(webpackHotMiddleware(compiler));
 
 app.listen(config.staticPort, function() {
