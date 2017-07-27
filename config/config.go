@@ -58,6 +58,7 @@ func initDB() {
 }
 
 type serverConfig struct {
+	APIPoweredBy        string
 	SiteName            string
 	Host                string
 	Env                 string

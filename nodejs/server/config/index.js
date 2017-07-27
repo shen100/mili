@@ -30,6 +30,7 @@ var config = {
 		jsPath     : configData.nodejs.page.jsPath,
 		imagePath  : configData.nodejs.page.imagePath,
 		cssPath    : configData.nodejs.page.cssPath,
+		host       : configData.go.Host,
 		imgPath    : configData.go.ImgPath, /*上传后的图片请求地址前缀*/
 		apiPath    : configData.api.Prefix
 	},

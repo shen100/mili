@@ -15,8 +15,6 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(express.static(path.join(__dirname, 'client')));
-
 const webpack 			   = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -33,6 +31,9 @@ app.use(webpackDevMiddleware(compiler, {
 
 
 app.use(webpackHotMiddleware(compiler));
+
+app.use(express.static(path.join(__dirname, 'client')));
+app.use(config.page.imgPath, express.static(config.uploadImgDir));
 
 app.listen(config.staticPort, function() {
     console.log('Server running at :' + config.staticPort);

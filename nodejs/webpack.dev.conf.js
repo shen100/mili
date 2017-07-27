@@ -4,14 +4,16 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
 function getEntryMap() {
     var entryArr = [
-    	'article/edit',
+        'article/edit',
         'admin/index'
     ];
     var entryMap = {};
     entryArr.forEach(function(key) {
-        entryMap[key] = ['babel-polyfill', './client/js/' + key + '.js'];
+        entryMap[key] = ['./client/javascripts/' + key + '.js'];
     });
-    console.log(entryMap);
+    entryMap['vendor'] = [
+        'vue'
+    ];
     return entryMap;
 }
 
@@ -19,10 +21,10 @@ module.exports = {
 	devtool: '#cheap-module-eval-source-map',
 	entry: getEntryMap(),
 	output: {
-		publicPath    : '/',
-        filename      : './js/[name].js',
-        path          : path.resolve(__dirname, './dist/static'),
-        chunkFilename : './js/[name].js'
+		path: path.resolve(__dirname, './dist/static'),
+		filename: './javascripts/[name].js',
+		publicPath: '/',
+		chunkFilename : './javascripts/[name].js'
 	},
 	resolve: {
 		extensions: ['.js', '.vue', '.json'],
@@ -43,7 +45,7 @@ module.exports = {
 			}, 
 			{
 				test: /\.css$/,
-				loaders: ['style-loader', 'css-loader']
+				loader: 'css-loader'
 			},
 			{
 				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -79,6 +81,10 @@ module.exports = {
 	    new webpack.HotModuleReplacementPlugin(),
 	    new webpack.NoEmitOnErrorsPlugin(),
 
-	    new FriendlyErrorsPlugin()
+	    new FriendlyErrorsPlugin(),
+	    new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor', 
+            filename: `./javascripts/vendor.js`
+        }),
 	]
 }

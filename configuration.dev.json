@@ -16,9 +16,9 @@
 		"staticPoweredBy": "golang123Static",/*前端静态文件服务器加的X-Powered-By*/
 		"page": {
 			"title"       : "golang123社区", /*网站标题*/
-			"jsPath"      : "/js",          /*前端JS请求地址前缀*/
-			"imagePath"   : "/img",         /*前端图片请求地址前缀*/
-			"cssPath"     : "/css"          /*前端css请求地址前缀*/
+			"jsPath"      : "/javascripts", /*前端JS请求地址前缀*/
+			"imagePath"   : "/images",      /*前端图片请求地址前缀*/
+			"cssPath"     : "/styles"       /*前端css请求地址前缀*/
 		},
 		"env"          : "development",           /*模式(开发，测试，产品)*/
 		"useProxy"     : false,                   /*node.js发请求是否使用代理*/
@@ -27,7 +27,7 @@
 		"staticPort"   : 8022                     /*前端静态文件服务器监听的端口（本地开发时使用）*/
 	},
 	"go": {
-		"apiPoweredBy"        : "golang123 api",/*后台go加的X-Powered-By*/
+		"APIPoweredBy"        : "golang123 api",/*后台go加的X-Powered-By*/
 		"SiteName"            : "golang123社区", /*网站名称*/
 		"Host"                : "",             /*网站域名*/
 		"Env"                 : "development",  /*模式(开发，测试，产品)*/

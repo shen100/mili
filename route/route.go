@@ -3,6 +3,7 @@ package route
 import (
 	"gopkg.in/kataras/iris.v6"
 	"golang123/config"
+	"golang123/controller/common"
 	"golang123/controller/auth"
 	"golang123/controller/category"
 	"golang123/controller/article"
@@ -26,6 +27,8 @@ func Route(app *iris.Framework) {
 										     user.UpdateInfo)
 		router.Post("/user/password/update", auth.SigninRequired,       
 											 user.UpdatePassword)
+		router.Post("/upload",               auth.SigninRequired,          
+											 common.Upload)
 												  
 		router.Get("timeline",               timeline.List)
 
