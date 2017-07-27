@@ -22,7 +22,7 @@
 
 <script>
 	import moment from 'moment';
-	import Request from '../utils/Request';
+	import Request from '../../utils/Request';
 
 	// 分类管理
 	// 2 审核通过

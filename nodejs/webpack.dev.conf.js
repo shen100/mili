@@ -2,15 +2,27 @@ const webpack 			   = require('webpack');
 const path 				   = require('path');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
+function getEntryMap() {
+    var entryArr = [
+    	'article/edit',
+        'admin/index'
+    ];
+    var entryMap = {};
+    entryArr.forEach(function(key) {
+        entryMap[key] = ['babel-polyfill', './client/js/' + key + '.js'];
+    });
+    console.log(entryMap);
+    return entryMap;
+}
+
 module.exports = {
 	devtool: '#cheap-module-eval-source-map',
-	entry: {
-		index: './client/js/index.js'
-	},
+	entry: getEntryMap(),
 	output: {
-		path: path.resolve(__dirname, './client/dist'),
-		filename: '[name].js',
-		publicPath: '/dist'
+		publicPath    : '/',
+        filename      : './js/[name].js',
+        path          : path.resolve(__dirname, './dist/static'),
+        chunkFilename : './js/[name].js'
 	},
 	resolve: {
 		extensions: ['.js', '.vue', '.json'],
