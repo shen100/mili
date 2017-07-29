@@ -2,11 +2,12 @@ const webpack 			   = require('webpack');
 const path 				   = require('path');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
+var entryArr = [
+    'article/edit',
+    'admin/index'
+];
+
 function getEntryMap() {
-    var entryArr = [
-        'article/edit',
-        'admin/index'
-    ];
     var entryMap = {};
     entryArr.forEach(function(key) {
         entryMap[key] = ['./client/javascripts/' + key + '.js'];
@@ -52,7 +53,7 @@ module.exports = {
 				loader: 'url-loader',
 				options: {
 					limit: 10000,
-					name: 'img/[name].[hash:7].[ext]'
+					name: 'images/[name].[hash:7].[ext]'
 				}
 			}, 
 			{
@@ -64,7 +65,7 @@ module.exports = {
 				}
 			}, 
 			{
-				test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+				test: /\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/,
 				loader: 'url-loader',
 				options: {
 					limit: 10000,
@@ -84,7 +85,7 @@ module.exports = {
 	    new FriendlyErrorsPlugin(),
 	    new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor', 
-            filename: `./javascripts/vendor.js`
+            filename: './javascripts/vendor.js'
         }),
 	]
 }

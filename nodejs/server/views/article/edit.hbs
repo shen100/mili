@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>{{title}} - </title>
+	<title>{{title}} - {{data.article.title}}</title>
 	<link rel="stylesheet" href="{{cssPath}}/common.css">
 </head>
 <body>
@@ -10,7 +10,7 @@
 	<div id="box"></div>
 	<link rel="stylesheet" href="//cdn.jsdelivr.net/editor/0.1.0/editor.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-	{{>include_js}}
+	{{>include_data}}
 	<script type="text/javascript" src="{{jsPath}}/vendor.js"></script>
 	<script type="text/javascript" src="{{jsPath}}/article/edit.js"></script>
 </body>

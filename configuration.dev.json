@@ -53,5 +53,8 @@
 	"api": {
 		"Prefix" : "/api",                     /*api服务请求前缀*/
 		"URL"    : "http://127.0.0.1:8012/api" /*api服务请求地址(给node.js调用)*/
+	},
+	"docs": {
+		"github": "https://github.com/shen100/golang123" /*golang123项目github地址*/
 	}
 }

@@ -1,6 +1,6 @@
 {
   "name": "golang123",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -9,30 +9,30 @@
   },
   "dependencies": {
     "express": "4.15.3",
-    "hbs": "^4.0.1",
-    "request": "^2.81.0"
+    "hbs": "4.0.1",
+    "request": "2.81.0"
   },
   "devDependencies": {
-    "ajv": "^5.2.2",
-    "axios": "^0.16.2",
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-stage-2": "^6.24.1",
-    "css-loader": "^0.28.4",
-    "file-loader": "^0.11.2",
-    "friendly-errors-webpack-plugin": "^1.6.1",
+    "ajv": "5.2.2",
+    "axios": "0.16.2",
+    "babel-core": "6.25.0",
+    "babel-loader": "7.1.1",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-preset-env": "1.6.0",
+    "babel-preset-stage-2": "6.24.1",
+    "css-loader": "0.28.4",
+    "file-loader": "0.11.2",
+    "friendly-errors-webpack-plugin": "1.6.1",
     "iview": "^2.0.0-rc.19",
-    "moment": "^2.18.1",
-    "url-loader": "^0.5.9",
-    "vue": "^2.4.2",
-    "vue-loader": "^12.2.2",
-    "vue-router": "^2.7.0",
-    "vue-template-compiler": "^2.4.2",
-    "vuex": "^2.3.1",
-    "webpack": "^3.3.0",
-    "webpack-dev-middleware": "^1.11.0",
-    "webpack-hot-middleware": "^2.18.2"
+    "moment": "2.18.1",
+    "url-loader": "0.5.9",
+    "vue": "2.4.2",
+    "vue-loader": "12.2.2",
+    "vue-router": "2.7.0",
+    "vue-template-compiler": "2.4.2",
+    "vuex": "2.3.1",
+    "webpack": "3.3.0",
+    "webpack-dev-middleware": "1.11.0",
+    "webpack-hot-middleware": "2.18.2"
   }
 }

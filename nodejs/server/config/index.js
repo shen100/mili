@@ -3,7 +3,10 @@ var path = require('path');
 
 var configData;
 
-//只在程序启动时，读一次配置文件，此时可以使用同步的io操作
+/*
+ * nodejs和go都用同一个配置文件(即configuration.json)进行配置
+ * 只在程序启动时，读一次配置文件，此时可以使用同步的io操作
+ */
 try {
 	var configStr = fs.readFileSync(path.join(__dirname, '../../../configuration.json'), 'utf8');
 	configStr     = configStr.replace(/\/\*.*\*\//g, '');
@@ -13,9 +16,6 @@ try {
 	process.exit(0);
 }
 
-/*
- * nodejs和go都用同一个配置文件(即configuration.json)进行配置
- */
 var config = {
 	webPoweredBy    : configData.nodejs.webPoweredBy,/*前端node.js加的X-Powered-By*/
 	staticPoweredBy : configData.nodejs.staticPoweredBy,/*前端静态文件服务器加的X-Powered-By*/
@@ -26,16 +26,18 @@ var config = {
 	staticPort   : configData.nodejs.staticPort,  /*前端静态文件服务器监听的端口（本地开发时使用）*/
 	uploadImgDir : configData.go.UploadImgDir, /*图片上传的目录*/
 	page: {
-		title      : configData.nodejs.page.title,
-		jsPath     : configData.nodejs.page.jsPath,
-		imagePath  : configData.nodejs.page.imagePath,
-		cssPath    : configData.nodejs.page.cssPath,
-		host       : configData.go.Host,
-		imgPath    : configData.go.ImgPath, /*上传后的图片请求地址前缀*/
-		apiPath    : configData.api.Prefix
+		title           : configData.nodejs.page.title,
+		jsPath          : configData.nodejs.page.jsPath,
+		imagePath       : configData.nodejs.page.imagePath,
+		cssPath         : configData.nodejs.page.cssPath,
+		uploadImgPrefix : configData.go.ImgPath, /*上传后的图片请求地址前缀*/
+		apiPrefix       : configData.api.Prefix  /*api前缀*/
 	},
 	api: {
 		//todayOrderCount : "/admin/order/todaycount",
+	},
+	docs: {
+		github: configData.docs.github
 	}
 };
 
