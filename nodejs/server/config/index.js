@@ -25,6 +25,7 @@ var config = {
 	port         : configData.nodejs.port,  /*前端node.js监听的端口*/
 	staticPort   : configData.nodejs.staticPort,  /*前端静态文件服务器监听的端口（本地开发时使用）*/
 	uploadImgDir : configData.go.UploadImgDir, /*图片上传的目录*/
+	host: configData.go.Host,
 	page: {
 		title           : configData.nodejs.page.title,
 		jsPath          : configData.nodejs.page.jsPath,

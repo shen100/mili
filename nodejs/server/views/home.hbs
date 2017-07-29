@@ -9,9 +9,16 @@
 <body>
 	{{>header}}
 	<div class="golang-home-body">
-		{{#each data.categoties}}
-			<span>{{name}}</span>
-		{{/each}}
+		<div class="golang-home-body-left">
+			<div class="home-categoties-box">
+				<div class="categoties-item {{#unless data.cate}}categoties-select{{/unless}}"><a href="https://{{host}}">全部</a></div>
+				{{#each data.categoties}}
+					{{#if status}}
+						<div class="categoties-item"><a href="https://{{../host}}?cate={{id}}">{{name}}</a></div>
+					{{/if}}
+				{{/each}}
+			</div>
+		</div>
 	</div>
 </body>
 </html>

@@ -7,6 +7,12 @@ const api = {
 			method: 'GET',
 			name: 'getCategories',
 			desc: '获取分类列表'
+		},
+		articles: {
+			url: url + '/admin/articles',
+			method: 'GET',
+			name: 'getArticles',
+			desc: '获取文章列表'
 		}
 	}
 }

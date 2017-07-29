@@ -49,6 +49,7 @@ app.use(function(req, res, next) {
     locals.cssPath        = config.page.cssPath;
     locals.imagePath      = config.page.imagePath;
     locals.pageConfig     = config.page;
+    locals.host           = config.host;
     next();
 });
 

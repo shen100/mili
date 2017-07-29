@@ -4,5 +4,36 @@ body {
 
 .golang-home-body {
 	width: 1200px;
-	margin: 0 auto;
+	margin: 20px auto;
+	min-height: 300px;
+}
+
+.golang-home-body-left {
+	background-color: #fff;
+	width: 70%;
+}
+
+.home-categoties-box {
+	background-color: #f6f6f6;
+	padding: 10px;
+	font-size: 14px;
+}
+
+.categoties-item a {
+	color: #80bd01;
+}
+
+.categoties-item {
+	padding: 5px;
+	margin-right: 10px;
+	display: inline-block;
+	border-radius: 5px;	
+}
+
+.categoties-item:hover, .categoties-select {
+	background-color: #80bd01;
+}
+
+.categoties-item:hover a, .categoties-select a {
+	color: #fff;
 }
