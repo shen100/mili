@@ -2,16 +2,19 @@ const webpack 			   = require('webpack');
 const path 				   = require('path');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
+var entryArr = [
+    'article/edit',
+    'admin/index'
+];
+
 function getEntryMap() {
-    var entryArr = [
-    	'article/edit',
-        'admin/index'
-    ];
     var entryMap = {};
     entryArr.forEach(function(key) {
-        entryMap[key] = ['babel-polyfill', './client/js/' + key + '.js'];
+        entryMap[key] = ['./client/javascripts/' + key + '.js'];
     });
-    console.log(entryMap);
+    entryMap['vendor'] = [
+        'vue'
+    ];
     return entryMap;
 }
 
@@ -19,10 +22,10 @@ module.exports = {
 	devtool: '#cheap-module-eval-source-map',
 	entry: getEntryMap(),
 	output: {
-		publicPath    : '/',
-        filename      : './js/[name].js',
-        path          : path.resolve(__dirname, './dist/static'),
-        chunkFilename : './js/[name].js'
+		path: path.resolve(__dirname, './dist/static'),
+		filename: './javascripts/[name].js',
+		publicPath: '/',
+		chunkFilename : './javascripts/[name].js'
 	},
 	resolve: {
 		extensions: ['.js', '.vue', '.json'],
@@ -43,14 +46,14 @@ module.exports = {
 			}, 
 			{
 				test: /\.css$/,
-				loaders: ['style-loader', 'css-loader']
+				loader: 'css-loader'
 			},
 			{
 				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
 				loader: 'url-loader',
 				options: {
 					limit: 10000,
-					name: 'img/[name].[hash:7].[ext]'
+					name: 'images/[name].[hash:7].[ext]'
 				}
 			}, 
 			{
@@ -62,7 +65,7 @@ module.exports = {
 				}
 			}, 
 			{
-				test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+				test: /\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/,
 				loader: 'url-loader',
 				options: {
 					limit: 10000,
@@ -79,6 +82,10 @@ module.exports = {
 	    new webpack.HotModuleReplacementPlugin(),
 	    new webpack.NoEmitOnErrorsPlugin(),
 
-	    new FriendlyErrorsPlugin()
+	    new FriendlyErrorsPlugin(),
+	    new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor', 
+            filename: './javascripts/vendor.js'
+        }),
 	]
 }

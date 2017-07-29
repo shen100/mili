@@ -11,7 +11,7 @@ func setField(obj interface{}, name string, value interface{}) error {
     fieldValue := structData.FieldByName(name)
 
     if !fieldValue.IsValid() {
-        return fmt.Errorf("No such field: %s in obj ", name)
+        return fmt.Errorf("utils.setField() No such field: %s in obj ", name)
     }
 
     if !fieldValue.CanSet() {
@@ -30,6 +30,25 @@ func setField(obj interface{}, name string, value interface{}) error {
     }
     fieldValue.Set(val)
     return nil
+}
+
+// StrToIntMonth 字符串月份转整数月份
+func StrToIntMonth(month string) int  {
+    var data = map[string]int{
+        "January"   : 0,
+        "February"  : 1,
+        "March"     : 2,
+        "April"     : 3,
+        "May"       : 4,
+        "June"      : 5,
+        "July"      : 6,
+        "August"    : 7,
+        "September" : 8,
+        "October"   : 9,
+        "November"  : 10,
+        "December"  : 11,
+    };
+    return data[month];
 }
 
 // SetStructByJSON 由json对象生成 struct
