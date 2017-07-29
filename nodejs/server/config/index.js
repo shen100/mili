@@ -34,20 +34,11 @@ var config = {
 		apiPrefix       : configData.api.Prefix  /*api前缀*/
 	},
 	api: {
-		//todayOrderCount : "/admin/order/todaycount",
+		url: configData.api.URL
 	},
 	docs: {
 		github: configData.docs.github
 	}
 };
-
-(function() {
-	var url = configData.api.URL;
-	for (var key in config.api) {
-		if (config.api.hasOwnProperty(key)) {
-			config.api[key] = url + config.api[key];
-		}
-	}
-}())
 
 module.exports = config;

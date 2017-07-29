@@ -4,8 +4,14 @@
 	<meta charset="utf-8">
 	<title>{{title}} - 首页</title>
 	<link rel="stylesheet" href="{{cssPath}}/common.css">
+	<link rel="stylesheet" href="{{cssPath}}/home.css">
 </head>
 <body>
 	{{>header}}
+	<div class="golang-home-body">
+		{{#each data.categories}}
+			<span>{{name}}</span>
+		{{/each}}
+	</div>
 </body>
 </html>

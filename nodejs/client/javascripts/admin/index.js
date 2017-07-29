@@ -45,7 +45,7 @@ Vue.use(iView);
 Vue.prototype.$http = axios;
 
 const router = new VueRouter({
-	mode: 'history',
+	//mode: 'history',
 	routes
 })
 
