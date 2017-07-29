@@ -6,9 +6,10 @@ module.exports = function(req, res) {
 	Req.getCategories({
 			client: req
 		})
-		.then(res => {
-			res.locals.data.categoties = res.data.categories;
-			console.log(res.data.categories);
+		.then(data => {
+			res.locals.data = {};
+			res.locals.data.categoties = data.data.categories;
+			console.log(data, typeof data);
 			res.render('home');
 		})
 		.catch(err => {

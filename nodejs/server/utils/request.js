@@ -82,7 +82,7 @@ class Req {
 			if (error) {
 		      	return reject(error);
 		    } else {
-		    	return resolve(data.data);
+		    	return resolve(data);
 		    }
 		})
 	}
