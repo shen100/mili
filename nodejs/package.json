@@ -8,8 +8,11 @@
     "staticServ": "node staticServ.js"
   },
   "dependencies": {
+    "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
     "express": "4.15.3",
     "hbs": "^4.0.1",
+    "morgan": "^1.8.2",
     "request": "^2.81.0"
   },
   "devDependencies": {
@@ -25,6 +28,7 @@
     "friendly-errors-webpack-plugin": "^1.6.1",
     "iview": "^2.0.0-rc.19",
     "moment": "^2.18.1",
+    "style-loader": "^0.18.2",
     "url-loader": "^0.5.9",
     "vue": "^2.4.2",
     "vue-loader": "^12.2.2",
