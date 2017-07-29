@@ -1,13 +1,24 @@
 'use strict';
 
-var Req = require('../../utils/request');
+const Req = require('../../utils/request');
 
 module.exports = function(req, res) {
 	var id = req.params.id;
 	
-	if (id == 'create') {
-		res.render('article/create');
-	} else {
-		res.render('article/detail');
-	}
+	Req.getCategories({
+			client: req
+		})
+		.then(data => {
+			res.locals.data = res.locals.data || {};
+			res.locals.data.categoties = data.data.categories;
+			if (id == 'create') {
+				res.render('article/create');
+			} else {
+				res.render('article/detail');
+			}
+		})
+		.catch(err => {
+			console.log(err);
+			res.render('404');
+		});
 };

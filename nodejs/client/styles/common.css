@@ -23,6 +23,12 @@ html,body {
 	height: 100%;
 }
 
+.golang-footer {
+	background: #000;
+	margin-top: 20px;
+	height: 120px;
+}
+
 .admin-common-line {
 	margin: 10px 0;
 }
