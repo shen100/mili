@@ -3,7 +3,9 @@ const Req = require('../utils/request');
 
 module.exports = function(req, res) {
 	req.body = {};
-	Req.getCategories(req)
+	Req.getCategories({
+			client: req
+		})
 		.then(res => {
 			res.locals.data.categoties = res.data.categories;
 			console.log(res.data.categories);

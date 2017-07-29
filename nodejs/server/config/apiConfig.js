@@ -3,7 +3,7 @@ const url = require('./index').api.url;
 const api = {
 	home: {
 		categories: {
-			url: url + '/api/categories',
+			url: url + '/categories',
 			method: 'GET',
 			name: 'getCategories',
 			desc: '获取分类列表'

@@ -27,30 +27,62 @@ class Req {
 	request(conf, options, resolve, reject) {
 		options.uri = conf.url;
 		options.method = conf.method;
-		if (options.headers) {
+
+		options.json = options.json === undefined ? true : options.json;
+		var client   = options.client;
+		if (client.headers) {
 			options.headers = {};
-			options.headers['User-Agent'] = options.headers['user-agent'];
+			options.headers['User-Agent'] = client.headers['user-agent'];
 		}
 
-		const urlObj = url.parse(options.uri);
+		var urlObj = url.parse(options.uri);
+		if (process.env.NODE_ENV !== 'production') {
+			var cookies = client.cookies || {};
+			var apiServer = cookies.apiServer;
+			if (apiServer) {
+				urlObj.host     = apiServer.host + ':' + apiServer.port;
+				urlObj.port     = apiServer.port;
+				urlObj.hostname = apiServer.host;
+				var uri         = url.format(urlObj);
+				options.uri     = uri;
+				
+			}
+		}
 
-		if (options.cookies) {
+		if (client.cookies) {
 			var cookieUrl = urlObj.protocol + '//' + urlObj.host;
 			var j = request.jar();
-			for (var key in options.cookies) {
-				if (options.cookies.hasOwnProperty(key)) {
-					var cookie = request.cookie(key + '=' + options.cookies[key]);
+			for (var key in client.cookies) {
+				if (client.cookies.hasOwnProperty(key)) {
+					var cookie = request.cookie(key + '=' + encodeURIComponent(client.cookies[key]));
 					j.setCookie(cookie, cookieUrl);
 				}
 			}
 			options.jar = j;
 		}
-		delete options.body;
-		request(options, function(error, response, body) {
+
+		delete options.client;
+		if (process.env.USE_PROXY === 'true') {
+			options.proxy = appConfig.proxy.uri;
+		}
+		var startTime = new Date().getTime();
+		request(options, function(error, response, data) {
+			console.log({
+				url : options.uri,
+				time: (new Date().getTime() - startTime) + 'ms'
+			});
+			console.log(data, typeof data);
+			if (!error && typeof data === 'string') {
+				error = {
+					message : data,
+					url     : options.uri
+				};
+			}
+
 			if (error) {
 		      	return reject(error);
 		    } else {
-		    	return resolve(JSON.parse(body));
+		    	return resolve(data.data);
 		    }
 		})
 	}

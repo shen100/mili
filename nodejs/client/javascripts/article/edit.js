@@ -7,9 +7,9 @@ Vue.use(iView);
 Vue.prototype.$http = axios;
 
 new Vue({
-	el: '#box',
+	el: '#editorBox',
 	render: h => h(EditArticle)
-})
+});
 
 
 

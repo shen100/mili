@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{{title}} - {{data.article.title}}</title>
+	<link rel="stylesheet" href="{{cssPath}}/common.css">
+	<link rel="stylesheet" href="{{cssPath}}/article/simplemde.min.css">
+	<link rel="stylesheet" href="{{cssPath}}/article/edit.css">
+</head>
+<body style="background-color: #e1e1e1;">
+	{{>header}}
+	<div class="topic-box">
+		<ul class="topic-nav">
+			<li><a href="/"><span>主页</span></a></li>
+			<li class="topic-nav-sep"><span>/</span></li>
+			<li><span>发布话题</span></li>
+		</ul>
+		<div class="editor-box-wrap">
+			<div id="editorBox"></div>
+		</div>
+	</div>
+	{{>include_data}}
+	<script type="text/javascript" src="{{jsPath}}/vendor.js"></script>
+	<script type="text/javascript" src="{{jsPath}}/article/edit.js"></script>
+</body>
+</html>
