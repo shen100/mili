@@ -1,18 +1,20 @@
 package model
 
 type errorCode struct {
-	SUCCESS     int
-	ERROR       int
-	NotFound    int
-	LoginError  int
+	SUCCESS      int
+	ERROR        int
+	NotFound     int
+	LoginError   int
+	LoginTimeout int
 }
 
 // ErrorCode 错误码
 var ErrorCode = errorCode{
-	SUCCESS     : 0,
-	ERROR       : 1,
-	NotFound    : 404,
-	LoginError  : 1000, //用户名或密码错误
+	SUCCESS      : 0,
+	ERROR        : 1,
+	NotFound     : 404,
+	LoginError   : 1000, //用户名或密码错误
+	LoginTimeout : 1001, //登录超时
 }
 
 

@@ -14,28 +14,80 @@
 
 <script>
 	import Simplemde from './simplemde.js';
+	import ErrorCode from '../../constant/ErrorCode';
+
+	console.log(pageConfig.apiPrefix + '/upload');
 
 	export default {
         data() {
             return {
-            	host: pageConfig.host,
+            	host: document.location.hostname,
             	simplemde: null,
-            	uploadURL: pageConfig.apiPath + '/upload',
+            	uploadURL: pageConfig.apiPrefix + '/upload',
                 modalVisible: false,
                 toolbar: [
 					{
-			            name: "bold",
+			            name: 'bold',
 			            action: SimpleMDE.toggleBold,
-			            className: "fa fa-bold",
-			            title: "Bold",
+			            className: 'fa fa-bold',
+			            title: '粗体',
 			        },
 			        {
-			            name: "italic",
+			            name: 'italic',
 			            action: SimpleMDE.toggleItalic,
-			            className: "fa fa-bold",
-			            title: "Bold",
+			            className: 'fa fa-italic',
+			            title: '斜体',
 			        },
-			        'preview',
+			        {
+			            name: 'heading',
+			            action: SimpleMDE.toggleHeadingSmaller,
+			            className: 'fa fa-header',
+			            title: '标题',
+			        },
+			        '|', // Se
+			        {
+			            name: 'unordered-list',
+			            action: SimpleMDE.toggleUnorderedList,
+			            className: 'fa fa-list-ul',
+			            title: '无序列表',
+			        },
+			        {
+			            name: 'ordered-list',
+			            action: SimpleMDE.toggleOrderedList,
+			            className: 'fa fa-list-ol',
+			            title: '有序列表',
+			        },
+			        {
+			            name: 'table',
+			            action: SimpleMDE.drawTable,
+			            className: 'fa fa-table',
+			            title: '表格',
+			        },
+			        {
+			        	name: 'horizontal-rule',
+			        	action: SimpleMDE.drawHorizontalRule,
+			            className: 'fa fa-minus',
+			            title: '水平分隔线',
+			        },
+			        '|',
+			        {
+			            name: 'code',
+			            action: SimpleMDE.toggleCodeBlock,
+			            className: 'fa fa-code',
+			            title: '代码',
+			        },
+			        {
+			            name: 'quote',
+			            action: SimpleMDE.toggleBlockquote,
+			            className: 'fa fa-quote-left',
+			            title: '块引用',
+			        },
+			        {
+			            name: 'link',
+			            action: SimpleMDE.drawLink,
+			            className: 'fa fa-link',
+			            title: '链接',
+			        },
 			        {
 			            name: "image",
 			            action: this.showUpload,
@@ -43,6 +95,18 @@
 			            title: "上传图片"
 			        },
 			        "|", // Separator
+			        {
+			            name: 'preview',
+			            action: SimpleMDE.togglePreview,
+			            className: 'fa fa-eye no-disable',
+			            title: '链接',
+			        },
+			        {
+			            name: 'fullscreen',
+			            action: SimpleMDE.toggleFullScreen,
+			            className: 'fa fa-arrows-alt no-disable no-mobile',
+			            title: '全屏',
+			        },
 			    ]
             }
         },
@@ -59,30 +123,26 @@
             },
             onUploadSuccess(res, file) {
             	console.log(res, file);
-            	if (res && res.data && !res.data.errNo) {
-            		var url = 'https://' + this.host + res.data.url;
-            		console.log(SimpleMDE);
-            		console.log(this.simplemde);
-            		this.simplemde.setImageURL(url);
-           			SimpleMDE.drawImage(this.simplemde);
+            	if (res) {
+            		if (res.errNo == ErrorCode.SUCCESS) {
+            			var url = 'https://' + this.host + res.data.url;
+	            		this.simplemde.setImageURL(url);
+	           			SimpleMDE.drawImage(this.simplemde);
+            		} else if (res.errNo == ErrorCode.LOGIN_TIMEOUT) {
+            			location.href = '/signin';
+            		}
             	}
             }
         },
         mounted() {
         	this.$nextTick(function() {
         		var simplemde = new SimpleMDE({
-					element: this.$refs.textarea,
-					promptURLs: false,
-					// insertTexts: {
-				 //        image: ["![](https://", ")"],
-				 //    },
-					toolbar: this.toolbar
+					element      : this.$refs.textarea,
+					promptURLs   : false,
+					spellChecker : false,
+					toolbar      : this.toolbar
 				});
-
 				this.simplemde = simplemde;
-
-				console.log(SimpleMDE.prototype.imageURL);
-
 				var pt = SimpleMDE.prototype;
 				if (!pt.getImageURL) {
 					pt.getImageURL = function() {

@@ -1,9 +1,7 @@
-import Vue 		 from 'vue';
-import iView     from 'iView';
-import axios     from 'axios';
-import 'iview/dist/styles/iview.css';
-
-import EditArticle		 from './EditArticle.vue';
+import Vue 		   from 'vue';
+import iView       from 'iView';
+import axios       from 'axios';
+import EditArticle from './EditArticle.vue';
 
 Vue.use(iView);
 Vue.prototype.$http = axios;

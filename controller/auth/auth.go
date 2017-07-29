@@ -12,7 +12,7 @@ func SigninRequired(ctx *iris.Context) {
 	session     := ctx.Session();
 	user        := session.Get("user")
 	if user == nil {
-		SendErrJSON("未登录", ctx)
+		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
 		return	
 	}
 	ctx.Next()
