@@ -1,13 +1,21 @@
 .topic-box {
 	width: 1200px;
+	font-size: 0;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 20px;
 }
 
+.topic-main {
+	width: 900px;
+	font-size: 0;
+	display: inline-block;
+}
+
 .topic-nav {
 	width: 900px;
 	height: 40px;
+	display: inline-block;
 	padding-left: 20px;
 	background: #f6f6f6;
 }
@@ -57,3 +65,28 @@
 	margin-left: 0!important;
 }
 
+.topic-sidebar {
+	width: 280px;
+	margin-left: 20px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.topic-sidebar li {
+	background: #fff;
+	font-size: 14px;
+	line-height: 40px;
+}
+
+.markdown-reference {
+	padding-left: 12px;
+	background: #f6f6f6;
+	height: 40px;
+}
+
+.markdown-codeblock code {
+	color: inherit;
+    white-space: pre-wrap;
+    background-color: transparent;
+    line-height: 20px;
+}

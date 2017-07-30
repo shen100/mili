@@ -12,7 +12,7 @@ module.exports = function(req, res) {
 			res.locals.data = res.locals.data || {};
 			res.locals.data.categoties = data.data.categories;
 			if (id == 'create') {
-				res.render('article/create');
+				res.render('article/edit');
 			} else {
 				res.render('article/detail');
 			}
