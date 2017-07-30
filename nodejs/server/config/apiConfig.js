@@ -13,6 +13,12 @@ const api = {
 			method: 'GET',
 			name: 'getArticles',
 			desc: '获取文章列表'
+		},
+		article: {
+			url: url + '/article/:id',
+			method: 'GET',
+			name: 'getArticle',
+			desc: '获取文章信息'
 		}
 	}
 }

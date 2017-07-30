@@ -199,6 +199,10 @@ func save(isEdit bool, ctx *iris.Context) {
 		article.Status      = model.ArticleVerifying
 	}
 
+	session        := ctx.Session();
+	user           := session.Get("user").(model.User)
+	article.UserID  = user.ID
+
 	article.Name    = strings.TrimSpace(article.Name)
 	article.Content = strings.TrimSpace(article.Content)
 
