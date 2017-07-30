@@ -13,9 +13,16 @@ module.exports = function(req, res) {
 	])	
 	.then(data => {
 		res.locals.data = {};
+		if (query.cate) {
+			data[0].data.categories.map(item => {
+				if (item.id == query.cate) {
+					item.select = true;
+				}
+			})
+		}
 		res.locals.data.categoties = data[0].data.categories;
-		res.locals.data.articles = data[1].data.articles;
-		res.locals.data.cate = query.cate;
+		res.locals.data.articles   = data[1].data.articles;
+		res.locals.data.cate 	   = query.cate || false;
 		console.log(data, typeof data);
 		res.render('home');
 	})

@@ -89,3 +89,47 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .golang-top-header-right li:hover {
 	color: #fff;
 }
+
+.golang-home-body-right {
+	float: right;
+	display: inline-block;
+}
+
+.golang-home-body-right {
+	width: 20%;
+}
+
+.golang-home-body-right .golang-cell {
+	margin-bottom: 20px;
+}
+
+.golang-cell .title{
+    padding: 10px;
+    background-color: #f6f6f6;
+}
+
+.golang-cell ul {
+	background-color: #fff;
+}
+
+.golang-cell ul .golang-cell-item{
+	padding: 10px;
+	border-top: 1px solid #f0f0f0;
+}
+
+.golang-cell ul .golang-cell-item:nth-child(1) {
+	border: 0;
+}
+
+.golang-footer {
+	clear: both;
+	background: #fff;
+	border-top: 1px solid #f0f0f0;
+	padding: 10px;
+	height: 100px;
+	margin-top: 30px;
+}
+
+.golang-footer {
+	font-size: 14px;
+}

@@ -54,7 +54,7 @@ class Req {
 			var j = request.jar();
 			for (var key in client.cookies) {
 				if (client.cookies.hasOwnProperty(key)) {
-					var cookie = request.cookie(key + '=' + encodeURIComponent(client.cookies[key]));
+					var cookie = request.cookie(key + '=' + client.cookies[key]);
 					j.setCookie(cookie, cookieUrl);
 				}
 			}
@@ -71,7 +71,6 @@ class Req {
 				url : options.uri,
 				time: (new Date().getTime() - startTime) + 'ms'
 			});
-			console.log(data, typeof data);
 			if (!error && typeof data === 'string') {
 				error = {
 					message : data,

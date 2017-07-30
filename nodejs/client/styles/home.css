@@ -10,7 +10,8 @@ body {
 
 .golang-home-body-left {
 	background-color: #fff;
-	width: 70%;
+	width: 75%;
+	display: inline-block;
 }
 
 .home-categoties-box {
@@ -37,3 +38,96 @@ body {
 .categoties-item:hover a, .categoties-select a {
 	color: #fff;
 }
+
+.articles-cell:nth-child(1) {
+	border: 0;
+}
+
+.articles-cell {
+	padding: 10px;
+	line-height: 30px;
+	height: 30px;
+	font-size: 0;
+	border-top: 1px solid #f0f0f0;
+}
+
+.articles-cell:hover {
+	background-color: #f6f6f6;
+}
+
+.articles-cell span {
+	vertical-align: top;
+}
+
+.user-icon-box {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	display: inline-block;
+}
+
+.user-small-icon-box {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	display: inline-block;
+	float: right;
+}
+
+.articles-res-time {
+	font-size: 12px;
+	float: right;
+	color: #778087;
+	margin-left: 20px;
+	line-height: 30px;
+}
+
+.user-icon-box img {
+	width: 100%;
+}
+
+.user-small-icon-box img {
+	margin: 15% 0;
+	width: 70%;
+}
+
+.articles-click-num {
+	margin-left: 10px;
+	color: #9e78c0;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.articles-res-num {
+	color: #b4b4b4;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.home-articles-title {
+	margin-left: 10px;
+	font-size: 16px;
+	display: inline-block;
+	line-height: 30px;
+	text-align: center;
+	vertical-align: top;
+}
+
+.home-articles-title:hover {
+	text-decoration: underline;
+}
+
+.articles-categoties {
+	margin-left: 10px;
+	background-color: #80bd01;
+	color: #fff;
+	font-size: 12px;
+	padding: 3px;
+	border-radius: 5px;
+}
+
+.articles-num-split {
+	margin: 0 2px;
+	font-size: 12px;
+}
+
