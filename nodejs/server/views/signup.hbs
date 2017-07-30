@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{{title}} - 首页</title>
+	<link rel="stylesheet" href="https://unpkg.com/iview@2.0.0/dist/styles/iview.css">
+	<link rel="stylesheet" href="{{cssPath}}/common.css">
+</head>
+<body>
+	{{>header}}
+	<div class="golang-home-body">
+		<div class="golang-home-body-left golang-cell">
+			<div class="title"><a href="/" class="golang-key-word">首页</a> / 注册</div>
+			<div id="signup" class="golang-cell-body"></div>
+		</div>
+		{{>sidebar}}
+	</div>
+	{{>footer}}
+	<script type="text/javascript" src="{{jsPath}}/vendor.js"></script>
+	<script ype="text/javascript" src="{{jsPath}}/signup/index.js"></script>
+</body>

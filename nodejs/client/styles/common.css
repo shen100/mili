@@ -21,6 +21,7 @@ a,a:hover{color:#333;}
 
 html,body {
 	height: 100%;
+	background-color: #e1e1e1;
 }
 
 .golang-footer {
@@ -114,7 +115,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     background-color: #f6f6f6;
 }
 
-.golang-cell ul {
+.golang-cell ul, .golang-cell .golang-cell-body {
 	background-color: #fff;
 }
 
@@ -138,4 +139,20 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-footer {
 	font-size: 14px;
+}
+
+.golang-home-body {
+	width: 1200px;
+	margin: 20px auto;
+	min-height: 300px;
+}
+
+.golang-home-body-left {
+	background-color: #fff;
+	width: 75%;
+	display: inline-block;
+}
+
+.golang-key-word {
+	color: #80bd01;
 }

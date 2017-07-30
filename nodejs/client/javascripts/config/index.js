@@ -61,6 +61,14 @@ const config = {
 				name: 'getArticleItem',
 				desc: '获取单个文章信息'
 			}
+		},
+		signup: {
+			signup: {
+				url: '/api/signup',
+				method: 'post',
+				name: 'signup',
+				desc: '提交登陆信息'
+			}
 		}
 	}
 }
