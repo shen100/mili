@@ -35,6 +35,8 @@ func Route(app *iris.Framework) {
 		router.Get("/categories",          category.List)
 
 		router.Get("/articles",            article.List)
+		router.Get("/articles/recent",     auth.SigninRequired,  
+										   article.List)
 		router.Get("/articles/maxcomment", article.ListMaxComment)
 		router.Get("/articles/maxbrowse",  article.ListMaxBrowse)
 		router.Get("/article/:id",         article.Info)

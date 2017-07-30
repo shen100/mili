@@ -1,5 +1,6 @@
 .topic-box {
 	width: 1200px;
+	overflow: hidden;
 	font-size: 0;
 	margin-left: auto;
 	margin-right: auto;
@@ -76,17 +77,21 @@
 	background: #fff;
 	font-size: 14px;
 	line-height: 40px;
+	margin-bottom: 20px;
 }
 
-.markdown-reference {
+.topic-sidebar-item p {
+	padding-left: 12px;
+}
+
+.topic-sidebar-title {
 	padding-left: 12px;
 	background: #f6f6f6;
 	height: 40px;
 }
 
-.markdown-codeblock code {
-	color: inherit;
-    white-space: pre-wrap;
-    background-color: transparent;
-    line-height: 20px;
+.markdown-codeblock p {
+	padding-top: 6px;
+    line-height: normal;
+    font-size: 14px;
 }

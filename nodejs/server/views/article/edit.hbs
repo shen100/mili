@@ -21,20 +21,27 @@
 			</div>
 		</div>
 		<ul class="topic-sidebar">
-			<li>
-				<div class="markdown-reference">Markdown 语法参考</div>
+			<li class="topic-sidebar-item">
+				<div class="topic-sidebar-title">Markdown 语法参考</div>
 				<p>### 单行的标题</p>
 				<p>**粗体**</p>
-				<p>`fmt.Println("行内代码")`</p>
+				<p>[链接](https://www.go.com)</p>
+				<p>![图片](https://www.go.com/1.jpg)</p>
 				<div class="markdown-codeblock">
-					<pre>
-						<code>```
-							if (a > 1) {
-							&nbsp;&nbsp;&nbsp;&nbsp;doSomething()
-						}
-						```</code>
+						<p>```</p>
+						<p>if (a > 1) {</p>
+						<p>&nbsp;&nbsp;&nbsp;&nbsp;doSomething("代码")</p>
+						<p>}</p>
+						<p>```</p>
 					</pre>
 				</div>
+				<p><a href="/markdown" target="_blank">Markdown参考文档</a></p>
+			</li>
+			<li class="topic-sidebar-item">
+				<div class="topic-sidebar-title">我的近期话题</div>
+				{{#each data.articles}}
+				<p><a href="/topic/{{id}}" target="_blank">{{name}}</a></p>
+				{{/each}}
 			</li>
 		</ul>
 	</div>

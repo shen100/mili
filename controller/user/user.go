@@ -236,7 +236,6 @@ func Signup(ctx *iris.Context) {
 		Name      string  `json:"name"`
 		Email     string  `json:"email"`
 		Password  string  `json:"password"`
-		RepeatPwd string  `json:"repeatPwd"`
 	}
 	var userData userReqData
 	if err := ctx.ReadJSON(&userData); err != nil {
@@ -266,16 +265,6 @@ func Signup(ctx *iris.Context) {
 
 		if userData.Password == "" {
 			SendErrJSON("密码不能为空", ctx)
-			return false
-		}
-
-		if userData.RepeatPwd == "" {
-			SendErrJSON("确认密码不能为空", ctx)
-			return false
-		}
-
-		if userData.Password != userData.RepeatPwd {
-			SendErrJSON("两次输入的密码不一致", ctx)
 			return false
 		}
 		return true

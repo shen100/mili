@@ -115,6 +115,26 @@ func AllList(ctx *iris.Context) {
 	queryList(true, ctx)
 }
 
+// RecentList 我的最近文章
+func RecentList(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	session     := ctx.Session();
+	user        := session.Get("user").(model.User)
+	var articles []model.Article
+	if err := model.DB.Where("user_id", user.ID).Order("created_at DESC").Limit(5).Find(&articles).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"articles": articles,
+		},
+	})	
+}
+
 // ListMaxComment 评论最多的文章，返回5条
 func ListMaxComment(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
