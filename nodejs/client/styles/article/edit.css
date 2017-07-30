@@ -8,7 +8,12 @@
 .topic-nav {
 	width: 900px;
 	height: 40px;
+	padding-left: 20px;
 	background: #f6f6f6;
+}
+
+.topic-nav a {
+	color: #80bd01;
 }
 
 .topic-nav li {
@@ -24,12 +29,31 @@
 	padding: 0 8px;
 }
 
+.publish-label {
+	color: #999;
+}
+
 .editor-box-wrap {
 	width: 900px;
-	min-height: 400px;
+	padding-top: 24px;
+	min-height: 720px;
 	background: #fff;
 }
 
-.topic-edit-header {
+.topic-area {
 	clear: both;
+	padding: 0 20px 1px 20px;
 }
+
+.CodeMirror {
+    height: 400px;
+}
+
+.topic-content .ivu-form-item-content {
+	margin-left: 0!important;
+}
+
+.topic-submit .ivu-form-item-content {
+	margin-left: 0!important;
+}
+

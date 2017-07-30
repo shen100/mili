@@ -5,8 +5,10 @@
 	        title="上传图片"
 	        @on-ok="ok"
 	        @on-cancel="cancel">
-	        <Upload :on-success="onUploadSuccess" :name="'upFile'" :action="uploadURL">
-		        <Button type="ghost" icon="ios-cloud-upload-outline">上传文件</Button>
+	        <Upload :on-success="onUploadSuccess" :name="'upFile'" 
+	        	:format="['jpg', 'jpeg', 'png', 'gif']"
+	        	:action="uploadURL">
+		        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
 		    </Upload>
 	    </Modal>
 	</div>
@@ -15,8 +17,6 @@
 <script>
 	import Simplemde from './simplemde.js';
 	import ErrorCode from '../../constant/ErrorCode';
-
-	console.log(pageConfig.apiPrefix + '/upload');
 
 	export default {
         data() {
@@ -44,7 +44,7 @@
 			            className: 'fa fa-header',
 			            title: '标题',
 			        },
-			        '|', // Se
+			        '|',
 			        {
 			            name: 'unordered-list',
 			            action: SimpleMDE.toggleUnorderedList,
@@ -94,7 +94,7 @@
 			            className: "fa fa-picture-o",
 			            title: "上传图片"
 			        },
-			        "|", // Separator
+			        "|",
 			        {
 			            name: 'preview',
 			            action: SimpleMDE.togglePreview,
@@ -118,11 +118,9 @@
                 this.$Message.info('点击了取消');
             },
             showUpload() {
-            	console.log(111111)
             	this.modalVisible = true;
             },
             onUploadSuccess(res, file) {
-            	console.log(res, file);
             	if (res) {
             		if (res.errNo == ErrorCode.SUCCESS) {
             			var url = 'https://' + this.host + res.data.url;
@@ -146,13 +144,16 @@
 				var pt = SimpleMDE.prototype;
 				if (!pt.getImageURL) {
 					pt.getImageURL = function() {
-						console.log(this.imageURL);
 						return this.imageURL;
 					};
 					pt.setImageURL = function(url) {
 						this.imageURL = url;
 					};
 				}
+				var self = this;
+				this.simplemde.codemirror.on('change', function() {
+				   	self.$emit('change', self.simplemde.value())
+				});
         	});
         }
     }
