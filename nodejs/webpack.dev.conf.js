@@ -5,7 +5,8 @@ const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 var entryArr = [
     'article/edit',
     'admin/index',
-    'signup/index'
+    'signup/index',
+    'signin/index'
 ];
 
 function getEntryMap() {

@@ -5,6 +5,7 @@ var ArticleDetailAction = require('../controller/article/DetailAction');
 var EditArticleAction   = require('../controller/article/EditAction');
 var AdminAction         = require('../controller/admin/AdminAction');
 var Signup 				= require('../controller/signup');
+var Signin 				= require('../controller/signin');
 
 module.exports = function(app) {
 	app.get('/',               IndexAction)
@@ -14,4 +15,5 @@ module.exports = function(app) {
 	app.get('/admin', AdminAction);
 
 	app.get('/signup', Signup);
+	app.get('/signin', Signin);
 };

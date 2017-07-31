@@ -67,7 +67,15 @@ const config = {
 				url: '/api/signup',
 				method: 'post',
 				name: 'signup',
-				desc: '提交登陆信息'
+				desc: '注册'
+			}
+		},
+		signin: {
+			signin: {
+				url: '/api/signin',
+				method: 'post',
+				name: 'signin',
+				desc: '登录'
 			}
 		}
 	}

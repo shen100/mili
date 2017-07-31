@@ -9,6 +9,9 @@ module.exports = function(req, res) {
 		}),
 		Req.getArticles({
 			client: req
+		}),
+		Req.getTop10({
+			client: req
 		})
 	])	
 	.then(data => {
@@ -23,7 +26,7 @@ module.exports = function(req, res) {
 		res.locals.data.categoties = data[0].data.categories;
 		res.locals.data.articles   = data[1].data.articles;
 		res.locals.data.cate 	   = query.cate || false;
-		console.log(data, typeof data);
+		console.log(data[2].data);
 		res.render('home');
 	})
 	.catch(err => {

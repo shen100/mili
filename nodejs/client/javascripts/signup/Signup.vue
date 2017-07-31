@@ -94,7 +94,7 @@
                     	this.loading = true;
                     	Req.signup({
                     		name: this.formCustom.username,
-                    		password: this.formCustom.username,
+                    		password: this.formCustom.passwd,
                     		email: this.formCustom.email
                     	})
                     	.then(res => {

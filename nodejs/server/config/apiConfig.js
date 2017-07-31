@@ -19,6 +19,12 @@ const api = {
 			method: 'GET',
 			name: 'getArticle',
 			desc: '获取文章信息'
+		},
+		top10: {
+			url: url + '/user/score/top10',
+			method: 'GET',
+			name: 'getTop10',
+			desc: '获取积分top10'
 		}
 	}
 }

@@ -1,0 +1,24 @@
+html, body {
+	background-color: transparent;
+}
+
+.golang-signin-container {
+	height: 100%;
+}
+
+.golang-signin-title {
+	color: #2d8cf0;
+    font-size: 30px;
+    font-style: italic;
+    letter-spacing: 3px;
+	text-align: center;
+}
+
+.golang-signin-desc {
+	color: #9e9e9e;
+	margin: 10px 0 20px 0;
+	font-style: italic;
+	text-align: center;
+	letter-spacing: 3px;
+	font-size: 14px;
+}
