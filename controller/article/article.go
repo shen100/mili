@@ -121,7 +121,7 @@ func RecentList(ctx *iris.Context) {
 	session     := ctx.Session();
 	user        := session.Get("user").(model.User)
 	var articles []model.Article
-	if err := model.DB.Where("user_id", user.ID).Order("created_at DESC").Limit(5).Find(&articles).Error; err != nil {
+	if err := model.DB.Where("user_id = ?", user.ID).Order("created_at DESC").Limit(5).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
@@ -256,7 +256,7 @@ func save(isEdit bool, ctx *iris.Context) {
 	if isEdit {
 		var sql = "DELETE FROM article_category WHERE article_id = ?"
 		saveErr = model.DB.Exec(sql, article.ID).Error
-		if saveErr != nil {
+		if saveErr == nil {
 			saveErr = model.DB.Save(&article).Error	
 		}
 	} else {

@@ -19,6 +19,10 @@
 	import ErrorCode from '../../constant/ErrorCode';
 
 	export default {
+		props: [
+			'value'
+		],
+
         data() {
             return {
             	host: document.location.hostname,
@@ -154,6 +158,7 @@
 				this.simplemde.codemirror.on('change', function() {
 				   	self.$emit('change', self.simplemde.value())
 				});
+				this.simplemde.value(this.value);
         	});
         }
     }
