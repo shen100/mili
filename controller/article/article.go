@@ -189,19 +189,22 @@ func save(isEdit bool, ctx *iris.Context) {
 		}
 	}
 
+	session        := ctx.Session();
+	user           := session.Get("user").(model.User)
+	article.UserID  = user.ID
+
 	if isEdit {
 		article.BrowseCount  = queryArticle.BrowseCount
 		article.CreatedAt    = queryArticle.CreatedAt
 		article.Status       = queryArticle.Status
 		article.UpdatedAt    = time.Now()
 	} else {
-		article.BrowseCount = 0
-		article.Status      = model.ArticleVerifying
+		article.BrowseCount  = 0
+		article.Status       = model.ArticleVerifying
+		user.Score           = user.Score + config.UserConfig.CreateArticleScore
+		user.ArticleCount    = user.ArticleCount + 1
+		session.Set("user", user)
 	}
-
-	session        := ctx.Session();
-	user           := session.Get("user").(model.User)
-	article.UserID  = user.ID
 
 	article.Name    = strings.TrimSpace(article.Name)
 	article.Content = strings.TrimSpace(article.Content)
@@ -258,6 +261,12 @@ func save(isEdit bool, ctx *iris.Context) {
 		}
 	} else {
 		saveErr = model.DB.Create(&article).Error
+		if saveErr == nil {
+			// 发表文章后，用户的积分、文章数会增加，如果保存失败了，不作处理
+			if userErr := model.DB.Save(&user).Error; userErr != nil {
+				fmt.Println(userErr.Error())
+			}
+		}
 	}
 
 	if saveErr != nil {

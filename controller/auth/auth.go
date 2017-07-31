@@ -25,7 +25,7 @@ func AdminRequired(ctx *iris.Context) {
 	userData    := session.Get("user")
 
 	if userData == nil {
-		SendErrJSON("未登录", ctx)
+		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
 		return
 	}
 	user := userData.(model.User)

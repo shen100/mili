@@ -388,3 +388,48 @@ func UpdatePassword(ctx *iris.Context) {
 		return	
 	}
 }
+
+// Info 返回用户信息
+func Info(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	session     := ctx.Session();
+	user, ok    := session.Get("user").(model.User)
+	if ok {
+		ctx.JSON(iris.StatusOK, iris.Map{
+			"errNo" : model.ErrorCode.SUCCESS,
+			"msg"   : "success",
+			"data"  : iris.Map{
+				"user": user.ToJSON(),
+			},
+		})	
+	} else {
+		SendErrJSON("用户未登录", model.ErrorCode.LoginTimeout, ctx)	
+	}
+}
+
+func topN(n int, ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var users []model.User
+	if err := model.DB.Order("score DESC").Limit(n).Find(&users).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+	} else {	
+		ctx.JSON(iris.StatusOK, iris.Map{
+			"errNo" : model.ErrorCode.SUCCESS,
+			"msg"   : "success",
+			"data"  : iris.Map{
+				"users": users,
+			},
+		})
+	}
+}
+
+// Top10 返回积分排名前10的用户
+func Top10(ctx *iris.Context) {
+	topN(10, ctx)
+}
+
+// Top100 返回积分排名前100的用户
+func Top100(ctx *iris.Context) {
+	topN(100, ctx)
+}

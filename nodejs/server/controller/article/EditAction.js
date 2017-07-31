@@ -1,6 +1,7 @@
 'use strict';
 
 var Promise = require('bluebird');
+const Req   = require('../../utils/request');
 
 module.exports = function(req, res) {
 	var id = req.params.id;

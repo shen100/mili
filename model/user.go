@@ -18,6 +18,8 @@ type User struct {
     Pass           string             `json:"pass"`
     Email          string             `json:"email"`
     Phone          string             `json:"phone"`
+    Score          uint               `json:"score"`
+    ArticleCount   uint               `json:"articleCount"`
     Signature      string             `json:"signature"`
     Role           int                `json:"role"`
     Status         int                `json:"status"`    
@@ -55,7 +57,6 @@ func (user User) ToJSON() map[string]interface{} {
         "id"        : user.ID,
         "createdAt" : user.CreatedAt,
         "updatedAt" : user.UpdatedAt,
-        "deletedAt" : user.DeletedAt,
         "name"      : user.Name,
         "email"     : user.Email,
         "role"      : user.Role,

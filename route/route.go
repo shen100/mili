@@ -23,10 +23,13 @@ func Route(app *iris.Framework) {
 		router.Post("/reset",             user.ResetPasswordMail)
 		router.Post("/reset/:id/:secret", user.ResetPassword)
 
+		router.Get("/user/info",             user.Info)
 		router.Post("/user/update",          auth.SigninRequired,       
 										     user.UpdateInfo)
 		router.Post("/user/password/update", auth.SigninRequired,       
 											 user.UpdatePassword)
+		router.Get("/user/score/top10",      user.Top10)
+		router.Get("/user/score/top100",     user.Top100)
 		router.Post("/upload",               auth.SigninRequired,          
 											 common.Upload)
 												  
@@ -40,8 +43,10 @@ func Route(app *iris.Framework) {
 		router.Get("/articles/maxcomment", article.ListMaxComment)
 		router.Get("/articles/maxbrowse",  article.ListMaxBrowse)
 		router.Get("/article/:id",         article.Info)
-		router.Post("/article/create",     article.Create)
-		router.Post("/article/update",     article.Update)
+		router.Post("/article/create",     auth.SigninRequired, 
+										   article.Create)
+		router.Post("/article/update",     auth.SigninRequired,    
+										   article.Update)
     }
 
 	adminRouter := app.Party(apiPrefix + "/admin", auth.AdminRequired)
