@@ -28,6 +28,31 @@ class Req {
 		options.uri = conf.url;
 		options.method = conf.method;
 
+		if (options.method == 'POST') {
+			options.body = options.params || {};
+		}
+
+		if (options.method == 'GET') {
+			let query = options.params || {};
+			if (options.uri.indexOf(':id') > -1) {
+				options.uri.replace(':id', query.id);
+				delete query.id;
+			}
+
+			let queryStr = '';
+
+			queryStr = JSON.stringify(query)
+							   .replace('{', '?')
+							   .replace(/:/g, '=')
+							   .replace(/"/g, '')
+							   .replace(/,/g, '&')
+							   .replace('}', '');
+			if (queryStr != '?') {
+				options.uri += queryStr;
+			}
+		}
+		console.log(options.uri);
+
 		options.json = options.json === undefined ? true : options.json;
 		var client   = options.client;
 		if (client.headers) {

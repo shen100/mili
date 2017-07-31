@@ -9,7 +9,7 @@ const api = {
 			desc: '获取分类列表'
 		},
 		articles: {
-			url: url + '/admin/articles',
+			url: url + '/articles',
 			method: 'GET',
 			name: 'getArticles',
 			desc: '获取文章列表'
