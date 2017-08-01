@@ -5,7 +5,8 @@ import (
 	"os"
 	"time"
 	"strconv"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+    _ "github.com/jinzhu/gorm/dialects/mysql"
+    "github.com/asaskevich/govalidator"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/kataras/iris.v6"
 	"gopkg.in/kataras/iris.v6/adaptors/httprouter"
@@ -16,6 +17,7 @@ import (
 )
 
 func init() {
+    govalidator.SetFieldsRequiredByDefault(true)
 	db, err := gorm.Open(config.DBConfig.Dialect, config.DBConfig.URL)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -70,6 +72,3 @@ func main() {
 
 	app.Listen(":" + strconv.Itoa(config.ServerConfig.Port))
 }
-
-	
-

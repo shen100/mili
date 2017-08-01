@@ -85,7 +85,7 @@ class Req {
 
 		delete options.client;
 
-		options.proxy = config.proxyUri;
+		//options.proxy = config.proxyUri;
 
 		var startTime = new Date().getTime();
 		request(options, function(error, response, data) {
