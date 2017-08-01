@@ -34,7 +34,7 @@ class Req {
 				const params = options.params;
 				for (const key in params) {
 					if (params.hasOwnProperty(key)) {
-						options.uri.replace(':' + key, params[key]);
+						options.uri = options.uri.replace(':' + key, params[key]);
 					}
 				}
 			}
