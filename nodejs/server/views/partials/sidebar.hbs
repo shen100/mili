@@ -4,7 +4,15 @@
 			<p>golang123：golang专业中文社区</p>
 			<p>您可以<a class="golang-user-info-action" href="/signin">登录</a>或<a class="golang-user-info-action" href="/signup">注册</a></p>
 		{{else}}
-			<p><img class="golang-user-info-icon" src="{{imagePath}}/head.png" alt="">{{name}}</p>
+			<p>
+				<div>
+					<img class="golang-user-info-icon" src="{{imagePath}}/head.png" alt="">
+				</div>您好！ {{data.user.name}}
+				<div>
+					<p></p>
+					<p></p>
+				</div>
+			</p>
 		{{/unless}}
 	</div>
 	<div class="golang-cell">

@@ -30,26 +30,25 @@ class Req {
 		}
 
 		if (options.method == 'GET') {
-			if (options.query) {
-				const query = options.query;
-				for (const key in query) {
-					if (query.hasOwnProperty(key)) {
-						options.uri.replace(':' + key, query[key]);
-					}
-				}
-			}
 			if (options.params) {
-				let params = options.params;
-				let paramsStr = [];
+				const params = options.params;
 				for (const key in params) {
 					if (params.hasOwnProperty(key)) {
-						paramsStr.push(key + '=' + params[key]);
+						options.uri.replace(':' + key, params[key]);
 					}
 				}
-				options.uri += '?' + paramsStr.join('&');
+			}
+			if (options.query) {
+				let query = options.query;
+				let queryStr = [];
+				for (const key in query) {
+					if (query.hasOwnProperty(key)) {
+						queryStr.push(key + '=' + query[key]);
+					}
+				}
+				options.uri += '?' + queryStr.join('&');
 			}
 		}
-		console.log(options.uri);
 
 		options.json = options.json === undefined ? true : options.json;
 		var client   = options.client;
