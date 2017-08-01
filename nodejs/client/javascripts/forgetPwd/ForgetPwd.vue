@@ -1,23 +1,11 @@
 <template>
-    <i-row type="flex" align="middle" justify="center" class="golang-signin-container">
-        <i-col :xs="24" :lg="6" :md="14">
-            <h1 class="golang-signin-title">GOLANG123</h1>
-            <p class="golang-signin-desc">像风一样GO的飞起</p>
-        	<i-form ref="formCustom" :model="formCustom" :rules="ruleCustom" class="signup-form">
-        		<Form-item prop="username">
-                    <i-input v-model="formCustom.username" placeholder="用户名 / 邮箱"></i-input>
-                </Form-item>
-                <Form-item prop="passwd">
-                    <i-input type="password" v-model="formCustom.passwd" placeholder="密码"></i-input>
-                </Form-item>
-                <p style="text-align: right;padding-right: 10px">
-                    <a href="/forget/pwd" class="golang-common-link">忘记密码</a>
-                </p>
-                <Form-item style="margin-top: 10px">
-                    <i-button type="primary" @click="handleSubmit('formCustom')" style="width: 100%">登录</i-button>
-                </Form-item>
-            </i-form>
-        </i-col>
+    <i-row class="golang-forget-form">
+    	<i-form ref="formCustom" :model="formCustom" :rules="ruleCustom">
+    		<Form-item prop="email">
+                <i-input v-model="formCustom.email" placeholder="请输入注册时的邮箱"></i-input>
+            </Form-item>
+        </i-form>
+        <i-button type="primary" class="forget-button" @click="handleSubmit('formCustom')">发送邮件</i-button>
     </i-row>
 </template>
 
@@ -35,16 +23,13 @@
 			return {
             	loading: false,
                 formCustom: {
-                    passwd: '',
-                    username: ''
+                    email: ''
                 },
                 success: false,
                 ruleCustom: {
-                    passwd: [
-                    	{ required: true, message: '请填写密码', trigger: 'blur' }
-                    ],
-                    username: [
-                    	{ required: true, message: '请输入用户名', trigger: 'blur' }
+                    email: [
+                    	{ required: true, message: '请输入邮箱地址', trigger: 'blur' },
+                        { type: 'email', message: '请填写正确的邮箱', trigger: 'blur' }
                     ]
                 }
             }

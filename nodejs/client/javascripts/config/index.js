@@ -77,6 +77,14 @@ const config = {
 				name: 'signin',
 				desc: '登录'
 			}
+		},
+		changePwd: {
+			changePwd: {
+				url: '/api/user/password/update',
+				method: 'post',
+				name: 'changePwd',
+				desc: '修改密码'
+			}
 		}
 	}
 }
