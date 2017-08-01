@@ -33,5 +33,4 @@ const api = {
 	}
 }
 
-console.log(api.home.categories.url);
 module.exports = api;

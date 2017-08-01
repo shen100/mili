@@ -30,22 +30,23 @@ class Req {
 		}
 
 		if (options.method == 'GET') {
-			let params = options.params || {};
-			if (options.uri.indexOf(':id') > -1) {
-				options.uri = options.uri.replace(':id', query.id);
-				delete query.id;
+			if (options.query) {
+				const query = options.query;
+				for (const key in query) {
+					if (query.hasOwnProperty(key)) {
+						options.uri.replace(':' + key, query[key]);
+					}
+				}
 			}
-
-			let queryStr = '';
-
-			queryStr = JSON.stringify(query)
-							   .replace('{', '?')
-							   .replace(/:/g, '=')
-							   .replace(/"/g, '')
-							   .replace(/,/g, '&')
-							   .replace('}', '');
-			if (queryStr != '?') {
-				options.uri += queryStr;
+			if (options.params) {
+				let params = options.params;
+				let paramsStr = [];
+				for (const key in params) {
+					if (params.hasOwnProperty(key)) {
+						paramsStr.push(key + '=' + params[key]);
+					}
+				}
+				options.uri += '?' + paramsStr.join('&');
 			}
 		}
 		console.log(options.uri);
