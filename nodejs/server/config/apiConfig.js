@@ -25,6 +25,12 @@ const api = {
 			method: 'GET',
 			name: 'getTop10',
 			desc: '获取积分top10'
+		},
+		getUserInfo: {
+			url: url + '/user/info',
+			method: 'GET',
+			name: 'getUserInfo',
+			desc: '获取当前登录用户信息'
 		}
 	}
 }

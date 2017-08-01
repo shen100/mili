@@ -156,3 +156,43 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .golang-key-word {
 	color: #80bd01;
 }
+
+.golang-score-item {
+	font-size: 12px;
+	color: gray;
+	margin-right: 10px;
+	display: inline-block;
+}
+
+.golang-cell-item .golang-score-item:nth-child(1) {
+	width: 10%;
+}
+
+.golang-user-info {
+	padding: 20px 10px;
+	background-color: #fff;
+	margin-bottom: 20px;
+}
+
+.golang-user-info p:nth-child(1) {
+	font-size: 14px;
+	margin-bottom: 20px;
+}
+
+.golang-user-info p:nth-child(2) {
+	font-size: 14px;
+}
+
+.golang-user-info-action {
+	margin: 0 3px;
+	color: #778087;
+}
+
+.golang-user-info-action:hover {
+	text-decoration: underline;
+}
+
+.golang-user-info-icon {
+	width: 40px;
+	height: 40px;
+}

@@ -12,6 +12,9 @@ module.exports = function(req, res) {
 		}),
 		Req.getTop10({
 			client: req
+		}),
+		Req.getUserInfo({
+			client: req
 		})
 	])	
 	.then(data => {
@@ -25,8 +28,12 @@ module.exports = function(req, res) {
 		}
 		res.locals.data.categoties = data[0].data.categories;
 		res.locals.data.articles   = data[1].data.articles;
+		res.locals.data.score 	   = data[2].data.users;
+		res.locals.data.userStatus = data[3].data.user ? true : false;
+		res.locals.data.user 	   = data[3].data.user || {};
 		res.locals.data.cate 	   = query.cate || false;
-		console.log(data[2].data);
+		console.log(res.locals.data.userStatus);
+		console.log(data[3]);
 		res.render('home');
 	})
 	.catch(err => {
