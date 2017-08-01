@@ -8,19 +8,15 @@ const config  = require('../config');
 class Req {
 	constructor() {
 		this.request = this.request.bind(this);
-		for (const keyObj in api) {
-			if (api.hasOwnProperty(keyObj)) {
-				for(const key in api[keyObj]) {
-					if (api[keyObj].hasOwnProperty(key)) {
-						this[api[keyObj][key].name] = (options) => {
-							return new Promise((resolve, reject) => {
-								return this.request(api[keyObj][key], options, resolve, reject);
-							})
-						}
+			for(const key in api) {
+				if (api.hasOwnProperty(key)) {
+					this[key] = (options) => {
+						return new Promise((resolve, reject) => {
+							return this.request(api[key], options, resolve, reject);
+						})
 					}
 				}
 			}
-		}
 
 	}
 
@@ -30,11 +26,11 @@ class Req {
 		options.method = conf.method;
 
 		if (options.method == 'POST') {
-			options.body = options.params || {};
+			options.body = options.body || {};
 		}
 
 		if (options.method == 'GET') {
-			let query = options.params || {};
+			let params = options.params || {};
 			if (options.uri.indexOf(':id') > -1) {
 				options.uri = options.uri.replace(':id', query.id);
 				delete query.id;
