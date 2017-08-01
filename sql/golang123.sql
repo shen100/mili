@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-07-30 16:19:02 +0000
+# Generation Time: 2017-07-31 14:52:00 +0000
 # ************************************************************
 
 
@@ -39,7 +39,18 @@ INSERT INTO `article_category` (`id`, `article_id`, `category_id`)
 VALUES
 	(1,4,2),
 	(2,5,2),
-	(3,6,2);
+	(3,6,2),
+	(4,7,1),
+	(5,8,1),
+	(6,9,1),
+	(7,10,1),
+	(8,11,1),
+	(9,12,1),
+	(10,13,1),
+	(11,14,1),
+	(12,15,1),
+	(13,16,1),
+	(14,17,1);
 
 /*!40000 ALTER TABLE `article_category` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -74,7 +85,18 @@ VALUES
 	(3,'ccccc',4,2,0,'','2002-01-01 00:00:00','0000-00-00 00:00:00',NULL,0),
 	(4,'asdfsaf',0,0,1,'asdfdsadf','2017-07-29 17:08:59','2017-07-29 17:08:59',NULL,0),
 	(5,'adsaf',0,0,1,'afsaf','2017-07-29 17:09:41','2017-07-29 17:09:41',NULL,0),
-	(6,'abc',0,0,1,'afsaf','2017-07-29 17:10:13','2017-07-29 17:10:13',NULL,0);
+	(6,'abc',0,0,1,'afsaf','2017-07-29 17:10:13','2017-07-29 17:10:13',NULL,0),
+	(7,'dfaf',0,0,1,'adsfsa','2017-07-31 22:20:46','2017-07-31 22:20:46',NULL,31),
+	(8,'dfaf',0,0,1,'adsfsa','2017-07-31 22:26:53','2017-07-31 22:26:53',NULL,31),
+	(9,'dfaf',0,0,1,'adsfsa','2017-07-31 22:27:31','2017-07-31 22:27:31',NULL,31),
+	(10,'dfaf',0,0,1,'adsfsa','2017-07-31 22:28:18','2017-07-31 22:28:18',NULL,31),
+	(11,'dfaf',0,0,1,'adsfsa','2017-07-31 22:29:29','2017-07-31 22:29:29',NULL,31),
+	(12,'dfaf',0,0,1,'adsfsa','2017-07-31 22:30:28','2017-07-31 22:30:28',NULL,31),
+	(13,'dfaf',0,0,1,'adsfsa','2017-07-31 22:31:15','2017-07-31 22:31:15',NULL,31),
+	(14,'dfaf',0,0,1,'adsfsa','2017-07-31 22:31:26','2017-07-31 22:31:26',NULL,31),
+	(15,'dfaf',0,0,1,'adsfsa','2017-07-31 22:33:04','2017-07-31 22:33:04',NULL,31),
+	(16,'dfaf',0,0,1,'adsfsa','2017-07-31 22:33:10','2017-07-31 22:33:10',NULL,31),
+	(17,'dfaf',0,0,1,'adsfsa','2017-07-31 22:33:17','2017-07-31 22:33:17',NULL,31);
 
 /*!40000 ALTER TABLE `articles` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -102,7 +124,7 @@ LOCK TABLES `categories` WRITE;
 
 INSERT INTO `categories` (`id`, `name`, `sequence`, `parent_id`, `status`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
-	(1,'精华',0,0,1,'2017-07-23 18:03:15','2017-07-23 18:03:15',NULL),
+	(1,'精华',0,0,1,'2017-07-23 18:03:15','2017-07-31 22:33:17',NULL),
 	(2,'招聘',0,0,1,'2017-07-23 18:03:32','2017-07-29 17:10:13',NULL),
 	(3,'分享',0,0,1,'2017-07-23 18:04:39','2017-07-23 18:54:32',NULL);
 
@@ -203,6 +225,8 @@ CREATE TABLE `users` (
   `email` varchar(50) NOT NULL DEFAULT '',
   `phone` varchar(50) DEFAULT NULL,
   `pass` varchar(100) NOT NULL DEFAULT '',
+  `score` int(11) unsigned NOT NULL,
+  `article_count` int(11) unsigned NOT NULL,
   `signature` varchar(200) DEFAULT NULL,
   `role` int(11) NOT NULL,
   `status` int(11) NOT NULL,
@@ -212,9 +236,9 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `signature`, `role`, `status`)
+INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `score`, `article_count`, `signature`, `role`, `status`)
 VALUES
-	(31,'2017-07-25 18:25:54','2017-07-25 23:55:01',NULL,'jack','liushen_shen@163.com','','15009783546021268569e284facf59b9c4d0aa8cf2','a',4,2);
+	(31,'2017-07-25 18:25:54','2017-07-31 22:33:17',NULL,'jack','liushen_shen@163.com','','15009783546021268569e284facf59b9c4d0aa8cf2',35,7,'a',4,2);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

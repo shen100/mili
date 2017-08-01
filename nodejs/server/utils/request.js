@@ -25,6 +25,7 @@ class Req {
 	}
 
 	request(conf, options, resolve, reject) {
+		console.log(JSON.stringify(conf));
 		options.uri = conf.url;
 		options.method = conf.method;
 
@@ -35,7 +36,7 @@ class Req {
 		if (options.method == 'GET') {
 			let query = options.params || {};
 			if (options.uri.indexOf(':id') > -1) {
-				options.uri.replace(':id', query.id);
+				options.uri = options.uri.replace(':id', query.id);
 				delete query.id;
 			}
 
@@ -87,9 +88,9 @@ class Req {
 		}
 
 		delete options.client;
-		if (process.env.USE_PROXY === 'true') {
-			options.proxy = appConfig.proxy.uri;
-		}
+
+		options.proxy = config.proxyUri;
+
 		var startTime = new Date().getTime();
 		request(options, function(error, response, data) {
 			console.log({

@@ -6,11 +6,11 @@
             </Form-item>
             <Form-item label="选择版块" prop="selected">
                 <Select v-model="formValidate.selected" style="width: 400px">
-                    <Option :key="item.id" v-for="item in formValidate.categoties" :value="item.id + ''">{{item.name}}</Option>
+                    <Option :key="item.id" v-for="item in formValidate.categories" :value="item.id + ''">{{item.name}}</Option>
                 </Select>
             </Form-item>
             <Form-item class="topic-content" :label-width="0" prop="content">
-                <md-editor @change="onContentChage"></md-editor>
+                <md-editor :value="formValidate.content" @change="onContentChage"></md-editor>
             </Form-item>
             <Form-item class="topic-submit" :label-width="0">
                 <Button type="primary" @click="onSubmit()">提交</Button>
@@ -35,8 +35,8 @@
                 id: article && article.id || undefined,
                 formValidate: {
                     topicName  : article && article.name || '',
-                    categoties : jsonData.categoties,
-                    selected   : article && article.categories[0].id || '',
+                    categories : jsonData.categories,
+                    selected   : article && article.categories[0].id + '' || '',
                     content    : article && article.content || '',
                 },
                 ruleInline: {

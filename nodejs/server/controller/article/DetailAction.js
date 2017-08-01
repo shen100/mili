@@ -10,7 +10,7 @@ module.exports = function(req, res) {
 		})
 		.then(data => {
 			res.locals.data = res.locals.data || {};
-			res.locals.data.categoties = data.data.categories;
+			res.locals.data.categories = data.data.categories;
 			if (id == 'create') {
 				res.render('article/edit');
 			} else {
