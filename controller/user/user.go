@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 	"gopkg.in/kataras/iris.v6"
+	"github.com/asaskevich/govalidator"
 	"golang123/model"
 	"golang123/config"
 	"golang123/controller/common"
@@ -138,7 +139,7 @@ func ResetPasswordMail(ctx *iris.Context) {
 func ResetPassword(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type userReqData struct {
-		Password  string  `json:"password"`
+		Password  string  `json:"password" valid:"runelength(6|20)"`
 	}
 	var userData userReqData
 
@@ -147,8 +148,8 @@ func ResetPassword(ctx *iris.Context) {
 		return
 	}
 
-	if userData.Password == "" {
-		SendErrJSON("密码不能为空", ctx)
+	if _, err := govalidator.ValidateStruct(userData); err != nil {
+		SendErrJSON("参数无效.", ctx)
 		return
 	}
 
@@ -178,7 +179,7 @@ func Signin(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type UserData struct {
 		SigninInput string  `json:"signinInput"`
-    	Password    string  `json:"password"`
+    	Password    string  `json:"password" valid:"runelength(6|20)"`
 	}
 	var userData UserData
 
@@ -187,7 +188,10 @@ func Signin(ctx *iris.Context) {
 		return
 	}
 
-	//golang123 todo: 检验邮箱，密码的有效性
+	if _, err := govalidator.ValidateStruct(userData); err != nil {
+		SendErrJSON("参数无效.", ctx)
+		return
+	}
 
 	if userData.SigninInput == "" {
 		SendErrJSON("用户名或邮箱不能为空", ctx)
@@ -233,9 +237,9 @@ func Signup(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	reqStartTime := time.Now()
 	type userReqData struct {
-		Name      string  `json:"name"`
-		Email     string  `json:"email"`
-		Password  string  `json:"password"`
+		Name      string  `json:"name" valid:"runelength(4|20)"`
+		Email     string  `json:"email" valid:"email,runelength(5|50)"`
+		Password  string  `json:"password" valid:"runelength(6|20)"`
 	}
 	var userData userReqData
 	if err := ctx.ReadJSON(&userData); err != nil {
@@ -243,29 +247,18 @@ func Signup(ctx *iris.Context) {
 		return
 	}
 
+	if _, err := govalidator.ValidateStruct(userData); err != nil {
+		SendErrJSON("参数无效.", ctx)
+		return
+	}
+
 	userData.Name      = strings.TrimSpace(userData.Name)
 	userData.Email     = strings.TrimSpace(userData.Email)
 
 	checkSignupData := func(userData userReqData, ctx *iris.Context) bool {
-		// golang123 todo: 完善 名称，密码，邮箱的检验
-		if userData.Name == "" {
-			SendErrJSON("用户名不能为空", ctx)
-			return false
-		}
-
 		if strings.Index(userData.Name, "@") != -1 {
 			SendErrJSON("用户名中不能含有@字符", ctx)
 			return false	
-		}
-
-		if userData.Email == "" {
-			SendErrJSON("邮箱不能为空", ctx)
-			return false
-		}
-
-		if userData.Password == "" {
-			SendErrJSON("密码不能为空", ctx)
-			return false
 		}
 		return true
 	}
@@ -345,8 +338,8 @@ func UpdateInfo(ctx *iris.Context) {
 func UpdatePassword(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type userReqData struct {
-		Password  string  `json:"password"`
-		NewPwd    string  `json:"newPwd"`
+		Password  string  `json:"password" valid:"runelength(6|20)"`
+		NewPwd    string  `json:"newPwd" valid:"runelength(6|20)"`
 	}
 	var userData userReqData
 	if err := ctx.ReadJSON(&userData); err != nil {
@@ -354,14 +347,10 @@ func UpdatePassword(ctx *iris.Context) {
 		return
 	}
 
-	if userData.Password == "" {
-		SendErrJSON("原密码不能为空", ctx)
-		return	
-	}
-
-	if userData.NewPwd == "" {
-		SendErrJSON("新密码不能为空", ctx)
-		return	
+	_, err := govalidator.ValidateStruct(userData)
+	if err != nil {
+		SendErrJSON("参数无效.", ctx)
+		return
 	}
 
 	session  := ctx.Session();
@@ -375,7 +364,7 @@ func UpdatePassword(ctx *iris.Context) {
 	if user.CheckPassword(userData.Password) {
 		user.Pass = user.EncryptPassword(userData.NewPwd, user.Salt())	
 		if err := model.DB.Save(&user).Error; err != nil {
-			SendErrJSON("error", ctx)
+			SendErrJSON("原密码不正确", ctx)
 			return
 		}
 		ctx.JSON(iris.StatusOK, iris.Map{
