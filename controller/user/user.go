@@ -178,7 +178,7 @@ func ResetPassword(ctx *iris.Context) {
 func Signin(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type UserData struct {
-		SigninInput string  `json:"signinInput"`
+		SigninInput string  `json:"signinInput" valid:"-"`
     	Password    string  `json:"password" valid:"runelength(6|20)"`
 	}
 	var userData UserData
@@ -206,9 +206,18 @@ func Signin(ctx *iris.Context) {
 	var sql, msg string
 	var queryUser model.User
 	if strings.Index(userData.SigninInput, "@") != -1 {
+		if !govalidator.IsEmail(userData.SigninInput) || len(userData.SigninInput) < 5 ||
+				len(userData.SigninInput) > 50 {
+			SendErrJSON("不是有效的邮箱", ctx)
+			return	
+		}
 		sql = "email = ?"
 		msg = "邮箱或密码错误"
 	} else {
+		if len(userData.SigninInput) < 4 || len(userData.SigninInput) > 20 {
+			SendErrJSON("用户名或密码错误", ctx)
+			return	
+		}
 		sql = "name = ?"
 		msg = "用户名或密码错误"
 	}
