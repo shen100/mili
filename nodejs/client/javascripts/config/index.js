@@ -85,6 +85,20 @@ const config = {
 				name: 'changePwd',
 				desc: '修改密码'
 			}
+		},
+		forgetPwd: {
+			sendEmailPwd: {
+				url: '/api/reset',
+				method: 'post',
+				name: 'sendEmailPwd',
+				desc: '忘记密码邮箱确认'
+			},
+			resetPwd: {
+				url: '/api/reset/:id/:key',
+				method: 'post',
+				name: 'resetPwd',
+				desc: '重置密码'
+			}
 		}
 	}
 }

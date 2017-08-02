@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{{title}} - 忘记密码</title>
+	<link rel="stylesheet" href="https://unpkg.com/iview@2.0.0/dist/styles/iview.css">
+	<link rel="stylesheet" href="{{cssPath}}/common.css">
+	<link rel="stylesheet" href="{{cssPath}}/forgetPwd.css">
+</head>
+<body>
+	{{>header}}
+	<div class="golang-forget-container">
+		<h1>账号安全中心</h1>
+		<p class="golang-forget-title">重置密码</p>
+		<div id="reset" class="golang-forget-form"></div>
+	</div>
+	{{>footer}}
+	<script type="text/javascript">jsonData = {{{json data.params}}}</script>
+	<script type="text/javascript" src="{{jsPath}}/vendor.js"></script>
+	<script type="text/javascript" src="{{jsPath}}/reset/index.js"></script>
+</body>
+</html>

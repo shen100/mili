@@ -8,7 +8,8 @@ var entryArr = [
     'signup/index',
     'signin/index',
     'changePwd/index',
-    'forgetPwd/index'
+    'forgetPwd/index',
+    'reset/index'
 ];
 
 function getEntryMap() {

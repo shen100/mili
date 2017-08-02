@@ -37,3 +37,19 @@
 	width: 300px;
 	margin-left: 50px;
 }
+
+.forget-success-icon {
+	text-align: center;
+}
+
+.forget-success-icon img {
+	widows: 80px;
+	height: 80px;
+}
+
+.forget-success-info {
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	margin-top: 30px;
+}

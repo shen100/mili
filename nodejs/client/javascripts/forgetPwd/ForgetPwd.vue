@@ -1,11 +1,17 @@
 <template>
     <i-row class="golang-forget-form">
-    	<i-form ref="formCustom" :model="formCustom" :rules="ruleCustom">
-    		<Form-item prop="email">
-                <i-input v-model="formCustom.email" placeholder="请输入注册时的邮箱"></i-input>
-            </Form-item>
-        </i-form>
-        <i-button type="primary" class="forget-button" @click="handleSubmit('formCustom')">发送邮件</i-button>
+        <div v-if="!success">
+        	<i-form ref="formCustom" :model="formCustom" :rules="ruleCustom">
+        		<Form-item prop="email">
+                    <i-input v-model="formCustom.email" placeholder="请输入注册时的邮箱"></i-input>
+                </Form-item>
+            </i-form>
+            <i-button type="primary" class="forget-button" @click="handleSubmit('formCustom')">发送邮件</i-button>
+        </div>
+        <div v-if="success">
+            <p class="forget-success-icon"><img src="/images/round_check_fill.png" alt=""></p>
+            <p class="forget-success-info">验证邮件已发送至您的邮箱，请点击查收!</p>
+        </div>
     </i-row>
 </template>
 
@@ -42,14 +48,12 @@
                             return;
                         }
                         this.loading = true;
-                        Req.signin({
-                            signinInput: this.formCustom.username,
-                            password: this.formCustom.passwd,
+                        Req.sendEmailPwd({
+                            email: this.formCustom.email,
                         })
                         .then(res => {
                             this.loading = false;
-                            window.location.href = '/';
-                            this.$Message.success('登录成功!');
+                            this.success = true;
                         })
                         .catch(err => {
                             this.loading = false;
