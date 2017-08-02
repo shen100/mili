@@ -266,8 +266,30 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	margin-bottom: 20px;	
 }
 
+.golang-sidebar-icon-box, .golang-sidebar-info-box {
+	display: inline-block;
+}
 
+.golang-sidebar-icon-box {
+	margin-left: 20px;
+}
 
+.golang-sidebar-info-box {
+	line-height: 40px;
+	float: right;
+	margin-right: 20px;
+}
 
+.golang-common-link {
+	color: gray;
+}
 
+.golang-user-line {
+	margin-top: 10px;
+	clear: both;
+}
 
+.golang-user-line .link-block {
+	margin-left: 15px;
+	margin-right: 40px;
+}

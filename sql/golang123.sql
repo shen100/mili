@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-07-31 14:52:00 +0000
+# Generation Time: 2017-08-02 15:53:05 +0000
 # ************************************************************
 
 
@@ -47,10 +47,12 @@ VALUES
 	(8,11,1),
 	(9,12,1),
 	(10,13,1),
-	(11,14,1),
-	(12,15,1),
-	(13,16,1),
-	(14,17,1);
+	(16,14,3),
+	(17,18,2),
+	(18,19,2),
+	(19,20,2),
+	(20,21,2),
+	(21,22,1);
 
 /*!40000 ALTER TABLE `article_category` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -80,23 +82,7 @@ LOCK TABLES `articles` WRITE;
 
 INSERT INTO `articles` (`id`, `name`, `browse_count`, `comment_count`, `status`, `content`, `created_at`, `updated_at`, `deleted_at`, `user_id`)
 VALUES
-	(1,'xxxxx',5,3,0,'','2001-01-01 00:00:00','0000-00-00 00:00:00',NULL,0),
-	(2,'aaaaaaa',2,1,0,'','2000-01-01 00:00:00','0000-00-00 00:00:00',NULL,0),
-	(3,'ccccc',4,2,0,'','2002-01-01 00:00:00','0000-00-00 00:00:00',NULL,0),
-	(4,'asdfsaf',0,0,1,'asdfdsadf','2017-07-29 17:08:59','2017-07-29 17:08:59',NULL,0),
-	(5,'adsaf',0,0,1,'afsaf','2017-07-29 17:09:41','2017-07-29 17:09:41',NULL,0),
-	(6,'abc',0,0,1,'afsaf','2017-07-29 17:10:13','2017-07-29 17:10:13',NULL,0),
-	(7,'dfaf',0,0,1,'adsfsa','2017-07-31 22:20:46','2017-07-31 22:20:46',NULL,31),
-	(8,'dfaf',0,0,1,'adsfsa','2017-07-31 22:26:53','2017-07-31 22:26:53',NULL,31),
-	(9,'dfaf',0,0,1,'adsfsa','2017-07-31 22:27:31','2017-07-31 22:27:31',NULL,31),
-	(10,'dfaf',0,0,1,'adsfsa','2017-07-31 22:28:18','2017-07-31 22:28:18',NULL,31),
-	(11,'dfaf',0,0,1,'adsfsa','2017-07-31 22:29:29','2017-07-31 22:29:29',NULL,31),
-	(12,'dfaf',0,0,1,'adsfsa','2017-07-31 22:30:28','2017-07-31 22:30:28',NULL,31),
-	(13,'dfaf',0,0,1,'adsfsa','2017-07-31 22:31:15','2017-07-31 22:31:15',NULL,31),
-	(14,'dfaf',0,0,1,'adsfsa','2017-07-31 22:31:26','2017-07-31 22:31:26',NULL,31),
-	(15,'dfaf',0,0,1,'adsfsa','2017-07-31 22:33:04','2017-07-31 22:33:04',NULL,31),
-	(16,'dfaf',0,0,1,'adsfsa','2017-07-31 22:33:10','2017-07-31 22:33:10',NULL,31),
-	(17,'dfaf',0,0,1,'adsfsa','2017-07-31 22:33:17','2017-07-31 22:33:17',NULL,31);
+	(22,'test',0,0,1,'**你们国恨家仇…**   *你们国恨家仇…*\n\n![](https://dev.golang123.com/upload/img/2017/08/02/5ec41a60-beb4-45e7-8c2b-443646171530.jpg)  \n[尝试用thinkjs搭建一套blog](http://wwww,a.com)\n\n\n> 谢邀。 虽然你们国恨家仇…尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n  \n	   \n		    \n				\n    \n		\n```\n.golang123-editor ol {\n	padding-left: 20px;\n}\n\n.golang123-editor ol li {\n	list-style-type: decimal;\n}\n```\n\n* adfafs\n* asdf\n* asdf\n* asdf\n* asdfa\n* sffadsf\n\n\n-----\n  \n	\n  \n\n\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text     | Text     |\n\n\nasdfafa\n\n1. adfasf\n2. asdf\n3. asdfa\n4. sdfasdf\n5. asdf\n6. afdafaf\n\n# adfafaf\n## 尝试用thinkjs搭建一套blog\n### 尝试用thinkjs搭建一套blog\n#### 尝试用thinkjs搭建一套blog\n##### 尝试用thinkjs搭建一套blog\n###### 尝试用thinkjs搭建一套blog','2017-08-02 23:40:01','2017-08-02 23:40:01',NULL,31);
 
 /*!40000 ALTER TABLE `articles` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -110,6 +96,7 @@ DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
+  `slug` varchar(200) NOT NULL DEFAULT '',
   `sequence` int(11) NOT NULL,
   `parent_id` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL,
@@ -122,11 +109,11 @@ CREATE TABLE `categories` (
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
 
-INSERT INTO `categories` (`id`, `name`, `sequence`, `parent_id`, `status`, `created_at`, `updated_at`, `deleted_at`)
+INSERT INTO `categories` (`id`, `name`, `slug`, `sequence`, `parent_id`, `status`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
-	(1,'精华',0,0,1,'2017-07-23 18:03:15','2017-07-31 22:33:17',NULL),
-	(2,'招聘',0,0,1,'2017-07-23 18:03:32','2017-07-29 17:10:13',NULL),
-	(3,'分享',0,0,1,'2017-07-23 18:04:39','2017-07-23 18:54:32',NULL);
+	(1,'精华','',0,0,1,'2017-07-23 18:03:15','2017-08-02 23:40:01',NULL),
+	(2,'招聘','',0,0,1,'2017-07-23 18:03:32','2017-08-01 21:42:00',NULL),
+	(3,'分享','',0,0,1,'2017-07-23 18:04:39','2017-07-31 23:57:15',NULL);
 
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -187,7 +174,9 @@ VALUES
 	(12,'/upload/img/2017/07/28/9ca133d2-5efc-4106-8dad-babe4ecc3bd1.jpg',0,0,'image/jpeg','9ca133d2-5efc-4106-8dad-babe4ecc3bd1.jpg','5.jpg'),
 	(13,'/upload/img/2017/07/28/3c75e674-28ae-47c9-900b-3e221278de20.jpg',0,0,'image/jpeg','3c75e674-28ae-47c9-900b-3e221278de20.jpg','5.jpg'),
 	(14,'/upload/img/2017/07/29/80c9df7e-95af-4778-b74c-25f24ef2dfa4.jpg',0,0,'image/jpeg','80c9df7e-95af-4778-b74c-25f24ef2dfa4.jpg','5.jpg'),
-	(15,'/upload/img/2017/07/29/cd1aee74-4c25-432c-ad4d-9601c90784f7.png',0,0,'image/png','cd1aee74-4c25-432c-ad4d-9601c90784f7.png','createExp1.png');
+	(15,'/upload/img/2017/07/29/cd1aee74-4c25-432c-ad4d-9601c90784f7.png',0,0,'image/png','cd1aee74-4c25-432c-ad4d-9601c90784f7.png','createExp1.png'),
+	(16,'/upload/img/2017/08/01/53042a69-d20a-4f47-a88f-0e0169423ef4.jpg',0,0,'image/jpeg','53042a69-d20a-4f47-a88f-0e0169423ef4.jpg','03.jpg'),
+	(17,'/upload/img/2017/08/02/5ec41a60-beb4-45e7-8c2b-443646171530.jpg',0,0,'image/jpeg','5ec41a60-beb4-45e7-8c2b-443646171530.jpg','07.jpg');
 
 /*!40000 ALTER TABLE `images` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -238,7 +227,7 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `score`, `article_count`, `signature`, `role`, `status`)
 VALUES
-	(31,'2017-07-25 18:25:54','2017-07-31 22:33:17',NULL,'jack','liushen_shen@163.com','','15009783546021268569e284facf59b9c4d0aa8cf2',35,7,'a',4,2);
+	(31,'2017-07-25 18:25:54','2017-08-02 23:40:01',NULL,'jack','liushen_shen@163.com','','15009783546021268569e284facf59b9c4d0aa8cf2',60,12,'a',4,2);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

@@ -5,12 +5,15 @@
             <p class="golang-signin-desc">像风一样GO的飞起</p>
         	<i-form ref="formCustom" :model="formCustom" :rules="ruleCustom" class="signup-form">
         		<Form-item prop="username">
-                    <i-input v-model="formCustom.username" placeholder="用户名"></i-input>
+                    <i-input v-model="formCustom.username" placeholder="用户名 / 邮箱"></i-input>
                 </Form-item>
                 <Form-item prop="passwd">
                     <i-input type="password" v-model="formCustom.passwd" placeholder="密码"></i-input>
                 </Form-item>
-                <Form-item>
+                <p style="text-align: right;padding-right: 10px">
+                    <a href="/forget/pwd" class="golang-common-link">忘记密码</a>
+                </p>
+                <Form-item style="margin-top: 10px">
                     <i-button type="primary" @click="handleSubmit('formCustom')" style="width: 100%">登录</i-button>
                 </Form-item>
             </i-form>

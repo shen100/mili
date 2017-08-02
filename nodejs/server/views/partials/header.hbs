@@ -16,8 +16,12 @@
 				<li>新手入门</li>
 				<li>API</li>
 				<li>关于</li>
-				<a href="/signup"><li>注册</li></a>
-				<a href="/signin"><li>登陆</li></a>
+				{{#unless data.userStatus}}
+					<a href="/signup"><li>注册</li></a>
+					<a href="/signin"><li>登陆</li></a>
+				{{else}}
+					<li>退出</li>
+				{{/unless}}
 			</ul>
 		</div>
 	</div>

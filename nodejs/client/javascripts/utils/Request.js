@@ -36,12 +36,15 @@ class Request {
 	}
 
 	post(url, params) {
-		let urlParams = '';
-		const postParams = params || {};
+		let urlParams = url;
+		let postParams = params || {};
 		if (url.indexOf(':') > -1) {
-			urlParams = url.split(':')[0] + postParams.params;
-		} else {
-			urlParams = url;
+			for (const key in postParams) {
+				if (url.indexOf(':' + key) > -1 && postParams.hasOwnProperty(key)) {
+					urlParams = urlParams.replace(':' + key, postParams[key]);
+					delete postParams[key];
+				}
+			}
 		}
 
 		return new Promise((resolve, reject) => {

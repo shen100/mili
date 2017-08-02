@@ -8,6 +8,10 @@ var AdminAction         = require('../controller/admin/AdminAction');
 var Signup 				= require('../controller/signup');
 var Signin 				= require('../controller/signin');
 var UserInfoAction      = require('../controller/user/UserInfoAction');
+var ChangePwd			= require('../controller/changePwd');
+var ForgetPwd 			= require('../controller/forgetPwd');
+var Reset 				= require('../controller/reset');
+
 
 module.exports = function(app) {
 	app.get('/',               IndexAction)
@@ -16,6 +20,9 @@ module.exports = function(app) {
 
 	app.get('/admin', AdminAction);
 
+	app.get('/change/pwd', user.signinRequired(), ChangePwd);
 	app.get('/signup', Signup);
 	app.get('/signin', Signin);
+	app.get('/forget/pwd', ForgetPwd);
+	app.get('/reset/:id/:key', Reset);
 };

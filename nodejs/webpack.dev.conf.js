@@ -6,7 +6,10 @@ var entryArr = [
     'article/edit',
     'admin/index',
     'signup/index',
-    'signin/index'
+    'signin/index',
+    'changePwd/index',
+    'forgetPwd/index',
+    'reset/index'
 ];
 
 function getEntryMap() {

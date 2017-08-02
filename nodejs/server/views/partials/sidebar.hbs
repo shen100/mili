@@ -4,15 +4,18 @@
 			<p>golang123：golang专业中文社区</p>
 			<p>您可以<a class="golang-user-info-action" href="/signin">登录</a>或<a class="golang-user-info-action" href="/signup">注册</a></p>
 		{{else}}
-			<p>
-				<div>
+			<div>
+				<div class="golang-sidebar-icon-box">
 					<img class="golang-user-info-icon" src="{{imagePath}}/head.png" alt="">
-				</div>您好！ {{data.user.name}}
-				<div>
-					<p></p>
-					<p></p>
 				</div>
-			</p>
+				<div class="golang-sidebar-info-box">
+					<p>您好！ {{data.user.name}}</p>
+				</div>
+			</div>
+			<div class="golang-user-line">
+				<a href="/change/pwd" class="golang-common-link link-block">修改密码</a>
+				<a href="" class="golang-common-link link-block">忘记密码</a>
+			</div>
 		{{/unless}}
 	</div>
 	<div class="golang-cell">
