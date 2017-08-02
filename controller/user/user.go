@@ -21,7 +21,12 @@ func sendMail(action string, title string, curTime int64, user model.User, ctx *
 	siteURL   := "https://" + config.ServerConfig.Host
 	secretStr := fmt.Sprintf("%d%s%s", curTime, user.Email, user.Pass)
 	secretStr  = fmt.Sprintf("%x", md5.Sum([]byte(secretStr)))
-	actionURL := siteURL + apiPrefix + action + "/%d/%s"
+	actionURL := ""
+	if action != "/reset" {
+		actionURL = siteURL + action + "/%d/%s"
+	} else {
+		actionURL = siteURL + apiPrefix + action + "/%d/%s"	
+	}
 	actionURL  = fmt.Sprintf(actionURL, user.ID, secretStr)
 
 	fmt.Println(actionURL)

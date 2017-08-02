@@ -196,3 +196,78 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	width: 40px;
 	height: 40px;
 }
+
+.golang123-editor {
+	font-size: 16px;
+}
+
+.golang123-editor h1 {
+	font-size: 200%;
+	line-height: 200%;
+}
+
+.golang123-editor h2 {
+	font-size: 160%;
+	line-height: 160%;
+}
+
+.golang123-editor h3 {
+	font-size: 125%;
+	line-height: 32px;
+}
+
+.golang123-editor h4 {
+	font-size: 110%;
+	line-height: 32px;
+}
+
+.golang123-editor h5 {
+	font-weight: 32px;
+}
+
+.golang123-editor h6 {
+	font-weight: 32px;
+}
+
+.golang123-editor em {
+	font-style: italic;
+}
+
+.golang123-editor ul {
+	padding-left: 20px;
+	margin-bottom: 20px;
+}
+
+.golang123-editor ul li {
+	list-style-type: disc;
+	padding-left: 0;
+}
+
+.golang123-editor ol {
+	padding-left: 20px;
+	margin-bottom: 20px;
+}
+
+.golang123-editor ol li {
+	list-style-type: decimal;
+}
+
+.golang123-editor blockquote {
+	padding: 0 1em;
+    border-left: 0.25em solid #dfe2e5;
+    margin-bottom: 20px;
+}
+
+.golang123-editor table {
+	margin-bottom: 20px;	
+}
+
+.golang123-editor hr {
+	margin-bottom: 20px;	
+}
+
+
+
+
+
+

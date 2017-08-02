@@ -95,3 +95,8 @@
     line-height: normal;
     font-size: 14px;
 }
+
+.topic-none {
+	text-align: center;
+    color: #a8a8a8;
+}

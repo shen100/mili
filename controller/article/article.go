@@ -7,6 +7,8 @@ import (
 	"time"
 	"unicode/utf8"
 	"gopkg.in/kataras/iris.v6"
+	"github.com/microcosm-cc/bluemonday"
+    "github.com/russross/blackfriday"
 	"golang123/config"
 	"golang123/model"
 	"golang123/controller/common"
@@ -336,6 +338,11 @@ func Info(ctx *iris.Context) {
 			parentID = parent.ParentID
 		}
 		article.Comments[i].Parents = parents
+	}
+
+	if ctx.FormValue("f") != "md" {
+		unsafe := blackfriday.MarkdownCommon([]byte(article.Content))
+		article.Content = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 	}
 
 	fmt.Println("duration: ", time.Now().Sub(reqStartTime).Seconds())

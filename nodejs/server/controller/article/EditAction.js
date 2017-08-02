@@ -13,7 +13,10 @@ module.exports = function(req, res) {
 		Req.getArticle({
 			client : req,
 			params : {
-				id: id
+				id : id
+			},
+			query: {
+				f  : 'md'
 			}
 		}),
 		Req.getRecentArticles({client: req})
@@ -23,6 +26,11 @@ module.exports = function(req, res) {
 		res.locals.data.categories     = arr[0].data.categories;
 		res.locals.data.article        = arr[1].data.article;
 		res.locals.data.recentArticles = arr[2].data.articles;
+
+		var ra = res.locals.data.recentArticles;
+		if (ra && ra.length > 0) {
+			res.locals.data.hasRecentArticles = true;
+		}
 		
 		res.render('article/edit');
 	}).catch(err => {

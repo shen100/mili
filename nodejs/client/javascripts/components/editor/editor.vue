@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="golang123-editor">
 		<textarea ref="textarea"></textarea>
 		<Modal v-model="modalVisible"
 	        title="上传图片"
@@ -103,7 +103,7 @@
 			            name: 'preview',
 			            action: SimpleMDE.togglePreview,
 			            className: 'fa fa-eye no-disable',
-			            title: '链接',
+			            title: '预览',
 			        },
 			        {
 			            name: 'fullscreen',

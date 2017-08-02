@@ -50,6 +50,7 @@ app.use(function(req, res, next) {
     locals.imagePath      = config.page.imagePath;
     locals.pageConfig     = config.page;
     locals.host           = config.host;
+    locals.data           = locals.data || {};
     next();
 });
 
