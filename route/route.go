@@ -8,7 +8,7 @@ import (
 	"golang123/controller/category"
 	"golang123/controller/article"
 	"golang123/controller/user"
-	"golang123/controller/timeline"
+	"golang123/controller/message"
 )
 
 // Route 路由
@@ -32,8 +32,8 @@ func Route(app *iris.Framework) {
 		router.Get("/user/score/top100",     user.Top100)
 		router.Post("/upload",               auth.SigninRequired,          
 											 common.Upload)
-												  
-		router.Get("timeline",               timeline.List)
+		router.Get("/message/unread",        message.Unread)
+		router.Get("/message/unread/count",  message.UnreadCount)
 
 		router.Get("/categories",          category.List)
 
