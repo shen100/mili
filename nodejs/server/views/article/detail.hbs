@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{{title}} - 首页</title>
+	<link rel="stylesheet" href="{{cssPath}}/common.css">
+	<link rel="stylesheet" href="{{cssPath}}/article/detail.css">
+</head>
+<body>
+	{{>header}}
+	<div class="golang-home-body">
+		<div class="golang-home-body-left">
+			<div class="detail-title-box">
+				
+			</div>
+			<div class="home-articles-box">
+				<div class="golang123-editor">
+					{{{data.article.content}}}
+				</div>
+				
+			</div>
+		</div>
+		{{>sidebar}}
+	</div>
+	{{>footer}}
+	{{>include_data}}
+</body>
+</html>
