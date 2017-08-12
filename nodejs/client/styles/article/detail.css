@@ -1,3 +1,24 @@
 .detail-title-box {
-	
+	padding: 10px;	
+	border-radius: 3px 3px 0 0;
+	border-bottom: 1px solid #e5e5e5;
+}
+
+.article-detail-title {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 8px 0;
+}
+
+.article-title-info {
+	font-size: 12px;
+	color: #838383;
+}
+
+.article-title-info-item {
+	margin-right: 5px;
+}
+
+.article-title-info-item:before {
+	content: "•";
 }
