@@ -1,6 +1,7 @@
 const webpack 			   = require('webpack');
 const path 				   = require('path');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+var ExtractTextPlugin      = require('extract-text-webpack-plugin')
 
 var entryArr = [
     'article/edit',
@@ -49,10 +50,14 @@ module.exports = {
 				loader: 'babel-loader',
 				exclude: /node_modules/
 			}, 
+			// {
+			// 	test: /\.css$/,
+			// 	loader: 'css-loader'
+			// },
 			{
-				test: /\.css$/,
-				loader: 'css-loader'
-			},
+		        test: /\.css$/,
+		        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
+		    },
 			{
 				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
 				loader: 'url-loader',
@@ -92,5 +97,6 @@ module.exports = {
             name: 'vendor', 
             filename: './javascripts/vendor.js'
         }),
+        new ExtractTextPlugin('./styles/[name]123.css')
 	]
 }

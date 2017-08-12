@@ -20,6 +20,8 @@ type User struct {
     Phone          string             `json:"phone"`
     Score          uint               `json:"score"`
     ArticleCount   uint               `json:"articleCount"`
+    Collects       []Collect          `json:"collects"`
+    CollectCount   uint               `json:"collectCount"`
     Signature      string             `json:"signature"`
     Role           int                `json:"role"`
     Status         int                `json:"status"`    

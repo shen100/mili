@@ -15,6 +15,7 @@ func SigninRequired(ctx *iris.Context) {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
 		return	
 	}
+	session.Set("user", user)
 	ctx.Next()
 }
 
@@ -29,6 +30,7 @@ func AdminRequired(ctx *iris.Context) {
 		return
 	}
 	user := userData.(model.User)
+	session.Set("user", user)
 	if user.Role == model.UserRoleAdmin || user.Role == model.UserRoleSuperAdmin {
 		ctx.Next()
 	} else {
