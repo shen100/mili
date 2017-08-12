@@ -8,7 +8,7 @@
                     <i-input v-model="formCustom.username" placeholder="用户名 / 邮箱"></i-input>
                 </Form-item>
                 <Form-item prop="passwd">
-                    <i-input type="password" v-model="formCustom.passwd" placeholder="密码"></i-input>
+                    <i-input type="password" v-model="formCustom.passwd" placeholder="密码" @keydown.native="handleKeyUp"></i-input>
                 </Form-item>
                 <p style="text-align: right;padding-right: 10px">
                     <a href="/forget/pwd" class="golang-common-link">忘记密码</a>
@@ -72,6 +72,11 @@
                         })
                     }
                 })
+            },
+            handleKeyUp(e) {
+                if (e.keyCode === 13) {
+                    return this.handleSubmit('formCustom');
+                }
             }
         },
 		components: {

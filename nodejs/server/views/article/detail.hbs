@@ -11,7 +11,26 @@
 	<div class="golang-home-body">
 		<div class="golang-home-body-left">
 			<div class="detail-title-box">
-				
+				<p class="article-detail-title">{{data.article.name}}</p>
+				<p class="article-title-info">
+					<span class="article-title-info-item">
+						发布于14小时前
+					</span>
+					<span class="article-title-info-item">
+						作者xxxxx
+					</span>
+					<span class="article-title-info-item">
+						111次浏览
+					</span>
+					<span class="article-title-info-item">
+						来自
+						{{#each data.article.categories}}
+							{{#unless index}}
+								{{name}}
+							{{/unless}}
+						{{/each}}
+					</span>
+				</p>
 			</div>
 			<div class="home-articles-box">
 				<div class="golang123-editor">
