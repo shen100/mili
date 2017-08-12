@@ -43,6 +43,15 @@ html,body {
     vertical-align: top;
 }
 
+.golang-footer-github {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 6px;
+    background: #eee;
+}
+
 .golang-footer-page-link span {
     color: #eee;
     display: inline-block;
