@@ -1,0 +1,69 @@
+<template>
+    <div>
+        <go-header />
+        <article-save :categories="categories" :article="article" :recentArticles="recentArticles" :hasRecentArticles="hasRecentArticles" :id="id"></article-save>
+        <go-footer></go-footer>
+    </div>
+</template>
+
+<script>
+    import request from '~/net/request'
+    import Header from '~/components/Header'
+    import Footer from '~/components/Footer'
+    import ArticleSave from '~/components/article/save'
+
+    export default {
+        data () {
+        },
+        asyncData (context) {
+            return Promise.all([
+                request.getCategories({client: context.req}),
+                request.getArticle({
+                    client: context.req,
+                    params: {
+                        id: context.params.id
+                    },
+                    query: {
+                        f: 'md'
+                    }
+                }),
+                request.getRecentArticles({client: context.req})
+            ]).then(function (arr) {
+                let categories = arr[0].data.categories
+                let article = arr[1].data.article
+                let recentArticles = arr[2].data.articles
+                let hasRecentArticles = false
+                if (recentArticles && recentArticles.length > 0) {
+                    hasRecentArticles = true
+                }
+                return {
+                    categories: categories,
+                    article: article,
+                    recentArticles: recentArticles,
+                    hasRecentArticles: hasRecentArticles,
+                    id: article.id
+                }
+            })
+        },
+        head () {
+            return {
+                title: '编辑话题 - ',
+                link: [
+                    { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' }
+                ]
+            }
+        },
+        methods: {
+        },
+        middleware: 'userRequired',
+        components: {
+            'go-header': Header,
+            'go-footer': Footer,
+            'article-save': ArticleSave
+        }
+    }
+</script>
+
+<style>
+    @import '~assets/styles/article/edit.css'
+</style>

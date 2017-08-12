@@ -1,0 +1,48 @@
+.signup-box {
+	width: 1200px;
+	overflow: hidden;
+	font-size: 0;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+}
+
+.signup-main {
+	width: 900px;
+	font-size: 0;
+	display: inline-block;
+	background-color: #fff;
+}
+
+.signup-nav {
+	width: 900px;
+	height: 40px;
+	display: inline-block;
+	padding-left: 20px;
+	background: #f6f6f6;
+}
+
+.signup-nav-sep {
+	padding: 0 8px;
+}
+
+.signup-nav a {
+	color: #80bd01;
+}
+
+.signup-nav li {
+	float: left;
+	line-height: 40px;
+}
+
+.signup-nav span {
+	font-size: 14px;
+}
+
+.signup-form {
+	margin-top: 20px;
+	margin-left: 80px;
+}
+.signup-input {
+	width: 300px;
+}

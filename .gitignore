@@ -6,3 +6,4 @@ configuration.json
 dist
 node_modules
 npm-debug.log
+.nuxt
