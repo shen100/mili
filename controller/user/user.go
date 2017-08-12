@@ -140,6 +140,21 @@ func ResetPasswordMail(ctx *iris.Context) {
 	})
 }
 
+// VerifyResetPasswordLink 验证重置密码的链接是否失效
+func VerifyResetPasswordLink(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	if _, err := verifyLink("resetTime", 24 * 60 * 60, ctx); err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return	
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{},
+	})
+}
+
 // ResetPassword 重置密码
 func ResetPassword(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON

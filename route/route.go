@@ -18,11 +18,12 @@ func Route(app *iris.Framework) {
 
 	router := app.Party(apiPrefix) 
 	{	
-		router.Post("/signin",            user.Signin)
-		router.Post("/signup",            user.Signup)
-		router.Get("/active/:id/:secret", user.ActiveAccount)
-		router.Post("/reset",             user.ResetPasswordMail)
-		router.Post("/reset/:id/:secret", user.ResetPassword)
+		router.Post("/signin",                  user.Signin)
+		router.Post("/signup",                  user.Signup)
+		router.Get("/active/:id/:secret",       user.ActiveAccount)
+		router.Post("/reset",                   user.ResetPasswordMail)
+		router.Post("/reset/:id/:secret",       user.ResetPassword)
+		router.Get("/reset/verify/:id/:secret", user.VerifyResetPasswordLink)
 
 		router.Get("/user/info",             user.Info)
 		router.Post("/user/update",          auth.SigninRequired,       
