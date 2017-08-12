@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header />
+        <go-header :userStatus="userStatus" />
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div class="home-categoties-box">

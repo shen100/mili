@@ -1,6 +1,6 @@
 <template>
 	<div>
-        <go-header />
+        <go-header :userStatus="user"/>
         <div class="signup-box">
             <div class="signup-main">
                 <ul class="signup-nav">
@@ -42,6 +42,7 @@
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
+    import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
 
     Vue.use(iview)
@@ -96,6 +97,12 @@
                 }
             }
         },
+        asyncData (context) {
+            return {
+                user: context.user
+            }
+        },
+        middleware: 'userInfo',
         methods: {
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
@@ -112,8 +119,12 @@
                             }
                         }).then(res => {
                             this.loading = false
-                            this.success = true
-                            this.$Message.success('提交成功!')
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                this.success = true
+                                this.$Message.success('提交成功!')
+                            } else {
+                                this.$Message.error(res.msg)
+                            }
                         }).catch(err => {
                             this.loading = false
                             this.$Message.error(err.msg)

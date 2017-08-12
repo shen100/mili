@@ -1,6 +1,6 @@
 <template>
 	<div>
-        <go-header />
+        <go-header :userStatus="user"/>
         <div class="common-body-box">
             <div class="common-body-main">
                 <ul class="common-body-nav">
@@ -81,6 +81,12 @@
                 }
             }
         },
+        asyncData (context) {
+            return {
+                user: context.user
+            }
+        },
+        middleware: 'userInfo',
         methods: {
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <go-header />
+        <go-header :userStatus="user"/>
         <div class="golang-forget-container">
             <h1>账号安全中心</h1>
             <p class="golang-forget-title">重置密码</p>
@@ -80,6 +80,12 @@
                 }
             }
         },
+        asyncData (context) {
+            return {
+                user: context.user
+            }
+        },
+        middleware: 'userInfo',
         methods: {
             handleSubmit (name) {
                 if (!id || !key) {

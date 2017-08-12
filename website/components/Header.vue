@@ -17,12 +17,12 @@
 					<li>新手入门</li>
 					<li>API</li>
 					<li>关于</li>
-					<template v-if="userStatus">
+                    <template v-if="userStatus">
+                        <li>退出</li>
+                    </template>
+					<template v-else>
 						<a href="/signup"><li>注册</li></a>
 						<a href="/signin"><li>登陆</li></a>
-					</template>
-					<template v-else>
-						<li>退出</li>
 					</template>
 				</ul>
 			</div>
@@ -38,6 +38,9 @@
         data () {
             return {
             }
+        },
+        mounted () {
+            console.log(this.userStatus)
         }
     }
 </script>

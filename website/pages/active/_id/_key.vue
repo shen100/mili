@@ -1,6 +1,6 @@
 <template>
 	<div>
-        <go-header />
+        <go-header :userStatus="user" />
         <div class="golang-forget-container">
             <h1>账号中心</h1>
             <p class="golang-forget-title">账号激活</p>
@@ -28,7 +28,6 @@
         },
         asyncData (context) {
             return request.activeUser({
-                client: context.req,
                 params: {
                     id: context.params.id || '',
                     key: context.params.key || ''
@@ -37,16 +36,19 @@
                 if (res.errNo === 0) {
                     return {
                         success: true,
-                        error: ''
+                        error: '',
+                        user: context.user
                     }
                 } else {
                     return {
                         success: false,
-                        error: res.msg
+                        error: res.msg,
+                        user: context.user
                     }
                 }
             })
         },
+        middleware: 'userInfo',
         components: {
             'go-header': Header,
             'go-footer': Footer

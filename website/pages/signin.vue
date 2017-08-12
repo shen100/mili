@@ -11,7 +11,7 @@
                     <i-input type="password" v-model="formCustom.passwd" placeholder="密码" @keydown.native="handleKeyUp"></i-input>
                 </Form-item>
                 <p style="text-align: right;padding-right: 10px">
-                    <a href="/forget/pwd" class="golang-common-link">忘记密码</a>
+                    <a href="/reset/pwd" class="golang-common-link">忘记密码</a>
                 </p>
                 <Form-item style="margin-top: 10px">
                     <i-button type="primary" @click="handleSubmit('formCustom')" style="width: 100%">登录</i-button>
@@ -25,6 +25,7 @@
 <script>
     import Vue from 'vue'
     import iview from 'iview'
+    import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
 
     Vue.use(iview)
@@ -64,8 +65,12 @@
                             }
                         }).then(res => {
                             this.loading = false
-                            window.location.href = '/'
-                            this.$Message.success('登录成功!')
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                this.$Message.success('登录成功!')
+                                window.location.href = '/'
+                            } else {
+                                this.$Message.error(res.msg)
+                            }
                         }).catch(err => {
                             this.loading = false
                             this.$Message.error(err.msg)
