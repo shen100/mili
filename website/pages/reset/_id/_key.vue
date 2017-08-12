@@ -21,7 +21,7 @@
                     </div>
                 </Row>
                 <div class="signup-form" v-if="error">
-                    <p class="forget-success-info">{{error}}</p>
+                    <p class="forget-success-info" style="margin-top: 0;padding-top: 30px;">{{error}}</p>
                 </div>
             </div>
         </div>
@@ -103,6 +103,11 @@
                     }
                 }
             })
+        },
+        head () {
+            return {
+                title: '重置密码 - '
+            }
         },
         middleware: 'userInfo',
         methods: {

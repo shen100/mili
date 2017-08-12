@@ -65,7 +65,7 @@
         },
         head () {
             return {
-                title: this.article.name
+                title: this.article.name + ' - '
             }
         },
         middleware: 'userInfo',

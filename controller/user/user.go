@@ -145,7 +145,7 @@ func VerifyResetPasswordLink(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	if _, err := verifyLink("resetTime", 24 * 60 * 60, ctx); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("链接已失效", ctx)
 		return	
 	}
 	ctx.JSON(iris.StatusOK, iris.Map{

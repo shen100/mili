@@ -191,7 +191,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang-user-info {
-	padding: 20px 10px;
+	padding: 5px 10px 20px 10px;
 	background-color: #fff;
 	margin-bottom: 20px;
 }
@@ -217,6 +217,22 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .golang-user-info-icon {
 	width: 40px;
 	height: 40px;
+}
+
+.golang-user-publish {
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 20px;
+}
+
+.golang-user-publish .ivu-btn-primary {
+    background-color: #80bd01;
+    border-color: #80bd01;;
+}
+
+.golang-user-publish .ivu-btn-primary:hover {
+    background-color: #92cb1a;
+    border-color: #92cb1a;;
 }
 
 .golang123-editor {
@@ -295,6 +311,10 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-sidebar-icon-box {
 	margin-left: 20px;
+}
+
+.golang-sidebar-usericon {
+    margin-left: 0;
 }
 
 .golang-sidebar-info-box {
@@ -384,6 +404,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     color: #000;
     font-size: 14px;
     margin-left: 20px;
+}
+
+.user-info-score {
+    margin-left: 0;
+}
+
+.user-info-signature {
+    margin-left: 0;
 }
 
 .text-italic {

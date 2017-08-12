@@ -21,7 +21,7 @@
                             <md-editor :value="formValidate.content" @change="onContentChage"></md-editor>
                         </Form-item>
                         <Form-item class="topic-submit" :label-width="0">
-                            <Button v-if="isMounted" type="primary" @click="onSubmit()">提交</Button>
+                            <Button size="large" v-if="isMounted" type="primary" @click="onSubmit()">{{id ? '保存话题' : '发布话题'}}</Button>
                         </Form-item>
                     </Form>
                 </div>

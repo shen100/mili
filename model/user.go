@@ -62,6 +62,8 @@ func (user User) ToJSON() map[string]interface{} {
         "name"      : user.Name,
         "email"     : user.Email,
         "role"      : user.Role,
+        "score"     : user.Score,
+        "signature" : user.Signature,
         "status"    : user.Status,
     }
 }
