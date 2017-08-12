@@ -1,9 +1,11 @@
 html, body {
-	background-color: transparent;
+	background-color: #fff;
 }
 
 #__nuxt {
 	height: 100%;
+    position: relative;
+    z-index: 2;
 }
 
 .golang-signin-container {
@@ -19,9 +21,8 @@ html, body {
 }
 
 .golang-signin-desc {
-	color: #9e9e9e;
+	color: #959595;
 	margin: 10px 0 20px 0;
-	font-style: italic;
 	text-align: center;
 	letter-spacing: 3px;
 	font-size: 14px;

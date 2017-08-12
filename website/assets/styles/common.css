@@ -21,7 +21,6 @@ a,a:hover{color:#333;}
 
 html,body {
 	height: 100%;
-	background-color: #e1e1e1;
 }
 
 .golang-footer {
@@ -259,11 +258,11 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang123-editor table {
-	margin-bottom: 20px;	
+	margin-bottom: 20px;
 }
 
 .golang123-editor hr {
-	margin-bottom: 20px;	
+	margin-bottom: 20px;
 }
 
 .golang-sidebar-icon-box, .golang-sidebar-info-box {

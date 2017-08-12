@@ -2,7 +2,7 @@
     <Row type="flex" align="middle" justify="center" class="golang-signin-container">
         <Col :xs="24" :lg="6" :md="14">
             <h1 class="golang-signin-title">GOLANG123</h1>
-            <p class="golang-signin-desc">像风一样GO的飞起</p>
+            <p class="golang-signin-desc">与地鼠们分享你的知识、经验和见解</p>
         	<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" class="signup-form">
         		<Form-item prop="username">
                     <i-input v-model="formCustom.username" placeholder="用户名 / 邮箱"></i-input>
@@ -10,7 +10,8 @@
                 <Form-item prop="passwd">
                     <i-input type="password" v-model="formCustom.passwd" placeholder="密码" @keydown.native="handleKeyUp"></i-input>
                 </Form-item>
-                <p style="text-align: right;padding-right: 10px">
+                <p style="text-align: right;padding-right: 2px">
+                    <a href="/reset/signup" class="golang-common-link" style="margin-right: 12px;">立即注册</a>
                     <a href="/reset/pwd" class="golang-common-link">忘记密码</a>
                 </p>
                 <Form-item style="margin-top: 10px">
@@ -18,7 +19,7 @@
                 </Form-item>
             </Form>
         </Col>
-        <script type="text/javascript" color="45,140,240" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+        <script type="text/javascript" color="51,133,255" opacity='0.7' zIndex="1" count="80" src="/javascripts/canvasnest/canvas-nest.min.js"></script>
     </Row>
 </template>
 
@@ -41,7 +42,7 @@
                 success: false,
                 ruleCustom: {
                     passwd: [
-                        { required: true, message: '请填写密码', trigger: 'blur' }
+                        { required: true, message: '请输入密码', trigger: 'blur' }
                     ],
                     username: [
                         { required: true, message: '请输入用户名', trigger: 'blur' }
@@ -50,6 +51,11 @@
             }
         },
         layout: 'signin',
+        head () {
+            return {
+                title: '登录 - '
+            }
+        },
         methods: {
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
