@@ -9,9 +9,9 @@ body {
 }
 
 .golang-forget-container {
-	width: 1000px;
+	width: 1200px;
 	margin: 0 auto;
-	height: 60%;
+	height: 560px;
 	margin-top: 20px;
 	background-color: #fff;
 	padding: 20px;
@@ -34,12 +34,16 @@ body {
 .golang-forget-form {
     width: 400px;
     margin: 0 auto;
-    margin-top: 30px;
+    margin-top: 60px;
 }
 
 .forget-button {
-	width: 300px;
-	margin-left: 50px;
+	width: 400px;
+}
+
+.reset-pwd-button {
+    margin-left: 80px;
+    width: 300px;
 }
 
 .forget-success-icon {

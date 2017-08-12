@@ -1,21 +1,21 @@
 <template>
     <Row type="flex" align="middle" justify="center" class="golang-signin-container">
         <Col :xs="24" :lg="6" :md="14">
-            <h1 class="golang-signin-title">GOLANG123</h1>
+            <a class="golang-signin-title" href="/">GOLANG123</a>
             <p class="golang-signin-desc">与地鼠们分享你的知识、经验和见解</p>
         	<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" class="signup-form">
         		<Form-item prop="username">
-                    <i-input v-model="formCustom.username" placeholder="用户名 / 邮箱"></i-input>
+                    <i-input size="large" v-model="formCustom.username" placeholder="用户名 / 邮箱"></i-input>
                 </Form-item>
                 <Form-item prop="passwd">
-                    <i-input type="password" v-model="formCustom.passwd" placeholder="密码" @keydown.native="handleKeyUp"></i-input>
+                    <i-input size="large" type="password" v-model="formCustom.passwd" placeholder="密码" @keydown.native="handleKeyUp"></i-input>
                 </Form-item>
                 <p style="text-align: right;padding-right: 2px">
-                    <a href="/reset/signup" class="golang-common-link" style="margin-right: 12px;">立即注册</a>
+                    <a href="/signup" class="golang-common-link" style="margin-right: 12px;">立即注册</a>
                     <a href="/reset/pwd" class="golang-common-link">忘记密码</a>
                 </p>
                 <Form-item style="margin-top: 10px">
-                    <i-button type="primary" @click="handleSubmit('formCustom')" style="width: 100%">登录</i-button>
+                    <i-button size="large" type="primary" @click="handleSubmit('formCustom')" style="width: 100%">登&nbsp;&nbsp;录</i-button>
                 </Form-item>
             </Form>
         </Col>
