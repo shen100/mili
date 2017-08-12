@@ -8,12 +8,12 @@
                 <Row class="reset-container">
                     <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" class="reset-form" :label-width="80" v-if="!success">
                         <Form-item label="新密码" prop="passwd">
-                            <i-input type="password" v-model="formCustom.passwd" class="signup-input"></i-input>
+                            <i-input size="large" type="password" v-model="formCustom.passwd" class="signup-input"></i-input>
                         </Form-item>
                         <Form-item label="确认密码" prop="passwdCheck">
-                            <i-input type="password" v-model="formCustom.passwdCheck" class="signup-input"></i-input>
+                            <i-input size="large" type="password" v-model="formCustom.passwdCheck" class="signup-input"></i-input>
                         </Form-item>
-                        <i-button type="primary" class="forget-button" @click="handleSubmit('formCustom')">提交</i-button>
+                        <i-button size="large" type="primary" class="reset-pwd-button" @click="handleSubmit('formCustom')">重置密码</i-button>
                     </Form>
                     <div v-if="success" class="signup-form">
                         <p class="forget-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
@@ -56,7 +56,7 @@
                 if (value === '') {
                     callback(new Error('请再次输入密码'))
                 } else if (value !== this.formCustom.passwd) {
-                    callback(new Error('两次输入密码不一致!'))
+                    callback(new Error('两次输入的密码不一致'))
                 } else {
                     callback()
                 }
@@ -70,11 +70,11 @@
                 success: false,
                 ruleCustom: {
                     passwd: [
-                        { required: true, message: '请填写密码', trigger: 'blur' },
+                        { required: true, message: '请输入密码', trigger: 'blur' },
                         { validator: validatePass, trigger: 'blur' }
                     ],
                     passwdCheck: [
-                        { required: true, message: '请验证密码', trigger: 'blur' },
+                        { required: true, message: '请输入确认密码', trigger: 'blur' },
                         { validator: validatePassCheck, trigger: 'blur' }
                     ]
                 }

@@ -24,9 +24,43 @@ html,body {
 }
 
 .golang-footer {
-	background: #000;
-	margin-top: 20px;
+	background: #444;
 	height: 120px;
+    clear: both;
+    border-top: 1px solid #f0f0f0;
+    padding: 36px;
+    margin-top: 30px;
+}
+
+.golang-footer-page-link {
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.golang-footer-page-link a {
+    color: #eee;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.golang-footer-github {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 6px;
+    background: #eee;
+}
+
+.golang-footer-page-link span {
+    color: #eee;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.golang-footer-copyright {
+    color: #ccc;
+    text-align: center;
 }
 
 .admin-common-line {
@@ -127,19 +161,6 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-cell ul .golang-cell-item:nth-child(1) {
 	border: 0;
-}
-
-.golang-footer {
-	clear: both;
-	background: #fff;
-	border-top: 1px solid #f0f0f0;
-	padding: 10px;
-	height: 100px;
-	margin-top: 30px;
-}
-
-.golang-footer {
-	font-size: 14px;
 }
 
 .golang-home-body {

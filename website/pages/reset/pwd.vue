@@ -3,20 +3,20 @@
         <go-header :userStatus="user"/>
         <div class="golang-forget-container">
             <h1>账号安全中心</h1>
-            <p class="golang-forget-title">重置密码</p>
+            <p class="golang-forget-title">忘记密码</p>
             <div id="reset" class="golang-forget-form">
                 <Row class="golang-forget-form">
                     <div v-if="!success">
                         <Form ref="formCustom" :model="formCustom" :rules="ruleCustom">
                             <Form-item prop="email">
-                                <i-input v-model="formCustom.email" placeholder="请输入注册时的邮箱"></i-input>
+                                <i-input size="large" v-model="formCustom.email" placeholder="请输入邮箱"></i-input>
                             </Form-item>
                         </Form>
-                        <i-button type="primary" class="forget-button" @click="handleSubmit('formCustom')">发送邮件</i-button>
+                        <i-button type="primary" class="forget-button" size="large" @click="handleSubmit('formCustom')">发送邮件</i-button>
                     </div>
                     <div v-if="success">
                         <p class="forget-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
-                        <p class="forget-success-info">验证邮件已发送至您的邮箱，请点击查收!</p>
+                        <p class="forget-success-info">验证邮件已发送至您的邮箱，请注意查收!</p>
                         <p class="forget-success-info">没收到邮件？<span v-if="times > 0">{{times}}秒后</span><span class="forget-resend" @click="reSend">重新发送</span></p>
                     </div>
                 </Row>
@@ -46,7 +46,7 @@
                 success: false,
                 ruleCustom: {
                     email: [
-                        { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+                        { required: true, message: '请输入邮箱', trigger: 'blur' },
                         { type: 'email', message: '请填写正确的邮箱', trigger: 'blur' }
                     ]
                 }
@@ -55,6 +55,11 @@
         asyncData (context) {
             return {
                 user: context.user
+            }
+        },
+        head () {
+            return {
+                title: '忘记密码 - '
             }
         },
         middleware: 'userInfo',

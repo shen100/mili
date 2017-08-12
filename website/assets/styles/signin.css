@@ -1,5 +1,5 @@
 html, body {
-	background-color: #fff;
+	background-color: #f7fafc;
 }
 
 #__nuxt {
@@ -13,11 +13,16 @@ html, body {
 }
 
 .golang-signin-title {
+    display: block;
 	color: #2d8cf0;
-    font-size: 30px;
+    font-size: 36px;
     font-style: italic;
     letter-spacing: 3px;
 	text-align: center;
+}
+
+.golang-signin-title:hover {
+    color: #2d8cf0;
 }
 
 .golang-signin-desc {
