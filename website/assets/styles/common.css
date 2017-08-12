@@ -299,7 +299,10 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-sidebar-info-box {
 	line-height: 40px;
+    color: gray;
+    font-size: 14px;
 	margin-left: 10px;
+    font-weight: bold;
 }
 
 .golang-common-link {
@@ -375,4 +378,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .common-body-nav-sep {
 	padding: 0 8px;
+}
+
+.user-info-text {
+    color: #000;
+    font-size: 14px;
+    margin-left: 20px;
+}
+
+.text-italic {
+    font-style: italic;
 }
