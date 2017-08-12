@@ -5,7 +5,7 @@
             <h1>账号安全中心</h1>
             <p class="golang-forget-title">重置密码</p>
             <div id="reset" class="golang-forget-form">
-                <Row class="reset-container">
+                <Row class="reset-container" v-if="!error">
                     <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" class="reset-form" :label-width="80" v-if="!success">
                         <Form-item label="新密码" prop="passwd">
                             <i-input size="large" type="password" v-model="formCustom.passwd" class="signup-input"></i-input>
@@ -20,6 +20,9 @@
                         <p class="forget-success-info">密码修改成功请重新登陆</p>
                     </div>
                 </Row>
+                <div class="signup-form" v-if="error">
+                    <p class="forget-success-info">{{error}}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -30,6 +33,7 @@
     import iview from 'iview'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
+    import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
 
     Vue.use(iview)
@@ -81,9 +85,24 @@
             }
         },
         asyncData (context) {
-            return {
-                user: context.user
-            }
+            return request.verifyUrl({
+                client: context.req,
+                params: {
+                    id: context.params.id,
+                    key: context.params.key
+                }
+            }).then(res => {
+                if (res.errNo === ErrorCode.SUCCESS) {
+                    return {
+                        user: context.user
+                    }
+                } else {
+                    return {
+                        user: context.user,
+                        error: res.msg
+                    }
+                }
+            })
         },
         middleware: 'userInfo',
         methods: {

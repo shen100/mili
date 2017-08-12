@@ -84,3 +84,9 @@ body {
 .forget-resend:hover {
     text-decoration: underline;
 }
+
+.not-resend {
+    color: #9e9e9e;
+    margin-left: 10px;
+    cursor: not-allowed;
+}

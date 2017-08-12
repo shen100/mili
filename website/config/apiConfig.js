@@ -75,6 +75,11 @@ const api = {
         url: url + '/active/:id/:key',
         method: 'GET',
         desc: '账号激活'
+    },
+    verifyUrl: {
+        url: url + '/reset/verify/:id/:key',
+        method: 'GET',
+        desc: '验证重置密码链接是否失效'
     }
 }
 

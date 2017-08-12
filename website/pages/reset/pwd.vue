@@ -17,7 +17,7 @@
                     <div v-if="success">
                         <p class="forget-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
                         <p class="forget-success-info">验证邮件已发送至您的邮箱，请注意查收!</p>
-                        <p class="forget-success-info">没收到邮件？<span v-if="times > 0">{{times}}秒后</span><span class="forget-resend" @click="reSend">重新发送</span></p>
+                        <p class="forget-success-info">没收到邮件？<span v-if="times > 0">{{times}}秒后</span><span :class="times > 0 ? 'not-resend' : 'forget-resend'" @click="reSend">重新发送</span></p>
                     </div>
                 </Row>
             </div>
