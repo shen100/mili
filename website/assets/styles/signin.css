@@ -27,3 +27,7 @@ html, body {
 	letter-spacing: 3px;
 	font-size: 14px;
 }
+
+a:hover {
+    text-decoration: underline;
+}

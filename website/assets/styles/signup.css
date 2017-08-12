@@ -50,3 +50,9 @@ body {
 .signup-input {
 	width: 300px;
 }
+
+.signup-button {
+	margin-left: 80px;
+	margin-bottom: 20px;
+	width: 300px;
+}

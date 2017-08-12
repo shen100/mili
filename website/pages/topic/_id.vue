@@ -25,13 +25,16 @@
                     <div class="golang123-editor" v-html="article.content"></div>
                 </div>
             </div>
+            <app-sidebar />
         </div>
+        <app-footer />
     </div>
 </template>
 
 <script>
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
+    import Sidebar from '~/components/article/ArticleSidebar'
     import request from '~/net/request'
 
     export default {
@@ -60,13 +63,16 @@
                     }
                 })
         },
+        head () {
+            return {
+                title: this.article.name
+            }
+        },
         middleware: 'userInfo',
         components: {
             'app-header': Header,
-            'app-footer': Footer
-        },
-        mounted () {
-            console.log(this.article)
+            'app-footer': Footer,
+            'app-sidebar': Sidebar
         }
     }
 </script>

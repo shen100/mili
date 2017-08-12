@@ -1,0 +1,50 @@
+<template>
+    <div class="golang-home-body-right">
+        <div class="golang-user-info">
+            <div>
+                <a class="golang-sidebar-icon-box">
+                    <img class="golang-user-info-icon" src="~assets/images/head.png" alt="">
+                </a>
+                <span class="golang-sidebar-info-box">
+                    作者名字
+                </span>
+            </div>
+            <div class="golang-user-line">
+                积分: 130
+            </div>
+            <div class="golang-user-line">
+                像风一样go的废飞起
+            </div>
+        </div>
+        <div class="golang-cell">
+            <div class="title">作者其他文章</div>
+            <ul>
+                <li class="golang-cell-item">今天是个好日子</li>
+                <li class="golang-cell-item">今天是个好日子</li>
+                <li class="golang-cell-item">今天是个好日子</li>
+                <li class="golang-cell-item">今天是个好日子</li>
+                <li class="golang-cell-item">今天是个好日子</li>
+            </ul>
+        </div>
+        <div class="golang-cell">
+            <div class="title">友情社区</div>
+            <ul>
+                <li class="golang-cell-item">今天是个好日子</li>
+                <li class="golang-cell-item">今天是个好日子</li>
+                <li class="golang-cell-item">今天是个好日子</li>
+                <li class="golang-cell-item">今天是个好日子</li>
+                <li class="golang-cell-item">今天是个好日子</li>
+            </ul>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        data () {
+            return {
+            }
+        }
+    }
+</script>
+

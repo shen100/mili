@@ -17,6 +17,7 @@
                     <div v-if="success">
                         <p class="forget-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
                         <p class="forget-success-info">验证邮件已发送至您的邮箱，请点击查收!</p>
+                        <p class="forget-success-info">没收到邮件？<span v-if="times > 0">{{times}}秒后</span><span class="forget-resend" @click="reSend">重新发送</span></p>
                     </div>
                 </Row>
             </div>
@@ -29,6 +30,7 @@
     import iview from 'iview'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
+    import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
 
     Vue.use(iview)
@@ -40,6 +42,7 @@
                 formCustom: {
                     email: ''
                 },
+                times: 0,
                 success: false,
                 ruleCustom: {
                     email: [
@@ -69,14 +72,50 @@
                             }
                         }).then(res => {
                             this.loading = false
-                            this.success = true
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                this.success = true
+                                this.times = 60
+                            } else {
+                                this.$Message.error(res.msg)
+                            }
                         }).catch(err => {
                             this.loading = false
                             this.$Message.error(err.msg)
                         })
                     }
                 })
+            },
+            reSend () {
+                if (this.times !== 0 || this.loading) {
+                    return
+                }
+                request.sendEmailPwd({
+                    body: {
+                        email: this.formCustom.email
+                    }
+                }).then(res => {
+                    this.loading = false
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        this.success = true
+                        this.times = 60
+                    } else {
+                        this.$Message.error(res.msg)
+                    }
+                }).catch(err => {
+                    this.loading = false
+                    this.$Message.error(err.msg)
+                })
             }
+        },
+        mounted () {
+            this.count = setInterval(() => {
+                if (this.times > 0) {
+                    this.times--
+                }
+            }, 1000)
+        },
+        destroyed () {
+            clearInterval(this.count)
         },
         components: {
             'go-header': Header,

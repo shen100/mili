@@ -70,3 +70,13 @@ body {
 .signup-input {
     width: 300px;
 }
+
+.forget-resend {
+    color: #007fff;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.forget-resend:hover {
+    text-decoration: underline;
+}

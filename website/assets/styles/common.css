@@ -57,7 +57,7 @@ html,body {
 }
 
 input[name="topSearch"] {
-    background: url(~assets/images/search.png) 4px 4px no-repeat #888;
+    background: url(~assets/images/search.png) 4px 1px no-repeat #888;
     padding: 3px 5px 3px 22px;
     color: #666;
     border: 0;
@@ -102,7 +102,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang-home-body-right {
-	width: 20%;
+	width: 290px;
 }
 
 .golang-home-body-right .golang-cell {
@@ -111,6 +111,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-cell .title{
     padding: 10px;
+    font-size: 13px;
     background-color: #f6f6f6;
 }
 
@@ -120,6 +121,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-cell ul .golang-cell-item{
 	padding: 10px;
+	font-size: 14px;
 	border-top: 1px solid #f0f0f0;
 }
 
@@ -148,7 +150,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-home-body-left {
 	background-color: #fff;
-	width: 75%;
+	width: 74%;
 	display: inline-block;
 }
 
@@ -267,6 +269,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-sidebar-icon-box, .golang-sidebar-info-box {
 	display: inline-block;
+	vertical-align: middle;
 }
 
 .golang-sidebar-icon-box {
@@ -275,8 +278,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-sidebar-info-box {
 	line-height: 40px;
-	float: right;
-	margin-right: 20px;
+	margin-left: 10px;
 }
 
 .golang-common-link {

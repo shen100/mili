@@ -1,6 +1,6 @@
 <template>
 	<div>
-        <go-header :userStatus="user"/>
+        <app-header :userStatus="user"/>
         <div class="signup-box">
             <div class="signup-main">
                 <ul class="signup-nav">
@@ -21,18 +21,16 @@
         	        <Form-item label="邮箱" prop="email">
         	            <i-input v-model="formCustom.email" class="signup-input"></i-input>
         	        </Form-item>
-        	        <Form-item>
-        	            <i-button type="primary" @click="handleSubmit('formCustom')">提交</i-button>
-        	            <a href="/"><i-button type="ghost" style="margin-left: 80px">返回</i-button></a>
-        	        </Form-item>
+    	            <i-button type="primary" size="large" class="signup-button" @click="handleSubmit('formCustom')">立即注册</i-button>
         	    </Form>
         	    <div v-if="success" class="signup-message-box">
                     <p class="message-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
         	    	<p class="message-success-info">注册成功，请进入邮箱激活邮件</p>
         	    </div>
             </div>
+            <app-sidebar />
         </div>
-        <go-footer />
+        <app-footer />
     </div>
 </template>
 
@@ -62,7 +60,7 @@
             }
             const validatePassCheck = (rule, value, callback) => {
                 if (value === '') {
-                    callback(new Error('请再次输入密码'))
+                    callback(new Error('请输入确认密码'))
                 } else if (value !== this.formCustom.passwd) {
                     callback(new Error('两次输入密码不一致!'))
                 } else {
@@ -80,18 +78,18 @@
                 success: false,
                 ruleCustom: {
                     passwd: [
-                        { required: true, message: '请填写密码', trigger: 'blur' },
+                        { required: true, message: '请输入密码', trigger: 'blur' },
                         { validator: validatePass, trigger: 'blur' }
                     ],
                     passwdCheck: [
-                        { required: true, message: '请验证密码', trigger: 'blur' },
+                        { required: true, message: '请输入确认密码', trigger: 'blur' },
                         { validator: validatePassCheck, trigger: 'blur' }
                     ],
                     username: [
                         { required: true, message: '请输入用户名', trigger: 'blur' }
                     ],
                     email: [
-                        { required: true, message: '请输入电子邮箱', trigger: 'blur' },
+                        { required: true, message: '请输入邮箱', trigger: 'blur' },
                         { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
                     ]
                 }
@@ -134,9 +132,9 @@
             }
         },
         components: {
-            'go-header': Header,
-            'go-footer': Footer,
-            'go-sidebar': Sidebar
+            'app-header': Header,
+            'app-footer': Footer,
+            'app-sidebar': Sidebar
         }
     }
 </script>

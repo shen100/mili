@@ -1,24 +1,24 @@
 <template>
     <div class="golang-home-body-right">
         <div class="golang-user-info">
-	        <template v-if="userStatus">
-				<p>golang123：golang专业中文社区</p>
-				<p>您可以<a class="golang-user-info-action" href="/signin">登录</a>或<a class="golang-user-info-action" href="/signup">注册</a></p>
-			</template>
-			<template v-else>
+			<template v-if="userStatus">
 				<div>
-					<div class="golang-sidebar-icon-box">
+					<a class="golang-sidebar-icon-box">
 						<img class="golang-user-info-icon" src="~assets/images/head.png" alt="">
-					</div>
-					<div class="golang-sidebar-info-box">
-						<p>您好！ {{user.name}}</p>
-					</div>
+					</a>
+					<span class="golang-sidebar-info-box">
+						您好！ {{user.name}}
+					</span>
 				</div>
 				<div class="golang-user-line">
 					<a href="/change/pwd" class="golang-common-link link-block">修改密码</a>
 					<a href="" class="golang-common-link link-block">忘记密码</a>
 				</div>
 			</template>
+            <template v-else>
+                <p>golang123：golang专业中文社区</p>
+                <p>您可以<a class="golang-user-info-action" href="/signin">登录</a>或<a class="golang-user-info-action" href="/signup">注册</a></p>
+            </template>
         </div>
         <div class="golang-cell">
 			<div class="title">回复最多的话题</div>

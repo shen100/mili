@@ -13,7 +13,7 @@
 			</div>
 			<div class="golang-top-header-right">
 				<ul>
-					<li>首页</li>
+					<a href="/"><li>首页</li></a>
 					<li>新手入门</li>
 					<li>API</li>
 					<li>关于</li>
@@ -22,7 +22,7 @@
                     </template>
 					<template v-else>
 						<a href="/signup"><li>注册</li></a>
-						<a href="/signin"><li>登陆</li></a>
+						<a href="/signin"><li>登录</li></a>
 					</template>
 				</ul>
 			</div>
