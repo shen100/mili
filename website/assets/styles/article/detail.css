@@ -1,4 +1,4 @@
-body {
+body, .golang-home-body-left {
 	background-color: #e1e1e1;
 }
 
@@ -12,6 +12,8 @@ body {
 	font-size: 22px;
 	font-weight: bold;
 	margin: 8px 0;
+	line-height: 25px;
+	vertical-align: middle;
 }
 
 .article-title-info {
@@ -29,5 +31,33 @@ body {
 
 .home-articles-box {
 	padding: 10px;
+	border-radius: 0 0 3px 3px;
 }
 
+.golang-sidebar-icon-box {
+	margin-left: 0;
+}
+
+.articles-categoties {
+	margin-right: 10px;
+	background-color: #80bd01;
+	color: #fff;
+	font-size: 12px;
+	padding: 3px;
+	border-radius: 5px;
+	line-height: 25px;
+	vertical-align: text-bottom;
+}
+
+.detail-title-box, .home-articles-box {
+	background-color: #fff;
+}
+
+.comment-box {
+	margin-top: 20px;
+}
+
+.comment-content {
+	background-color: #fff;
+	padding: 10px;
+}

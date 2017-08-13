@@ -13,7 +13,7 @@
                         <span class="articles-click-num" title="回复数">120</span>
                         <span class="articles-num-split">/</span>
                         <span class="articles-res-num" title="点击数">11520</span>
-                        <span v-for="cItem in categories" class="articles-categoties">{{cItem.name}}</span>
+                        <span class="articles-categoties">{{article.categories[0].name}}</span>
                         <a :href="'/topic/' + article.id" class="home-articles-title">{{article.name}}</a>
                         <p class="articles-res-time">2天前</p>
                         <a class="user-small-icon-box"><img src="~assets/images/head.png" alt=""></a>
@@ -85,6 +85,7 @@
             }
         },
         mounted () {
+            console.log(this.articles)
         },
         components: {
             'app-header': Header,

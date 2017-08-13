@@ -80,6 +80,11 @@ const api = {
         url: url + '/reset/verify/:id/:key',
         method: 'GET',
         desc: '验证重置密码链接是否失效'
+    },
+    commentCreate: {
+        url: url + '/comment/create',
+        method: 'POST',
+        desc: '提交评论'
     }
 }
 
