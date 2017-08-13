@@ -96,8 +96,14 @@
             }
         },
         asyncData (context) {
+            const user = context.user
+            if (user) {
+                let redirectURL = context.req.headers['referer'] || '/'
+                context.redirect(redirectURL)
+                return
+            }
             return {
-                user: context.user
+                user: user
             }
         },
         middleware: 'userInfo',
