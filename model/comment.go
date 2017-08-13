@@ -12,8 +12,7 @@ type Comment struct {
     Content        string             `json:"content"`
     ParentID       uint               `json:"parentID"`  
     Parents        []Comment          `json:"parents"`  
-	ArticleID      uint               `json:"articleID"`  
-	Ups            []Up               `gorm:"ForeignKey:TargetID" json:"ups"` 
+	ArticleID      uint               `json:"articleID"`
 }
 
 const (

@@ -10,7 +10,7 @@ type Up struct {
     DeletedAt      *time.Time         `sql:"index" json:"deletedAt"`
 	TargetID       uint               `json:"targetID"`   
 	Type           int                `json:"type"`   
-	UserID         uint               `json:"user_id"`
+	UserID         uint               `json:"userID"`
 	User           User               `json:"user"`
 }
 
