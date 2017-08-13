@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-08-02 15:53:05 +0000
+# Generation Time: 2017-08-13 14:49:30 +0000
 # ************************************************************
 
 
@@ -52,7 +52,9 @@ VALUES
 	(18,19,2),
 	(19,20,2),
 	(20,21,2),
-	(21,22,1);
+	(23,22,2),
+	(25,23,3),
+	(26,24,2);
 
 /*!40000 ALTER TABLE `article_category` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -82,7 +84,9 @@ LOCK TABLES `articles` WRITE;
 
 INSERT INTO `articles` (`id`, `name`, `browse_count`, `comment_count`, `status`, `content`, `created_at`, `updated_at`, `deleted_at`, `user_id`)
 VALUES
-	(22,'test',0,0,1,'**你们国恨家仇…**   *你们国恨家仇…*\n\n![](https://dev.golang123.com/upload/img/2017/08/02/5ec41a60-beb4-45e7-8c2b-443646171530.jpg)  \n[尝试用thinkjs搭建一套blog](http://wwww,a.com)\n\n\n> 谢邀。 虽然你们国恨家仇…尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n  \n	   \n		    \n				\n    \n		\n```\n.golang123-editor ol {\n	padding-left: 20px;\n}\n\n.golang123-editor ol li {\n	list-style-type: decimal;\n}\n```\n\n* adfafs\n* asdf\n* asdf\n* asdf\n* asdfa\n* sffadsf\n\n\n-----\n  \n	\n  \n\n\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text     | Text     |\n\n\nasdfafa\n\n1. adfasf\n2. asdf\n3. asdfa\n4. sdfasdf\n5. asdf\n6. afdafaf\n\n# adfafaf\n## 尝试用thinkjs搭建一套blog\n### 尝试用thinkjs搭建一套blog\n#### 尝试用thinkjs搭建一套blog\n##### 尝试用thinkjs搭建一套blog\n###### 尝试用thinkjs搭建一套blog','2017-08-02 23:40:01','2017-08-02 23:40:01',NULL,31);
+	(22,'test2',0,0,1,'**你们国恨家仇…**   *你们国恨家仇…*\n\n![](https://dev.golang123.com/upload/img/2017/08/02/5ec41a60-beb4-45e7-8c2b-443646171530.jpg)  \n[尝试用thinkjs搭建一套blog](http://wwww,a.com)\n\n\n> 谢邀。 虽然你们国恨家仇…尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n  \n	   \n		    \n				\n    \n		\n```\n.golang123-editor ol {\n	padding-left: 20px;\n}\n\n.golang123-editor ol li {\n	list-style-type: decimal;\n}\n```\n\n* adfafs\n* asdf\n* asdf\n* asdf\n* asdfa\n* sffadsf\n\n\n-----\n  \n	\n  \n\n\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text     | Text     |\n\n\nasdfafa\n\n1. adfasf\n2. asdf\n3. asdfa\n4. sdfasdf\n5. asdf\n6. afdafaf\n\n# adfafaf\n## 尝试用thinkjs搭建一套blog\n### 尝试用thinkjs搭建一套blog\n#### 尝试用thinkjs搭建一套blog\n##### 尝试用thinkjs搭建一套blog\n###### 尝试用thinkjs搭建一套blog','2017-08-02 23:40:01','2017-08-12 11:42:59',NULL,31),
+	(23,'111',0,0,1,'123','2017-08-10 22:35:01','2017-08-12 11:42:59',NULL,31),
+	(24,'ttt',0,0,1,'adf','2017-08-12 15:47:08','2017-08-12 15:47:08',NULL,39);
 
 /*!40000 ALTER TABLE `articles` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -111,11 +115,38 @@ LOCK TABLES `categories` WRITE;
 
 INSERT INTO `categories` (`id`, `name`, `slug`, `sequence`, `parent_id`, `status`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
-	(1,'精华','',0,0,1,'2017-07-23 18:03:15','2017-08-02 23:40:01',NULL),
-	(2,'招聘','',0,0,1,'2017-07-23 18:03:32','2017-08-01 21:42:00',NULL),
-	(3,'分享','',0,0,1,'2017-07-23 18:04:39','2017-07-31 23:57:15',NULL);
+	(1,'精华','',0,0,1,'2017-07-23 18:03:15','2017-08-10 22:23:00',NULL),
+	(2,'招聘','',0,0,1,'2017-07-23 18:03:32','2017-08-12 15:47:08',NULL),
+	(3,'分享','',0,0,1,'2017-07-23 18:04:39','2017-08-10 22:35:27',NULL);
 
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table collects
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `collects`;
+
+CREATE TABLE `collects` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `article_id` int(11) unsigned NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+LOCK TABLES `collects` WRITE;
+/*!40000 ALTER TABLE `collects` DISABLE KEYS */;
+
+INSERT INTO `collects` (`id`, `user_id`, `article_id`, `created_at`, `updated_at`, `deleted_at`)
+VALUES
+	(3,31,23,'2017-08-12 12:21:53','2017-08-12 12:21:53','2017-08-12 12:44:00'),
+	(4,31,22,'2017-08-12 12:22:21','2017-08-12 12:22:21','2017-08-12 12:44:50');
+
+/*!40000 ALTER TABLE `collects` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -182,6 +213,28 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table message
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `message`;
+
+CREATE TABLE `message` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `from_user_id` int(11) NOT NULL,
+  `article_id` int(11) NOT NULL,
+  `comment_id` int(11) DEFAULT NULL,
+  `has_read` tinyint(4) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  `chat_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
 # Dump of table ups
 # ------------------------------------------------------------
 
@@ -216,6 +269,7 @@ CREATE TABLE `users` (
   `pass` varchar(100) NOT NULL DEFAULT '',
   `score` int(11) unsigned NOT NULL,
   `article_count` int(11) unsigned NOT NULL,
+  `collect_count` int(11) unsigned NOT NULL,
   `signature` varchar(200) DEFAULT NULL,
   `role` int(11) NOT NULL,
   `status` int(11) NOT NULL,
@@ -225,9 +279,9 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `score`, `article_count`, `signature`, `role`, `status`)
+INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `score`, `article_count`, `collect_count`, `signature`, `role`, `status`)
 VALUES
-	(31,'2017-07-25 18:25:54','2017-08-02 23:40:01',NULL,'jack','liushen_shen@163.com','','15009783546021268569e284facf59b9c4d0aa8cf2',60,12,'a',4,2);
+	(39,'2017-08-12 15:40:56','2017-08-12 15:47:08',NULL,'jack','liushen_shen@163.com','','1502523656f4d5c2fd1a3cd9cedc14dd383db46b8e',5,1,0,'',1,2);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
