@@ -13,16 +13,17 @@
 			</div>
 			<div class="golang-top-header-right">
 				<ul>
-					<a href="/"><li>首页</li></a>
-					<li>新手入门</li>
-					<li>API</li>
+					<li><a href="/">首页</a></li>
+                    <li><a href="/">投票</a></li>
+					<li><a href="/timeline">时间轴</a></li>
+                    <li><a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a></li>
 					<li>关于</li>
-                    <template v-if="userStatus">
+                    <template v-if="user">
                         <li>退出</li>
                     </template>
 					<template v-else>
-						<a href="/signup"><li>注册</li></a>
 						<a href="/signin"><li>登录</li></a>
+                        <a href="/signup"><li>注册</li></a>
 					</template>
 				</ul>
 			</div>
@@ -33,14 +34,13 @@
 <script>
     export default {
         props: [
-            'userStatus'
+            'user'
         ],
         data () {
             return {
             }
         },
         mounted () {
-            console.log(this.userStatus)
         }
     }
 </script>

@@ -130,6 +130,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	color: #fff;
 }
 
+.golang-top-header-right a {
+    color: #ccc;
+}
+
+.golang-top-header-right a:hover {
+    color: #fff;
+}
+
 .golang-home-body-right {
 	float: right;
 	display: inline-block;

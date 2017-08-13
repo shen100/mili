@@ -23,6 +23,7 @@ html, body {
 
 .golang-signin-title:hover {
     color: #2d8cf0;
+    text-decoration: none;
 }
 
 .golang-signin-desc {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header :userStatus="userStatus" />
+        <app-header :user="user" />
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div class="home-categoties-box">
@@ -20,7 +20,7 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :score="score" :user="user" :userStatus="userStatus"/>
+            <app-sidebar :score="score" :user="user"/>
         </div>
         <app-footer />
     </div>
@@ -57,8 +57,7 @@
                 let categories = data[0].data.categories || []
                 let articles = data[1].data.articles
                 let score = data[2].data.users
-                let userStatus = !!data[3].data.user
-                let user = data[3].data.user || {}
+                let user = data[3].data.user
                 let cate = query.cate || false
 
                 if (query.cate) {
@@ -72,7 +71,6 @@
                     categories: categories,
                     articles: articles,
                     score: score,
-                    userStatus: userStatus,
                     user: user,
                     cate: cate
                 }
@@ -80,6 +78,11 @@
                 console.log(err)
                 context.error({ message: 'Not Found', statusCode: 404 })
             })
+        },
+        head () {
+            return {
+                title: '首页 - '
+            }
         },
         mounted () {
         },

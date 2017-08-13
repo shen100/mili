@@ -50,7 +50,19 @@
                 }
             }
         },
+        asyncData (context) {
+            const user = context.user
+            if (user) {
+                let redirectURL = context.req.headers['referer'] || '/'
+                context.redirect(redirectURL)
+                return
+            }
+            return {
+                user: user
+            }
+        },
         layout: 'signin',
+        middleware: 'userInfo',
         head () {
             return {
                 title: '登录 - '

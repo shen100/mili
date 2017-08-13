@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header />
+        <app-header :user="user"/>
         <div class="timeline-box">
             <h1 class="timeline-title">Golang中文社区时间轴</h1>
             <div>
@@ -73,9 +73,15 @@
                 ]
             }
         },
+        asyncData (context) {
+            const user = context.user
+            return {
+                user: user
+            }
+        },
         head () {
             return {
-                title: 'Golang中文社区时间轴 - '
+                title: '时间轴 - '
             }
         },
         mounted () {
@@ -97,6 +103,7 @@
                 return '' + year + '-' + month + '-' + d
             }
         },
+        middleware: 'userInfo',
         components: {
             'app-header': Header,
             'app-footer': Footer

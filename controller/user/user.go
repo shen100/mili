@@ -413,6 +413,7 @@ func Info(ctx *iris.Context) {
 	session     := ctx.Session();
 	user, ok    := session.Get("user").(model.User)
 	if ok {
+		session.Set("user", user)
 		ctx.JSON(iris.StatusOK, iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",

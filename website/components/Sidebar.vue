@@ -4,7 +4,7 @@
             <div class="title">个人信息</div>
         </div>
         <div class="golang-user-info">
-			<template v-if="userStatus">
+			<template v-if="user">
 				<div>
 					<a class="golang-sidebar-usericon golang-sidebar-icon-box">
 						<img class="golang-user-info-icon" src="~assets/images/head.png" alt="">
@@ -23,7 +23,7 @@
                 <p>您可以<a class="golang-user-info-action" href="/signin">登录</a>或<a class="golang-user-info-action" href="/signup">注册</a></p>
             </template>
         </div>
-        <div class="golang-user-publish" v-if="userStatus">
+        <div class="golang-user-publish" v-if="user">
             <a href="/topic/create"><button class="signup-button ivu-btn ivu-btn-primary ivu-btn-large">发布话题</button></a>
         </div>
         <div class="golang-cell">
@@ -61,7 +61,6 @@
 <script>
     export default {
         props: [
-            'userStatus',
             'user',
             'score'
         ],
