@@ -61,3 +61,42 @@ body, .golang-home-body-left {
 	background-color: #fff;
 	padding: 10px;
 }
+
+.reply-user-icon {
+	float: left;
+}
+
+.reply-user-icon img {
+	width: 30px;
+	height: 30px;
+}
+
+.reply-user-name {
+	color: gray;
+	margin: 0 5px;
+}
+
+.reply-time {
+	color: #08c;
+}
+
+.reply-time:hover {
+	text-decoration: underline;
+}
+
+.comment-item {
+	padding: 15px 0;
+}
+
+.comment-item {
+	border-top: 1px solid #e5e5e5;
+}
+
+.comment-item:nth-child(1) {
+	border: 0;
+}
+
+.comment-item .golang123-editor {
+	margin-top: 10px;
+	margin-left: 40px;
+}

@@ -131,7 +131,7 @@
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.msg)
+                            this.$Message.error(err.message)
                         })
                     }
                 })

@@ -20,7 +20,20 @@
                 <div class="home-articles-box">
                     <div class="golang123-editor" v-html="article.content"></div>
                 </div>
-                <div class="golang-cell comment-box">
+                <div class="golang-cell comment-box" v-if="article.comments.length > 0">
+                    <div class="title">{{article.comments.length}}回复</div>
+                    <div class="comment-content">
+                        <div class="comment-item" :id="`reply${index}`" v-for="(item, index) in article.comments">
+                            <a class="reply-user-icon">
+                                <img src="~assets/images/head.png" alt="">
+                            </a>
+                            <span class="reply-user-name">评论者名称</span>
+                            <a :href="`#reply${index}`" class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</a>
+                            <div class="golang123-editor" v-html="item.content"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="golang-cell comment-box" v-if="user">
                     <div class="title">添加回复</div>
                     <div class="comment-content">
                         <Form ref="formData" :model="formData" :rules="formRule">
@@ -115,15 +128,43 @@
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.formData.content = ''
                                 this.$Message.success('评论提交成功')
+                                return request.getArticle({
+                                    params: {
+                                        id: this.$route.params.id
+                                    }
+                                })
                             } else {
-                                this.$Message.error(res.msg)
+                                return Promise.reject(new Error(res.msg))
+                            }
+                        }).then(res => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                this.article = res.data.article
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.msg)
+                            this.$Message.error(err.message)
                         })
                     }
                 })
+            }
+        },
+        mounted () {
+            console.log(this.article.comments)
+        },
+        filters: {
+            getReplyTime: (times) => {
+                let time = new Date(times).getTime()
+                let currentT = new Date().getTime()
+                let diff = (currentT - time) / 1000
+                if (diff < 60) {
+                    return '刚刚'
+                } else if (diff < 60 * 60) {
+                    return `${parseInt(diff / 60)}分钟前`
+                } else if (diff < 24 * 60 * 60) {
+                    return `${parseInt(diff / 60 / 60)}小时前`
+                } else {
+                    return `${parseInt(diff / 24 / 60 / 60)}天前`
+                }
             }
         },
         components: {

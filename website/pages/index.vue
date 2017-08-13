@@ -10,9 +10,11 @@
                 <div class="home-articles-box">
                     <div v-for="article in articles" class="articles-cell">
                         <a class="user-icon-box"><img src="~assets/images/head.png" alt=""></a>
-                        <span class="articles-click-num" title="回复数">120</span>
-                        <span class="articles-num-split">/</span>
-                        <span class="articles-res-num" title="点击数">11520</span>
+                        <Tooltip :content="'回复数120,浏览数11520'" placement="bottom-start" class="home-tip-box">
+                            <span class="articles-click-num">120</span>
+                            <span class="articles-num-split">/</span>
+                            <span class="articles-res-num">11520</span>
+                        </Tooltip>
                         <span class="articles-categoties">{{article.categories[0].name}}</span>
                         <a :href="'/topic/' + article.id" class="home-articles-title">{{article.name}}</a>
                         <p class="articles-res-time">2天前</p>
@@ -27,10 +29,14 @@
 </template>
 
 <script>
+    import Vue from 'vue'
+    import iview from 'iview'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
     import request from '~/net/request'
+
+    Vue.use(iview)
 
     export default {
         data () {
