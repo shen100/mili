@@ -53,18 +53,18 @@ func (user User) EncryptPassword(password, salt string) (hash string) {
     return
 }
 
-// ToJSON 转成map
-func (user User) ToJSON() map[string]interface{} {
-    return map[string]interface{}{
-        "id"        : user.ID,
-        "createdAt" : user.CreatedAt,
-        "updatedAt" : user.UpdatedAt,
-        "name"      : user.Name,
-        "email"     : user.Email,
-        "role"      : user.Role,
-        "score"     : user.Score,
-        "signature" : user.Signature,
-        "status"    : user.Status,
+// ToUser 返回的User仅部分属性有值，即隐藏部分字段
+func (user User) ToUser() User {
+    return User{
+        ID        : user.ID,
+        CreatedAt : user.CreatedAt,
+        UpdatedAt : user.UpdatedAt,
+        Name      : user.Name,
+        Email     : user.Email,
+        Role      : user.Role,
+        Score     : user.Score,
+        Signature : user.Signature,
+        Status    : user.Status,
     }
 }
 

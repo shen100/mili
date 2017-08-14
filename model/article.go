@@ -16,6 +16,7 @@ type Article struct {
     Categories     []Category         `gorm:"many2many:article_category;ForeignKey:ID;AssociationForeignKey:ID" json:"categories"`
     Comments       []Comment          `json:"comments"` 
     UserID         uint               `json:"userID"`
+    User           User               `json:"user"`
 }
 
 const (

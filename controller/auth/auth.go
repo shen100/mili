@@ -19,6 +19,27 @@ func SigninRequired(ctx *iris.Context) {
 	ctx.Next()
 }
 
+// ActiveRequired 用户必须是激活状态
+func ActiveRequired(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	session     := ctx.Session();
+	user, ok    := session.Get("user").(model.User)
+	if ok && user.Status == model.UserStatusActived {
+		ctx.Next()
+	} else {
+		var msg = ""
+		switch user.Role {
+			case model.UserStatusInActive: {
+				msg = "账号未激活"
+			}
+			case model.UserStatusFrozen: {
+				msg = "账号已被冻结"
+			}
+		}
+		SendErrJSON(msg, ctx)
+	}
+}
+
 // AdminRequired 授权
 func AdminRequired(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
