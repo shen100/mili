@@ -8,7 +8,7 @@ body {
 	font-size: 14px;
 }
 
-.categoties-item a {
+.categoties-item {
 	color: #80bd01;
 }
 
@@ -23,7 +23,7 @@ body {
 	background-color: #80bd01;
 }
 
-.categoties-item:hover a, .categoties-select a {
+.categoties-item:hover, .categoties-select {
 	color: #fff;
 }
 

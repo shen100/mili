@@ -97,3 +97,8 @@ body, .golang-home-body-left {
 	margin-top: 10px;
 	margin-left: 40px;
 }
+
+.author-info-text {
+	color: #000;
+    font-size: 14px;
+}

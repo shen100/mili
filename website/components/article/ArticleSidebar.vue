@@ -1,19 +1,22 @@
 <template>
     <div class="golang-home-body-right">
-        <div class="golang-user-info">
-            <div>
-                <a class="golang-sidebar-icon-box">
-                    <img class="golang-user-info-icon" src="~assets/images/head.png" alt="">
-                </a>
-                <span class="golang-sidebar-info-box">
-                    作者名字
-                </span>
-            </div>
-            <div class="golang-user-line">
-                积分: 130
-            </div>
-            <div class="golang-user-line">
-                像风一样go的废飞起
+        <div class="golang-cell">
+            <div class="title">作者信息</div>
+            <div class="golang-user-info">
+                <div>
+                    <a class="golang-sidebar-icon-box">
+                        <img class="golang-user-info-icon" src="~assets/images/head.png" alt="">
+                    </a>
+                    <span class="golang-sidebar-info-box">
+                        作者名字
+                    </span>
+                </div>
+                <div class="golang-user-line author-info-text">
+                    积分: 130
+                </div>
+                <div class="golang-user-line author-info-text text-italic">
+                    像风一样go的废飞起
+                </div>
             </div>
         </div>
         <div class="golang-cell">
