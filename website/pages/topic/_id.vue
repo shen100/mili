@@ -23,12 +23,12 @@
                 <div class="golang-cell comment-box" v-if="article.comments.length > 0">
                     <div class="title">{{article.comments.length}}回复</div>
                     <div class="comment-content">
-                        <div class="comment-item" :id="`reply${index}`" v-for="(item, index) in article.comments">
+                        <div class="comment-item" v-for="(item, index) in article.comments">
                             <a class="reply-user-icon">
                                 <img src="~assets/images/head.png" alt="">
                             </a>
                             <span class="reply-user-name">评论者名称</span>
-                            <a :href="`#reply${index}`" class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</a>
+                            <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
                             <div class="golang123-editor" v-html="item.content"></div>
                         </div>
                     </div>

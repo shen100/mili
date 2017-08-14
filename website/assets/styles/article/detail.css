@@ -78,10 +78,7 @@ body, .golang-home-body-left {
 
 .reply-time {
 	color: #08c;
-}
-
-.reply-time:hover {
-	text-decoration: underline;
+	cursor: default;
 }
 
 .comment-item {

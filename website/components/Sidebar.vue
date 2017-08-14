@@ -1,28 +1,30 @@
 <template>
     <div class="golang-home-body-right">
-        <div class="golang-cell" style="margin-bottom:0;">
-            <div class="title">个人信息</div>
-        </div>
-        <div class="golang-user-info">
-			<template v-if="user">
-				<div>
-					<a class="golang-sidebar-usericon golang-sidebar-icon-box">
-						<img class="golang-user-info-icon" src="~assets/images/head.png" alt="">
-					</a>
-					<span class="golang-sidebar-info-box">
-						{{user.name}}
-					</span>
-				</div>
-				<div class="golang-user-line user-info-text user-info-score">
-					积分: {{user.score}}
-				</div>
-                <div class="golang-user-line user-info-text text-italic user-info-signature">{{user.signature || '这家伙很懒，什么个性签名都没有留下'}}</div>
-			</template>
-            <template v-else>
-                <p>golang123：golang专业中文社区</p>
+        <template v-if="user">
+            <div class="golang-cell" style="margin-bottom:0;">
+                <div class="title">个人信息</div>
+            </div>
+            <div class="golang-user-info">
+    				<div>
+    					<a class="golang-sidebar-usericon golang-sidebar-icon-box">
+    						<img class="golang-user-info-icon" src="~assets/images/head.png" alt="">
+    					</a>
+    					<span class="golang-sidebar-info-box">
+    						{{user.name}}
+    					</span>
+    				</div>
+    				<div class="golang-user-line user-info-text user-info-score">
+    					积分: {{user.score}}
+    				</div>
+                    <div class="golang-user-line user-info-text text-italic user-info-signature">{{user.signature || '这家伙很懒，什么个性签名都没有留下'}}</div>
+            </div>
+        </template>
+        <template v-else>
+            <div class="golang-cell golang-user-info">
+                <p>golang中文社区</p>
                 <p>您可以<a class="golang-user-info-action" href="/signin">登录</a>或<a class="golang-user-info-action" href="/signup">注册</a></p>
-            </template>
-        </div>
+            </div>
+        </template>
         <div class="golang-user-publish" v-if="user">
             <a href="/topic/create"><button class="signup-button ivu-btn ivu-btn-primary ivu-btn-large">发布话题</button></a>
         </div>

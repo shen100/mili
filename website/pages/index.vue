@@ -4,13 +4,13 @@
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div class="home-categoties-box">
-                    <div class="categoties-item" :class="{'categoties-select': cate}"><a href="/">全部</a></div>
-                    <div v-for="cateItem in categories" class="categoties-item" :class="{'categoties-select': cateItem.select}"><a :href="'/?cate=' + cateItem.id">{{cateItem.name}}</a></div>
+                    <div class="categoties-item" :class="{'categoties-select': !cate}"><a href="/">全部</a></div>
+                    <div v-for="cateItem in categories" class="categoties-item" :class="{'categoties-select': cateItem.id == cate}"><a :href="'/?cate=' + cateItem.id">{{cateItem.name}}</a></div>
                 </div>
                 <div class="home-articles-box">
                     <div v-for="article in articles" class="articles-cell">
                         <a class="user-icon-box"><img src="~assets/images/head.png" alt=""></a>
-                        <Tooltip :content="'回复数120,浏览数11520'" placement="bottom-start" class="home-tip-box">
+                        <Tooltip :content="'回复数120　浏览数11520'" placement="bottom-start" class="home-tip-box">
                             <span class="articles-click-num">120</span>
                             <span class="articles-num-split">/</span>
                             <span class="articles-res-num">11520</span>
@@ -45,34 +45,27 @@
             }
         },
         asyncData (context) {
-            const query = context.req.query || {}
+            const query = context.query || {}
+            console.log('1111', query)
             return Promise.all([
                 request.getCategories({
                     client: context.req
                 }),
                 request.getArticles({
-                    client: context.req
+                    client: context.req,
+                    query: {
+                        cateId: query.cate || ''
+                    }
                 }),
                 request.getTop10({
-                    client: context.req
-                }),
-                request.getUserInfo({
                     client: context.req
                 })
             ]).then(data => {
                 let categories = data[0].data.categories || []
                 let articles = data[1].data.articles
                 let score = data[2].data.users
-                let user = data[3].data.user
-                let cate = query.cate || false
-
-                if (query.cate) {
-                    categories.map(item => {
-                        if (item.id === query.cate) {
-                            item.select = true
-                        }
-                    })
-                }
+                let user = context.user
+                let cate = query.cate || ''
                 return {
                     categories: categories,
                     articles: articles,
@@ -90,8 +83,9 @@
                 title: '首页 - '
             }
         },
+        middleware: 'userInfo',
         mounted () {
-            console.log(this.articles)
+            console.log(this.categories)
         },
         components: {
             'app-header': Header,
