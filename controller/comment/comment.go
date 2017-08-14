@@ -49,7 +49,11 @@ func Save(isEdit bool, ctx *iris.Context) {
 		return
 	}
 
+	session   := ctx.Session();
+	user      := session.Get("user").(model.User)
+
 	comment.Status = model.CommentVerifying
+	comment.UserID = user.ID
 
 	var updatedComment model.Comment
 
@@ -78,6 +82,7 @@ func Save(isEdit bool, ctx *iris.Context) {
 	} else {
 		commentJSON = comment	
 	}
+	commentJSON.User = user.ToUser()
 
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,

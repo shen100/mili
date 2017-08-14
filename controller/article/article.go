@@ -299,9 +299,9 @@ func Info(ctx *iris.Context) {
 	SendErrJSON  := common.SendErrJSON
 	reqStartTime := time.Now()
 	var articleID int
-	var err error
+	var paramsErr error
 
-	if articleID, err = ctx.ParamInt("id"); err != nil {
+	if articleID, paramsErr = ctx.ParamInt("id"); paramsErr != nil {
 		SendErrJSON("错误的文章id", ctx)
 		return
 	}
@@ -313,19 +313,32 @@ func Info(ctx *iris.Context) {
 		return
 	}
 
-	if err = model.DB.Model(&article).Related(&article.Categories, "categories").Error; err != nil {
+	if err := model.DB.Model(&article).Related(&article.User, "users").Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+	article.User = article.User.ToUser()
+
+	if err := model.DB.Model(&article).Related(&article.Categories, "categories").Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
 	}
 
-	if err = model.DB.Model(&article).Related(&article.Comments, "comments").Error; err != nil {
+	if err := model.DB.Model(&article).Related(&article.Comments, "comments").Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
 	}
 
 	for i := 0; i < len(article.Comments); i++ {
+		if err := model.DB.Model(&article.Comments[i]).Related(&article.Comments[i].User, "users").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		article.Comments[i].User = article.Comments[i].User.ToUser()
 		parentID := article.Comments[i].ParentID
 		var parents []model.Comment
 		for parentID != 0 {
@@ -334,6 +347,12 @@ func Info(ctx *iris.Context) {
 				SendErrJSON("error", ctx)
 				return
 			}
+			if err := model.DB.Model(&parent).Related(&parent.User, "users").Error; err != nil {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return
+			}
+			parent.User = parent.User.ToUser()
 			parents = append(parents, parent)
 			parentID = parent.ParentID
 		}

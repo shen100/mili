@@ -106,6 +106,11 @@
                 user: user
             }
         },
+        head () {
+            return {
+                title: '注册 - '
+            }
+        },
         middleware: 'userInfo',
         methods: {
             handleSubmit (name) {

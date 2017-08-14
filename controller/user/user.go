@@ -15,18 +15,18 @@ import (
 	"golang123/controller/mail"
 )
 
+const (
+	activeDuration = 24 * 60 * 60
+	resetDuration  = 24 * 60 * 60
+)
+
 func sendMail(action string, title string, curTime int64, user model.User, ctx *iris.Context) {
-	apiPrefix := config.APIConfig.Prefix
 	siteName  := config.ServerConfig.SiteName
 	siteURL   := "https://" + config.ServerConfig.Host
 	secretStr := fmt.Sprintf("%d%s%s", curTime, user.Email, user.Pass)
 	secretStr  = fmt.Sprintf("%x", md5.Sum([]byte(secretStr)))
-	actionURL := ""
-	if action != "/reset" {
-		actionURL = siteURL + action + "/%d/%s"
-	} else {
-		actionURL = siteURL + apiPrefix + action + "/%d/%s"	
-	}
+	actionURL := siteURL + action + "/%d/%s"
+
 	actionURL  = fmt.Sprintf(actionURL, user.ID, secretStr)
 
 	fmt.Println(actionURL)
@@ -84,12 +84,27 @@ func verifyLink(cacheKey string, duration int64, ctx *iris.Context) (model.User,
 	return user, nil	
 }
 
+// VerifyActiveLink 验证激活账号的链接是否失效
+func VerifyActiveLink(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	if _, err := verifyLink("activeTime", activeDuration, ctx); err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("链接已失效", ctx)
+		return	
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{},
+	})
+}
+
 // ActiveAccount 激活账号
 func ActiveAccount(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var err error
 	var user model.User
-	if user, err = verifyLink("activeTime", 24 * 60 * 60, ctx); err != nil {
+	if user, err = verifyLink("activeTime", activeDuration, ctx); err != nil {
 		SendErrJSON(err.Error(), ctx)
 		return
 	}
@@ -104,7 +119,7 @@ func ActiveAccount(ctx *iris.Context) {
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : user.ToJSON(),
+		"data"  : user.ToUser(),
 	})
 }
 
@@ -143,7 +158,7 @@ func ResetPasswordMail(ctx *iris.Context) {
 // VerifyResetPasswordLink 验证重置密码的链接是否失效
 func VerifyResetPasswordLink(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	if _, err := verifyLink("resetTime", 24 * 60 * 60, ctx); err != nil {
+	if _, err := verifyLink("resetTime", resetDuration, ctx); err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("链接已失效", ctx)
 		return	
@@ -175,7 +190,7 @@ func ResetPassword(ctx *iris.Context) {
 
 	var err error
 	var user model.User 
-	if user, err = verifyLink("resetTime", 24 * 60 * 60, ctx); err != nil {
+	if user, err = verifyLink("resetTime", resetDuration, ctx); err != nil {
 		SendErrJSON(err.Error(), ctx)
 		return	
 	}
@@ -253,7 +268,7 @@ func Signin(ctx *iris.Context) {
 		ctx.JSON(iris.StatusOK, iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
-			"data"  : queryUser.ToJSON(),
+			"data"  : queryUser.ToUser(),
 		})
 	} else {
 		SendErrJSON(msg, ctx)
@@ -331,7 +346,18 @@ func Signup(ctx *iris.Context) {
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : newUser.ToJSON(),
+		"data"  : newUser.ToUser(),
+	})
+}
+
+// Signout 退出登录
+func Signout(ctx *iris.Context) {
+	session := ctx.Session()
+	session.Set("user", nil)
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{},
 	})
 }
 
@@ -418,7 +444,7 @@ func Info(ctx *iris.Context) {
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
 			"data"  : iris.Map{
-				"user": user.ToJSON(),
+				"user": user.ToUser(),
 			},
 		})	
 	} else {

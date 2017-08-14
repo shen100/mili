@@ -19,26 +19,31 @@ func Route(app *iris.Framework) {
 
 	router := app.Party(apiPrefix) 
 	{	
-		router.Post("/signin",                  user.Signin)
-		router.Post("/signup",                  user.Signup)
-		router.Get("/active/:id/:secret",       user.ActiveAccount)
-		router.Post("/reset",                   user.ResetPasswordMail)
-		router.Post("/reset/:id/:secret",       user.ResetPassword)
-		router.Get("/reset/verify/:id/:secret", user.VerifyResetPasswordLink)
+		router.Post("/signin",                   user.Signin)
+		router.Post("/signup",                   user.Signup)
+		router.Post("/signout",                  user.Signout)
+		router.Get("/active/verify/:id/:secret", user.VerifyActiveLink)
+		router.Post("/active/:id/:secret",       user.ActiveAccount)
+		router.Post("/reset",                    user.ResetPasswordMail)
+		router.Get("/reset/verify/:id/:secret",  user.VerifyResetPasswordLink)
+		router.Post("/reset/:id/:secret",        user.ResetPassword)
 
-		router.Get("/user/info",             user.Info)
-		router.Post("/user/update",          auth.SigninRequired,       
+		router.Get("/user/info",             auth.SigninRequired,  
+											 user.Info)
+		router.Post("/user/update",          auth.ActiveRequired,       
 										     user.UpdateInfo)
-		router.Post("/user/password/update", auth.SigninRequired,       
+		router.Post("/user/password/update", auth.ActiveRequired,       
 											 user.UpdatePassword)
 		router.Get("/user/score/top10",      user.Top10)
 		router.Get("/user/score/top100",     user.Top100)
-		router.Post("/upload",               auth.SigninRequired,          
+		router.Post("/upload",               auth.ActiveRequired,          
 											 common.Upload)
-		router.Get("/message/unread",        message.Unread)
-		router.Get("/message/unread/count",  message.UnreadCount)
+		router.Get("/message/unread",        auth.SigninRequired,  
+											 message.Unread)
+		router.Get("/message/unread/count",  auth.SigninRequired,  
+											 message.UnreadCount)
 
-		router.Get("/categories",          category.List)
+		router.Get("/categories",           category.List)
 
 		router.Get("/articles",             article.List)
 		router.Get("/articles/recent",      auth.SigninRequired,  
@@ -46,17 +51,17 @@ func Route(app *iris.Framework) {
 		router.Get("/articles/maxcomment",  article.ListMaxComment)
 		router.Get("/articles/maxbrowse",   article.ListMaxBrowse)
 		router.Get("/article/:id",          article.Info)
-		router.Post("/article/create",      auth.SigninRequired, 
+		router.Post("/article/create",      auth.ActiveRequired, 
 										    article.Create)
-		router.Post("/article/update",      auth.SigninRequired,    
+		router.Post("/article/update",      auth.ActiveRequired,    
 										    article.Update)
-		router.Post("/collect/create",      auth.SigninRequired,
+		router.Post("/collect/create",      auth.ActiveRequired,
 											collect.Collect)
-		router.Post("/collect/delete",      auth.SigninRequired,
+		router.Post("/collect/delete",      auth.ActiveRequired,
 										    collect.DeleteCollect)
 		router.Get("/collects",             auth.SigninRequired,
 											collect.List)
-		router.Post("/comment/create",      auth.SigninRequired,
+		router.Post("/comment/create",      auth.ActiveRequired,
 										    comment.Create)
     }
 

@@ -73,7 +73,7 @@ const api = {
     },
     activeUser: {
         url: url + '/active/:id/:key',
-        method: 'GET',
+        method: 'POST',
         desc: '账号激活'
     },
     verifyUrl: {

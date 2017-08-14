@@ -12,7 +12,9 @@ type Comment struct {
     Content        string             `json:"content"`
     ParentID       uint               `json:"parentID"`  
     Parents        []Comment          `json:"parents"`  
-	ArticleID      uint               `json:"articleID"`
+    ArticleID      uint               `json:"articleID"`
+    UserID         uint               `json:"userID"`
+    User           User               `json:"user"`
 }
 
 const (
