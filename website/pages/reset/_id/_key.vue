@@ -17,7 +17,7 @@
                     </Form>
                     <div v-if="success" class="signup-form">
                         <p class="forget-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
-                        <p class="forget-success-info">密码修改成功请重新登陆</p>
+                        <p class="forget-success-info">密码修改成功&nbsp&nbsp<a href="/signin" class="forget-resend">立即登陆</a></p>
                     </div>
                 </Row>
                 <div class="signup-form" v-if="error">

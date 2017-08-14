@@ -7,7 +7,7 @@
             <div id="reset" class="golang-forget-form">
                 <div v-if="success" class="signup-form">
                     <p class="forget-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
-                    <p class="forget-success-info">账号激活成功</p>
+                    <p class="forget-success-info">账号激活成功&nbsp&nbsp<a href="signin" class="forget-resend">立即登陆</a></p>
                 </div>
                 <div v-if="error">
                     <p class="forget-success-info">{{error}}</p>
@@ -28,6 +28,7 @@
         },
         asyncData (context) {
             return request.activeUser({
+                client: context.req,
                 params: {
                     id: context.params.id || '',
                     key: context.params.key || ''
@@ -47,6 +48,11 @@
                     }
                 }
             })
+        },
+        head () {
+            return {
+                title: '账号激活 - '
+            }
         },
         middleware: 'userInfo',
         components: {
