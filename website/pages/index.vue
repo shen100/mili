@@ -10,14 +10,16 @@
                 <div class="home-articles-box">
                     <div v-for="article in articles" class="articles-cell">
                         <a class="user-icon-box"><img src="~assets/images/head.png" alt=""></a>
-                        <Tooltip :content="'回复数120　浏览数11520'" placement="bottom-start" class="home-tip-box">
-                            <span class="articles-click-num">120</span>
-                            <span class="articles-num-split">/</span>
-                            <span class="articles-res-num">11520</span>
+                        <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
+                            <a :href="'/topic/' + article.id">
+                                <span class="articles-click-num">{{article.commentCount}}</span>
+                                <span class="articles-num-split">/</span>
+                                <span class="articles-res-num">{{article.browseCount}}</span>
+                            </a>
                         </Tooltip>
                         <span class="articles-categoties">{{article.categories[0].name}}</span>
                         <a :href="'/topic/' + article.id" class="home-articles-title">{{article.name}}</a>
-                        <p class="articles-res-time">2天前</p>
+                        <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
                         <a class="user-small-icon-box"><img src="~assets/images/head.png" alt=""></a>
                     </div>
                 </div>
@@ -85,7 +87,23 @@
         },
         middleware: 'userInfo',
         mounted () {
-            console.log(this.categories)
+            console.log(this.articles)
+        },
+        filters: {
+            getReplyTime: (times) => {
+                let time = new Date(times).getTime()
+                let currentT = new Date().getTime()
+                let diff = (currentT - time) / 1000
+                if (diff < 60) {
+                    return '刚刚'
+                } else if (diff < 60 * 60) {
+                    return `${parseInt(diff / 60)}分钟前`
+                } else if (diff < 24 * 60 * 60) {
+                    return `${parseInt(diff / 60 / 60)}小时前`
+                } else {
+                    return `${parseInt(diff / 24 / 60 / 60)}天前`
+                }
+            }
         },
         components: {
             'app-header': Header,

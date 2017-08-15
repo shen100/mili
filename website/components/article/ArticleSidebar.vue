@@ -8,11 +8,11 @@
                         <img class="golang-user-info-icon" src="~assets/images/head.png" alt="">
                     </a>
                     <span class="golang-sidebar-info-box">
-                        作者名字
+                        {{user.name}}
                     </span>
                 </div>
                 <div class="golang-user-line author-info-text">
-                    积分: 130
+                    积分: {{user.score}}
                 </div>
                 <div class="golang-user-line author-info-text text-italic">
                     像风一样go的废飞起
@@ -44,6 +44,9 @@
 
 <script>
     export default {
+        props: [
+            'user'
+        ],
         data () {
             return {
             }

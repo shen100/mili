@@ -7,13 +7,13 @@
                     <p class="article-detail-title"><span class="articles-categoties">{{article.categories[0].name}}</span>{{article.name}}</p>
                     <p class="article-title-info">
                         <span class="article-title-info-item">
-                            发布于14小时前
+                            发布于{{article.createdAt | getReplyTime}}
                         </span>
                         <span class="article-title-info-item">
-                            作者xxxxx
+                            作者{{article.user.name}}
                         </span>
                         <span class="article-title-info-item">
-                            111次浏览
+                            {{article.browseCount}}次浏览
                         </span>
                     </p>
                 </div>
@@ -27,7 +27,7 @@
                             <a class="reply-user-icon">
                                 <img src="~assets/images/head.png" alt="">
                             </a>
-                            <span class="reply-user-name">评论者名称</span>
+                            <span class="reply-user-name">{{item.user.name}}</span>
                             <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
                             <div class="golang123-editor" v-html="item.content"></div>
                         </div>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar />
+            <app-sidebar :user="article.user" />
         </div>
         <app-footer />
     </div>
@@ -161,7 +161,7 @@
             }
         },
         mounted () {
-            console.log(this.article.comments)
+            console.log(this.article)
         },
         filters: {
             getReplyTime: (times) => {

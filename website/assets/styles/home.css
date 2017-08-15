@@ -66,8 +66,9 @@ body {
 	font-size: 12px;
 	float: right;
 	color: #778087;
-	margin-left: 20px;
+	width: 5em;
 	line-height: 30px;
+	text-align: right;
 }
 
 .user-icon-box img {
