@@ -4,8 +4,8 @@
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div class="home-categoties-box">
-                    <div class="categoties-item" :class="{'categoties-select': !cate}"><a href="/">全部</a></div>
-                    <div v-for="cateItem in categories" class="categoties-item" :class="{'categoties-select': cateItem.id == cate}"><a :href="'/?cate=' + cateItem.id">{{cateItem.name}}</a></div>
+                    <a href="/" class="categoties-item" :class="{'categoties-select': !cate}">全部</a>
+                    <a v-for="cateItem in categories" class="categoties-item" :href="'/?cate=' + cateItem.id" :class="{'categoties-select': cateItem.id == cate}">{{cateItem.name}}</a>
                 </div>
                 <div class="home-articles-box">
                     <div v-for="article in articles" class="articles-cell">

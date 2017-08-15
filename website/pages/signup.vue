@@ -8,7 +8,7 @@
                     <li class="signup-nav-sep"><span>/</span></li>
                     <li><span class="publish-label">注册</span></li>
                 </ul>
-        		<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success">
+        		<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">
         			<Form-item label="用户名" prop="username">
         	            <i-input type="text" v-model="formCustom.username" class="signup-input"></i-input>
         	        </Form-item>
@@ -23,7 +23,7 @@
         	        </Form-item>
     	            <i-button type="primary" size="large" class="signup-button" @click="handleSubmit('formCustom')">立即注册</i-button>
         	    </Form>
-        	    <div v-if="success" class="signup-message-box">
+        	    <div v-if="success" class="signup-message-box" style="height: 500px">
                     <p class="message-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
         	    	<p class="message-success-info">注册成功，请进入邮箱激活邮件</p>
         	    </div>

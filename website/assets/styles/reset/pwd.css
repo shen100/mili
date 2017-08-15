@@ -82,6 +82,11 @@ body {
 }
 
 .forget-resend:hover {
+    color: #007fff;
+    text-decoration: none;
+}
+
+.forget-resend:hover {
     text-decoration: underline;
 }
 

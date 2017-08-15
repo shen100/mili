@@ -317,10 +317,6 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	vertical-align: middle;
 }
 
-.golang-sidebar-icon-box {
-	margin-left: 20px;
-}
-
 .golang-sidebar-usericon {
     margin-left: 0;
 }
