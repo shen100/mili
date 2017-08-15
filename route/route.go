@@ -9,6 +9,7 @@ import (
 	"golang123/controller/article"
 	"golang123/controller/collect"
 	"golang123/controller/comment"
+	"golang123/controller/vote"
 	"golang123/controller/user"
 	"golang123/controller/message"
 )
@@ -62,7 +63,9 @@ func Route(app *iris.Framework) {
 		router.Get("/collects",             auth.SigninRequired,
 											collect.List)
 		router.Post("/comment/create",      auth.ActiveRequired,
-										    comment.Create)
+											comment.Create)
+		router.Post("/vote/create",         auth.EditorRequired,
+											vote.Create)
     }
 
 	adminRouter := app.Party(apiPrefix + "/admin", auth.AdminRequired)

@@ -40,17 +40,35 @@ func ActiveRequired(ctx *iris.Context) {
 	}
 }
 
-// AdminRequired 授权
-func AdminRequired(ctx *iris.Context) {
+// EditorRequired 必须是网站编辑
+func EditorRequired(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	session     := ctx.Session();
-	userData    := session.Get("user")
+	user, ok    := session.Get("user").(model.User)
 
-	if userData == nil {
+	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
 		return
 	}
-	user := userData.(model.User)
+	session.Set("user", user)
+	if user.Role == model.UserRoleEditor || user.Role == model.UserRoleAdmin || user.Role == model.UserRoleSuperAdmin {
+		ctx.Next()
+	} else {
+		SendErrJSON("没有权限", ctx)
+		return	
+	}
+}
+
+// AdminRequired 必须是管理员
+func AdminRequired(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	session     := ctx.Session();
+	user, ok    := session.Get("user").(model.User)
+
+	if !ok {
+		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
+		return
+	}
 	session.Set("user", user)
 	if user.Role == model.UserRoleAdmin || user.Role == model.UserRoleSuperAdmin {
 		ctx.Next()
