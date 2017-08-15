@@ -89,7 +89,7 @@ func VerifyActiveLink(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	if _, err := verifyLink("activeTime", activeDuration, ctx); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("链接已失效", ctx)
+		SendErrJSON("激活链接已失效", ctx)
 		return	
 	}
 	ctx.JSON(iris.StatusOK, iris.Map{
@@ -105,7 +105,7 @@ func ActiveAccount(ctx *iris.Context) {
 	var err error
 	var user model.User
 	if user, err = verifyLink("activeTime", activeDuration, ctx); err != nil {
-		SendErrJSON(err.Error(), ctx)
+		SendErrJSON("激活链接已失效", ctx)
 		return
 	}
 
@@ -160,7 +160,7 @@ func VerifyResetPasswordLink(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	if _, err := verifyLink("resetTime", resetDuration, ctx); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("链接已失效", ctx)
+		SendErrJSON("重置链接已失效", ctx)
 		return	
 	}
 	ctx.JSON(iris.StatusOK, iris.Map{
@@ -191,7 +191,7 @@ func ResetPassword(ctx *iris.Context) {
 	var err error
 	var user model.User 
 	if user, err = verifyLink("resetTime", resetDuration, ctx); err != nil {
-		SendErrJSON(err.Error(), ctx)
+		SendErrJSON("重置链接已失效", ctx)
 		return	
 	}
 

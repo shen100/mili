@@ -108,7 +108,7 @@
         },
         head () {
             return {
-                title: '注册 - '
+                title: '注册'
             }
         },
         middleware: 'userInfo',

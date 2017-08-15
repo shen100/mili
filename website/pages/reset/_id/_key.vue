@@ -84,6 +84,11 @@
                 }
             }
         },
+        validate ({ params }) {
+            var hasId = !!params.id
+            var hasKey = !!params.key
+            return hasId && hasKey
+        },
         asyncData (context) {
             return request.verifyUrl({
                 client: context.req,
@@ -106,7 +111,7 @@
         },
         head () {
             return {
-                title: '重置密码 - '
+                title: '重置密码'
             }
         },
         middleware: 'userInfo',

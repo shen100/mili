@@ -81,7 +81,7 @@
         },
         head () {
             return {
-                title: '时间轴 - '
+                title: '时间轴'
             }
         },
         mounted () {

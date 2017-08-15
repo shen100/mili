@@ -59,7 +59,7 @@
         },
         head () {
             return {
-                title: '忘记密码 - '
+                title: '忘记密码'
             }
         },
         middleware: 'userInfo',

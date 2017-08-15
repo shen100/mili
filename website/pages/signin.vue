@@ -65,7 +65,7 @@
         middleware: 'userInfo',
         head () {
             return {
-                title: '登录 - '
+                title: '登录'
             }
         },
         methods: {

@@ -26,6 +26,11 @@
         data () {
             return {}
         },
+        validate ({ params }) {
+            var hasId = !!params.id
+            var hasKey = !!params.key
+            return hasId && hasKey
+        },
         asyncData (context) {
             return request.activeUser({
                 client: context.req,
@@ -51,7 +56,7 @@
         },
         head () {
             return {
-                title: '账号激活 - '
+                title: '账号激活'
             }
         },
         middleware: 'userInfo',

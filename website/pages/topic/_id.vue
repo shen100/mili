@@ -77,6 +77,10 @@
                 }
             }
         },
+        validate ({ params }) {
+            var hasId = !!params.id
+            return hasId
+        },
         asyncData (context) {
             let reqArr = [
                 request.getCategories({client: context.req}),
@@ -93,15 +97,23 @@
             return Promise
                 .all(reqArr)
                 .then(arr => {
+                    let article = arr[1].data.article
+                    if (!article) {
+                        context.error({ statusCode: 404, message: 'Page not found' })
+                        return
+                    }
                     return {
                         user: context.user,
-                        article: arr[1].data.article
+                        article: article
                     }
+                }).catch(err => {
+                    console.log(err)
+                    context.error({ statusCode: 404, message: 'Page not found' })
                 })
         },
         head () {
             return {
-                title: this.article.name + ' - ',
+                title: this.article.name,
                 link: [
                     { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' }
                 ]

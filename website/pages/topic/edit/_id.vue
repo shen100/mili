@@ -15,6 +15,10 @@
     export default {
         data () {
         },
+        validate ({ params }) {
+            var hasId = !!params.id
+            return hasId
+        },
         asyncData (context) {
             return Promise.all([
                 request.getCategories({client: context.req}),
@@ -36,6 +40,10 @@
                 if (recentArticles && recentArticles.length > 0) {
                     hasRecentArticles = true
                 }
+                if (!article) {
+                    context.error({ statusCode: 404, message: 'Page not found' })
+                    return
+                }
                 return {
                     categories: categories,
                     article: article,
@@ -43,11 +51,14 @@
                     hasRecentArticles: hasRecentArticles,
                     id: article.id
                 }
+            }).catch(err => {
+                console.log(err)
+                context.error({ statusCode: 404, message: 'Page not found' })
             })
         },
         head () {
             return {
-                title: '编辑话题 - ',
+                title: '编辑话题',
                 link: [
                     { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' }
                 ]

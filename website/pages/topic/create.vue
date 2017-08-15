@@ -33,11 +33,14 @@
                     hasRecentArticles: hasRecentArticles,
                     id: 0
                 }
+            }).catch(err => {
+                console.log(err)
+                context.error({ statusCode: 404, message: 'Page not found' })
             })
         },
         head () {
             return {
-                title: '发布话题 - ',
+                title: '发布话题',
                 link: [
                     { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' }
                 ]

@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-08-13 14:49:30 +0000
+# Generation Time: 2017-08-15 14:23:12 +0000
 # ************************************************************
 
 
@@ -84,9 +84,9 @@ LOCK TABLES `articles` WRITE;
 
 INSERT INTO `articles` (`id`, `name`, `browse_count`, `comment_count`, `status`, `content`, `created_at`, `updated_at`, `deleted_at`, `user_id`)
 VALUES
-	(22,'test2',0,0,1,'**你们国恨家仇…**   *你们国恨家仇…*\n\n![](https://dev.golang123.com/upload/img/2017/08/02/5ec41a60-beb4-45e7-8c2b-443646171530.jpg)  \n[尝试用thinkjs搭建一套blog](http://wwww,a.com)\n\n\n> 谢邀。 虽然你们国恨家仇…尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n  \n	   \n		    \n				\n    \n		\n```\n.golang123-editor ol {\n	padding-left: 20px;\n}\n\n.golang123-editor ol li {\n	list-style-type: decimal;\n}\n```\n\n* adfafs\n* asdf\n* asdf\n* asdf\n* asdfa\n* sffadsf\n\n\n-----\n  \n	\n  \n\n\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text     | Text     |\n\n\nasdfafa\n\n1. adfasf\n2. asdf\n3. asdfa\n4. sdfasdf\n5. asdf\n6. afdafaf\n\n# adfafaf\n## 尝试用thinkjs搭建一套blog\n### 尝试用thinkjs搭建一套blog\n#### 尝试用thinkjs搭建一套blog\n##### 尝试用thinkjs搭建一套blog\n###### 尝试用thinkjs搭建一套blog','2017-08-02 23:40:01','2017-08-12 11:42:59',NULL,31),
-	(23,'111',0,0,1,'123','2017-08-10 22:35:01','2017-08-12 11:42:59',NULL,31),
-	(24,'ttt',0,0,1,'adf','2017-08-12 15:47:08','2017-08-12 15:47:08',NULL,39);
+	(22,'test2',0,0,1,'**你们国恨家仇…**   *你们国恨家仇…*\n\n![](https://dev.golang123.com/upload/img/2017/08/02/5ec41a60-beb4-45e7-8c2b-443646171530.jpg)  \n[尝试用thinkjs搭建一套blog](http://wwww,a.com)\n\n\n> 谢邀。 虽然你们国恨家仇…尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n> 尝试用thinkjs搭建一套blog\n  \n	   \n		    \n				\n    \n		\n```\n.golang123-editor ol {\n	padding-left: 20px;\n}\n\n.golang123-editor ol li {\n	list-style-type: decimal;\n}\n```\n\n* adfafs\n* asdf\n* asdf\n* asdf\n* asdfa\n* sffadsf\n\n\n-----\n  \n	\n  \n\n\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text     | Text     |\n\n\nasdfafa\n\n1. adfasf\n2. asdf\n3. asdfa\n4. sdfasdf\n5. asdf\n6. afdafaf\n\n# adfafaf\n## 尝试用thinkjs搭建一套blog\n### 尝试用thinkjs搭建一套blog\n#### 尝试用thinkjs搭建一套blog\n##### 尝试用thinkjs搭建一套blog\n###### 尝试用thinkjs搭建一套blog','2017-08-02 23:40:01','2017-08-12 11:42:59',NULL,43),
+	(23,'111',0,0,1,'123','2017-08-10 22:35:01','2017-08-12 11:42:59',NULL,43),
+	(24,'ttt',0,0,1,'adf','2017-08-12 15:47:08','2017-08-12 15:47:08',NULL,43);
 
 /*!40000 ALTER TABLE `articles` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -162,12 +162,25 @@ CREATE TABLE `comments` (
   `article_id` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `ups` int(11) NOT NULL DEFAULT '0',
+  `user_id` int(11) unsigned NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+LOCK TABLES `comments` WRITE;
+/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
+
+INSERT INTO `comments` (`id`, `content`, `parent_id`, `article_id`, `status`, `ups`, `user_id`, `created_at`, `updated_at`, `deleted_at`)
+VALUES
+	(2,'hello',0,24,1,0,43,'2017-08-14 23:38:48','2017-08-14 23:38:48',NULL),
+	(3,'aaaa',0,24,1,0,43,'2017-08-14 23:55:59','2017-08-14 23:55:59',NULL),
+	(4,'bbb',0,24,1,0,43,'2017-08-14 23:56:40','2017-08-14 23:56:40',NULL),
+	(5,'ccc',0,24,1,0,43,'2017-08-14 23:57:38','2017-08-14 23:57:38',NULL);
+
+/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table images
@@ -281,7 +294,7 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `score`, `article_count`, `collect_count`, `signature`, `role`, `status`)
 VALUES
-	(39,'2017-08-12 15:40:56','2017-08-12 15:47:08',NULL,'jack','liushen_shen@163.com','','1502523656f4d5c2fd1a3cd9cedc14dd383db46b8e',5,1,0,'',1,2);
+	(43,'2017-08-14 23:34:02','2017-08-14 23:37:37',NULL,'jack','liushen_shen@163.com','','1502724842c4a0b194c35ceb91da412bbe3ed2d3c1',0,0,0,'',1,2);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

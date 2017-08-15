@@ -80,7 +80,7 @@
         },
         head () {
             return {
-                title: '首页 - '
+                title: '首页'
             }
         },
         middleware: 'userInfo',
