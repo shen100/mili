@@ -24,7 +24,7 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :score="score" :user="user"/>
+            <app-sidebar :score="score" :user="user" :maxComment="maxComment" :maxBrowse="maxBrowse"/>
         </div>
         <app-footer />
     </div>
@@ -61,6 +61,12 @@
                 }),
                 request.getTop10({
                     client: context.req
+                }),
+                request.getMaxComment({
+                    client: context.req
+                }),
+                request.getMaxBrowse({
+                    client: context.req
                 })
             ]).then(data => {
                 let categories = data[0].data.categories || []
@@ -68,12 +74,16 @@
                 let score = data[2].data.users
                 let user = context.user
                 let cate = query.cate || ''
+                let maxComment = data[3].data.articles
+                let maxBrowse = data[4].data.articles
                 return {
                     categories: categories,
                     articles: articles,
                     score: score,
                     user: user,
-                    cate: cate
+                    cate: cate,
+                    maxComment: maxComment,
+                    maxBrowse: maxBrowse
                 }
             }).catch(err => {
                 console.log(err)
@@ -87,7 +97,7 @@
         },
         middleware: 'userInfo',
         mounted () {
-            console.log(this.articles)
+            console.log(this.maxComment, this.maxBrowse)
         },
         filters: {
             getReplyTime: (times) => {

@@ -85,6 +85,16 @@ const api = {
         url: url + '/comment/create',
         method: 'POST',
         desc: '提交评论'
+    },
+    getMaxComment: {
+        url: url + '/articles/maxcomment',
+        method: 'GET',
+        desc: '回复最多的话题'
+    },
+    getMaxBrowse: {
+        url: url + '/articles/maxbrowse',
+        method: 'GET',
+        desc: '浏览最多的话题'
     }
 }
 

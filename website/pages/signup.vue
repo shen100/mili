@@ -1,34 +1,48 @@
 <template>
 	<div>
-        <app-header :userStatus="user"/>
-        <div class="signup-box">
-            <div class="signup-main">
-                <ul class="signup-nav">
-                    <li><a href="/"><span>主页</span></a></li>
-                    <li class="signup-nav-sep"><span>/</span></li>
-                    <li><span class="publish-label">注册</span></li>
-                </ul>
-        		<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">
-        			<Form-item label="用户名" prop="username">
-        	            <i-input type="text" v-model="formCustom.username" class="signup-input"></i-input>
-        	        </Form-item>
-        	        <Form-item label="密码" prop="passwd">
-        	            <i-input type="password" v-model="formCustom.passwd" class="signup-input"></i-input>
-        	        </Form-item>
-        	        <Form-item label="确认密码" prop="passwdCheck">
-        	            <i-input type="password" v-model="formCustom.passwdCheck" class="signup-input"></i-input>
-        	        </Form-item>
-        	        <Form-item label="邮箱" prop="email">
-        	            <i-input v-model="formCustom.email" class="signup-input"></i-input>
-        	        </Form-item>
-    	            <i-button type="primary" size="large" class="signup-button" @click="handleSubmit('formCustom')">立即注册</i-button>
-        	    </Form>
-        	    <div v-if="success" class="signup-message-box" style="height: 500px">
-                    <p class="message-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
-        	    	<p class="message-success-info">注册成功，请进入邮箱激活邮件</p>
-        	    </div>
+        <div class="signup-head">
+            <div class="signup-head-content">
+                <img src="~assets/images/logo.png" alt="">
+                <span>Golang123</span>
             </div>
-            <app-sidebar />
+        </div>
+        <div class="signup-box">
+            <div class="signup-nav">
+                <span class="title">Golang通行证注册</span>
+                <span class="desc">如果您有Golang123账号，则可以<a href="/signin">登录</a></span>
+            </div>
+    		<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">
+    			<Form-item label="用户名" prop="username">
+    	            <i-input size="large" type="text" v-model="formCustom.username" class="signup-input"></i-input>
+                    <span class="signup-label">2-20位可由中文、数字、字母组成</span>
+    	        </Form-item>
+    	        <Form-item label="密码" prop="passwd">
+    	            <i-input size="large" type="password" v-model="formCustom.passwd" class="signup-input"></i-input>
+                    <span class="signup-label">密码由6-20个字符组成，区分大小写</span>
+    	        </Form-item>
+    	        <Form-item label="确认密码" prop="passwdCheck">
+    	            <i-input size="large" type="password" v-model="formCustom.passwdCheck" class="signup-input"></i-input>
+                    <span class="signup-label">请在此输入您的密码</span>
+    	        </Form-item>
+    	        <Form-item label="邮箱" prop="email">
+    	            <i-input size="large" v-model="formCustom.email" class="signup-input"></i-input>
+                    <span class="signup-label">请输入有效的点子邮箱，该邮箱作为您账户的登录名</span>
+    	        </Form-item>
+	            <i-button type="primary" size="large" class="signup-button" @click="handleSubmit('formCustom')">立即注册</i-button>
+    	    </Form>
+    	    <div v-if="success" class="signup-message-box" style="height: 500px">
+                <div>
+                    <div class="message-mail-icon"><img src="~assets/images/mail.png" alt=""></div>
+                    <div class="message-mail-right">
+                        <p class="signup-reminder-text">我们发送了一封验证邮件到<span class="signup-resend">{{formCustom.email}}</span></p>
+                        <p class="signup-reminder-text">请到您的邮箱收信，并点击其中的链接验证您的邮箱</p>
+                        <a :href="`http://mail.${formCustom.email.split('@')[formCustom.email.split('@').length - 1]}`"><i-button type="primary">去邮箱验证</i-button></a>
+                        <p class="signup-reminder-text signup-text-bottom">收不到邮件？</p>
+                        <p class="signup-reminder-small">请检查您的垃圾邮箱或广告箱，邮件有可能被认为垃圾或广告邮件</p>
+                        <p class="signup-reminder-small signup-resend click-mouse">重新发送</p>
+                    </div>
+                </div>
+    	    </div>
         </div>
         <app-footer />
     </div>

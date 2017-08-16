@@ -30,13 +30,9 @@
             </ul>
         </div>
         <div class="golang-cell">
-            <div class="title">友情社区</div>
+            <div class="title">浏览最多的话题</div>
             <ul>
-                <li class="golang-cell-item">今天是个好日子</li>
-                <li class="golang-cell-item">今天是个好日子</li>
-                <li class="golang-cell-item">今天是个好日子</li>
-                <li class="golang-cell-item">今天是个好日子</li>
-                <li class="golang-cell-item">今天是个好日子</li>
+                <li class="golang-cell-item" v-for="item in maxBrowse"><a :href="`/topic/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
             </ul>
         </div>
     </div>
@@ -45,7 +41,8 @@
 <script>
     export default {
         props: [
-            'user'
+            'user',
+            'maxBrowse'
         ],
         data () {
             return {

@@ -165,6 +165,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	padding: 10px;
 	font-size: 14px;
 	border-top: 1px solid #f0f0f0;
+    text-overflow: ellipsis;
 }
 
 .golang-cell ul .golang-cell-item:nth-child(1) {
@@ -213,7 +214,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	font-size: 14px;
 }
 
-.golang-user-info-action {
+.golang-user-info-action, .sidebar-articles-title {
 	margin: 0 3px;
 	color: #778087;
 }

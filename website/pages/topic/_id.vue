@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :user="article.user" />
+            <app-sidebar :user="article.user" :maxBrowse="maxBrowse" />
         </div>
         <app-footer />
     </div>
@@ -89,6 +89,9 @@
                     params: {
                         id: context.params.id
                     }
+                }),
+                request.getMaxBrowse({
+                    client: context.req
                 })
             ]
             if (context.user) {
@@ -98,13 +101,15 @@
                 .all(reqArr)
                 .then(arr => {
                     let article = arr[1].data.article
+                    let maxBrowse = arr[2].data.articles
                     if (!article) {
                         context.error({ statusCode: 404, message: 'Page not found' })
                         return
                     }
                     return {
                         user: context.user,
-                        article: article
+                        article: article,
+                        maxBrowse: maxBrowse
                     }
                 }).catch(err => {
                     console.log(err)
