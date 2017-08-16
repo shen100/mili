@@ -5,11 +5,10 @@ import "time"
 // Vote 投票
 type Vote struct {
     ID             uint               `gorm:"primary_key" json:"id"`
-    CreatedAt      time.Time          `json:"createdAt"`
-    UpdatedAt      time.Time          `json:"updatedAt"`
-	DeletedAt      *time.Time         `sql:"index" json:"deletedAt"`
-	StartAt        time.Time          `json:"startAt"`
-	EndAt          time.Time          `json:"endAt"`
+    CreatedAt      JSONTime           `json:"createdAt"`
+    UpdatedAt      JSONTime           `json:"updatedAt"`
+	DeletedAt      *JSONTime          `sql:"index" json:"deletedAt"`
+	EndAt          JSONTime           `json:"endAt"`
     Name           string             `json:"name"`
     BrowseCount    int                `json:"browseCount"`
     CommentCount   int                `json:"commentCount"`
@@ -18,6 +17,7 @@ type Vote struct {
     Comments       []Comment          `json:"comments"` 
     UserID         uint               `json:"userID"`
     User           User               `json:"user"`
+    VoteItems      []VoteItem         `json:"voteItems"`
 }
 
 // VoteItem 投票项
@@ -27,7 +27,8 @@ type VoteItem struct {
     UpdatedAt      time.Time          `json:"updatedAt"`
 	DeletedAt      *time.Time         `sql:"index" json:"deletedAt"`
 	Name           string             `json:"name"`
-	PeopleCount    uint               `json:"PeopleCount"`    
+    Count          uint               `json:"count"` 
+    VoteID         uint               `json:"voteID"`
 }
 
 // UserVote 用户投的票
@@ -37,17 +38,15 @@ type UserVote struct {
     UpdatedAt      time.Time          `json:"updatedAt"`
 	DeletedAt      *time.Time         `sql:"index" json:"deletedAt"`
 	UserID         uint               `json:"userID"`
-	User           User               `json:"user"`
+    User           User               `json:"user"`
+    VoteID         uint               `json:"voteID"`
 	VoteItemID     uint               `json:"voteItemID"`
 }
 
 const (
-    // VoteNotStarted 未开始
-    VoteNotStarted = 1
-
     // VoteUnderway 进行中
-    VoteUnderway   = 2
+    VoteUnderway   = 1
 
     // VoteOver 已结束
-    VoteOver       = 3
+    VoteOver       = 2
 )

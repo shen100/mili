@@ -66,6 +66,15 @@ func Route(app *iris.Framework) {
 											comment.Create)
 		router.Post("/vote/create",         auth.EditorRequired,
 											vote.Create)
+		router.Post("/vote/delete",         auth.EditorRequired,
+											vote.Delete)
+		router.Get("/vote/:id",             vote.Info)
+		router.Post("/vote/item/create",    auth.EditorRequired,
+											vote.CreateVoteItem)
+		router.Post("/vote/item/delete",    auth.EditorRequired,
+											vote.DeleteVoteItem)
+		router.Post("/vote/uservote/:id",   auth.ActiveRequired,
+											vote.UserVoteVoteItem)
     }
 
 	adminRouter := app.Party(apiPrefix + "/admin", auth.AdminRequired)
