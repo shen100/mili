@@ -120,6 +120,10 @@
     margin-bottom: 10px;
 }
 
+.signup-reminder-text .signup-resend {
+    margin-left: 5px;
+}
+
 .signup-text-bottom {
     margin-top: 50px;
 }

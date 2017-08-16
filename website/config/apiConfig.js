@@ -11,6 +11,31 @@ const api = {
         method: 'GET',
         desc: '获取分类列表'
     },
+    getAdminCategories: {
+        url: url + '/admin/categories',
+        method: 'GET',
+        desc: '管理员获取分类列表'
+    },
+    getAdminArticles: {
+        url: url + '/admin/articles',
+        method: 'POST',
+        desc: '获取文章列表'
+    },
+    updateAdminArticles: {
+        url: url + '/admin/article/status/update',
+        method: 'POST',
+        desc: '更新文章状态'
+    },
+    categoryStatus: {
+        url: url + '/admin/category/status/update',
+        method: 'post',
+        desc: '更改分类状态'
+    },
+    categoryCreate: {
+        url: url + '/admin/category/create',
+        method: 'POST',
+        desc: '新增分类'
+    },
     getArticles: {
         url: url + '/articles',
         method: 'GET',
