@@ -120,6 +120,21 @@ const api = {
         url: url + '/articles/maxbrowse',
         method: 'GET',
         desc: '浏览最多的话题'
+    },
+    logout: {
+        url: url + '/signout',
+        method: 'POST',
+        desc: '退出登录'
+    },
+    createVote: {
+        url: url + '/vote/create',
+        method: 'POST',
+        desc: '创建投票'
+    },
+    getVotes: {
+        url: url + '/votes',
+        method: 'GET',
+        desc: '获取投票列表'
     }
 }
 

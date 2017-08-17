@@ -19,8 +19,8 @@
                     <li><a href="https://github.com/shen100/golang123" target="_blank">golang123源码</a></li>
                     <li><a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a></li>
 					<li>关于</li>
-                    <template v-if="user">
-                        <li>退出</li>
+                    <template v-if="userData">
+                        <li @click="logout">退出</li>
                     </template>
 					<template v-else>
 						<a href="/signin"><li>登录</li></a>
@@ -33,12 +33,30 @@
 </template>
 
 <script>
+    import request from '~/net/request'
+    import ErrorCode from '~/constant/ErrorCode'
+
     export default {
         props: [
             'user'
         ],
         data () {
             return {
+                userData: this.user
+            }
+        },
+        methods: {
+            logout () {
+                request
+                    .logout()
+                    .then(res => {
+                        if (res.errNo === ErrorCode.SUCCESS) {
+                            this.userData = null
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
             }
         },
         mounted () {

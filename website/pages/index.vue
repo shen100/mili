@@ -37,6 +37,7 @@
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
     import request from '~/net/request'
+    import dateTool from '~/utils/date'
 
     Vue.use(iview)
 
@@ -48,7 +49,6 @@
         },
         asyncData (context) {
             const query = context.query || {}
-            console.log('1111', query)
             return Promise.all([
                 request.getCategories({
                     client: context.req
@@ -100,20 +100,7 @@
             console.log(this.maxComment, this.maxBrowse)
         },
         filters: {
-            getReplyTime: (times) => {
-                let time = new Date(times).getTime()
-                let currentT = new Date().getTime()
-                let diff = (currentT - time) / 1000
-                if (diff < 60) {
-                    return '刚刚'
-                } else if (diff < 60 * 60) {
-                    return `${parseInt(diff / 60)}分钟前`
-                } else if (diff < 24 * 60 * 60) {
-                    return `${parseInt(diff / 60 / 60)}小时前`
-                } else {
-                    return `${parseInt(diff / 24 / 60 / 60)}天前`
-                }
-            }
+            getReplyTime: dateTool.getReplyTime
         },
         components: {
             'app-header': Header,
