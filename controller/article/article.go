@@ -117,11 +117,21 @@ func AllList(ctx *iris.Context) {
 	queryList(true, ctx)
 }
 
-// RecentList 我的最近文章
+// RecentList 用户最近文章
 func RecentList(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	session     := ctx.Session();
-	user        := session.Get("user").(model.User)
+	var userID int
+	var userIDErr error
+	if userID, userIDErr = ctx.ParamInt("userID"); userIDErr != nil {
+		SendErrJSON("无效的id", ctx)
+		return	
+	}
+	var user model.User
+	if err := model.DB.First(&user, userID).Error; err != nil {
+		SendErrJSON("无效的id", ctx)
+		return	
+	}
+
 	var articles []model.Article
 	if err := model.DB.Where("user_id = ?", user.ID).Order("created_at DESC").Limit(5).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
@@ -310,6 +320,12 @@ func Info(ctx *iris.Context) {
 
 	if model.DB.First(&article, articleID).Error != nil {
 		SendErrJSON("错误的文章id", ctx)
+		return
+	}
+
+	article.BrowseCount++
+	if err := model.DB.Save(&article).Error; err != nil {
+		SendErrJSON("error", ctx)
 		return
 	}
 

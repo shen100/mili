@@ -21,7 +21,7 @@
                     <div class="golang123-editor" v-html="article.content"></div>
                 </div>
                 <div class="golang-cell comment-box" v-if="article.comments.length > 0">
-                    <div class="title">{{article.comments.length}}回复</div>
+                    <div class="title">{{article.commentCount}}回复</div>
                     <div class="comment-content">
                         <div class="comment-item" v-for="(item, index) in article.comments">
                             <a class="reply-user-icon">
@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :user="article.user" :maxBrowse="maxBrowse" />
+            <app-sidebar :user="article.user" :maxBrowse="maxBrowse" :articles="recentArticles"/>
         </div>
         <app-footer />
     </div>
@@ -82,39 +82,43 @@
             return hasId
         },
         asyncData (context) {
-            let reqArr = [
-                request.getCategories({client: context.req}),
-                request.getArticle({
-                    client: context.req,
-                    params: {
-                        id: context.params.id
-                    }
-                }),
-                request.getMaxBrowse({
-                    client: context.req
-                })
-            ]
-            if (context.user) {
-                reqArr.push(request.getRecentArticles({client: context.req}))
-            }
-            return Promise
-                .all(reqArr)
-                .then(arr => {
-                    let article = arr[1].data.article
-                    let maxBrowse = arr[2].data.articles
-                    if (!article) {
-                        context.error({ statusCode: 404, message: 'Page not found' })
-                        return
-                    }
+            return request.getArticle({
+                client: context.req,
+                params: {
+                    id: context.params.id
+                }
+            }).then(function (data) {
+                let article = data.data.article
+                console.log(article)
+                if (!article) {
+                    context.error({ statusCode: 404, message: 'Page not found' })
+                    return
+                }
+                let reqArr = [
+                    request.getMaxBrowse({
+                        client: context.req
+                    }),
+                    request.getRecentArticles({
+                        client: context.req,
+                        params: {
+                            userID: article.userID
+                        }
+                    })
+                ]
+                return Promise.all(reqArr).then(arr => {
+                    let maxBrowse = arr[0].data.articles
+                    let recentArticles = arr[1].data.articles
                     return {
                         user: context.user,
                         article: article,
-                        maxBrowse: maxBrowse
+                        maxBrowse: maxBrowse,
+                        recentArticles: recentArticles
                     }
-                }).catch(err => {
-                    console.log(err)
-                    context.error({ statusCode: 404, message: 'Page not found' })
                 })
+            }).catch(err => {
+                console.log(err)
+                context.error({ statusCode: 404, message: 'Page not found' })
+            })
         },
         head () {
             return {

@@ -46,16 +46,16 @@ func Route(app *iris.Framework) {
 
 		router.Get("/categories",           category.List)
 
-		router.Get("/articles",             article.List)
-		router.Get("/articles/recent",      auth.SigninRequired,  
-										    article.RecentList)
-		router.Get("/articles/maxcomment",  article.ListMaxComment)
-		router.Get("/articles/maxbrowse",   article.ListMaxBrowse)
-		router.Get("/article/:id",          article.Info)
-		router.Post("/article/create",      auth.ActiveRequired, 
-										    article.Create)
-		router.Post("/article/update",      auth.ActiveRequired,    
-										    article.Update)
+		router.Get("/articles",                article.List)
+		router.Get("/articles/recent/:userID", article.RecentList)
+		router.Get("/articles/maxcomment",     article.ListMaxComment)
+		router.Get("/articles/maxbrowse",      article.ListMaxBrowse)
+		router.Get("/article/:id",             article.Info)
+		router.Post("/article/create",         auth.ActiveRequired, 
+										       article.Create)
+		router.Post("/article/update",         auth.ActiveRequired,    
+											   article.Update)
+											   
 		router.Post("/collect/create",      auth.ActiveRequired,
 											collect.Collect)
 		router.Post("/collect/delete",      auth.ActiveRequired,

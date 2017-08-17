@@ -20,8 +20,8 @@ func Save(isEdit bool, ctx *iris.Context) {
 		return
 	}
 
+	var article model.Article
 	if comment.ArticleID != 0 {
-		var article model.Article
 		if err := model.DB.First(&article, comment.ArticleID).Error; err != nil {
 			SendErrJSON("无效的articleID", ctx)
 			return	
@@ -61,6 +61,11 @@ func Save(isEdit bool, ctx *iris.Context) {
 		if err := model.DB.Create(&comment).Error; err != nil {
 			SendErrJSON("error", ctx)
 			return	
+		}
+		article.CommentCount++
+		if err := model.DB.Save(&article).Error; err != nil {
+			SendErrJSON("error", ctx)
+			return
 		}
 	} else {
 		if err := model.DB.First(&updatedComment, comment.ID).Error; err == nil {
