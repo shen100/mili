@@ -72,8 +72,8 @@ func Route(app *iris.Framework) {
 		router.Get("/vote/:id",             vote.Info)
 		router.Post("/vote/item/create",    auth.EditorRequired,
 											vote.CreateVoteItem)
-		router.Post("/vote/item/delete",    auth.EditorRequired,
-											vote.DeleteVoteItem)
+		router.Post("/vote/item/edit",      auth.EditorRequired,
+											vote.EditVoteItem)
 		router.Post("/vote/uservote/:id",   auth.ActiveRequired,
 											vote.UserVoteVoteItem)
     }
