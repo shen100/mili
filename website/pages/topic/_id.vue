@@ -60,6 +60,7 @@
     import Sidebar from '~/components/article/ArticleSidebar'
     import editor from '~/components/article/editor'
     import request from '~/net/request'
+    import dateTool from '~/utils/date'
 
     Vue.use(iview)
 
@@ -169,20 +170,7 @@
             console.log(this.article)
         },
         filters: {
-            getReplyTime: (times) => {
-                let time = new Date(times).getTime()
-                let currentT = new Date().getTime()
-                let diff = (currentT - time) / 1000
-                if (diff < 60) {
-                    return '刚刚'
-                } else if (diff < 60 * 60) {
-                    return `${parseInt(diff / 60)}分钟前`
-                } else if (diff < 24 * 60 * 60) {
-                    return `${parseInt(diff / 60 / 60)}小时前`
-                } else {
-                    return `${parseInt(diff / 24 / 60 / 60)}天前`
-                }
-            }
+            getReplyTime: dateTool.getReplyTime
         },
         components: {
             'app-header': Header,
