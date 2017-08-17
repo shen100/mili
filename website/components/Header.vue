@@ -14,7 +14,7 @@
 			<div class="golang-top-header-right">
 				<ul>
 					<li><a href="/">首页</a></li>
-                    <li><a href="/">投票</a></li>
+                    <li><a href="/vote">投票</a></li>
                     <li><a href="https://github.com/shen100/golang123" target="_blank">golang123源码</a></li>
 					<li><a href="/timeline">时间轴</a></li>
                     <li><a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a></li>

@@ -1,8 +1,8 @@
 <template>
     <div>
-        <go-header />
+        <app-header :user="user" />
         <article-save :categories="categories" :article="article" :recentArticles="recentArticles" :hasRecentArticles="hasRecentArticles" :id="id"></article-save>
-        <go-footer></go-footer>
+        <app-footer></app-footer>
     </div>
 </template>
 
@@ -31,7 +31,8 @@
                     article: null,
                     recentArticles: recentArticles,
                     hasRecentArticles: hasRecentArticles,
-                    id: 0
+                    id: 0,
+                    user: context.user
                 }
             }).catch(err => {
                 console.log(err)
@@ -50,8 +51,8 @@
         },
         middleware: 'userRequired',
         components: {
-            'go-header': Header,
-            'go-footer': Footer,
+            'app-header': Header,
+            'app-footer': Footer,
             'article-save': ArticleSave
         }
     }
