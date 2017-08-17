@@ -15,7 +15,7 @@ import (
 )
 
 // List 查询投票列表
-func List(isBackend bool, ctx *iris.Context) {
+func List(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var status int
 	var hasStatus = false

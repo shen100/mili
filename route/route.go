@@ -64,6 +64,7 @@ func Route(app *iris.Framework) {
 											collect.List)
 		router.Post("/comment/create",      auth.ActiveRequired,
 											comment.Create)
+		router.Get("/votes",                vote.List)
 		router.Post("/vote/create",         auth.EditorRequired,
 											vote.Create)
 		router.Post("/vote/delete",         auth.EditorRequired,
