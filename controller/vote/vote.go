@@ -14,6 +14,64 @@ import (
 	"golang123/controller/common"
 )
 
+// List 查询投票列表
+func List(isBackend bool, ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var status int
+	var hasStatus = false
+	var pageNo int
+	var pageNoErr error
+	var statusErr error
+	var votes []model.Vote
+
+	if pageNo, pageNoErr = strconv.Atoi(ctx.FormValue("pageNo")); pageNoErr != nil {
+		pageNo = 1
+	}
+ 
+	if pageNo < 1 {
+		pageNo = 1
+	}
+
+	offset   := (pageNo - 1) * config.ServerConfig.PageSize
+	pageSize := config.ServerConfig.PageSize
+
+	statusStr := ctx.FormValue("status")
+	if statusStr == "" {
+		hasStatus = false
+	} else if status, statusErr = strconv.Atoi(statusStr); statusErr != nil {
+		fmt.Println(statusErr.Error())
+		SendErrJSON("status不正确", ctx)
+		return
+	} else {
+		hasStatus = true
+	}
+
+	if hasStatus {
+		if status != model.VoteUnderway && status != model.VoteOver {
+			SendErrJSON("status不正确", ctx)
+			return
+		}
+		if err := model.DB.Where("status = ?", status).Offset(offset).
+				Limit(pageSize).Order("created_at DESC").Find(&votes).Error; err != nil {
+			SendErrJSON("error", ctx)
+			return	
+		}	
+	} else {
+		if err := model.DB.Offset(offset).Limit(pageSize).
+				Order("created_at DESC").Find(&votes).Error; err != nil {
+			SendErrJSON("error", ctx)
+			return	
+		}	
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"votes": votes,
+		},
+	})
+}
+
 func save(isEdit bool, vote model.Vote, tx *gorm.DB, ctx *iris.Context) (model.Vote, error) {
 	var queryVote model.Vote
 	if isEdit {
