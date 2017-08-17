@@ -5,10 +5,10 @@ import "time"
 // Vote 投票
 type Vote struct {
     ID             uint               `gorm:"primary_key" json:"id"`
-    CreatedAt      JSONTime           `json:"createdAt"`
-    UpdatedAt      JSONTime           `json:"updatedAt"`
-	DeletedAt      *JSONTime          `sql:"index" json:"deletedAt"`
-	EndAt          JSONTime           `json:"endAt"`
+    CreatedAt      time.Time          `json:"createdAt"`
+    UpdatedAt      time.Time          `json:"updatedAt"`
+	DeletedAt      *time.Time         `sql:"index" json:"deletedAt"`
+	EndAt          time.Time          `json:"endAt"`
     Name           string             `json:"name"`
     BrowseCount    int                `json:"browseCount"`
     CommentCount   int                `json:"commentCount"`

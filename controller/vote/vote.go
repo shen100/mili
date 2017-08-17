@@ -34,13 +34,13 @@ func save(isEdit bool, vote model.Vote, tx *gorm.DB, ctx *iris.Context) (model.V
 		vote.CommentCount = queryVote.CommentCount
 		vote.Status       = queryVote.Status
 		vote.CreatedAt    = queryVote.CreatedAt
-		vote.UpdatedAt    = model.JSONTime(time.Now())
+		vote.UpdatedAt    = time.Now()
 		vote.UserID       = queryVote.UserID
 	} else {
 		vote.BrowseCount  = 0
 		vote.CommentCount = 0
 		vote.Status       = model.VoteUnderway
-		vote.CreatedAt    = model.JSONTime(time.Now())
+		vote.CreatedAt    = time.Now()
 	}
 
 	vote.Name    = strings.TrimSpace(vote.Name)

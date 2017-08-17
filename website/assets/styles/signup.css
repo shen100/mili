@@ -8,6 +8,10 @@
 	margin: 0 auto;
 }
 
+.signup-head-content a {
+    display: inline-block;
+}
+
 .signup-head-content img {
 	width: 60px;
 }
@@ -93,7 +97,7 @@
 }
 
 .signup-form {
-	margin-top: 20px;
+	margin-top: 32px;
 	margin-left: 80px;
 }
 .signup-input {

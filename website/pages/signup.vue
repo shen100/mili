@@ -2,13 +2,15 @@
 	<div>
         <div class="signup-head">
             <div class="signup-head-content">
-                <img src="~assets/images/logo.png" alt="">
-                <span>Golang123</span>
+                <a href="/">
+                    <img src="~assets/images/logo.png" alt="">
+                    <span>Golang123</span>
+                </a>
             </div>
         </div>
         <div class="signup-box">
             <div class="signup-nav">
-                <span class="title">Golang通行证注册</span>
+                <span class="title">Golang123账号注册</span>
                 <span class="desc">如果您有Golang123账号，则可以<a href="/signin">登录</a></span>
             </div>
     		<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">

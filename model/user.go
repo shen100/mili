@@ -48,6 +48,7 @@ func (user User) Salt() string {
 
 // EncryptPassword 给密码加密
 func (user User) EncryptPassword(password, salt string) (hash string) {
+    password = fmt.Sprintf("%x", md5.Sum([]byte(password)))
     hash = salt + password + config.ServerConfig.PassSalt
     hash = salt + fmt.Sprintf("%x", md5.Sum([]byte(hash)))
     return
