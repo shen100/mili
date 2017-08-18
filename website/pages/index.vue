@@ -24,7 +24,7 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :score="score" :user="user" :maxComment="maxComment" :maxBrowse="maxBrowse"/>
+            <app-sidebar :score="score" :user="user" :maxComment="maxComment" :pubTopic="true" :maxBrowse="maxBrowse"/>
         </div>
         <app-footer />
     </div>

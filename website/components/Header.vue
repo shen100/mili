@@ -15,10 +15,10 @@
 				<ul>
 					<li><a href="/">首页</a></li>
                     <li><a href="/vote">投票</a></li>
-                    <li><a href="/timeline">时间轴</a></li>
+                    <li><a href="/timeline">成长历史</a></li>
                     <li><a href="https://github.com/shen100/golang123" target="_blank">golang123源码</a></li>
                     <li><a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a></li>
-					<li>关于</li>
+					<li><a href="/about">关于</a></li>
                     <template v-if="userData">
                         <li @click="logout">退出</li>
                     </template>

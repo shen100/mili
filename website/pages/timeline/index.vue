@@ -2,7 +2,7 @@
     <div>
         <app-header :user="user"/>
         <div class="timeline-box">
-            <h1 class="timeline-title">Golang中文社区时间轴</h1>
+            <h1 class="timeline-title">Golang中文社区成长历史</h1>
             <div>
                 <ul>
                     <li v-for="(item, index) in list">
@@ -81,7 +81,7 @@
         },
         head () {
             return {
-                title: '时间轴'
+                title: 'Golang中文社区成长历史'
             }
         },
         mounted () {

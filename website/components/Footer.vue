@@ -15,7 +15,7 @@
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a>联系我们</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-            <a href="/timeline">时间轴</a>
+            <a href="/timeline">成长历史</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a>关于我们</a>
         </div>

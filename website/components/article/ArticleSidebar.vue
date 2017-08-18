@@ -20,7 +20,7 @@
         <div class="golang-cell">
             <div class="title">作者近期话题</div>
             <ul>
-                <li v-for="topic in articles" class="golang-cell-item">{{topic.name}}</li>
+                <li v-for="topic in articles" class="golang-cell-item"><a :href="`/topic/${topic.id}`" class="sidebar-articles-title">{{topic.name}}</a></li>
             </ul>
         </div>
         <div class="golang-cell">

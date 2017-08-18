@@ -144,7 +144,8 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang-home-body-right {
-	width: 290px;
+	width: 280px;
+    margin-left: 20px;
 }
 
 .golang-home-body-right .golang-cell {
