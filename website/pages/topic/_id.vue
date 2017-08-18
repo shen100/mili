@@ -44,6 +44,7 @@
                         <Button type="primary" @click="onSubmit">发表回复</Button>
                     </div>
                 </div>
+                <p class="not-signin" v-else>要回复话题请先<a href="/signin">登录</a>或<a href="/signup">注册</a></p>
             </div>
             <app-sidebar :user="article.user" :maxBrowse="maxBrowse" :articles="recentArticles"/>
         </div>

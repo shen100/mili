@@ -52,6 +52,7 @@
                     .then(res => {
                         if (res.errNo === ErrorCode.SUCCESS) {
                             this.userData = null
+                            window.location.reload()
                         }
                     })
                     .catch(err => {

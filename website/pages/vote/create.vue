@@ -38,12 +38,12 @@
                             <Form-item>
                                 <Row>
                                     <Col span="12">
-                                        <Button type="dashed" long @click="handleAdd" icon="plus-round">新增</Button>
+                                        <Button type="dashed" long @click="handleAdd" icon="plus-round">增加投票项</Button>
                                     </Col>
                                 </Row>
                             </Form-item>
                             <Form-item class="vote-submit" :label-width="0">
-                                <Button size="large" type="primary" @click="onSubmit()">发布投票</Button>
+                                <Button size="large" type="primary" @click="onSubmit()">发起投票</Button>
                             </Form-item>
                         </Form>
                     </div>
@@ -149,6 +149,9 @@
                 this.formValidate.content = content
             },
             handleAdd () {
+                if (!(this.formValidate.length < 20)) {
+                    return this.$Message.error('投票项最多只能创建20个')
+                }
                 this.formValidate.items.push({
                     value: ''
                 })
