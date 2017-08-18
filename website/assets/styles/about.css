@@ -63,7 +63,10 @@ body {
     margin-bottom:20px;
 }
 
-
+.about-text a {
+    padding: 0 4px;
+    text-decoration: underline;
+}
 
 
 
