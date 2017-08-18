@@ -12,6 +12,10 @@
     display: inline-block;
 }
 
+.signup-head-content a:hover {
+    text-decoration: none;
+}
+
 .signup-head-content img {
 	width: 60px;
 }
