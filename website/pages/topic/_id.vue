@@ -20,8 +20,8 @@
                 <div class="home-articles-box">
                     <div class="golang123-editor" v-html="article.content"></div>
                 </div>
-                <div class="golang-cell comment-box" v-if="article.comments.length > 0">
-                    <div class="title">{{article.commentCount}}回复</div>
+                <div class="golang-cell comment-box">
+                    <div class="title">{{article.comments.length > 0 ? article.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
                         <div class="comment-item" v-for="(item, index) in article.comments">
                             <a class="reply-user-icon">
@@ -31,6 +31,7 @@
                             <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
                             <div class="golang123-editor" v-html="item.content"></div>
                         </div>
+                        <p class="not-signin" :class="{'comment-item': article.comments.length > 0}" v-if="!user">要回复话题请先<a href="/signin">登录</a>或<a href="/signup">注册</a></p>
                     </div>
                 </div>
                 <div class="golang-cell comment-box" v-if="user">
@@ -44,7 +45,6 @@
                         <Button type="primary" @click="onSubmit">发表回复</Button>
                     </div>
                 </div>
-                <p class="not-signin" v-else>要回复话题请先<a href="/signin">登录</a>或<a href="/signup">注册</a></p>
             </div>
             <app-sidebar :user="article.user" :maxBrowse="maxBrowse" :articles="recentArticles"/>
         </div>

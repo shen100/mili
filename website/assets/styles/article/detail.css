@@ -83,9 +83,6 @@ body, .golang-home-body-left {
 
 .comment-item {
 	padding: 15px 0;
-}
-
-.comment-item {
 	border-top: 1px solid #e5e5e5;
 }
 
@@ -105,7 +102,9 @@ body, .golang-home-body-left {
 
 .not-signin {
 	text-align: center;
-	margin-top: 10px;
+	padding: 15px 0 5px 0;
+	font-size: 14px;
+	line-height: 40px;
 }
 
 .not-signin a {
