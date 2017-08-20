@@ -24,7 +24,13 @@ func ActiveRequired(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	session     := ctx.Session();
 	user, ok    := session.Get("user").(model.User)
-	if ok && user.Status == model.UserStatusActived {
+
+	if !ok {
+		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
+		return
+	}
+
+	if user.Status == model.UserStatusActived {
 		ctx.Next()
 	} else {
 		var msg = ""

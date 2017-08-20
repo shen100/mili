@@ -32,12 +32,6 @@
                 <li v-for="topic in recentArticles" class="golang-cell-item"><a :href="`/topic/${topic.id}`" class="sidebar-articles-title">{{topic.name}}</a></li>
             </ul>
         </div>
-        <div v-if="maxComment" class="golang-cell">
-			<div class="title">回复最多的话题</div>
-			<ul>
-				<li class="golang-cell-item" v-for="item in maxComment"><a :href="`/topic/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
-			</ul>
-        </div>
         <div v-if="score" class="golang-cell">
 			<div class="title">积分榜<span>TOP 100>></span></div>
 			<ul>
@@ -52,6 +46,24 @@
 			<ul>
 				<li class="golang-cell-item" v-for="item in maxBrowse"><a :href="`/topic/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
 			</ul>
+        </div>
+        <div v-if="maxComment" class="golang-cell">
+            <div class="title">回复最多的话题</div>
+            <ul>
+                <li class="golang-cell-item" v-for="item in maxComment"><a :href="`/topic/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
+            </ul>
+        </div>
+        <div v-if="votesMaxBrowse" class="golang-cell">
+            <div class="title">热门投票</div>
+            <ul>
+                <li class="golang-cell-item" v-for="item in votesMaxBrowse"><a :href="`/vote/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
+            </ul>
+        </div>
+        <div v-if="votesMaxComment" class="golang-cell">
+            <div class="title">回复最多的投票</div>
+            <ul>
+                <li class="golang-cell-item" v-for="item in votesMaxComment"><a :href="`/vote/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
+            </ul>
         </div>
     </div>
 </template>
@@ -68,7 +80,9 @@
             'author',
             'score',
             'maxComment',
-            'recentArticles'
+            'recentArticles',
+            'votesMaxBrowse',
+            'votesMaxComment'
         ],
         data () {
             return {

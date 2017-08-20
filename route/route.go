@@ -65,6 +65,8 @@ func Route(app *iris.Framework) {
 		router.Post("/comment/create",      auth.ActiveRequired,
 											comment.Create)
 		router.Get("/votes",                vote.List)
+		router.Get("/votes/maxbrowse",      vote.ListMaxBrowse)
+		router.Get("/votes/maxcomment",     vote.ListMaxComment)
 		router.Post("/vote/create",         auth.EditorRequired,
 											vote.Create)
 		router.Post("/vote/delete",         auth.EditorRequired,

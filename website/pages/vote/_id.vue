@@ -55,7 +55,7 @@
                     </div>
                 </div>
             </div>
-            <!-- <app-sidebar :user="article.user" :maxBrowse="maxBrowse" :articles="recentArticles"/> -->
+            <app-sidebar :score="score" :votesMaxBrowse="votesMaxBrowse" :votesMaxComment="votesMaxComment"/>
         </div>
         <app-footer />
     </div>
@@ -68,6 +68,7 @@
     import ErrorCode from '~/constant/ErrorCode'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
+    import Sidebar from '~/components/Sidebar'
     import editor from '~/components/article/editor'
     import request from '~/net/request'
     import dateTool from '~/utils/date'
@@ -93,21 +94,34 @@
             return hasId
         },
         asyncData (context) {
-            return request.getVote({
-                client: context.req,
-                params: {
-                    id: context.params.id
-                }
-            }).then(res => {
-                if (res.errNo === ErrorCode.SUCCESS) {
-                    const vote = res.data
-                    return {
-                        vote: vote,
-                        user: context.user,
-                        status: moment().valueOf() < dateTool.parse(vote.endAt).valueOf()
+            return Promise.all([
+                request.getVote({
+                    client: context.req,
+                    params: {
+                        id: context.params.id
                     }
-                } else {
-                    return context.error({ statusCode: 404, message: 'Page not found' })
+                }),
+                request.getVoteMaxBrowse({
+                    client: context.req
+                }),
+                request.getVoteMaxComment({
+                    client: context.req
+                }),
+                request.getTop10({
+                    client: context.req
+                })
+            ]).then(arr => {
+                let vote = arr[0].data
+                let votesMaxBrowse = arr[1].data.votes
+                let votesMaxComment = arr[2].data.votes
+                let score = arr[3].data.users
+                return {
+                    vote: vote,
+                    user: context.user,
+                    votesMaxBrowse: votesMaxBrowse,
+                    votesMaxComment: votesMaxComment,
+                    score: score,
+                    status: moment().valueOf() < dateTool.parse(vote.endAt).valueOf()
                 }
             }).catch(err => {
                 console.log(err)
@@ -200,6 +214,7 @@
         components: {
             'app-header': Header,
             'app-footer': Footer,
+            'app-sidebar': Sidebar,
             'md-editor': editor
         }
     }

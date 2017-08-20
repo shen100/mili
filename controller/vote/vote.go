@@ -88,6 +88,42 @@ func List(ctx *iris.Context) {
 	})
 }
 
+// ListMaxComment 评论最多的话题，返回5条
+func ListMaxComment(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var votes []model.Vote
+	if err := model.DB.Order("comment_count DESC").Limit(5).Find(&votes).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"votes": votes,
+		},
+	})
+}
+
+// ListMaxBrowse 访问量最多的投票，返回5条
+func ListMaxBrowse(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var votes []model.Vote
+	if err := model.DB.Order("browse_count DESC").Limit(5).Find(&votes).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"votes": votes,
+		},
+	})
+}
+
 func save(isEdit bool, vote model.Vote, user model.User, tx *gorm.DB) (model.Vote, error) {
 	var queryVote model.Vote
 	if isEdit {
@@ -425,6 +461,11 @@ func UserVoteVoteItem(ctx *iris.Context) {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return	
+	}
+	vote.LastUserID = user.ID
+	if err := model.DB.Save(&vote).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
 	}
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,

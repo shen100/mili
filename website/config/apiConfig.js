@@ -145,6 +145,16 @@ const api = {
         url: url + '/vote/uservote/:id',
         method: 'POST',
         desc: '投票'
+    },
+    getVoteMaxBrowse: {
+        url: url + '/votes/maxbrowse',
+        method: 'GET',
+        desc: '浏览量最多的投票'
+    },
+    getVoteMaxComment: {
+        url: url + '/votes/maxcomment',
+        method: 'GET',
+        desc: '回复最多的投票'
     }
 }
 
