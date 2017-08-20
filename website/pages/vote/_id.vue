@@ -19,18 +19,26 @@
                 </div>
                 <div class="home-vote-box">
                     <div class="golang123-editor" v-html="vote.content"></div>
+                    <div class="">
+                        <span v-for="item in vote.voteItems">
+                            <Button type="primary" class="vote-item" @click="onVoteSubmit(item.id)">支持<span class="vote-item-label">{{item.name}}</span><span class="vote-item-label">{{item.count}}</span></Button>
+                        </span>
+                    </div>
                 </div>
                 <div class="golang-cell comment-box">
-                    <div class="title">{{vote.comments > 0 ? vote.commentCount : '暂无'}}回复</div>
+                    <div class="title">{{vote.commentCount > 0 ? vote.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
-                        <div class="comment-item" v-for="(item, index) in vote.comments" v-if="vote.comments">
-                            <a class="reply-user-icon">
-                                <img src="~assets/images/head.png" alt="">
-                            </a>
-                            <span class="reply-user-name">{{item.user.name}}</span>
-                            <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
-                            <div class="golang123-editor" v-html="item.content"></div>
-                        </div>
+                        <template v-if="vote.commentCount">
+                            <div class="comment-item" v-for="(item, index) in vote.comments">
+                                <a class="reply-user-icon">
+                                    <img src="~assets/images/head.png" alt="">
+                                </a>
+                                <span class="reply-user-name">{{item.user.name}}</span>
+                                <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
+                                <div class="golang123-editor" v-html="item.content"></div>
+                            </div>
+                        </template>
+                        <p class="not-signin" v-else>暂时还没有人回复过这个话题</p>
                         <p class="not-signin" :class="{'comment-item': vote.comments}" v-if="!user">要回复话题请先<a href="/signin">登录</a>或<a href="/signup">注册</a></p>
                     </div>
                 </div>
@@ -143,6 +151,35 @@
                         })
                     }
                 })
+            },
+            onVoteSubmit (id) {
+                if (!this.loading) {
+                    this.loading = true
+                    request.userVote({
+                        params: {
+                            id: id
+                        }
+                    }).then(res => {
+                        this.loading = false
+                        if (res.errNo === ErrorCode.SUCCESS) {
+                            return request.getVote({
+                                params: {
+                                    id: this.$route.params.id
+                                }
+                            })
+                        } else {
+                            return Promise.reject(new Error(res.msg))
+                        }
+                    }).then(res => {
+                        if (res.errNo === ErrorCode.SUCCESS) {
+                            this.vote = res.data
+                            this.$Message.success('投票成功')
+                        }
+                    }).catch(err => {
+                        this.loading = false
+                        this.$Message.error(err.message)
+                    })
+                }
             }
         },
         mounted () {

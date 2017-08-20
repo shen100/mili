@@ -21,16 +21,19 @@
                     <div class="golang123-editor" v-html="article.content"></div>
                 </div>
                 <div class="golang-cell comment-box">
-                    <div class="title">{{article.comments.length > 0 ? article.commentCount : '暂无'}}回复</div>
+                    <div class="title">{{article.commentCount > 0 ? article.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
-                        <div class="comment-item" v-for="(item, index) in article.comments">
-                            <a class="reply-user-icon">
-                                <img src="~assets/images/head.png" alt="">
-                            </a>
-                            <span class="reply-user-name">{{item.user.name}}</span>
-                            <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
-                            <div class="golang123-editor" v-html="item.content"></div>
-                        </div>
+                        <template v-if="article.commentCount > 0">
+                            <div class="comment-item" v-for="(item, index) in article.comments">
+                                <a class="reply-user-icon">
+                                    <img src="~assets/images/head.png" alt="">
+                                </a>
+                                <span class="reply-user-name">{{item.user.name}}</span>
+                                <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
+                                <div class="golang123-editor" v-html="item.content"></div>
+                            </div>
+                        </template>
+                        <p class="not-signin" v-else>暂时还没有人回复过这个话题</p>
                         <p class="not-signin" :class="{'not-signin-border': article.comments.length > 0}" v-if="!user">要回复话题请先<a href="/signin">登录</a>或<a href="/signup">注册</a></p>
                     </div>
                 </div>

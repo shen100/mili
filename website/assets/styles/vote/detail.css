@@ -55,10 +55,57 @@ body, .golang-home-body-left {
     padding: 10px;
 }
 
+.comment-item {
+    padding: 15px 0;
+    border-top: 1px solid #e5e5e5;
+}
+
+.comment-item:nth-child(1) {
+    border: 0;
+}
+
+.comment-item .golang123-editor {
+    margin-top: 10px;
+    margin-left: 40px;
+}
+
+.reply-user-icon {
+    float: left;
+}
+
+.reply-user-icon img {
+    width: 30px;
+    height: 30px;
+}
+
+.reply-user-name {
+    color: gray;
+    margin: 0 5px;
+}
+
+.reply-time {
+    color: #08c;
+    cursor: default;
+}
+
+.author-info-text {
+    color: #000;
+    font-size: 14px;
+}
+
 .vote-categoties-running {
     background-color: #80bd01;
 }
 
 .vote-categoties-end {
     background-color: #9e9e9e;
+}
+
+.vote-item {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.vote-item-label {
+    margin: 0 5px;
 }
