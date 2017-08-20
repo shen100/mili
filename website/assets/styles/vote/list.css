@@ -21,6 +21,7 @@ body {
 
 .categoties-item:hover, .categoties-select {
 	background-color: #80bd01;
+	text-decoration: none;
 }
 
 .categoties-item:hover, .categoties-select {
@@ -120,6 +121,13 @@ body {
 	font-size: 12px;
 }
 
+.home-tip-container {
+	width: 60px;
+	text-align: center;
+	display: inline-block;
+}
+
 .home-tip-box {
 	vertical-align: text-bottom;
+    text-align: center;
 }

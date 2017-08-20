@@ -34,7 +34,8 @@
                             </div>
                         </template>
                         <p class="not-signin" v-else>暂时还没有人回复过这个话题</p>
-                        <p class="not-signin" :class="{'not-signin-border': article.comments.length > 0}" v-if="!user">要回复话题, 请先&nbsp;<a href="/signin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
+                        <p class="not-signin-padding not-signin-dividing" v-if="!article.commentCount && !user"></p>
+                        <p class="not-signin" :class="{'comment-item': article.commentCount}" v-if="!user">要回复话题, 请先&nbsp;<a href="/signin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
                     </div>
                 </div>
                 <div class="golang-cell comment-box" v-if="user">

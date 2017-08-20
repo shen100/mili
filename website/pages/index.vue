@@ -10,13 +10,15 @@
                 <div class="home-articles-box">
                     <div v-for="article in articles" class="articles-cell">
                         <a class="user-icon-box"><img :src="article.user.avatarURL" alt=""></a>
-                        <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
-                            <a :href="'/topic/' + article.id">
-                                <span class="articles-click-num">{{article.commentCount}}</span>
-                                <span class="articles-num-split">/</span>
-                                <span class="articles-res-num">{{article.browseCount}}</span>
-                            </a>
-                        </Tooltip>
+                        <span class="home-tip-container">
+                            <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
+                                <a :href="'/topic/' + article.id" class="no-underline">
+                                    <span class="articles-click-num">{{article.commentCount}}</span>
+                                    <span class="articles-num-split">/</span>
+                                    <span class="articles-res-num">{{article.browseCount}}</span>
+                                </a>
+                            </Tooltip>
+                        </span>
                         <span class="articles-categoties">{{article.categories[0].name}}</span>
                         <a :href="'/topic/' + article.id" class="home-articles-title">{{article.name}}</a>
                         <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
