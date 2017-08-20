@@ -98,6 +98,21 @@ func queryList(isBackend bool, ctx *iris.Context) {
 		}
 	}
 
+	for i := 0; i < len(articles); i++ {
+		if err := model.DB.Model(&articles[i]).Related(&articles[i].User, "users").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		if articles[i].LastUserID != 0 {
+			if err := model.DB.Model(&articles[i]).Related(&articles[i].LastUser, "users").Error; err != nil {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return
+			}
+		}
+	}
+
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
