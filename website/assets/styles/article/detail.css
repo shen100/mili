@@ -3,7 +3,7 @@ body, .golang-home-body-left {
 }
 
 .detail-title-box {
-	padding: 10px;	
+	padding: 10px;
 	border-radius: 3px 3px 0 0;
 	border-bottom: 1px solid #e5e5e5;
 }
@@ -98,4 +98,19 @@ body, .golang-home-body-left {
 .author-info-text {
 	color: #000;
     font-size: 14px;
+}
+
+.not-signin {
+	text-align: center;
+	padding: 15px 0 5px 0;
+	font-size: 14px;
+	line-height: 40px;
+}
+
+.not-signin a {
+	color: #108ee9;
+}
+
+.CodeMirror, .CodeMirror-scroll {
+    min-height: 200px;
 }

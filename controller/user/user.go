@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"math/rand"
 	"time"
 	"gopkg.in/kataras/iris.v6"
 	"github.com/asaskevich/govalidator"
@@ -119,7 +120,7 @@ func ActiveAccount(ctx *iris.Context) {
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : user.ToUser(),
+		"data"  : user,
 	})
 }
 
@@ -268,7 +269,7 @@ func Signin(ctx *iris.Context) {
 		ctx.JSON(iris.StatusOK, iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
-			"data"  : queryUser.ToUser(),
+			"data"  : queryUser,
 		})
 	} else {
 		SendErrJSON(msg, ctx)
@@ -323,11 +324,12 @@ func Signup(ctx *iris.Context) {
 	}
 
 	var newUser model.User
-	newUser.Name   = userData.Name
-	newUser.Email  = userData.Email
-	newUser.Pass   = newUser.EncryptPassword(userData.Password, newUser.Salt())
-	newUser.Role   = model.UserRoleNormal
-	newUser.Status = model.UserStatusInActive
+	newUser.Name      = userData.Name
+	newUser.Email     = userData.Email
+	newUser.Pass      = newUser.EncryptPassword(userData.Password, newUser.Salt())
+	newUser.Role      = model.UserRoleNormal
+	newUser.Status    = model.UserStatusInActive
+	newUser.AvatarURL = "/images/avatar" + strconv.Itoa(rand.Intn(2)) + ".png"
 
 	if err := model.DB.Create(&newUser).Error; err != nil {
 		SendErrJSON("error", ctx)
@@ -346,7 +348,7 @@ func Signup(ctx *iris.Context) {
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : newUser.ToUser(),
+		"data"  : newUser,
 	})
 }
 
@@ -444,7 +446,7 @@ func Info(ctx *iris.Context) {
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
 			"data"  : iris.Map{
-				"user": user.ToUser(),
+				"user": user,
 			},
 		})	
 	} else {
