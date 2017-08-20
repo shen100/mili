@@ -78,6 +78,7 @@ func Save(isEdit bool, ctx *iris.Context) {
 		}
 		if comment.SourceName == model.CommentSourceArticle {
 			article.CommentCount++
+			article.LastUserID = user.ID
 			if err := model.DB.Save(&article).Error; err != nil {
 				SendErrJSON("error", ctx)
 				return

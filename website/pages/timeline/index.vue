@@ -44,6 +44,15 @@
             return {
                 list: [
                     {
+                        name: '支持投票功能',
+                        date: {
+                            year: 2017,
+                            month: 8,
+                            date: 20
+                        },
+                        content: '对拿不准的功能, 会定期在&nbsp;<a href="/vote" target="_blank">投票专栏</a>&nbsp;发起投票, 征求大家的意见'
+                    },
+                    {
                         name: '架构调整，支持前后端同构渲染',
                         date: {
                             year: 2017,

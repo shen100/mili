@@ -17,6 +17,8 @@ type Vote struct {
     Comments       []Comment          `gorm:"ForeignKey:SourceID" json:"comments"` 
     UserID         uint               `json:"userID"`
     User           User               `json:"user"`
+    LastUserID     uint               `json:"lastUserID"`
+    LastUser       User               `gorm:"AssociationForeignKey:LastUserID" json:"lastUser"`
     VoteItems      []VoteItem         `json:"voteItems"`
 }
 

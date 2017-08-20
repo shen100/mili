@@ -26,7 +26,7 @@
                         <template v-if="article.commentCount > 0">
                             <div class="comment-item" v-for="(item, index) in article.comments">
                                 <a class="reply-user-icon">
-                                    <img src="~assets/images/head.png" alt="">
+                                    <img :src="item.user.avatarURL" alt="">
                                 </a>
                                 <span class="reply-user-name">{{item.user.name}}</span>
                                 <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
@@ -35,7 +35,7 @@
                         </template>
                         <p class="not-signin" v-else>暂时还没有人回复过这个话题</p>
                         <p class="not-signin-padding not-signin-dividing" v-if="!article.commentCount && !user"></p>
-                        <p class="not-signin" :class="{'comment-item': article.commentCount}" v-if="!user">要回复话题请先<a href="/signin">登录</a>或<a href="/signup">注册</a></p>
+                        <p class="not-signin" :class="{'comment-item': article.commentCount}" v-if="!user">要回复话题, 请先&nbsp;<a href="/signin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
                     </div>
                 </div>
                 <div class="golang-cell comment-box" v-if="user">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :user="article.user" :maxBrowse="maxBrowse" :articles="recentArticles"/>
+            <app-sidebar :user="user" :score="score" :maxComment="maxComment" :author="article.user" :maxBrowse="maxBrowse" :recentArticles="recentArticles"/>
         </div>
         <app-footer />
     </div>
@@ -62,7 +62,7 @@
     import ErrorCode from '~/constant/ErrorCode'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
-    import Sidebar from '~/components/article/ArticleSidebar'
+    import Sidebar from '~/components/Sidebar'
     import editor from '~/components/article/editor'
     import request from '~/net/request'
     import dateTool from '~/utils/date'
@@ -109,15 +109,25 @@
                         params: {
                             userID: article.userID
                         }
+                    }),
+                    request.getTop10({
+                        client: context.req
+                    }),
+                    request.getMaxComment({
+                        client: context.req
                     })
                 ]
                 return Promise.all(reqArr).then(arr => {
                     let maxBrowse = arr[0].data.articles
                     let recentArticles = arr[1].data.articles
+                    let score = arr[2].data.users
+                    let maxComment = arr[3].data.articles
                     return {
                         user: context.user,
                         article: article,
                         maxBrowse: maxBrowse,
+                        score: score,
+                        maxComment: maxComment,
                         recentArticles: recentArticles
                     }
                 })

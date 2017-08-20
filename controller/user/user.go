@@ -329,7 +329,7 @@ func Signup(ctx *iris.Context) {
 	newUser.Pass      = newUser.EncryptPassword(userData.Password, newUser.Salt())
 	newUser.Role      = model.UserRoleNormal
 	newUser.Status    = model.UserStatusInActive
-	newUser.AvatarURL = "/images/avatar" + strconv.Itoa(rand.Intn(2)) + ".png"
+	newUser.AvatarURL = "/images/avatar/" + strconv.Itoa(rand.Intn(2)) + ".png"
 
 	if err := model.DB.Create(&newUser).Error; err != nil {
 		SendErrJSON("error", ctx)

@@ -9,7 +9,7 @@
                 </div>
                 <div class="home-articles-box">
                     <div v-for="article in articles" class="articles-cell">
-                        <a class="user-icon-box"><img src="~assets/images/head.png" alt=""></a>
+                        <a class="user-icon-box"><img :src="article.user.avatarURL" alt=""></a>
                         <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
                             <a :href="'/topic/' + article.id">
                                 <span class="articles-click-num">{{article.commentCount}}</span>
@@ -20,11 +20,11 @@
                         <span class="articles-categoties">{{article.categories[0].name}}</span>
                         <a :href="'/topic/' + article.id" class="home-articles-title">{{article.name}}</a>
                         <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
-                        <a class="user-small-icon-box"><img src="~assets/images/head.png" alt=""></a>
+                        <a class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""></a>
                     </div>
                 </div>
             </div>
-            <app-sidebar :score="score" :user="user" :maxComment="maxComment" :pubTopic="true" :maxBrowse="maxBrowse"/>
+            <app-sidebar :score="score" :user="user" :userLoginVisible="true" :maxComment="maxComment" :pubTopic="true" :maxBrowse="maxBrowse"/>
         </div>
         <app-footer />
     </div>
