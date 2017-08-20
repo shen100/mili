@@ -135,6 +135,11 @@ const api = {
         url: url + '/votes',
         method: 'GET',
         desc: '获取投票列表'
+    },
+    getVote: {
+        url: url + '/vote/:id',
+        method: 'GET',
+        desc: '获取投票列表'
     }
 }
 

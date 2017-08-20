@@ -424,3 +424,18 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .text-italic {
     font-style: italic;
 }
+
+.not-signin {
+    text-align: center;
+    padding: 15px 0 5px 0;
+    font-size: 14px;
+    line-height: 40px;
+}
+
+.not-signin-border  {
+    border-top: 1px solid #e5e5e5;
+}
+
+.not-signin a {
+    color: #108ee9;
+}

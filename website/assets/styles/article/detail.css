@@ -99,14 +99,3 @@ body, .golang-home-body-left {
 	color: #000;
     font-size: 14px;
 }
-
-.not-signin {
-	text-align: center;
-	padding: 15px 0 5px 0;
-	font-size: 14px;
-	line-height: 40px;
-}
-
-.not-signin a {
-	color: #108ee9;
-}
