@@ -116,10 +116,10 @@
                         this.loading = true
                         request.commentCreate({
                             body: {
-                                sourceId: parseInt(this.$route.params.id),
+                                sourceID: parseInt(this.$route.params.id),
                                 parentID: 0,
                                 content: this.formData.content,
-                                sourceName: 'note'
+                                sourceName: 'vote'
                             }
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
