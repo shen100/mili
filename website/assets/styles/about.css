@@ -14,7 +14,7 @@ body {
 .about-main {
     font-size: 0;
     display: inline-block;
-    min-height: 600px;
+    min-height: 666px;
     background: #fff;
 }
 
@@ -68,6 +68,18 @@ body {
     text-decoration: underline;
 }
 
+.about-golang123 {
+    padding-top: 30px;
+}
+
+.about-golang123 pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 0;
+    word-spacing: initial;
+    font-size: 14px;
+}
 
 
 
