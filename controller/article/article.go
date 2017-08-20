@@ -334,7 +334,6 @@ func Info(ctx *iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
-	article.User = article.User.ToUser()
 
 	if err := model.DB.Model(&article).Related(&article.Categories, "categories").Error; err != nil {
 		fmt.Println(err.Error())
@@ -354,7 +353,6 @@ func Info(ctx *iris.Context) {
 			SendErrJSON("error", ctx)
 			return
 		}
-		article.Comments[i].User = article.Comments[i].User.ToUser()
 		parentID := article.Comments[i].ParentID
 		var parents []model.Comment
 		for parentID != 0 {
@@ -368,7 +366,6 @@ func Info(ctx *iris.Context) {
 				SendErrJSON("error", ctx)
 				return
 			}
-			parent.User = parent.User.ToUser()
 			parents = append(parents, parent)
 			parentID = parent.ParentID
 		}

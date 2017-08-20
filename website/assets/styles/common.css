@@ -78,8 +78,13 @@ html,body {
 	margin: 0 auto;
 }
 
-.golang-logo-container img {
-	height: 50px;
+.golang-logo-container a {
+    font-size: 22px;
+    color: #fff;
+}
+
+.golang-logo-container a:hover {
+    text-decoration: none;
 }
 
 .golang-top-header-left {

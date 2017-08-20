@@ -12,10 +12,19 @@ type Comment struct {
     Content        string             `json:"content"`
     ParentID       uint               `json:"parentID"`  
     Parents        []Comment          `json:"parents"`  
-    ArticleID      uint               `json:"articleID"`
+    SourceName     string             `json:"sourceName"` 
+    SourceID       uint               `json:"sourceID"`
     UserID         uint               `json:"userID"`
     User           User               `json:"user"`
 }
+
+const (
+    // CommentSourceArticle 对文章进行评论
+    CommentSourceArticle = "article"
+
+    // CommentSourceVote 对投票进行评论
+    CommentSourceVote    = "vote"
+)
 
 const (
     // CommentVerifying 审核中

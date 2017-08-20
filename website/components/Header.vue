@@ -3,7 +3,7 @@
 		<div class="golang-top-box">
 			<div class="golang-top-header-left">
 				<div class="golang-logo-container">
-                    <a href="/"><img src="~assets/images/logo.png" alt=""></a>
+                    <a href="/">golang123</a>
 				</div>
 				<div class="golang-header-search">
 					<form action="" class="golang-top-search">

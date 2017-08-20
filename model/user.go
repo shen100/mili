@@ -15,7 +15,7 @@ type User struct {
     UpdatedAt      time.Time          `json:"updatedAt"`
     DeletedAt      *time.Time         `sql:"index" json:"deletedAt"`
     Name           string             `json:"name"`
-    Pass           string             `json:"pass"`
+    Pass           string             `json:"-"`
     Email          string             `json:"email"`
     Phone          string             `json:"phone"`
     Score          uint               `json:"score"`
@@ -24,6 +24,7 @@ type User struct {
     CollectCount   uint               `json:"collectCount"`
     Signature      string             `json:"signature"`
     Role           int                `json:"role"`
+    AvatarURL      string             `json:"avatarURL"`
     Status         int                `json:"status"`    
 }
 
@@ -52,21 +53,6 @@ func (user User) EncryptPassword(password, salt string) (hash string) {
     hash = salt + password + config.ServerConfig.PassSalt
     hash = salt + fmt.Sprintf("%x", md5.Sum([]byte(hash)))
     return
-}
-
-// ToUser 返回的User仅部分属性有值，即隐藏部分字段
-func (user User) ToUser() User {
-    return User{
-        ID        : user.ID,
-        CreatedAt : user.CreatedAt,
-        UpdatedAt : user.UpdatedAt,
-        Name      : user.Name,
-        Email     : user.Email,
-        Role      : user.Role,
-        Score     : user.Score,
-        Signature : user.Signature,
-        Status    : user.Status,
-    }
 }
 
 const (

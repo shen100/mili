@@ -236,6 +236,38 @@ func Info(ctx *iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
+
+	if err := model.DB.Model(&vote).Related(&vote.Comments, "comments").Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	for i := 0; i < len(vote.Comments); i++ {
+		if err := model.DB.Model(&vote.Comments[i]).Related(&vote.Comments[i].User, "users").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		parentID := vote.Comments[i].ParentID
+		var parents []model.Comment
+		for parentID != 0 {
+			var parent model.Comment
+			if err := model.DB.Where("parent_id = ?", parentID).Find(&parent).Error; err != nil {
+				SendErrJSON("error", ctx)
+				return
+			}
+			if err := model.DB.Model(&parent).Related(&parent.User, "users").Error; err != nil {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return
+			}
+			parents = append(parents, parent)
+			parentID = parent.ParentID
+		}
+		vote.Comments[i].Parents = parents
+	}
+
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",

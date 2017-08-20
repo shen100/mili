@@ -21,9 +21,23 @@ func Save(isEdit bool, ctx *iris.Context) {
 	}
 
 	var article model.Article
-	if comment.ArticleID != 0 {
-		if err := model.DB.First(&article, comment.ArticleID).Error; err != nil {
-			SendErrJSON("无效的articleID", ctx)
+	var vote model.Vote
+
+	if comment.SourceName != model.CommentSourceArticle && comment.SourceName != model.CommentSourceVote {
+		SendErrJSON("sourceName无效", ctx)
+		return
+	}
+
+	if comment.SourceName == model.CommentSourceArticle {
+		if err := model.DB.First(&article, comment.SourceID).Error; err != nil {
+			SendErrJSON("无效的sourceID", ctx)
+			return	
+		}
+	}
+
+	if comment.SourceName == model.CommentSourceVote {
+		if err := model.DB.First(&vote, comment.SourceID).Error; err != nil {
+			SendErrJSON("无效的sourceID", ctx)
 			return	
 		}
 	}
@@ -62,21 +76,28 @@ func Save(isEdit bool, ctx *iris.Context) {
 			SendErrJSON("error", ctx)
 			return	
 		}
-		article.CommentCount++
-		if err := model.DB.Save(&article).Error; err != nil {
-			SendErrJSON("error", ctx)
-			return
-		}
-	} else {
-		if err := model.DB.First(&updatedComment, comment.ID).Error; err == nil {
-			updatedComment.Content = comment.Content
-			updatedComment.Status  = model.CommentVerifying
-			if err := model.DB.Save(&updatedComment).Error; err != nil {
+		if comment.SourceName == model.CommentSourceArticle {
+			article.CommentCount++
+			if err := model.DB.Save(&article).Error; err != nil {
 				SendErrJSON("error", ctx)
 				return
 			}
-		} else {
+		} else if comment.SourceName == model.CommentSourceVote {
+			vote.CommentCount++
+			if err := model.DB.Save(&vote).Error; err != nil {
+				SendErrJSON("error", ctx)
+				return
+			}
+		}
+	} else {
+		if err := model.DB.First(&updatedComment, comment.ID).Error; err != nil {
 			SendErrJSON("无效的评论id", ctx)
+			return
+		}
+		updatedComment.Content = comment.Content
+		updatedComment.Status  = model.CommentVerifying
+		if err := model.DB.Save(&updatedComment).Error; err != nil {
+			SendErrJSON("error", ctx)
 			return
 		}
 	}
@@ -87,7 +108,7 @@ func Save(isEdit bool, ctx *iris.Context) {
 	} else {
 		commentJSON = comment	
 	}
-	commentJSON.User = user.ToUser()
+	commentJSON.User = user
 
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
