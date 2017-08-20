@@ -11,13 +11,15 @@
                 <div class="home-articles-box">
                     <div v-for="vote in votes" class="articles-cell">
                         <a class="user-icon-box"><img src="~assets/images/head.png" alt=""></a>
-                        <Tooltip :content="`回复数${vote.commentCount}　浏览数${vote.browseCount}`" placement="bottom-start" class="home-tip-box">
-                            <a :href="'/vote/' + vote.id">
-                                <span class="articles-click-num">{{vote.commentCount}}</span>
-                                <span class="articles-num-split">/</span>
-                                <span class="articles-res-num">{{vote.browseCount}}</span>
-                            </a>
-                        </Tooltip>
+                        <span class="home-tip-container">
+                            <Tooltip :content="`回复数${vote.commentCount}　浏览数${vote.browseCount}`" placement="bottom-start" class="home-tip-box">
+                                <a :href="'/vote/' + vote.id" class="no-underline">
+                                    <span class="articles-click-num">{{vote.commentCount}}</span>
+                                    <span class="articles-num-split">/</span>
+                                    <span class="articles-res-num">{{vote.browseCount}}</span>
+                                </a>
+                            </Tooltip>
+                        </span>
                         <a :href="'/vote/' + vote.id" class="home-articles-title">{{vote.name}}</a>
                         <p class="articles-res-time">{{vote.createdAt | getReplyTime}}</p>
                         <a class="user-small-icon-box"><img src="~assets/images/head.png" alt=""></a>

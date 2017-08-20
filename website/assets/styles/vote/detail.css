@@ -79,12 +79,12 @@ body, .golang-home-body-left {
 }
 
 .reply-user-name {
-    color: gray;
+    color: #08c;
     margin: 0 5px;
 }
 
 .reply-time {
-    color: #08c;
+    color: gray;
     cursor: default;
 }
 

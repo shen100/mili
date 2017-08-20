@@ -1,6 +1,6 @@
 <template>
 	<div>
-        <go-header :userStatus="user"/>
+        <go-header :user="user"/>
         <div class="common-body-box">
             <div class="common-body-main">
                 <ul class="common-body-nav">

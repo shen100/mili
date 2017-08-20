@@ -187,7 +187,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-home-body-left {
 	background-color: #fff;
-	width: 74%;
+	width: 900px;
 	display: inline-block;
 }
 
@@ -451,4 +451,8 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .not-signin a {
     color: #108ee9;
+}
+
+.no-underline:hover {
+    text-decoration: none;
 }

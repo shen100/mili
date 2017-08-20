@@ -33,7 +33,7 @@
                                 <a class="reply-user-icon">
                                     <img src="~assets/images/head.png" alt="">
                                 </a>
-                                <span class="reply-user-name">{{item.user.name}}</span>
+                                <a class="reply-user-name">{{item.user.name}}</a>
                                 <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
                                 <div class="golang123-editor" v-html="item.content"></div>
                             </div>
