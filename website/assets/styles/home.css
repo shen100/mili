@@ -122,4 +122,6 @@ body {
 
 .home-tip-box {
 	vertical-align: text-bottom;
+	width: 60px;
+    text-align: center;
 }
