@@ -63,6 +63,22 @@ func List(ctx *iris.Context) {
 			return	
 		}	
 	}
+
+	for i := 0; i < len(votes); i++ {
+		if err := model.DB.Model(&votes[i]).Related(&votes[i].User, "users").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		if votes[i].LastUserID != 0 {
+			if err := model.DB.Model(&votes[i]).Related(&votes[i].LastUser, "users").Error; err != nil {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return
+			}
+		}
+	}
+
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",

@@ -5,22 +5,22 @@
             <span>&nbsp;&nbsp;|&nbsp;</span>
             <a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-            <a>投票</a>
+            <a href="/vote">投票</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a>帮助中心</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a>服务条款</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-            <a>友情链接</a>
+            <a href="/links">友情链接</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a>联系我们</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a href="/timeline">成长历史</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-            <a>关于我们</a>
+            <a href="/about">关于我们</a>
         </div>
         <div class="golang-footer-copyright">
-            <span>Copyright&nbsp;©&nbsp;2017&nbsp;-&nbsp;2017&nbsp;golang中文社区&nbsp;golang123.com&nbsp;版权所有</span>
+            <span>Copyright&nbsp;©&nbsp;2017&nbsp;-&nbsp;至今&nbsp;<a href="/">golang中文社区</a>&nbsp;<a href="/">golang123.com</a>&nbsp;版权所有</span>
             <span>&nbsp;|&nbsp;</span>
             <span>京ICP证xxxxxx号</span>
         </div>

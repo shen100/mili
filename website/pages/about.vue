@@ -28,7 +28,7 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :user="user" />
+            <app-sidebar :maxBrowse="maxBrowse"/>
         </div>
         <app-footer />
     </div>
@@ -40,6 +40,7 @@
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
+    import request from '~/net/request'
 
     Vue.use(iview)
 
@@ -50,9 +51,16 @@
             }
         },
         asyncData (context) {
-            return {
-                user: context.user
-            }
+            return request.getMaxBrowse({
+                client: context.req
+            }).then(data => {
+                console.log(data)
+                let maxBrowse = data.data.articles
+                return {
+                    user: context.user,
+                    maxBrowse: maxBrowse
+                }
+            })
         },
         head () {
             return {

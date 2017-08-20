@@ -64,6 +64,16 @@ html,body {
     text-align: center;
 }
 
+.golang-footer-copyright a {
+    color: #ccc;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.golang-footer-copyright a:hover {
+    color: #ccc;
+}
+
 .admin-common-line {
 	margin: 10px 0;
 }
