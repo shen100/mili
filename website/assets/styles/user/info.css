@@ -23,3 +23,19 @@ body {
 .signup-time {
     color: #ababab;
 }
+
+.info-box {
+    margin-top: 20px;
+    width: 900px;
+}
+
+.info-content {
+    background-color: #fff;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.no-content {
+    min-height: 40px;
+    line-height: 40px;
+}
