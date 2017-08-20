@@ -146,7 +146,7 @@
             }
         },
         mounted () {
-            console.log(this.vote)
+            console.log('111', this.vote)
         },
         head () {
             return {
