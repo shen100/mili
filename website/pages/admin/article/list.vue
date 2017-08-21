@@ -8,8 +8,8 @@
                 </router-link>
             </Col>
             <Col :span="6" :offset="1">
-                <Select>
-                    <Option v-for="(item, index) in select" :key="index" :value="item.id + ''">{{item.name}}</Option>
+                <Select :value="selectIndex" @on-change="onSelectChange">
+                    <Option v-for="(item, index) in select" :key="index" :value="item.id">{{item.name}}</Option>
                 </Select>
             </Col>
         </Row>
@@ -103,27 +103,61 @@
                                 }, '不通过')
                             ])
                         }
+                    },
+                    {
+                        title: '操作',
+                        key: 'id',
+                        render: (h, obj) => {
+                            return h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.changeTop(obj.row.id, 1)
+                                    }
+                                }
+                            }, '置顶')
+                        }
                     }
                 ]
             }
         },
         asyncData (context) {
-            Promise.all([
+            const query = context.query || {}
+            return Promise.all([
                 Request.getCategories({
                     client: context.req
                 }),
                 Request.getAdminArticles({
-                    client: context.req
+                    client: context.req,
+                    query: {
+                        cateId: query.cateId || ''
+                    }
                 })
             ]).then(arr => {
                 let select = arr[0].data.categories || []
                 let list = arr[1].data.articles || []
-
                 console.log(arr)
+                select.unshift({
+                    id: 0,
+                    name: '全部'
+                })
+                let selectIndex = 0
+                select.map(item => {
+                    if (item.id === parseInt(query.cateId)) {
+                        selectIndex = item.id
+                    }
+                })
 
                 return {
                     select: select,
-                    list: list
+                    list: list,
+                    selectIndex: selectIndex
                 }
             }).catch(err => {
                 console.log(err)
@@ -132,6 +166,14 @@
         },
         layout: 'admin',
         middleware: 'userRequired',
+        head () {
+            return {
+                title: '文章管理'
+            }
+        },
+        mounted () {
+            console.log(this.list)
+        },
         methods: {
             changeStatus (id, status) {
                 Request.updateAdminArticles({
@@ -153,6 +195,9 @@
                 }).catch(err => {
                     this.$Message.error(err.msg)
                 })
+            },
+            onSelectChange (value) {
+                window.location.href = `/admin/article/list?cateId=${value}`
             }
         }
     }

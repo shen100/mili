@@ -16,6 +16,18 @@
                     <p class="user-info-line signup-time">注册于N天前</p>
                 </div>
             </div>
+            <div class="golang-cell info-box">
+                <div class="title">最近创建的话题</div>
+                <div class="info-content">
+                    <div class="no-content">无话题</div>
+                </div>
+            </div>
+            <div class="golang-cell info-box">
+                <div class="title">最近参与的话题</div>
+                <div class="info-content">
+                    <div class="no-content">无话题</div>
+                </div>
+            </div>
         </div>
         <go-footer />
     </div>

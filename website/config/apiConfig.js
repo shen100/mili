@@ -18,7 +18,7 @@ const api = {
     },
     getAdminArticles: {
         url: url + '/admin/articles',
-        method: 'POST',
+        method: 'GET',
         desc: '获取文章列表'
     },
     updateAdminArticles: {
