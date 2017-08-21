@@ -51,14 +51,15 @@
             }
         },
         asyncData (context) {
-            const user = context.user
+            let user = context.user
+            let redirectURL = context.req.headers['referer'] || '/'
             if (user) {
-                let redirectURL = context.req.headers['referer'] || '/'
                 context.redirect(redirectURL)
                 return
             }
             return {
-                user: user
+                user: user,
+                redirectURL: redirectURL
             }
         },
         layout: 'signin',
@@ -85,7 +86,7 @@
                             this.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.$Message.success('登录成功!')
-                                window.location.href = '/'
+                                window.location.href = this.redirectURL
                             } else {
                                 this.$Message.error(res.msg)
                             }

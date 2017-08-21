@@ -95,7 +95,6 @@
                 }
             }).then(function (data) {
                 let article = data.data.article
-                console.log(article)
                 if (!article) {
                     context.error({ statusCode: 404, message: 'Page not found' })
                     return
@@ -186,7 +185,7 @@
             }
         },
         mounted () {
-            console.log(this.article)
+
         },
         filters: {
             getReplyTime: dateTool.getReplyTime

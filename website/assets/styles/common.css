@@ -326,8 +326,24 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	margin-bottom: 20px;
 }
 
+.golang123-editor th {
+    border: 1px solid #ddd;
+    padding: 5px;
+    line-height: 32px;
+}
+
+.golang123-editor td {
+    border: 1px solid #ddd;
+    padding: 5px;
+    line-height: 32px;
+}
+
 .golang123-editor hr {
 	margin-bottom: 20px;
+}
+
+.golang123-editor p {
+    line-height: 32px;
 }
 
 .golang-sidebar-icon-box, .golang-sidebar-info-box {

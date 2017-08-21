@@ -21,7 +21,9 @@
         },
         asyncData (context) {
             return Promise.all([
-                request.getCategories({client: context.req}),
+                request.getCategories({
+                    client: context.req
+                }),
                 request.getArticle({
                     client: context.req,
                     params: {
@@ -31,7 +33,12 @@
                         f: 'md'
                     }
                 }),
-                request.getRecentArticles({client: context.req})
+                request.getRecentArticles({
+                    client: context.req,
+                    params: {
+                        userID: context.user.id
+                    }
+                })
             ]).then(function (arr) {
                 let categories = arr[0].data.categories
                 let article = arr[1].data.article
