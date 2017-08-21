@@ -55,6 +55,11 @@ func Route(app *iris.Framework) {
 										       article.Create)
 		router.Post("/article/update",         auth.ActiveRequired,    
 											   article.Update)
+		router.Get("/articles/top",            article.Tops)
+		router.Post("/article/top/:id",        auth.EditorRequired,    
+											   article.Top)
+		router.Post("/article/deltop/:id",     auth.EditorRequired,    
+											   article.DeleteTop)
 											   
 		router.Post("/collect/create",      auth.ActiveRequired,
 											collect.Collect)

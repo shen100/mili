@@ -443,3 +443,109 @@ func UpdateStatus(ctx *iris.Context) {
 	})
 }
 
+// Top 文章置顶
+func Top(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var id int
+	var idErr error
+	if id, idErr = ctx.ParamInt("id"); idErr != nil {
+		SendErrJSON("error", ctx)
+		return	
+	}
+
+	var theArticle model.Article
+
+	if err := model.DB.First(&theArticle, id).Error; err != nil {
+		SendErrJSON("无效的文章id", ctx)
+		return
+	}
+
+	var count int
+
+	if err := model.DB.Model(&model.TopArticle{}).Count(&count).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	if count >= model.MaxTopArticleCount {
+		SendErrJSON("最多只能有" + strconv.Itoa(count) + "篇文章置顶", ctx)
+		return
+	}
+
+	topArticle := model.TopArticle{
+		ArticleID: theArticle.ID,
+	}
+
+	if err := model.DB.Save(&topArticle).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return	
+	}
+
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : topArticle,
+	})
+}
+
+// DeleteTop 取消文章置顶
+func DeleteTop(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var id int
+	var idErr error
+	if id, idErr = ctx.ParamInt("id"); idErr != nil {
+		SendErrJSON("error", ctx)
+		return	
+	}
+
+	var topArticle model.TopArticle
+
+	if err := model.DB.Where("article_id = ?", id).Find(&topArticle).Error; err != nil {
+		SendErrJSON("无效的文章id", ctx)
+		return
+	}
+
+	if err := model.DB.Delete(&topArticle).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"articleID": id,
+		},
+	})
+}
+
+// Tops 所有置顶文章
+func Tops(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var topArticles []model.TopArticle
+	var articles []model.Article
+
+	if err := model.DB.Order("created_at DESC").Find(&topArticles).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	for i := 0; i < len(topArticles); i++ {	
+		var article model.Article
+		if err := model.DB.Model(&topArticles[i]).Related(&article, "articles").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		articles = append(articles, article)
+	}
+
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"articles": articles,
+		},
+	})
+}

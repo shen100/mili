@@ -31,3 +31,15 @@ const (
     // ArticleVerifyFail 审核未通过
     ArticleVerifyFail     = 3
 )
+
+// MaxTopArticleCount 最多能置顶的文章数
+const MaxTopArticleCount = 4
+
+// TopArticle 置顶文章
+type TopArticle struct {
+    ID                uint               `gorm:"primary_key" json:"id"`
+    CreatedAt         time.Time          `json:"createdAt"`
+    UpdatedAt         time.Time          `json:"updatedAt"`
+    DeletedAt         *time.Time         `sql:"index" json:"deletedAt"`
+	ArticleID         uint               `json:"articleID"`
+}
