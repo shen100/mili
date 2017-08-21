@@ -4,7 +4,7 @@
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div class="detail-title-box">
-                    <p class="article-detail-title"><span class="articles-categoties">{{article.categories[0].name}}</span>{{article.name}}</p>
+                    <p class="article-detail-title"><span class="articles-categoties">{{article.isTop ? '置顶' : article.categories[0].name}}</span>{{article.name}}</p>
                     <p class="article-title-info">
                         <span class="article-title-info-item">
                             发布于{{article.createdAt | getReplyTime}}
@@ -115,6 +115,9 @@
                     }),
                     request.getMaxComment({
                         client: context.req
+                    }),
+                    request.getTopList({
+                        client: context.req
                     })
                 ]
                 return Promise.all(reqArr).then(arr => {
@@ -122,6 +125,12 @@
                     let recentArticles = arr[1].data.articles
                     let score = arr[2].data.users
                     let maxComment = arr[3].data.articles
+                    let topList = arr[4].data.articles
+                    topList.map(item => {
+                        if (item.id === article.id) {
+                            article.isTop = true
+                        }
+                    })
                     return {
                         user: context.user,
                         article: article,
