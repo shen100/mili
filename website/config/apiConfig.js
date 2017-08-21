@@ -155,6 +155,21 @@ const api = {
         url: url + '/votes/maxcomment',
         method: 'GET',
         desc: '回复最多的投票'
+    },
+    getTopList: {
+        url: url + '/articles/top',
+        method: 'GET',
+        desc: '获取置顶文章列表'
+    },
+    setTop: {
+        url: url + '/article/top/:id',
+        method: 'POST',
+        desc: '设置置顶'
+    },
+    delTop: {
+        url: url + '/article/deltop/:id',
+        method: 'POST',
+        desc: '取消置顶'
     }
 }
 

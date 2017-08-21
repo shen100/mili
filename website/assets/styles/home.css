@@ -109,11 +109,19 @@ body {
 
 .articles-categoties {
 	margin-left: 10px;
-	background-color: #999;
-	color: #fff;
 	font-size: 12px;
 	padding: 3px;
 	border-radius: 5px;
+}
+
+.articles-categoties-top {
+	background-color: #80bd01;
+	color: #fff;
+}
+
+.articles-categoties-common {
+	background-color: #e5e5e5;
+	color: #999;
 }
 
 .articles-num-split {

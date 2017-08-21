@@ -108,20 +108,28 @@
                         title: '操作',
                         key: 'id',
                         render: (h, obj) => {
+                            const id = obj.row.id
+                            let status = true
+                            this.topList.map(item => {
+                                if (item.id === id) {
+                                    status = false
+                                }
+                            })
                             return h('Button', {
                                 props: {
-                                    type: 'primary',
+                                    type: status ? 'primary' : 'error',
                                     size: 'small'
                                 },
                                 style: {
+                                    width: '60px',
                                     marginRight: '5px'
                                 },
                                 on: {
                                     click: () => {
-                                        this.changeTop(obj.row.id, 1)
+                                        this.changeTop(obj.row.id, status)
                                     }
                                 }
-                            }, '置顶')
+                            }, status ? '置顶' : '取消置顶')
                         }
                     }
                 ]
@@ -138,11 +146,15 @@
                     query: {
                         cateId: query.cateId || ''
                     }
+                }),
+                Request.getTopList({
+                    client: context.req
                 })
             ]).then(arr => {
                 let select = arr[0].data.categories || []
                 let list = arr[1].data.articles || []
-                console.log(arr)
+                let topList = arr[2].data.articles || []
+                console.log(topList)
                 select.unshift({
                     id: 0,
                     name: '全部'
@@ -157,7 +169,8 @@
                 return {
                     select: select,
                     list: list,
-                    selectIndex: selectIndex
+                    selectIndex: selectIndex,
+                    topList: topList
                 }
             }).catch(err => {
                 console.log(err)
@@ -193,11 +206,28 @@
 
                     }
                 }).catch(err => {
-                    this.$Message.error(err.msg)
+                    this.$Message.error(err.message)
                 })
             },
             onSelectChange (value) {
                 window.location.href = `/admin/article/list?cateId=${value}`
+            },
+            changeTop (id, status) {
+                const changeFunc = status ? Request.setTop : Request.delTop
+                changeFunc({
+                    params: {
+                        id: id
+                    }
+                }).then(res => {
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        this.$Message.success('操作成功')
+                        window.location.reload()
+                    } else {
+                        this.$Message.error(res.msg)
+                    }
+                }).catch(err => {
+                    this.$Message.error(err.message)
+                })
             }
         }
     }

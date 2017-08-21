@@ -19,7 +19,7 @@
                                 </a>
                             </Tooltip>
                         </span>
-                        <span class="articles-categoties">{{article.categories[0].name}}</span>
+                        <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
                         <a :href="'/topic/' + article.id" class="home-articles-title">{{article.name}}</a>
                         <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
                         <a class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""></a>
@@ -69,6 +69,9 @@
                 }),
                 request.getMaxBrowse({
                     client: context.req
+                }),
+                request.getTopList({
+                    client: context.req
                 })
             ]).then(data => {
                 let categories = data[0].data.categories || []
@@ -76,9 +79,19 @@
                 let score = data[2].data.users
                 let user = context.user
                 let cate = query.cate || ''
-                let maxComment = data[3].data.articles
-                let maxBrowse = data[4].data.articles
-                console.log(data[1])
+                let maxComment = data[3].data.articles || []
+                let maxBrowse = data[4].data.articles || []
+                let topList = data[5].data.articles || []
+                articles.map(items => {
+                    items.isTop = false
+                    topList.map(item => {
+                        if (items.id === item.id) {
+                            items.isTop = true
+                        }
+                    })
+                })
+                articles = articles.sort((a, b) => a.isTop < b.isTop)
+                console.log(articles)
                 return {
                     categories: categories,
                     articles: articles,
@@ -89,7 +102,7 @@
                     maxBrowse: maxBrowse
                 }
             }).catch(err => {
-                console.log(err)
+                console.log(err.message)
                 context.error({ message: 'Not Found', statusCode: 404 })
             })
         },
@@ -99,9 +112,6 @@
             }
         },
         middleware: 'userInfo',
-        mounted () {
-            console.log(this.articles)
-        },
         filters: {
             getReplyTime: dateTool.getReplyTime
         },
