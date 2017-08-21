@@ -78,6 +78,7 @@
                 let cate = query.cate || ''
                 let maxComment = data[3].data.articles
                 let maxBrowse = data[4].data.articles
+                console.log(data[1])
                 return {
                     categories: categories,
                     articles: articles,
@@ -99,7 +100,7 @@
         },
         middleware: 'userInfo',
         mounted () {
-            console.log(this.maxComment, this.maxBrowse)
+            console.log(this.articles)
         },
         filters: {
             getReplyTime: dateTool.getReplyTime

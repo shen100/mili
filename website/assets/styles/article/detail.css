@@ -72,13 +72,17 @@ body, .golang-home-body-left {
 }
 
 .reply-user-name {
-	color: gray;
-	margin: 0 5px;
+    color: #08c;
+    margin: 0 5px;
+}
+
+.reply-user-name:hover {
+    color: #08c;
 }
 
 .reply-time {
-	color: #08c;
-	cursor: default;
+    color: gray;
+    cursor: default;
 }
 
 .comment-item {
