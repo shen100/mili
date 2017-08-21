@@ -58,7 +58,7 @@ func queryList(isBackend bool, ctx *iris.Context) {
 			return
 		}
 		var sql = `SELECT distinct(articles.id), articles.name, articles.browse_count, articles.status,  
-					articles.created_at, articles.updated_at 
+					articles.created_at, articles.updated_at, articles.user_id 
 				FROM articles, article_category  
 				WHERE articles.id = article_category.article_id  
 				AND article_category.category_id = {categoryID} 
