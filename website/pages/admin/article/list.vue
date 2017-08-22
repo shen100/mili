@@ -1,19 +1,14 @@
 <template>
     <Row>
-        <h1 class="admin-common-line">文章列表</h1>
+        <h1 class="admin-common-line">话题列表</h1>
         <Row class="admin-common-line" type="flex" justify="end">
-            <Col>
-                <router-link to="/admin/article/add">
-                    <Button type="primary">新增</Button>
-                </router-link>
-            </Col>
             <Col :span="6" :offset="1">
                 <Select :value="selectIndex" @on-change="onSelectChange">
                     <Option v-for="(item, index) in select" :key="index" :value="item.id">{{item.name}}</Option>
                 </Select>
             </Col>
         </Row>
-        <Table 
+        <Table
             class="admin-common-line"
             :columns="column"
             :data="list"/>
@@ -33,7 +28,7 @@
             return {
                 column: [
                     {
-                        title: '文章名称',
+                        title: '话题名称',
                         key: 'name'
                     },
                     {
@@ -234,5 +229,5 @@
 </script>
 
 <style>
-    
+
 </style>

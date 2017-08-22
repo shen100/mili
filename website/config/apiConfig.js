@@ -36,6 +36,11 @@ const api = {
         method: 'POST',
         desc: '新增分类'
     },
+    categoryUpdate: {
+        url: url + '/admin/category/update',
+        method: 'POST',
+        desc: '编辑分类'
+    },
     getArticles: {
         url: url + '/articles',
         method: 'GET',

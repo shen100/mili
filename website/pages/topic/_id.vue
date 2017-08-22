@@ -124,7 +124,7 @@
                     let recentArticles = arr[1].data.articles
                     let score = arr[2].data.users
                     let maxComment = arr[3].data.articles
-                    let topList = arr[4].data.articles
+                    let topList = arr[4].data.articles || []
                     topList.map(item => {
                         if (item.id === article.id) {
                             article.isTop = true

@@ -2,12 +2,12 @@
     <Row class="admin-tag-container">
         <h1>分类管理</h1>
         <Col :span="16" class="admin-tag-form">
-            <Row 
-                v-for="(item, index) in list" 
+            <Row
+                v-for="(item, index) in list"
                 :key="index"
-                align="middle" 
-                type="flex" 
-                justify="space-between" 
+                align="middle"
+                type="flex"
+                justify="space-between"
                 class="admin-tag-item">
                 <span v-if="editIndex !== index">{{item.name}}</span>
                 <Form v-if="editIndex === index" ref="editDynamic" :model="editDynamic" class="admin-tag-form" inline>
@@ -58,7 +58,7 @@
 <script>
     import Request from '~/net/request'
     import ErrorCode from '~/constant/ErrorCode'
-    
+
     let request = false
 
     export default {
@@ -102,10 +102,11 @@
                                     status: 1
                                 }
                             }).then(res => {
+                                console.log(res)
                                 request = false
                                 if (res.errNo === ErrorCode.SUCCESS) {
                                     self.$Message.success('提交成功!')
-                                    self.list.push(res.category)
+                                    self.list.push(res.data.category)
                                 } else {
                                     self.$Message.error(res.msg)
                                 }
@@ -135,16 +136,18 @@
                         request = true
                         Request
                             .categoryUpdate({
-                                parentId: 0,
-                                name: self.editDynamic.value,
-                                status: self.list[self.editIndex].status,
-                                id: self.list[self.editIndex].id
+                                body: {
+                                    parentId: 0,
+                                    name: self.editDynamic.value,
+                                    status: self.list[self.editIndex].status,
+                                    id: self.list[self.editIndex].id
+                                }
                             })
                             .then(res => {
                                 request = false
                                 self.$Message.success('提交成功!')
                                 self.editStatus = 'common'
-                                self.list[self.editIndex] = res.category
+                                self.list[self.editIndex] = res.data.category
                                 this.editStatus = 'common'
                                 this.editDynamic = {}
                                 this.editIndex = ''

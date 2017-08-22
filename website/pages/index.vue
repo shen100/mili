@@ -4,7 +4,7 @@
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div class="home-categoties-box">
-                    <a href="/" class="categoties-item" :class="{'categoties-select': !cate}">全部</a>
+                    <a href="/" class="categoties-item" :class="{'categoties-select': !cate}">全部2</a>
                     <a v-for="cateItem in categories" class="categoties-item" :href="'/?cate=' + cateItem.id" :class="{'categoties-select': cateItem.id == cate}">{{cateItem.name}}</a>
                 </div>
                 <div class="home-articles-box">
@@ -91,7 +91,6 @@
                     })
                 })
                 articles = articles.sort((a, b) => a.isTop < b.isTop)
-                console.log(articles)
                 return {
                     categories: categories,
                     articles: articles,
