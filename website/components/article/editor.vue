@@ -31,7 +31,7 @@
                 host: '',
                 simplemde: null,
                 SimpleMDE: null,
-                uploadURL: config.url + '/upload',
+                uploadURL: config.apiURL + '/upload',
                 modalVisible: false,
                 toolbar: null
             }
@@ -70,7 +70,6 @@
             this.$nextTick(function () {
                 this.host = document.location.hostname
                 let SimpleMDE = window.SimpleMDE
-                console.log(SimpleMDE)
                 this.toolbar = [
                     {
                         name: 'bold',

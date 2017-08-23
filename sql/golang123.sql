@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-08-21 15:42:08 +0000
+# Generation Time: 2017-08-22 15:07:57 +0000
 # ************************************************************
 
 
@@ -32,17 +32,6 @@ CREATE TABLE `article_category` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `article_category` WRITE;
-/*!40000 ALTER TABLE `article_category` DISABLE KEYS */;
-
-INSERT INTO `article_category` (`id`, `article_id`, `category_id`)
-VALUES
-	(31,29,4),
-	(32,30,4),
-	(33,31,5);
-
-/*!40000 ALTER TABLE `article_category` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table articles
@@ -65,17 +54,6 @@ CREATE TABLE `articles` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `articles` WRITE;
-/*!40000 ALTER TABLE `articles` DISABLE KEYS */;
-
-INSERT INTO `articles` (`id`, `name`, `browse_count`, `comment_count`, `status`, `content`, `created_at`, `updated_at`, `deleted_at`, `user_id`, `last_user_id`)
-VALUES
-	(29,'测试下',2,0,1,'tttt','2017-08-20 16:07:15','2017-08-20 23:36:48',NULL,44,0),
-	(30,'测试下',67,0,1,'tttt','2017-08-20 16:10:58','2017-08-21 23:39:27',NULL,44,0),
-	(31,'tttt',44,1,1,'adf','2017-08-20 16:47:46','2017-08-21 23:33:29',NULL,44,44);
-
-/*!40000 ALTER TABLE `articles` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table categories
@@ -96,17 +74,6 @@ CREATE TABLE `categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `categories` WRITE;
-/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-
-INSERT INTO `categories` (`id`, `name`, `slug`, `sequence`, `parent_id`, `status`, `created_at`, `updated_at`, `deleted_at`)
-VALUES
-	(4,'分享','',0,0,1,'2017-08-20 16:04:49','2017-08-20 16:10:58',NULL),
-	(5,'招聘','',0,0,1,'2017-08-20 16:05:54','2017-08-20 16:47:46',NULL),
-	(6,'提问','',0,0,1,'2017-08-20 16:06:37','2017-08-20 16:06:37',NULL);
-
-/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table collects
@@ -146,17 +113,6 @@ CREATE TABLE `comments` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `comments` WRITE;
-/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-
-INSERT INTO `comments` (`id`, `content`, `parent_id`, `status`, `ups`, `source_id`, `source_name`, `user_id`, `created_at`, `updated_at`, `deleted_at`)
-VALUES
-	(22,'adsfaf',0,1,0,31,'article',44,'2017-08-20 16:47:55','2017-08-20 16:47:55',NULL),
-	(23,'af',0,1,0,26,'vote',44,'2017-08-20 23:51:57','2017-08-20 23:51:57',NULL),
-	(24,'bbb',0,1,0,26,'vote',44,'2017-08-20 23:53:49','2017-08-20 23:53:49',NULL);
-
-/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table images
@@ -213,15 +169,6 @@ CREATE TABLE `top_articles` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `top_articles` WRITE;
-/*!40000 ALTER TABLE `top_articles` DISABLE KEYS */;
-
-INSERT INTO `top_articles` (`id`, `article_id`, `created_at`, `updated_at`, `deleted_at`)
-VALUES
-	(1,31,'2017-08-21 22:44:24','2017-08-21 22:44:24','2017-08-21 22:46:11');
-
-/*!40000 ALTER TABLE `top_articles` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table ups
@@ -258,17 +205,6 @@ CREATE TABLE `user_votes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `user_votes` WRITE;
-/*!40000 ALTER TABLE `user_votes` DISABLE KEYS */;
-
-INSERT INTO `user_votes` (`id`, `created_at`, `updated_at`, `deleted_at`, `user_id`, `vote_id`, `vote_item_id`)
-VALUES
-	(1,'2017-08-20 23:58:09','2017-08-20 23:58:09',NULL,44,27,51),
-	(2,'2017-08-20 23:58:43','2017-08-20 23:58:43',NULL,44,27,52),
-	(3,'2017-08-20 23:58:46','2017-08-20 23:58:46',NULL,44,27,52);
-
-/*!40000 ALTER TABLE `user_votes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table users
@@ -322,18 +258,6 @@ CREATE TABLE `vote_items` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `vote_items` WRITE;
-/*!40000 ALTER TABLE `vote_items` DISABLE KEYS */;
-
-INSERT INTO `vote_items` (`id`, `name`, `count`, `created_at`, `updated_at`, `deleted_at`, `vote_id`)
-VALUES
-	(49,'go',0,'2017-08-20 16:12:22','2017-08-20 16:12:22',NULL,26),
-	(50,'java',0,'2017-08-20 16:12:22','2017-08-20 16:12:22',NULL,26),
-	(51,'asdf',1,'2017-08-20 23:01:56','2017-08-20 23:58:09',NULL,27),
-	(52,'sadf',2,'2017-08-20 23:01:56','2017-08-20 23:58:46',NULL,27);
-
-/*!40000 ALTER TABLE `vote_items` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table votes
@@ -357,16 +281,6 @@ CREATE TABLE `votes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `votes` WRITE;
-/*!40000 ALTER TABLE `votes` DISABLE KEYS */;
-
-INSERT INTO `votes` (`id`, `name`, `browse_count`, `comment_count`, `status`, `content`, `end_at`, `created_at`, `updated_at`, `deleted_at`, `user_id`, `last_user_id`)
-VALUES
-	(26,'go vs java',0,4,1,'ffaf','2017-08-24 00:00:00','2017-08-20 16:12:22','2017-08-20 23:53:49',NULL,44,44),
-	(27,'asdfaf',0,0,1,'asdf','2017-08-22 00:00:00','2017-08-20 23:01:56','2017-08-20 23:58:46',NULL,44,44);
-
-/*!40000 ALTER TABLE `votes` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 

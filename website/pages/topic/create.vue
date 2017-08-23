@@ -21,7 +21,7 @@
                 request.getRecentArticles({client: context.req})
             ]).then(function (arr) {
                 let categories = arr[0].data.categories
-                let recentArticles = arr[1].data.articles
+                let recentArticles = arr[1].data.articles || []
                 let hasRecentArticles = false
                 if (recentArticles && recentArticles.length > 0) {
                     hasRecentArticles = true

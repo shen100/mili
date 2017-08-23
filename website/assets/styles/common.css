@@ -268,16 +268,23 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .golang123-editor h1 {
 	font-size: 200%;
 	line-height: 200%;
+    margin-bottom: 20px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #eaecef;
 }
 
 .golang123-editor h2 {
 	font-size: 160%;
 	line-height: 160%;
+    margin-bottom: 20px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #eaecef;
 }
 
 .golang123-editor h3 {
 	font-size: 125%;
 	line-height: 32px;
+    margin-bottom: 10px;
 }
 
 .golang123-editor h4 {
@@ -305,6 +312,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .golang123-editor ul li {
 	list-style-type: disc;
 	padding-left: 0;
+    line-height: 28px;
 }
 
 .golang123-editor ol {
@@ -314,6 +322,34 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang123-editor ol li {
 	list-style-type: decimal;
+}
+
+.CodeMirror-line  {
+    background: #fff!important;
+    padding: 0!important;
+    border-left: none!important;
+}
+
+.golang123-editor pre {
+    background: #f6f8fa;
+    padding: 20px;
+    overflow-x: auto;
+    line-height: 26px;
+    border-left: 4px #2cbe4e solid;
+}
+
+.golang123-editor pre code {
+    padding: 0;
+    border-radius: 0;
+    background: #f6f8fa;
+    border: none;
+}
+
+.golang123-editor code {
+    padding: 3px 6px;
+    border-radius: 3px;
+    background: #f1fbff;
+    border: 1px #cef1ff solid;
 }
 
 .golang123-editor blockquote {
@@ -328,13 +364,18 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang123-editor th {
     border: 1px solid #ddd;
-    padding: 5px;
+    padding: 6px 13px!important;
     line-height: 32px;
+    font-weight: bold;
+}
+
+.golang123-editor table tr:nth-child(2n) {
+    background-color: #f6f8fa;
 }
 
 .golang123-editor td {
     border: 1px solid #ddd;
-    padding: 5px;
+    padding: 6px 13px!important;
     line-height: 32px;
 }
 
@@ -343,7 +384,20 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang123-editor p {
-    line-height: 32px;
+    line-height: 28px;
+    margin-bottom: 18px;
+}
+
+.golang123-editor img {
+    max-width: 100%;
+}
+
+.golang123-editor a {
+    color: #08c;
+}
+
+.golang123-editor a:hover {
+    color: #08c;
 }
 
 .golang-sidebar-icon-box, .golang-sidebar-info-box {
