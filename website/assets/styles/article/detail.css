@@ -44,7 +44,7 @@ body, .golang-home-body-left {
 	background-color: #80bd01;
 	color: #fff;
 	font-size: 12px;
-	padding: 3px;
+	padding: 3px 5px;
 	border-radius: 5px;
 	line-height: 25px;
 	vertical-align: text-bottom;
@@ -107,7 +107,7 @@ body, .golang-home-body-left {
 
 .not-signin {
 	text-align: center;
-	padding: 15px 0 5px 0;
+	padding: 15px 0;
 	font-size: 14px;
 	line-height: 40px;
 }
