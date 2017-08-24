@@ -4,7 +4,7 @@ golang123
 ## 介绍
 
 golang123 是使用 **vue**、 **node.js** 和 **golang** 开发的社区系统。界面优雅，功能丰富，小巧迅速，
-已在[golang中文社区](https://www.golang123.com) 得到应用，你完全可以用它来搭建自己的社区。   
+已在[golang中文社区](https://www.xxx.com) 得到应用，你完全可以用它来搭建自己的社区。   
 
 ## 依赖的第三方库
 

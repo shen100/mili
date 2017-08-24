@@ -120,3 +120,36 @@ body, .golang-home-body-left {
     min-height: 200px;
 }
 
+.article-actions {
+    background: #fff;
+    padding-left: 26px;
+    padding-right: 26px;
+    height: 40px;
+    color: #808080;
+}
+
+.article-actions .ivu-icon {
+    vertical-align: top;
+}
+
+.article-actions span {
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 16px;
+    margin-left: 4px;
+}
+
+.article-share {
+    float: right;
+}
+
+.article-share-btn {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+
+

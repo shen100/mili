@@ -3,7 +3,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - Golang中文社区 - 与地鼠们分享你的知识、经验和见解',
+    titleTemplate: '%s - Golang中文社区 - 和地鼠们分享你的知识、经验和见解',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
