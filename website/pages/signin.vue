@@ -2,7 +2,7 @@
     <Row type="flex" align="middle" justify="center" class="golang-signin-container">
         <Col :xs="24" :lg="6" :md="14">
             <a class="golang-signin-title" href="/">GOLANG123</a>
-            <p class="golang-signin-desc">与地鼠们分享你的知识、经验和见解</p>
+            <p class="golang-signin-desc">和地鼠们分享你的知识、经验和见解</p>
         	<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" class="signup-form">
         		<Form-item prop="username">
                     <i-input size="large" v-model="formCustom.username" placeholder="用户名 / 邮箱"></i-input>

@@ -4,7 +4,7 @@
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div class="detail-title-box">
-                    <p class="article-detail-title"><span class="articles-categoties">{{article.isTop ? '置顶' : article.categories[0].name}}</span>{{article.name}}</p>
+                    <p class="article-detail-title"><span class="articles-categoties">{{article.isTop ? '置顶' : article.categories[0].name}}</span><span v-html="article.name"></span></p>
                     <p class="article-title-info">
                         <span class="article-title-info-item">
                             发布于{{article.createdAt | getReplyTime}}

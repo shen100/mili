@@ -44,7 +44,7 @@ function send (key, options) {
             url: url,
             headers: {}
         }
-        if (config.proxy) {
+        if (config.useProxy) {
             axiosConfig.proxy = config.proxy
         }
         let client = options.client

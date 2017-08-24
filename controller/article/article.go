@@ -233,7 +233,9 @@ func save(isEdit bool, ctx *iris.Context) {
 		session.Set("user", user)
 	}
 
-	article.Name    = strings.TrimSpace(article.Name)
+	article.Name = strings.TrimSpace(article.Name)
+	article.Name = bluemonday.UGCPolicy().Sanitize(article.Name)
+
 	article.Content = strings.TrimSpace(article.Content)
 
 	if (article.Name == "") {

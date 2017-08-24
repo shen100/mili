@@ -354,18 +354,21 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang123-editor ol {
-	padding-left: 20px;
+	padding-left: 27px;
 	margin-bottom: 20px;
 }
 
 .golang123-editor ol li {
 	list-style-type: decimal;
+    padding-left: 0;
+    line-height: 28px;
 }
 
 .CodeMirror-line  {
     background: #fff!important;
     padding: 0!important;
     border-left: none!important;
+    margin-bottom: 0!important;
 }
 
 .golang123-editor pre {
@@ -374,6 +377,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     overflow-x: auto;
     line-height: 26px;
     border-left: 4px #2cbe4e solid;
+    margin-bottom: 18px;
 }
 
 .golang123-editor pre code {
