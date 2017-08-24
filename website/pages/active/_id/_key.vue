@@ -7,7 +7,7 @@
             <div id="reset" class="golang-forget-form">
                 <div v-if="success" class="signup-form">
                     <p class="forget-success-icon"><img src="~assets/images/round_check_fill.png" alt=""></p>
-                    <p class="forget-success-info">账号激活成功&nbsp&nbsp<a href="/signin" class="forget-resend">立即登陆</a></p>
+                    <p class="forget-success-info"><span class="no-underline">{{email}}</span>激活成功&nbsp&nbsp<a href="/signin" class="forget-resend">立即登陆</a></p>
                 </div>
                 <div v-if="error">
                     <p class="forget-success-info">{{error}}</p>
@@ -40,7 +40,9 @@
                 }
             }).then(res => {
                 if (res.errNo === 0) {
+                    console.log(res.data)
                     return {
+                        email: res.data.email,
                         success: true,
                         error: '',
                         user: context.user
