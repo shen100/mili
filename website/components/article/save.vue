@@ -45,7 +45,7 @@
             </li>
             <li class="topic-sidebar-item">
                 <div class="topic-sidebar-title">我的近期话题</div>
-                <p v-if="hasRecentArticles" v-for="article in recentArticles"><a :href="'/topic/' + article.id" target="_blank">{{article.name}}</a></p>
+                <p v-if="hasRecentArticles" v-for="(article, i) in recentArticles" class="topic-sidebar-my" :style="{'border-top': i == 0 ? 'none;' : '1px solid #f0f0f0;'}"><a :href="'/topic/' + article.id" target="_blank">{{article.name}}</a></p>
                 <p v-else class="topic-none" style="padding-left: 0;">暂无话题</p>
             </li>
         </ul>

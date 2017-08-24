@@ -37,6 +37,11 @@
                     client: context.req,
                     params: {
                         userID: context.user.id
+                    },
+                    query: {
+                        orderType: 1,
+                        desc: 1,
+                        pageSize: 5
                     }
                 })
             ]).then(function (arr) {

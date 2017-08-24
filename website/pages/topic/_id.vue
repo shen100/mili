@@ -123,6 +123,11 @@
                         client: context.req,
                         params: {
                             userID: article.userID
+                        },
+                        query: {
+                            orderType: 1,
+                            desc: 1,
+                            pageSize: 5
                         }
                     }),
                     request.getTop10({

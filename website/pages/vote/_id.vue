@@ -38,9 +38,9 @@
                                 <div class="golang123-editor" v-html="item.content"></div>
                             </div>
                         </template>
-                        <p class="not-signin" v-if="!article.commentCount && user">暂时还没有人回复过这个话题</p>
-                        <p class="not-signin" v-if="!article.commentCount && !user">暂时还没有人回复过这个话题,&nbsp;要回复话题, 请先&nbsp;<a href="/signin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
-                        <p class="not-signin not-signin-border" v-if="article.commentCount && !user">要回复话题, 请先&nbsp;<a href="/signin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
+                        <p class="not-signin" v-if="!vote.commentCount && user">暂时还没有人回复过这个投票</p>
+                        <p class="not-signin" v-if="!vote.commentCount && !user">暂时还没有人回复过这个投票,&nbsp;要回复投票, 请先&nbsp;<a href="/signin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
+                        <p class="not-signin not-signin-border" v-if="vote.commentCount && !user">要回复投票, 请先&nbsp;<a href="/signin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
                     </div>
                 </div>
                 <div class="golang-cell comment-box" v-if="user">

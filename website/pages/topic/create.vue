@@ -18,7 +18,17 @@
         asyncData (context) {
             return Promise.all([
                 request.getCategories({client: context.req}),
-                request.getRecentArticles({client: context.req})
+                request.getRecentArticles({
+                    client: context.req,
+                    params: {
+                        userID: context.user.id
+                    },
+                    query: {
+                        orderType: 1,
+                        desc: 1,
+                        pageSize: 5
+                    }
+                })
             ]).then(function (arr) {
                 let categories = arr[0].data.categories
                 let recentArticles = arr[1].data.articles || []

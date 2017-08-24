@@ -88,6 +88,15 @@ body {
 	padding-left: 12px;
 }
 
+.topic-sidebar-my {
+    padding: 8px 0;
+    line-height: normal;
+}
+
+.topic-sidebar-my a {
+    line-height: 22px;
+}
+
 .topic-sidebar-title {
 	padding-left: 12px;
 	background: #f6f6f6;

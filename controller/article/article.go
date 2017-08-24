@@ -132,23 +132,76 @@ func AllList(ctx *iris.Context) {
 	queryList(true, ctx)
 }
 
-// RecentList 用户最近文章
-func RecentList(ctx *iris.Context) {
+// UserArticleList 查询用户的文章
+func UserArticleList(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userID int
 	var userIDErr error
+	var orderType int
+	var orderTypeErr error
+	var orderStr string
+	var isDESC int
+	var descErr error
+	var pageSize int
+	var pageSizeErr error
+
 	if userID, userIDErr = ctx.ParamInt("userID"); userIDErr != nil {
-		SendErrJSON("无效的id", ctx)
+		SendErrJSON("无效的userID", ctx)
 		return	
 	}
 	var user model.User
 	if err := model.DB.First(&user, userID).Error; err != nil {
-		SendErrJSON("无效的id", ctx)
+		SendErrJSON("无效的userID", ctx)
 		return	
 	}
 
+	if orderType, orderTypeErr = strconv.Atoi(ctx.FormValue("orderType")); orderTypeErr != nil {
+		SendErrJSON("无效的orderType", ctx)
+		return	
+	}
+
+	// 1: 按日期排序 2: 按点赞数排序 3: 按评论数排序
+	if orderType != 1 && orderType != 2 && orderType != 3 {
+		SendErrJSON("无效的orderType", ctx)
+		return	
+	}
+
+	if isDESC, descErr = strconv.Atoi(ctx.FormValue("desc")); descErr != nil {
+		SendErrJSON("无效的desc", ctx)
+		return	
+	}
+
+	if isDESC != 0 && isDESC != 1 {
+		SendErrJSON("无效的desc", ctx)
+		return	
+	}
+
+	if pageSize, pageSizeErr = strconv.Atoi(ctx.FormValue("pageSize")); pageSizeErr != nil {
+		SendErrJSON("无效的pageSize", ctx)
+		return	
+	}
+
+	if pageSize < 1 || pageSize > config.ServerConfig.MaxPageSize {
+		SendErrJSON("无效的pageSize", ctx)
+		return	
+	}
+
+	if orderType == 1 {
+		orderStr = "created_at"
+	} else if orderType == 2 {
+		orderStr = "up_count" // 按点赞数排序	
+	} else if orderType == 3 {
+		orderStr = "comment_count"
+	}
+
+	if isDESC == 1 {
+		orderStr += " DESC"
+	} else {
+		orderStr += " ASC"
+	}
+
 	var articles []model.Article
-	if err := model.DB.Where("user_id = ?", user.ID).Order("created_at DESC").Limit(5).Find(&articles).Error; err != nil {
+	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Limit(pageSize).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
