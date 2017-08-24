@@ -33,7 +33,7 @@
                         f: 'md'
                     }
                 }),
-                request.getRecentArticles({
+                request.getUserArticles({
                     client: context.req,
                     params: {
                         userID: context.user.id

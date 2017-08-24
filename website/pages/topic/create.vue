@@ -18,7 +18,7 @@
         asyncData (context) {
             return Promise.all([
                 request.getCategories({client: context.req}),
-                request.getRecentArticles({
+                request.getUserArticles({
                     client: context.req,
                     params: {
                         userID: context.user.id

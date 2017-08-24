@@ -119,7 +119,7 @@
                     request.getMaxBrowse({
                         client: context.req
                     }),
-                    request.getRecentArticles({
+                    request.getUserArticles({
                         client: context.req,
                         params: {
                             userID: article.userID

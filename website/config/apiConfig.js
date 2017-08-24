@@ -56,10 +56,10 @@ const api = {
         method: 'GET',
         desc: '获取积分排名前10的用户'
     },
-    getRecentArticles: {
+    getUserArticles: {
         url: url + '/articles/user/:userID',
         method: 'GET',
-        desc: '获取用户近期文章'
+        desc: '获取用户的文章列表'
     },
     getUserInfo: {
         url: url + '/user/info',
