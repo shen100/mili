@@ -175,6 +175,16 @@ const api = {
         url: url + '/article/deltop/:id',
         method: 'POST',
         desc: '取消置顶'
+    },
+    getMineArticles: {
+        url: url + '/articles/user/:userID',
+        method: 'GET',
+        desc: '获取当前用户文章'
+    },
+    getMineComment: {
+        url: url + '/comments/user/:userID',
+        method: 'GET',
+        desc: '获取当前用户回复'
     }
 }
 

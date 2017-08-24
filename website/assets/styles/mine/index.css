@@ -1,0 +1,153 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.golang-main-top {
+    position: relative;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.mine-img-box {
+    min-height: 140px;
+    background-color: #96a1a9;
+}
+
+.mine-info-container {
+    position: relative;
+    height: 100px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.mine-info-icon {
+    cursor: default;
+    position: absolute;
+    top: -80px;
+    left: 20px;
+    padding: 5px;
+    background-color: #fff;
+    border-radius: 3px;
+    width: 160px;
+    height: 160px;
+    z-index: 2;
+}
+
+.mine-info-icon img {
+    width: 100%;
+}
+
+.mine-info-line {
+    margin-left: 200px;
+}
+
+.mine-info-upload {
+    opacity: 0;
+    transition: all .3s ease-in;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-align: center;
+    padding-top: 35px;
+}
+
+.mine-info-icon:hover .mine-info-upload{
+    opacity: 1;
+}
+
+.mine-info-upload img {
+    width: 48px;
+    height: 48px;
+}
+
+.mine-info-upload p {
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    margin-top: 10px;
+}
+
+.mine-info-name {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.mine-info-desc {
+    font-size: 14px;
+    color: #8590a6;
+    margin-top: 20px;
+}
+
+.mine-info-btn {
+    position: absolute;
+    right: 20px;
+    top: 30px;
+}
+
+.golang-mine-content {
+    margin-top: 20px;
+}
+
+.mine-content-left {
+    width: 900px;
+    display: inline-block;
+    min-height: 300px;
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.mine-content-right {
+    width: 288px;
+    float: right;
+}
+
+.right-border {
+    border-right: 1px solid #ccd8e1;
+}
+
+.mine-attention-box {
+    background-color: #fff;
+    border-radius: 3px;
+    overflow: hidden;
+    padding: 10px 0;
+}
+
+.attention-item {
+    padding: 5px 0;
+    width: 50%;
+    display: inline-block;
+}
+
+.attention-item p {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.attention-item-label {
+    font-size: 14px;
+    color: #8590a6;
+}
+
+.attention-item-num {
+    color: #000;
+    font-size: 18px;
+}
+
+.attention-item:hover p {
+    color: #2d8cf0;
+    cursor: default;
+}
+
+.mine-menu-item {
+    width: 9em;
+    text-align: center;
+}
