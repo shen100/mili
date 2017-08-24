@@ -20,6 +20,22 @@
                 <div class="home-articles-box">
                     <div class="golang123-editor" v-html="article.content"></div>
                 </div>
+                <div class="article-actions">
+                    <div class="article-share">
+                        <div class="article-share-btn">
+                            <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;"></Icon>
+                            <span>收藏</span>
+                        </div>
+                        <div class="article-share-btn">
+                            <Icon type="android-share-alt" style="font-size: 16px"></Icon>
+                            <span>分享</span>
+                        </div>
+                        <div v-if="isAuthor" class="article-share-btn">
+                            <Icon type="edit" style="font-size: 16px"></Icon>
+                            <a :href="'/topic/edit/' + article.id"><span>编辑</span></a>
+                        </div>
+                    </div>
+                </div>
                 <div class="golang-cell comment-box">
                     <div class="title">{{article.commentCount > 0 ? article.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
@@ -130,7 +146,9 @@
                             article.isTop = true
                         }
                     })
+                    let isAuthor = context.user && context.user.id === article.user.id
                     return {
+                        isAuthor: isAuthor,
                         user: context.user,
                         article: article,
                         maxBrowse: maxBrowse,
@@ -194,7 +212,6 @@
             }
         },
         mounted () {
-
         },
         filters: {
             getReplyTime: dateTool.getReplyTime

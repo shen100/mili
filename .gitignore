@@ -2,6 +2,7 @@
 .idea
 *.swp
 
+golang123
 configuration.json
 dist
 node_modules

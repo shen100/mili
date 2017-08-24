@@ -100,6 +100,40 @@ html,body {
 .golang-top-header-left {
 	float: left;
 	line-height: 50px;
+    width: 360px;
+}
+
+.golang-top-header-nav {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.golang-top-header-nav ul {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.golang-top-header-nav li {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.golang-top-header-nav a {
+    display: inline-block;
+    vertical-align: top;
+    color: #eee;
+    padding: 0 10px;
+    height: 50px;
+    line-height: 50px;
+    text-shadow: 0 1px 1px rgba(0,0,0,.12);
+    font-size: 14px;
+}
+
+.golang-top-header-nav a:hover {
+    text-decoration: none;
+    color: #fff;
 }
 
 .golang-top-header-right {
@@ -166,6 +200,8 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang-home-body-right .golang-cell {
 	margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    box-sizing: border-box;
 }
 
 .golang-cell .title{
@@ -199,6 +235,8 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	background-color: #fff;
 	width: 900px;
 	display: inline-block;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    box-sizing: border-box;
 }
 
 .golang-key-word {
