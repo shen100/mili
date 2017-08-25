@@ -151,3 +151,72 @@ body {
     width: 9em;
     text-align: center;
 }
+
+.articles-container {
+    padding: 0 10px 10px 10px;
+}
+
+.article-top {
+    padding: 15px 0;
+    border-bottom: 1px solid #ccd8e1;
+}
+
+.article-top h1 {
+    font-size: 18px;
+}
+
+.articles-title {
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.articles-user-info {
+    margin-top: 5px;
+}
+
+.articles-user-info img {
+    width: 30px;
+    height: 30px;
+}
+
+.articles-user-info span {
+    line-height: 30px;
+    display: inline-block;
+    vertical-align: bottom;
+    color: #8590a6;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.golang123-editor {
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.articles-item {
+    padding: 15px 0;
+    border-top: 1px solid #ccd8e1;
+}
+
+.articles-item:nth-child(1) {
+    border: 0px;
+}
+
+.articles-hidden {
+    max-height: 100px;
+}
+
+.articles-button {
+    text-align: right;
+    margin-top: 5px;
+    margin-right: 10px;
+}
+
+.articles-button a {
+    font-size: 14px;
+    color: #8590a6;
+}
+
+.articles-button .ivu-icon {
+    margin-left: 5px;
+}

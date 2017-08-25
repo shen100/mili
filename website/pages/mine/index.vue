@@ -29,6 +29,22 @@
                         <Menu-item name="3" class="mine-menu-item">参与的投票</Menu-item>
                         <Menu-item name="4" class="mine-menu-item">收藏</Menu-item>
                     </Menu>
+                    <div class="articles-container">
+                        <div class="article-top">
+                            <h1>我的文章</h1>
+                        </div>
+                        <div v-for="(article, index) in articles" class="articles-item">
+                            <h1 class="articles-title">{{article.name}}</h1>
+                            <p class="articles-user-info">
+                                <img :src="user.avatarURL" alt="">
+                                <span>{{user.name}}</span>
+                            </p>
+                            <div class="golang123-editor" :class="article.show ? '' : 'articles-hidden'" v-html="article.content"></div>
+                            <p class="articles-button">
+                                <a :href="`/topic/${article.id}`" class="no-underline">阅读全文<Icon type="chevron-right"></Icon></a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 <div class="mine-content-right">
                     <div class="mine-attention-box">
@@ -63,7 +79,7 @@
         },
         asyncData (context) {
             return Promise.all([
-                request.getMineArticles({
+                request.getUserArticles({
                     client: context.req,
                     params: {
                         userID: context.user.id
@@ -86,8 +102,6 @@
                     }
                 })
             ]).then(res => {
-                console.log(res[0])
-                console.log(res[1])
                 return {
                     user: context.user,
                     articles: res[0].data.articles,
@@ -100,11 +114,13 @@
         },
         head () {
             return {
-                title: this.user.name
+                title: this.user.name,
+                link: [
+                    { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' }
+                ]
             }
         },
         mounted () {
-            console.log(this.articles)
             console.log(this.comments)
         },
         middleware: 'userRequired',
