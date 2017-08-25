@@ -445,21 +445,30 @@ func UserVoteVoteItem(ctx *iris.Context) {
 	var vote model.Vote
 	if err := model.DB.Model(&voteItem).Related(&vote).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("无效的ID", ctx)
 		return
 	}
 	if vote.Status == model.VoteOver {
 		SendErrJSON("投票已结束", ctx)
 		return	
 	}
+
+	session  := ctx.Session();
+	user     := session.Get("user").(model.User)
+
+	var existUserVote model.UserVote
+	if err := model.DB.Where("user_id = ? and vote_id = ?", user.ID, vote.ID).Find(&existUserVote).Error; err == nil {
+		SendErrJSON("已参与过投票", ctx)
+		return
+	}
+
 	voteItem.Count++
 	if err := model.DB.Save(&voteItem).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return	
 	}
-	session  := ctx.Session();
-	user     := session.Get("user").(model.User)
+	
 	userVote := model.UserVote{
 		UserID     : user.ID,
 		VoteID     : voteItem.VoteID,
