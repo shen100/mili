@@ -62,8 +62,6 @@ function send (key, options) {
 
         if (theConfig.method === 'post') {
             axiosConfig.data = options.body
-        } else if (theConfig.method === 'get') {
-            axiosConfig.params = options.query
         }
 
         var startTime = new Date().getTime()

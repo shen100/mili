@@ -351,6 +351,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	list-style-type: disc;
 	padding-left: 0;
     line-height: 28px;
+    margin-bottom: 15px;
 }
 
 .golang123-editor ol {
@@ -362,6 +363,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	list-style-type: decimal;
     padding-left: 0;
     line-height: 28px;
+    margin-bottom: 15px;
 }
 
 .CodeMirror-line  {

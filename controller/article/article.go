@@ -11,6 +11,7 @@ import (
     "github.com/russross/blackfriday"
 	"golang123/config"
 	"golang123/model"
+	"golang123/utils"
 	"golang123/controller/common"
 )
 
@@ -144,7 +145,10 @@ func UserArticleList(ctx *iris.Context) {
 	var descErr error
 	var pageSize int
 	var pageSizeErr error
+	var f string
 
+	f = ctx.FormValue("f")
+	
 	if userID, userIDErr = ctx.ParamInt("userID"); userIDErr != nil {
 		SendErrJSON("无效的userID", ctx)
 		return	
@@ -206,6 +210,13 @@ func UserArticleList(ctx *iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
+
+	if f != "md" {
+		for i := 0; i < len(articles); i++ {
+			articles[i].Content = utils.MarkdownToHTML(articles[i].Content)
+		}
+	}
+
 	ctx.JSON(iris.StatusOK, iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
@@ -624,4 +635,10 @@ func Tops(ctx *iris.Context) {
 			"articles": articles,
 		},
 	})
+}
+
+// Delete 删除文章
+func Delete(ctx *iris.Context) {
+	// 删除文章，但其他用户对文章的评论保留
+	// 其他用户对文章的点赞也保留
 }

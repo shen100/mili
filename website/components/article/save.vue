@@ -115,6 +115,9 @@
                             }
                         }).then(res => {
                             self.$Message.success('提交成功!')
+                            setTimeout(function () {
+                                location.href = '/topic/' + res.data.id
+                            }, 500)
                         }).catch(err => {
                             self.$Message.error(err.msg)
                         })

@@ -283,6 +283,14 @@ func Info(ctx *iris.Context) {
 		return
 	}
 
+	vote.BrowseCount++
+
+	if err := model.DB.Save(&vote).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+
 	if err := model.DB.Model(&vote).Related(&vote.VoteItems, "vote_items").Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)

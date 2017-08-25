@@ -173,7 +173,7 @@
             })
         },
         layout: 'admin',
-        middleware: 'userRequired',
+        middleware: 'adminRequired',
         head () {
             return {
                 title: '文章管理'

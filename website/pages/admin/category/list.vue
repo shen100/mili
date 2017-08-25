@@ -206,7 +206,7 @@
             }
         },
         layout: 'admin',
-        middleware: 'userRequired',
+        middleware: 'adminRequired',
         mounted () {
             console.log(this.list)
         }

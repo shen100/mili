@@ -135,7 +135,9 @@
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.$Message.success('创建话题成功')
-                                window.location.href = '/vote'
+                                setTimeout(function () {
+                                    location.href = '/vote/' + res.data.id
+                                }, 500)
                             } else {
                                 this.$Message.error(res.msg)
                             }
