@@ -1,4 +1,4 @@
 export default {
-    VoteUnderway: 1, // 投票进行中
-    VoteOver: 2 // 投票已结束
+    VOTE_UNDERWAY: 1, // 投票进行中
+    VOTE_OVER: 2 // 投票已结束
 }

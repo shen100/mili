@@ -64,8 +64,8 @@
 <script>
     import Vue from 'vue'
     import iview from 'iview'
-    import moment from 'moment'
     import ErrorCode from '~/constant/ErrorCode'
+    import VoteStatus from '~/constant/VoteStatus'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
@@ -74,6 +74,8 @@
     import dateTool from '~/utils/date'
 
     Vue.use(iview)
+    console.log(ErrorCode)
+    console.log(VoteStatus)
 
     export default {
         data () {
@@ -121,7 +123,7 @@
                     votesMaxBrowse: votesMaxBrowse,
                     votesMaxComment: votesMaxComment,
                     score: score,
-                    status: moment().valueOf() < dateTool.parse(vote.endAt).valueOf()
+                    status: 1
                 }
             }).catch(err => {
                 console.log(err)
