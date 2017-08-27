@@ -23,28 +23,13 @@
             </div>
             <div class="golang-mine-content">
                 <div class="mine-content-left">
-                    <Menu mode="horizontal" theme="light" active-name="1">
-                        <Menu-item name="1" class="mine-menu-item">话题</Menu-item>
-                        <Menu-item name="2" class="mine-menu-item">回复</Menu-item>
+                    <Menu mode="horizontal" theme="light" active-name="index" @on-select="onMenuSelect">
+                        <Menu-item name="index" class="mine-menu-item">话题</Menu-item>
+                        <Menu-item name="reply" class="mine-menu-item">回复</Menu-item>
                         <Menu-item name="3" class="mine-menu-item">参与的投票</Menu-item>
                         <Menu-item name="4" class="mine-menu-item">收藏</Menu-item>
                     </Menu>
-                    <div class="articles-container">
-                        <div class="article-top">
-                            <h1>我的文章</h1>
-                        </div>
-                        <div v-for="(article, index) in articles" class="articles-item">
-                            <h1 class="articles-title">{{article.name}}</h1>
-                            <p class="articles-user-info">
-                                <img :src="user.avatarURL" alt="">
-                                <span>{{user.name}}</span>
-                            </p>
-                            <div class="golang123-editor" :class="article.show ? '' : 'articles-hidden'" v-html="article.content"></div>
-                            <p class="articles-button">
-                                <a :href="`/topic/${article.id}`" class="no-underline">阅读全文<Icon type="chevron-right"></Icon></a>
-                            </p>
-                        </div>
-                    </div>
+                    <nuxt-child/>
                 </div>
                 <div class="mine-content-right">
                     <div class="mine-attention-box">
@@ -66,7 +51,6 @@
 
 <script>
     import Vue from 'vue'
-    import request from '~/net/request'
     import iview from 'iview'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
@@ -77,40 +61,14 @@
         data () {
             return {}
         },
+        validate ({ params }) {
+            const id = !!params.id
+            return id
+        },
         asyncData (context) {
-            return Promise.all([
-                request.getUserArticles({
-                    client: context.req,
-                    params: {
-                        userID: context.user.id
-                    },
-                    query: {
-                        orderType: 1,
-                        desc: 1,
-                        pageSize: 20
-                    }
-                }),
-                request.getMineComment({
-                    client: context.req,
-                    params: {
-                        userID: context.user.id
-                    },
-                    query: {
-                        orderType: 1,
-                        desc: 1,
-                        pageSize: 20
-                    }
-                })
-            ]).then(res => {
-                return {
-                    user: context.user,
-                    articles: res[0].data.articles,
-                    comments: res[1].data.comments
-                }
-            }).catch(err => {
-                console.log(err)
-                context.error({ statusCode: 404, message: 'Page not found' })
-            })
+            return {
+                user: context.user
+            }
         },
         head () {
             return {
@@ -122,6 +80,11 @@
         },
         mounted () {
             console.log(this.comments)
+        },
+        methods: {
+            onMenuSelect (name) {
+                this.$router.push(`/user/${this.user.id}/${name}`)
+            }
         },
         middleware: 'userRequired',
         components: {

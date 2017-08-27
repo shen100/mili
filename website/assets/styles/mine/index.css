@@ -198,8 +198,8 @@ body {
     border-top: 1px solid #ccd8e1;
 }
 
-.articles-item:nth-child(1) {
-    border: 0px;
+.articles-item-no {
+    border: 0;
 }
 
 .articles-hidden {
