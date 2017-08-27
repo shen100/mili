@@ -5,8 +5,8 @@
             <div class="golang-home-body-left">
                 <div class="home-categoties-box">
                     <a href="/vote" class="categoties-item" :class="{'categoties-select': !status}">全部</a>
-                    <a class="categoties-item" :href="'/vote?status=' + voteStatus.VoteUnderway" :class="{'categoties-select': status == voteStatus.VoteUnderway}">进行中</a>
-                    <a class="categoties-item" :href="'/vote?status=' + voteStatus.VoteOver" :class="{'categoties-select': status == voteStatus.VoteOver}">已结束</a>
+                    <a class="categoties-item" :href="'/vote?status=' + voteStatus.VOTE_UNDERWAY" :class="{'categoties-select': status == voteStatus.VOTE_UNDERWAY}">进行中</a>
+                    <a class="categoties-item" :href="'/vote?status=' + voteStatus.VOTE_OVER" :class="{'categoties-select': status == voteStatus.VOTE_OVER}">已结束</a>
                 </div>
                 <div class="home-articles-box">
                     <div v-for="vote in votes" class="articles-cell">
@@ -40,14 +40,14 @@
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
     import dateTool from '~/utils/date'
-    import voteStatus from '~/constant/voteStatus'
+    import VoteStatus from '~/constant/VoteStatus'
 
     Vue.use(iview)
 
     export default {
         data () {
             return {
-                voteStatus: voteStatus
+                voteStatus: VoteStatus
             }
         },
         asyncData (context) {

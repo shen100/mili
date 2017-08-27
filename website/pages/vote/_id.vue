@@ -74,8 +74,6 @@
     import dateTool from '~/utils/date'
 
     Vue.use(iview)
-    console.log(ErrorCode)
-    console.log(VoteStatus)
 
     export default {
         data () {
@@ -123,7 +121,7 @@
                     votesMaxBrowse: votesMaxBrowse,
                     votesMaxComment: votesMaxComment,
                     score: score,
-                    status: 1
+                    status: vote.status === VoteStatus.VOTE_UNDERWAY
                 }
             }).catch(err => {
                 console.log(err)
