@@ -55,6 +55,20 @@ func (user User) EncryptPassword(password, salt string) (hash string) {
     return
 }
 
+// PublicInfo 用户公开的信息
+func (user User) PublicInfo() User {
+    return User{
+        ID             : user.ID,
+        CreatedAt      : user.CreatedAt,
+        Name           : user.Name,
+        Score          : user.Score,
+        ArticleCount   : user.ArticleCount,
+        CollectCount   : user.CollectCount,
+        Signature      : user.Signature,
+        AvatarURL      : user.AvatarURL,
+    }
+}
+
 const (
     // UserRoleNormal 普通用户
     UserRoleNormal      = 1

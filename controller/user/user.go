@@ -435,6 +435,32 @@ func UpdatePassword(ctx *iris.Context) {
 	}
 }
 
+// PublicInfo 用户公开的信息
+func PublicInfo(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var userID int
+	var idErr error
+
+	if userID, idErr = ctx.ParamInt("id"); idErr != nil {
+		fmt.Println(idErr.Error())
+		SendErrJSON("无效的ID", ctx)
+		return
+	}
+	var user model.User
+	if err := model.DB.First(&user, userID).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("无效的ID", ctx)
+		return
+	}
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"user": user.PublicInfo(),
+		},
+	})
+}
+
 // Info 返回用户信息
 func Info(ctx *iris.Context) {
 	SendErrJSON := common.SendErrJSON
