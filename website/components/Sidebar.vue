@@ -17,7 +17,7 @@
                         <img class="golang-user-info-icon" :src="author.avatarURL" alt="">
                     </a>
                     <span class="golang-sidebar-info-box">
-                        {{author.name}}
+                        <a :href="'/user/' + author.id">{{author.name}}</a>
                     </span>
                 </div>
                 <div class="golang-user-line author-info-text">

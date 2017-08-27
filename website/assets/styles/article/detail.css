@@ -151,5 +151,7 @@ body, .golang-home-body-left {
     cursor: pointer;
 }
 
-
+.article-share-btn a {
+    color: #808080;
+}
 

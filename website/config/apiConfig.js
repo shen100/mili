@@ -51,6 +51,11 @@ const api = {
         method: 'GET',
         desc: '获取文章信息'
     },
+    deleteArticle: {
+        url: url + '/article/delete/:id',
+        method: 'POST',
+        desc: '删除文章'
+    },
     getTop10: {
         url: url + '/user/score/top10',
         method: 'GET',

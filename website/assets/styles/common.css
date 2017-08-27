@@ -373,6 +373,10 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     margin-bottom: 0!important;
 }
 
+.editor-preview {
+    background: #fff;
+}
+
 .golang123-editor pre {
     background: #f6f8fa;
     padding: 20px;

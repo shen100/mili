@@ -285,6 +285,10 @@ func Info(ctx *iris.Context) {
 
 	vote.BrowseCount++
 
+	if vote.Status != model.VoteOver && vote.EndAt.Unix() < time.Now().Unix() {
+		vote.Status = model.VoteOver
+	}
+
 	if err := model.DB.Save(&vote).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)

@@ -30,10 +30,16 @@
                             <Icon type="android-share-alt" style="font-size: 16px"></Icon>
                             <span>分享</span>
                         </div>
-                        <div v-if="isAuthor" class="article-share-btn">
-                            <Icon type="edit" style="font-size: 16px"></Icon>
-                            <a :href="'/topic/edit/' + article.id"><span>编辑</span></a>
-                        </div>
+                        <template v-if="isAuthor">
+                            <div class="article-share-btn">
+                                <Icon type="edit" style="font-size: 16px"></Icon>
+                                <a :href="'/topic/edit/' + article.id"><span>编辑</span></a>
+                            </div>
+                            <div class="article-share-btn">
+                                <Icon type="android-delete" style="font-size: 17px;"></Icon>
+                                <span @click="onDelete">删除</span>
+                            </div>
+                        </template>
                     </div>
                 </div>
                 <div class="golang-cell comment-box">
@@ -177,6 +183,36 @@
         },
         middleware: 'userInfo',
         methods: {
+            onDelete () {
+                let self = this
+                this.$Modal.confirm({
+                    title: '删除话题',
+                    content: '确认删除这个话题?',
+                    onOk () {
+                        request.deleteArticle({
+                            params: {
+                                id: self.article.id
+                            }
+                        }).then(res => {
+                            console.log(res)
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                self.$Message.success('已删除!')
+                                setTimeout(function () {
+                                    location.href = '/'
+                                }, 500)
+                            } else {
+                                self.$Message.error(res.msg)
+                            }
+                        }).catch(err => {
+                            err = '内部错误'
+                            self.$Message.error(err)
+                        })
+                    },
+                    onCancel () {
+
+                    }
+                })
+            },
             onContentChage (content) {
                 this.formData.content = content
             },

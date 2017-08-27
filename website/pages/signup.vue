@@ -16,7 +16,7 @@
     		<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">
     			<Form-item label="用户名" prop="username">
     	            <i-input size="large" type="text" v-model="formCustom.username" class="signup-input"></i-input>
-                    <span class="signup-label">2-20位可由中文、数字、字母组成</span>
+                    <span class="signup-label">4-20位可由中文、数字、字母组成</span>
     	        </Form-item>
     	        <Form-item label="密码" prop="passwd">
     	            <i-input size="large" type="password" v-model="formCustom.passwd" class="signup-input"></i-input>
@@ -24,11 +24,11 @@
     	        </Form-item>
     	        <Form-item label="确认密码" prop="passwdCheck">
     	            <i-input size="large" type="password" v-model="formCustom.passwdCheck" class="signup-input"></i-input>
-                    <span class="signup-label">请在此输入您的密码</span>
+                    <span class="signup-label">请在此确认您的密码</span>
     	        </Form-item>
     	        <Form-item label="邮箱" prop="email">
     	            <i-input size="large" v-model="formCustom.email" class="signup-input"></i-input>
-                    <span class="signup-label">请输入有效的点子邮箱，该邮箱作为您账户的登录名</span>
+                    <span class="signup-label">请输入有效的电子邮箱</span>
     	        </Form-item>
 	            <i-button type="primary" size="large" class="signup-button" @click="handleSubmit('formCustom')">立即注册</i-button>
     	    </Form>

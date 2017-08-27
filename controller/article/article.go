@@ -148,7 +148,7 @@ func UserArticleList(ctx *iris.Context) {
 	var f string
 
 	f = ctx.FormValue("f")
-	
+
 	if userID, userIDErr = ctx.ParamInt("userID"); userIDErr != nil {
 		SendErrJSON("无效的userID", ctx)
 		return	
@@ -639,6 +639,41 @@ func Tops(ctx *iris.Context) {
 
 // Delete 删除文章
 func Delete(ctx *iris.Context) {
+	SendErrJSON := common.SendErrJSON
 	// 删除文章，但其他用户对文章的评论保留
 	// 其他用户对文章的点赞也保留
+	var id int
+	var idErr error
+	if id, idErr = ctx.ParamInt("id"); idErr != nil {
+		SendErrJSON("无效的id", ctx)
+		return	
+	}
+
+	var article model.Article
+
+	if err := model.DB.First(&article, id).Error; err != nil {
+		SendErrJSON("无效的话题id", ctx)
+		return
+	}
+
+	session  := ctx.Session();
+	user     := session.Get("user").(model.User)
+
+	if user.ID != article.UserID {
+		SendErrJSON("您无权限执行此操作", ctx)
+		return
+	}
+
+	if err := model.DB.Delete(&article).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	ctx.JSON(iris.StatusOK, iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"id": id,
+		},
+	})
 }
