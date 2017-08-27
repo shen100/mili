@@ -221,3 +221,10 @@ body {
     margin-left: 5px;
     font-size: 12px;
 }
+
+.articles-item-empty {
+    line-height: 200px;
+    font-size: 14px;
+    color: #8590a6;
+    text-align: center;
+}

@@ -23,7 +23,7 @@
             </div>
             <div class="golang-mine-content">
                 <div class="mine-content-left">
-                    <Menu mode="horizontal" theme="light" active-name="index" @on-select="onMenuSelect">
+                    <Menu mode="horizontal" theme="light" :active-name="activeMenu" @on-select="onMenuSelect">
                         <Menu-item name="index" class="mine-menu-item">话题</Menu-item>
                         <Menu-item name="reply" class="mine-menu-item">回复</Menu-item>
                         <Menu-item name="3" class="mine-menu-item">参与的投票</Menu-item>
@@ -59,7 +59,9 @@
 
     export default {
         data () {
-            return {}
+            return {
+                activeMenu: 'index'
+            }
         },
         validate ({ params }) {
             const id = !!params.id
@@ -79,11 +81,19 @@
             }
         },
         mounted () {
-            console.log(this.comments)
+            let route = this.$route.path.split('/')
+            if (route[3]) {
+                console.log(route[3])
+                this.activeMenu = route[3]
+            }
         },
         methods: {
             onMenuSelect (name) {
-                this.$router.push(`/user/${this.user.id}/${name}`)
+                if (name === 'index') {
+                    this.$router.push(`/user/${this.user.id}`)
+                } else {
+                    this.$router.push(`/user/${this.user.id}/${name}`)
+                }
             }
         },
         middleware: 'userRequired',
