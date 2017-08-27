@@ -6,13 +6,13 @@
                 <div class="mine-img-box"></div>
                 <div class="mine-info-container">
                     <div class="mine-info-icon">
-                        <img :src="user.avatarURL" alt="" />
-                        <div class="mine-info-upload">
+                        <img :src="currentUser.avatarURL" alt="" />
+                        <div class="mine-info-upload" v-if="user && user.id === currentUser.id">
                             <img src="~assets/images/camera_fill.png" alt="">
                             <p>修改我的头像</p>
                         </div>
                     </div>
-                    <p class="mine-info-line mine-info-name">{{user.name}}</p>
+                    <p class="mine-info-line mine-info-name">{{currentUser.name}}</p>
                     <p class="mine-info-line mine-info-desc">
                         暂无个人消息
                     </p>
@@ -52,6 +52,8 @@
 <script>
     import Vue from 'vue'
     import iview from 'iview'
+    import ErrorCode from '~/constant/ErrorCode'
+    import request from '~/net/request'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
 
@@ -68,13 +70,28 @@
             return id
         },
         asyncData (context) {
-            return {
-                user: context.user
-            }
+            return request.getPublicUser({
+                client: context.req,
+                params: {
+                    id: context.params.id
+                }
+            }).then(res => {
+                if (res.errNo === ErrorCode.SUCCESS) {
+                    return {
+                        user: context.user,
+                        currentUser: res.data.user
+                    }
+                } else {
+                    context.error({ statusCode: 404, message: 'Page not found' })
+                }
+            }).catch(err => {
+                console.log(err)
+                context.error({ statusCode: 404, message: 'Page not found' })
+            })
         },
         head () {
             return {
-                title: this.user.name,
+                title: this.currentUser.name,
                 link: [
                     { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' }
                 ]
@@ -90,13 +107,13 @@
         methods: {
             onMenuSelect (name) {
                 if (name === 'index') {
-                    this.$router.push(`/user/${this.user.id}`)
+                    this.$router.push(`/user/${this.currentUser.id}`)
                 } else {
-                    this.$router.push(`/user/${this.user.id}/${name}`)
+                    this.$router.push(`/user/${this.currentUser.id}/${name}`)
                 }
             }
         },
-        middleware: 'userRequired',
+        middleware: 'userInfo',
         components: {
             'app-header': Header,
             'app-footer': Footer

@@ -7,8 +7,8 @@
             <div v-for="(article, index) in articles" class="articles-item" :class="{'articles-item-no': index === 0}">
                 <h1 class="articles-title">{{article.name}}</h1>
                 <p class="articles-user-info">
-                    <img :src="user.avatarURL" alt="">
-                    <span>{{user.name}}</span>
+                    <img :src="article.user.avatarURL" alt="">
+                    <span>{{article.user.name}}</span>
                 </p>
                 <div class="golang123-editor" :class="article.show ? '' : 'articles-hidden'" v-html="article.content"></div>
                 <p class="articles-button">
@@ -33,7 +33,7 @@
             return request.getUserArticles({
                 client: context.req,
                 params: {
-                    userID: context.user.id
+                    userID: context.params.id
                 },
                 query: {
                     orderType: 1,

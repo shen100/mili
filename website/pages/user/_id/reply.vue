@@ -29,7 +29,7 @@
             return request.getMineComment({
                 client: context.req,
                 params: {
-                    userID: context.user.id
+                    userID: context.params.id
                 },
                 query: {
                     orderType: 1,

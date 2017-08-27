@@ -185,6 +185,11 @@ const api = {
         url: url + '/comments/user/:userID',
         method: 'GET',
         desc: '获取当前用户回复'
+    },
+    getPublicUser: {
+        url: url + '/user/info/public/:id',
+        method: 'GET',
+        desc: '获取其他用户信息'
     }
 }
 
