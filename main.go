@@ -8,16 +8,16 @@ import (
     _ "github.com/jinzhu/gorm/dialects/mysql"
     "github.com/asaskevich/govalidator"
 	"github.com/jinzhu/gorm"
-	"gopkg.in/kataras/iris.v6"
-	"gopkg.in/kataras/iris.v6/adaptors/httprouter"
-	"gopkg.in/kataras/iris.v6/adaptors/sessions"
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/sessions"
+	"github.com/kataras/iris/middleware/logger"
 	"golang123/config"
 	"golang123/model"
 	"golang123/route"
+	"golang123/session"
 )
 
-func init() {
-    govalidator.SetFieldsRequiredByDefault(true)
+func initDB() {
 	db, err := gorm.Open(config.DBConfig.Dialect, config.DBConfig.URL)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -32,43 +32,43 @@ func init() {
 	db.DB().SetMaxOpenConns(config.DBConfig.MaxOpenConns)
 
 	model.DB = db;
+
+	sess := sessions.New(sessions.Config{
+		Cookie: config.ServerConfig.SessionID,
+		Expires: time.Second * 5, // time.Minute * 20,
+	})
+	session.Sess = sess
+
+	govalidator.SetFieldsRequiredByDefault(true)
 }
 
 func main() {
-	app := iris.New(iris.Configuration{
-        Gzip    : true, 
-        Charset : "UTF-8",
-	})
+	app := iris.New()
 
-	if config.ServerConfig.Env == model.DevelopmentMode {
-		app.Adapt(iris.DevLogger())
-	}
-
-	app.Adapt(sessions.New(sessions.Config{
-		Cookie: config.ServerConfig.SessionID,
-		Expires: time.Minute * 20,
+	app.Configure(iris.WithConfiguration(iris.Configuration{
+		Charset: "UTF-8",	
 	}))
 
-	app.Adapt(httprouter.New())
+	app.Use(logger.New())
 
 	route.Route(app)
 
-	app.OnError(iris.StatusNotFound, func(ctx *iris.Context) {
-		ctx.JSON(iris.StatusOK, iris.Map{
+	app.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
+		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.NotFound,
 			"msg"   : "Not Found",
 			"data"  : iris.Map{},
 		})
-
 	})
 
-	app.OnError(500, func(ctx *iris.Context) {
-		ctx.JSON(iris.StatusInternalServerError, iris.Map{
+	app.OnErrorCode(iris.StatusInternalServerError, func(ctx iris.Context) {
+		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.ERROR,
 			"msg"   : "error",
 			"data"  : iris.Map{},
 		})
 	})
 
-	app.Listen(":" + strconv.Itoa(config.ServerConfig.Port))
+	addr := iris.Addr(":" + strconv.Itoa(config.ServerConfig.Port))
+	app.Run(addr)
 }

@@ -1,7 +1,7 @@
 package route
 
 import (
-	"gopkg.in/kataras/iris.v6"
+	"github.com/kataras/iris"
 	"golang123/config"
 	"golang123/controller/common"
 	"golang123/controller/auth"
@@ -15,92 +15,93 @@ import (
 )
 
 // Route 路由
-func Route(app *iris.Framework) {
+func Route(app *iris.Application) {
 	apiPrefix   := config.APIConfig.Prefix
 
-	router := app.Party(apiPrefix) 
+	routes := app.Party(apiPrefix) 
 	{	
-		router.Post("/signin",                   user.Signin)
-		router.Post("/signup",                   user.Signup)
-		router.Post("/signout",                  user.Signout)
-		router.Get("/active/verify/:id/:secret", user.VerifyActiveLink)
-		router.Post("/active/:id/:secret",       user.ActiveAccount)
-		router.Post("/reset",                    user.ResetPasswordMail)
-		router.Get("/reset/verify/:id/:secret",  user.VerifyResetPasswordLink)
-		router.Post("/reset/:id/:secret",        user.ResetPassword)
+		routes.Post("/signin",                   user.Signin)
+		routes.Post("/signup",                   user.Signup)
+		routes.Post("/signout",                  user.Signout)
+		routes.Get("/active/verify/:id/:secret", user.VerifyActiveLink)
+		routes.Post("/active/:id/:secret",       user.ActiveAccount)
+		routes.Post("/reset",                    user.ResetPasswordMail)
+		routes.Get("/reset/verify/:id/:secret",  user.VerifyResetPasswordLink)
+		routes.Post("/reset/:id/:secret",        user.ResetPassword)
 
-		router.Get("/user/info/public/:id",  user.PublicInfo)
-		router.Get("/user/info",             auth.SigninRequired,  
+		routes.Get("/user/info/public/:id",  user.PublicInfo)
+		routes.Get("/user/info",             auth.SigninRequired,  
 											 user.Info)
-		router.Post("/user/update",          auth.ActiveRequired,       
+		routes.Post("/user/update",          auth.ActiveRequired,       
 										     user.UpdateInfo)
-		router.Post("/user/password/update", auth.ActiveRequired,       
+		routes.Post("/user/password/update", auth.ActiveRequired,       
 											 user.UpdatePassword)
-		router.Get("/user/score/top10",      user.Top10)
-		router.Get("/user/score/top100",     user.Top100)
+		routes.Get("/user/score/top10",      user.Top10)
+		routes.Get("/user/score/top100",     user.Top100)
 
-		router.Post("/upload",               auth.ActiveRequired,          
+		routes.Post("/upload",               auth.ActiveRequired,          
 											 common.Upload)
-		router.Get("/message/unread",        auth.SigninRequired,  
+											 
+		routes.Get("/message/unread",        auth.SigninRequired,  
 											 message.Unread)
-		router.Get("/message/unread/count",  auth.SigninRequired,  
+		routes.Get("/message/unread/count",  auth.SigninRequired,  
 											 message.UnreadCount)
 
-		router.Get("/categories",           category.List)
+		routes.Get("/categories",            category.List)
 
-		router.Get("/articles",                article.List)
-		router.Get("/articles/user/:userID",   article.UserArticleList)
-		router.Get("/articles/maxcomment",     article.ListMaxComment)
-		router.Get("/articles/maxbrowse",      article.ListMaxBrowse)
-		router.Get("/article/:id",             article.Info)
-		router.Post("/article/create",         auth.ActiveRequired, 
+		routes.Get("/articles",                article.List)
+		routes.Get("/articles/user/:userID",   article.UserArticleList)
+		routes.Get("/articles/maxcomment",     article.ListMaxComment)
+		routes.Get("/articles/maxbrowse",      article.ListMaxBrowse)
+		routes.Get("/article/{id:int min(1)}", article.Info)
+		routes.Post("/article/create",         auth.ActiveRequired, 
 										       article.Create)
-		router.Post("/article/update",         auth.ActiveRequired,    
+		routes.Post("/article/update",         auth.ActiveRequired,    
 											   article.Update)
-		router.Post("/article/delete/:id",     auth.ActiveRequired,
+		routes.Post("/article/delete/:id",     auth.ActiveRequired,
 											   article.Delete)
-		router.Get("/articles/top",            article.Tops)
-		router.Post("/article/top/:id",        auth.EditorRequired,    
+		routes.Get("/articles/top",            article.Tops)
+		routes.Post("/article/top/:id",        auth.EditorRequired,    
 											   article.Top)
-		router.Post("/article/deltop/:id",     auth.EditorRequired,    
+		routes.Post("/article/deltop/:id",     auth.EditorRequired,    
 											   article.DeleteTop)
 											   
-		router.Post("/collect/create",      auth.ActiveRequired,
+		routes.Post("/collect/create",      auth.ActiveRequired,
 											collect.Collect)
-		router.Post("/collect/delete",      auth.ActiveRequired,
+		routes.Post("/collect/delete",      auth.ActiveRequired,
 										    collect.DeleteCollect)
-		router.Get("/collects",             auth.SigninRequired,
+		routes.Get("/collects",             auth.SigninRequired,
 											collect.List)
 
-		router.Post("/comment/create",       auth.ActiveRequired,
+		routes.Post("/comment/create",       auth.ActiveRequired,
 											 comment.Create)
-		router.Get("/comments/user/:userID", comment.UserCommentList)
+		routes.Get("/comments/user/:userID", comment.UserCommentList)
 
-		router.Get("/votes",                vote.List)
-		router.Get("/votes/maxbrowse",      vote.ListMaxBrowse)
-		router.Get("/votes/maxcomment",     vote.ListMaxComment)
-		router.Get("/votes/user/:userID",   vote.UserVoteList)
-		router.Post("/vote/create",         auth.EditorRequired,
+		routes.Get("/votes",                vote.List)
+		routes.Get("/votes/maxbrowse",      vote.ListMaxBrowse)
+		routes.Get("/votes/maxcomment",     vote.ListMaxComment)
+		routes.Get("/votes/user/:userID",   vote.UserVoteList)
+		routes.Post("/vote/create",         auth.EditorRequired,
 											vote.Create)
-		router.Post("/vote/delete",         auth.EditorRequired,
+		routes.Post("/vote/delete",         auth.EditorRequired,
 											vote.Delete)
-		router.Get("/vote/:id",             vote.Info)
-		router.Post("/vote/item/create",    auth.EditorRequired,
+		routes.Get("/vote/:id",             vote.Info)
+		routes.Post("/vote/item/create",    auth.EditorRequired,
 											vote.CreateVoteItem)
-		router.Post("/vote/item/edit",      auth.EditorRequired,
+		routes.Post("/vote/item/edit",      auth.EditorRequired,
 											vote.EditVoteItem)
-		router.Post("/vote/uservote/:id",   auth.ActiveRequired,
+		routes.Post("/vote/uservote/:id",   auth.ActiveRequired,
 											vote.UserVoteVoteItem)
     }
 
-	adminRouter := app.Party(apiPrefix + "/admin", auth.AdminRequired)
+	adminRoutes := app.Party(apiPrefix + "/admin", auth.AdminRequired)
 	{
-		adminRouter.Get("/categories",               category.AllList)
-		adminRouter.Post("/category/create",         category.Create)
-		adminRouter.Post("/category/update",         category.Update)
-		adminRouter.Post("/category/status/update",  category.UpdateStatus)
+		adminRoutes.Get("/categories",               category.AllList)
+		adminRoutes.Post("/category/create",         category.Create)
+		adminRoutes.Post("/category/update",         category.Update)
+		adminRoutes.Post("/category/status/update",  category.UpdateStatus)
 
-		adminRouter.Get("/articles",                 article.AllList)
-		adminRouter.Post("/article/status/update",   article.UpdateStatus)
+		adminRoutes.Get("/articles",                 article.AllList)
+		adminRoutes.Post("/article/status/update",   article.UpdateStatus)
     }
 }
