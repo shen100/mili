@@ -35,7 +35,7 @@ func init() {
 
 	sess := sessions.New(sessions.Config{
 		Cookie: config.ServerConfig.SessionID,
-		Expires: time.Minute * config.ServerConfig.SessionTimeout,
+		Expires: time.Minute * time.Duration(config.ServerConfig.SessionTimeout),
 	})
 	sessmanager.Sess = sess
 

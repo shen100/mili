@@ -44,6 +44,15 @@
             return {
                 list: [
                     {
+                        name: 'iris升级',
+                        date: {
+                            year: 2017,
+                            month: 8,
+                            date: 28
+                        },
+                        content: 'golang123升级iris框架到最新版8.4.0'
+                    },
+                    {
                         name: '支持投票功能',
                         date: {
                             year: 2017,
