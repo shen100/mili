@@ -67,8 +67,11 @@
                 if (value === '') {
                     callback(new Error('请输入密码'))
                 } else {
+                    if (value.length < 6 || value.length > 20) {
+                        return callback(new Error('密码必须6-20个字符'))
+                    }
                     if (this.formCustom.passwdCheck !== '') {
-                        // 对第二个密码框单独验证
+                        // 对第二个密码框单独验证                        
                         this.$refs.formCustom.validateField('passwdCheck')
                     }
                     callback()
@@ -82,6 +85,13 @@
                 } else {
                     callback()
                 }
+            }
+
+            const validateUserName = (rule, value, callback) => {
+                if (value && (value.length < 4 || value.length > 20)) {
+                    callback(new Error('用户名长度必须4-20位'))
+                }
+                callback()
             }
             return {
                 loading: false,
@@ -102,7 +112,8 @@
                         { validator: validatePassCheck, trigger: 'blur' }
                     ],
                     username: [
-                        { required: true, message: '请输入用户名', trigger: 'blur' }
+                        { required: true, message: '请输入用户名', trigger: 'blur' },
+                        { validator: validateUserName, trigger: 'blur' }
                     ],
                     email: [
                         { required: true, message: '请输入邮箱', trigger: 'blur' },
