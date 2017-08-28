@@ -6,16 +6,17 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
-	"gopkg.in/kataras/iris.v6"
+	"github.com/kataras/iris"
 	"github.com/microcosm-cc/bluemonday"
     "github.com/russross/blackfriday"
 	"golang123/config"
 	"golang123/model"
+	"golang123/sessmanager"
 	"golang123/utils"
 	"golang123/controller/common"
 )
 
-func queryList(isBackend bool, ctx *iris.Context) {
+func queryList(isBackend bool, ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
 	var categoryID int
@@ -114,7 +115,7 @@ func queryList(isBackend bool, ctx *iris.Context) {
 		}
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -124,17 +125,17 @@ func queryList(isBackend bool, ctx *iris.Context) {
 }
 
 // List 文章列表
-func List(ctx *iris.Context) {
+func List(ctx iris.Context) {
 	queryList(false, ctx)
 }
 
 // AllList 文章列表，后台管理提供的接口
-func AllList(ctx *iris.Context) {
+func AllList(ctx iris.Context) {
 	queryList(true, ctx)
 }
 
 // UserArticleList 查询用户的文章
-func UserArticleList(ctx *iris.Context) {
+func UserArticleList(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userID int
 	var userIDErr error
@@ -149,7 +150,7 @@ func UserArticleList(ctx *iris.Context) {
 
 	f = ctx.FormValue("f")
 
-	if userID, userIDErr = ctx.ParamInt("userID"); userIDErr != nil {
+	if userID, userIDErr = ctx.Params().GetInt("userID"); userIDErr != nil {
 		SendErrJSON("无效的userID", ctx)
 		return	
 	}
@@ -217,7 +218,7 @@ func UserArticleList(ctx *iris.Context) {
 		}
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -227,7 +228,7 @@ func UserArticleList(ctx *iris.Context) {
 }
 
 // ListMaxComment 评论最多的文章，返回5条
-func ListMaxComment(ctx *iris.Context) {
+func ListMaxComment(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
 	if err := model.DB.Order("comment_count DESC").Limit(5).Find(&articles).Error; err != nil {
@@ -235,7 +236,7 @@ func ListMaxComment(ctx *iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -245,7 +246,7 @@ func ListMaxComment(ctx *iris.Context) {
 }
 
 // ListMaxBrowse 访问量最多的文章，返回5条
-func ListMaxBrowse(ctx *iris.Context) {
+func ListMaxBrowse(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
 	if err := model.DB.Order("browse_count DESC").Limit(5).Find(&articles).Error; err != nil {
@@ -253,7 +254,7 @@ func ListMaxBrowse(ctx *iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -262,7 +263,7 @@ func ListMaxBrowse(ctx *iris.Context) {
 	})
 }
 
-func save(isEdit bool, ctx *iris.Context) {
+func save(isEdit bool, ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var article model.Article
 
@@ -280,8 +281,7 @@ func save(isEdit bool, ctx *iris.Context) {
 		}
 	}
 
-	session        := ctx.Session();
-	user           := session.Get("user").(model.User)
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
 	article.UserID  = user.ID
 
 	if isEdit {
@@ -294,7 +294,7 @@ func save(isEdit bool, ctx *iris.Context) {
 		article.Status       = model.ArticleVerifying
 		user.Score           = user.Score + config.UserConfig.CreateArticleScore
 		user.ArticleCount    = user.ArticleCount + 1
-		session.Set("user", user)
+		sessmanager.Sess.Start(ctx).Set("user", user)
 	}
 
 	article.Name = strings.TrimSpace(article.Name)
@@ -368,7 +368,7 @@ func save(isEdit bool, ctx *iris.Context) {
 		return	
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : article,
@@ -376,30 +376,31 @@ func save(isEdit bool, ctx *iris.Context) {
 }
 
 // Create 创建文章
-func Create(ctx *iris.Context) {
+func Create(ctx iris.Context) {
 	save(false, ctx);	
 }
 
 // Update 更新文章
-func Update(ctx *iris.Context) {
+func Update(ctx iris.Context) {
 	save(true, ctx);	
 }
 
 // Info 获取文章信息
-func Info(ctx *iris.Context) {
+func Info(ctx iris.Context) {
 	SendErrJSON  := common.SendErrJSON
 	reqStartTime := time.Now()
 	var articleID int
 	var paramsErr error
 
-	if articleID, paramsErr = ctx.ParamInt("id"); paramsErr != nil {
+	if articleID, paramsErr = ctx.Params().GetInt("id"); paramsErr != nil {
 		SendErrJSON("错误的文章id", ctx)
 		return
 	}
 
 	var article model.Article
 
-	if model.DB.First(&article, articleID).Error != nil {
+	if err := model.DB.First(&article, articleID).Error; err != nil {
+		fmt.Printf(err.Error())
 		SendErrJSON("错误的文章id", ctx)
 		return
 	}
@@ -479,8 +480,10 @@ func Info(ctx *iris.Context) {
 		article.Content = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 	}
 
-	fmt.Println("duration: ", time.Now().Sub(reqStartTime).Seconds())
-	ctx.JSON(iris.StatusOK, iris.Map{
+	totalDur := fmt.Sprintf("%f", time.Now().Sub(reqStartTime).Seconds())
+	ctx.Application().Logger().Infof("duration: " + totalDur)
+
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -490,7 +493,7 @@ func Info(ctx *iris.Context) {
 }
 
 // UpdateStatus 更新文章状态
-func UpdateStatus(ctx *iris.Context) {
+func UpdateStatus(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var reqData model.Article
 
@@ -520,7 +523,7 @@ func UpdateStatus(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -531,11 +534,11 @@ func UpdateStatus(ctx *iris.Context) {
 }
 
 // Top 文章置顶
-func Top(ctx *iris.Context) {
+func Top(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var id int
 	var idErr error
-	if id, idErr = ctx.ParamInt("id"); idErr != nil {
+	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
 		SendErrJSON("error", ctx)
 		return	
 	}
@@ -569,7 +572,7 @@ func Top(ctx *iris.Context) {
 		return	
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : topArticle,
@@ -577,11 +580,11 @@ func Top(ctx *iris.Context) {
 }
 
 // DeleteTop 取消文章置顶
-func DeleteTop(ctx *iris.Context) {
+func DeleteTop(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var id int
 	var idErr error
-	if id, idErr = ctx.ParamInt("id"); idErr != nil {
+	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
 		SendErrJSON("error", ctx)
 		return	
 	}
@@ -598,7 +601,7 @@ func DeleteTop(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -608,7 +611,7 @@ func DeleteTop(ctx *iris.Context) {
 }
 
 // Tops 所有置顶文章
-func Tops(ctx *iris.Context) {
+func Tops(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var topArticles []model.TopArticle
 	var articles []model.Article
@@ -628,7 +631,7 @@ func Tops(ctx *iris.Context) {
 		articles = append(articles, article)
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -638,13 +641,13 @@ func Tops(ctx *iris.Context) {
 }
 
 // Delete 删除文章
-func Delete(ctx *iris.Context) {
+func Delete(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	// 删除文章，但其他用户对文章的评论保留
 	// 其他用户对文章的点赞也保留
 	var id int
 	var idErr error
-	if id, idErr = ctx.ParamInt("id"); idErr != nil {
+	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
 		SendErrJSON("无效的id", ctx)
 		return	
 	}
@@ -656,8 +659,7 @@ func Delete(ctx *iris.Context) {
 		return
 	}
 
-	session  := ctx.Session();
-	user     := session.Get("user").(model.User)
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
 
 	if user.ID != article.UserID {
 		SendErrJSON("您无权限执行此操作", ctx)
@@ -669,7 +671,7 @@ func Delete(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{

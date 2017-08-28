@@ -65,6 +65,11 @@
             }
         },
         mounted () {
+            request.heartbeat().then(arr => {
+
+            }).catch(() => {
+
+            })
         }
     }
 </script>

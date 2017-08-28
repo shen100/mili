@@ -14,10 +14,10 @@ import (
 	"golang123/config"
 	"golang123/model"
 	"golang123/route"
-	"golang123/session"
+	"golang123/sessmanager"
 )
 
-func initDB() {
+func init() {
 	db, err := gorm.Open(config.DBConfig.Dialect, config.DBConfig.URL)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -35,9 +35,9 @@ func initDB() {
 
 	sess := sessions.New(sessions.Config{
 		Cookie: config.ServerConfig.SessionID,
-		Expires: time.Second * 5, // time.Minute * 20,
+		Expires: time.Minute * config.ServerConfig.SessionTimeout,
 	})
-	session.Sess = sess
+	sessmanager.Sess = sess
 
 	govalidator.SetFieldsRequiredByDefault(true)
 }

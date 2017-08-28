@@ -4,14 +4,14 @@ import (
 	"unicode/utf8"
 	"strings"
 	"strconv"
-	"gopkg.in/kataras/iris.v6"
+	"github.com/kataras/iris"
 	"golang123/config"
 	"golang123/model"
 	"golang123/controller/common"
 )
 
 // Save 保存分类（创建或更新）
-func Save(isEdit bool, ctx *iris.Context) {
+func Save(isEdit bool, ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 
 	minOrder := config.ServerConfig.MinOrder
@@ -85,7 +85,7 @@ func Save(isEdit bool, ctx *iris.Context) {
 		categoryJSON = category	
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -96,19 +96,19 @@ func Save(isEdit bool, ctx *iris.Context) {
 }
 
 // Create 创建分类
-func Create(ctx *iris.Context) {
+func Create(ctx iris.Context) {
 	Save(false, ctx)
 }
 
 // Update 更新分类
-func Update(ctx *iris.Context) {
+func Update(ctx iris.Context) {
 	Save(true, ctx)	
 }
 
 // Info 获取分类信息
-func Info(ctx *iris.Context) {
+func Info(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	id, err := ctx.ParamInt("id")
+	id, err := ctx.Params().GetInt("id")
 	if err != nil {
 		SendErrJSON("错误的分类id", ctx)
 		return
@@ -120,7 +120,7 @@ func Info(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -130,7 +130,7 @@ func Info(ctx *iris.Context) {
 }
 
 // AllList 所有的分类列表
-func AllList(ctx *iris.Context) {
+func AllList(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var categories []model.Category
 	pageNo, err := strconv.Atoi(ctx.FormValue("pageNo"))
@@ -155,7 +155,7 @@ func AllList(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -165,7 +165,7 @@ func AllList(ctx *iris.Context) {
 }
 
 // List 公开的分类列表
-func List(ctx *iris.Context) {
+func List(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var categories []model.Category
 
@@ -174,7 +174,7 @@ func List(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -184,7 +184,7 @@ func List(ctx *iris.Context) {
 }
 
 // UpdateStatus 开启或关闭分类
-func UpdateStatus(ctx *iris.Context) {
+func UpdateStatus(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var category model.Category
 
@@ -213,7 +213,7 @@ func UpdateStatus(ctx *iris.Context) {
 		SendErrJSON("分类状态更新失败", ctx)
 		return
 	}
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{

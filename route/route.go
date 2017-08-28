@@ -28,6 +28,7 @@ func Route(app *iris.Application) {
 		routes.Post("/reset",                    user.ResetPasswordMail)
 		routes.Get("/reset/verify/:id/:secret",  user.VerifyResetPasswordLink)
 		routes.Post("/reset/:id/:secret",        user.ResetPassword)
+		routes.Get("/heartbeat",                 common.Heartbeat)
 
 		routes.Get("/user/info/public/:id",  user.PublicInfo)
 		routes.Get("/user/info",             auth.SigninRequired,  
@@ -41,7 +42,7 @@ func Route(app *iris.Application) {
 
 		routes.Post("/upload",               auth.ActiveRequired,          
 											 common.Upload)
-											 
+
 		routes.Get("/message/unread",        auth.SigninRequired,  
 											 message.Unread)
 		routes.Get("/message/unread/count",  auth.SigninRequired,  

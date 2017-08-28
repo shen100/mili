@@ -2,16 +2,16 @@ package common
 
 import (
 	"fmt"
-	"gopkg.in/kataras/iris.v6"
+	"github.com/kataras/iris"
 	"golang123/model"
 )
 
 // SendErrJSON 有错误发生时，发送错误JSON
 func SendErrJSON(msg string, args ...interface{}) {
-	var ctx *iris.Context
+	var ctx iris.Context
 	var errNo = model.ErrorCode.ERROR
 	if len(args) == 1 {
-		theCtx, ok := args[0].(*iris.Context)
+		theCtx, ok := args[0].(iris.Context)
 		if !ok {
 			fmt.Println(msg, "需要msg和ctx")
 			return
@@ -24,14 +24,14 @@ func SendErrJSON(msg string, args ...interface{}) {
 			return
 		}
 		errNo = theErrNo
-		theCtx, ok := args[1].(*iris.Context)
+		theCtx, ok := args[1].(iris.Context)
 		if !ok {
 			fmt.Println(msg, "需要msg, errNo和ctx")
 			return
 		}
 		ctx = theCtx
 	}
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : errNo,
 		"msg"   : msg,
 		"data"  : iris.Map{},

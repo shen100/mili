@@ -35,6 +35,7 @@
 		"ImgPath"             : "/upload/img",  /*上传后的图片请求地址前缀*/
 		"Port"                : 8023,           /*go监听的端口*/
 		"SessionID"           : "golang123sid", /*后台设置的session id*/
+		"SessionTimeout"      : 30,             /*session超时时间，单位秒*/
 		"MaxOrder"            : 10000,        /*最大的排序号*/
 		"MinOrder"            : 0,            /*最小的排序号*/
 		"PageSize"            : 20,           /*默认每页的条数*/

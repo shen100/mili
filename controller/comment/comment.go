@@ -5,14 +5,15 @@ import (
 	"strconv"
 	"strings"
 	"unicode/utf8"
-	"gopkg.in/kataras/iris.v6"
+	"github.com/kataras/iris"
 	"golang123/controller/common"
 	"golang123/model"
+	"golang123/sessmanager"
 	"golang123/config"
 )
 
 // Save 保存评论（创建或更新）
-func Save(isEdit bool, ctx *iris.Context) {
+func Save(isEdit bool, ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var comment model.Comment
 
@@ -64,8 +65,7 @@ func Save(isEdit bool, ctx *iris.Context) {
 		return
 	}
 
-	session   := ctx.Session();
-	user      := session.Get("user").(model.User)
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
 
 	comment.Status = model.CommentVerifying
 	comment.UserID = user.ID
@@ -113,7 +113,7 @@ func Save(isEdit bool, ctx *iris.Context) {
 	}
 	commentJSON.User = user
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -124,17 +124,17 @@ func Save(isEdit bool, ctx *iris.Context) {
 }
 
 // Create 创建评论
-func Create(ctx *iris.Context) {
+func Create(ctx iris.Context) {
 	Save(false, ctx)
 }
 
 // Update 更新评论
-func Update(ctx *iris.Context) {
+func Update(ctx iris.Context) {
 	Save(true, ctx)	
 }
 
 // UserCommentList 查询用户的评论
-func UserCommentList(ctx *iris.Context) {
+func UserCommentList(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userID int
 	var userIDErr error
@@ -146,7 +146,7 @@ func UserCommentList(ctx *iris.Context) {
 	var pageSize int
 	var pageSizeErr error
 
-	if userID, userIDErr = ctx.ParamInt("userID"); userIDErr != nil {
+	if userID, userIDErr = ctx.Params().GetInt("userID"); userIDErr != nil {
 		SendErrJSON("无效的userID", ctx)
 		return	
 	}
@@ -233,7 +233,7 @@ func UserCommentList(ctx *iris.Context) {
 		results = append(results, data)
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{

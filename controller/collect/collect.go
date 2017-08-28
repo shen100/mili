@@ -3,14 +3,15 @@ package collect
 import (
 	"fmt"
 	"strconv"
-	"gopkg.in/kataras/iris.v6"
+	"github.com/kataras/iris"
 	"golang123/config"
 	"golang123/model"
+	"golang123/sessmanager"
 	"golang123/controller/common"
 )
 
 // Collect 收藏文章
-func Collect(ctx *iris.Context) {
+func Collect(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var collect model.Collect
 	if err := ctx.ReadJSON(&collect); err != nil {
@@ -25,8 +26,8 @@ func Collect(ctx *iris.Context) {
 		return
 	}
 
-	session     := ctx.Session()
-	user        := session.Get("user").(model.User)
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+
 	if err := model.DB.First(&user, user.ID).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
@@ -47,7 +48,7 @@ func Collect(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{},
@@ -55,7 +56,7 @@ func Collect(ctx *iris.Context) {
 }
 
 // DeleteCollect 删除收藏
-func DeleteCollect(ctx *iris.Context) {
+func DeleteCollect(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var collect model.Collect
 	if err := ctx.ReadJSON(&collect); err != nil {
@@ -77,8 +78,8 @@ func DeleteCollect(ctx *iris.Context) {
 		return	
 	}
 
-	session     := ctx.Session()
-	user        := session.Get("user").(model.User)
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+
 	if err := model.DB.First(&user, user.ID).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
@@ -91,7 +92,7 @@ func DeleteCollect(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{},
@@ -99,7 +100,7 @@ func DeleteCollect(ctx *iris.Context) {
 }
 
 // List 查询用户已收藏的文章
-func List(ctx *iris.Context) {
+func List(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var collects []model.Collect
 	var pageNo int
@@ -143,7 +144,7 @@ func List(ctx *iris.Context) {
 		}
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{

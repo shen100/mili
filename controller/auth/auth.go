@@ -1,29 +1,27 @@
 package auth
 
 import (
-	"gopkg.in/kataras/iris.v6"
+	"github.com/kataras/iris"
 	"golang123/model"
+	"golang123/sessmanager"
 	"golang123/controller/common"
 )
 
 // SigninRequired 必须是登录用户
-func SigninRequired(ctx *iris.Context) {
+func SigninRequired(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	session     := ctx.Session();
-	user        := session.Get("user")
-	if user == nil {
+	_, ok := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
 		return	
 	}
-	session.Set("user", user)
 	ctx.Next()
 }
 
 // ActiveRequired 用户必须是激活状态
-func ActiveRequired(ctx *iris.Context) {
+func ActiveRequired(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	session     := ctx.Session();
-	user, ok    := session.Get("user").(model.User)
+	user, ok := sessmanager.Sess.Start(ctx).Get("user").(model.User)
 
 	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
@@ -47,16 +45,14 @@ func ActiveRequired(ctx *iris.Context) {
 }
 
 // EditorRequired 必须是网站编辑
-func EditorRequired(ctx *iris.Context) {
+func EditorRequired(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	session     := ctx.Session();
-	user, ok    := session.Get("user").(model.User)
+	user, ok := sessmanager.Sess.Start(ctx).Get("user").(model.User)
 
 	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
 		return
 	}
-	session.Set("user", user)
 	if user.Role == model.UserRoleEditor || user.Role == model.UserRoleAdmin || user.Role == model.UserRoleSuperAdmin {
 		ctx.Next()
 	} else {
@@ -66,16 +62,14 @@ func EditorRequired(ctx *iris.Context) {
 }
 
 // AdminRequired 必须是管理员
-func AdminRequired(ctx *iris.Context) {
+func AdminRequired(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	session     := ctx.Session();
-	user, ok    := session.Get("user").(model.User)
+	user, ok := sessmanager.Sess.Start(ctx).Get("user").(model.User)
 
 	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
 		return
 	}
-	session.Set("user", user)
 	if user.Role == model.UserRoleAdmin || user.Role == model.UserRoleSuperAdmin {
 		ctx.Next()
 	} else {

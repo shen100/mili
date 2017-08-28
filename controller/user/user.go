@@ -8,10 +8,11 @@ import (
 	"strings"
 	"math/rand"
 	"time"
-	"gopkg.in/kataras/iris.v6"
+	"github.com/kataras/iris"
 	"github.com/asaskevich/govalidator"
 	"golang123/model"
 	"golang123/config"
+	"golang123/sessmanager"
 	"golang123/controller/common"
 	"golang123/controller/mail"
 )
@@ -21,7 +22,7 @@ const (
 	resetDuration  = 24 * 60 * 60
 )
 
-func sendMail(action string, title string, curTime int64, user model.User, ctx *iris.Context) {
+func sendMail(action string, title string, curTime int64, user model.User, ctx iris.Context) {
 	siteName  := config.ServerConfig.SiteName
 	siteURL   := "https://" + config.ServerConfig.Host
 	secretStr := fmt.Sprintf("%d%s%s", curTime, user.Email, user.Pass)
@@ -51,18 +52,18 @@ func sendMail(action string, title string, curTime int64, user model.User, ctx *
 	mail.SendMail(user.Email, title, content)
 }
 
-func verifyLink(cacheKey string, duration int64, ctx *iris.Context) (model.User, error) {
+func verifyLink(cacheKey string, duration int64, ctx iris.Context) (model.User, error) {
 	var user model.User
-	userID, err := strconv.Atoi(ctx.Param("id"))
+	userID, err := ctx.Params().GetInt("id")
 	if err != nil || userID <= 0 {
 		return user, errors.New("无效的链接")
 	}
-	secret := ctx.Param("secret")
+	secret := ctx.Params().Get("secret")
 	if secret == "" {
 		return user, errors.New("无效的链接")
 	}
 	
-	session       := ctx.Session()
+	session       := sessmanager.Sess.Start(ctx)
 	emailTime, ok := session.Get(cacheKey + fmt.Sprintf("%d", userID)).(int64)
 	if !ok {
 		return user, errors.New("链接已失效")	
@@ -86,14 +87,14 @@ func verifyLink(cacheKey string, duration int64, ctx *iris.Context) (model.User,
 }
 
 // VerifyActiveLink 验证激活账号的链接是否失效
-func VerifyActiveLink(ctx *iris.Context) {
+func VerifyActiveLink(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	if _, err := verifyLink("activeTime", activeDuration, ctx); err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("激活链接已失效", ctx)
 		return	
 	}
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{},
@@ -101,7 +102,7 @@ func VerifyActiveLink(ctx *iris.Context) {
 }
 
 // ActiveAccount 激活账号
-func ActiveAccount(ctx *iris.Context) {
+func ActiveAccount(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var err error
 	var user model.User
@@ -117,7 +118,7 @@ func ActiveAccount(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : user,
@@ -125,7 +126,7 @@ func ActiveAccount(ctx *iris.Context) {
 }
 
 // ResetPasswordMail 发送重置密码的邮件
-func ResetPasswordMail(ctx *iris.Context) {
+func ResetPasswordMail(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type userReqData struct {
 		Email     string  `json:"email"`
@@ -142,14 +143,14 @@ func ResetPasswordMail(ctx *iris.Context) {
 		return
 	}
 
-	session   := ctx.Session()
+	session := sessmanager.Sess.Start(ctx)
 	curTime   := time.Now().Unix()
 	session.Set(fmt.Sprintf("resetTime%d", user.ID), curTime)
 	go func() {
 		sendMail("/reset", "修改密码", curTime, user, ctx)
 	}()
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{},
@@ -157,14 +158,14 @@ func ResetPasswordMail(ctx *iris.Context) {
 }
 
 // VerifyResetPasswordLink 验证重置密码的链接是否失效
-func VerifyResetPasswordLink(ctx *iris.Context) {
+func VerifyResetPasswordLink(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	if _, err := verifyLink("resetTime", resetDuration, ctx); err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("重置链接已失效", ctx)
 		return	
 	}
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{},
@@ -172,7 +173,7 @@ func VerifyResetPasswordLink(ctx *iris.Context) {
 }
 
 // ResetPassword 重置密码
-func ResetPassword(ctx *iris.Context) {
+func ResetPassword(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type userReqData struct {
 		Password  string  `json:"password" valid:"runelength(6|20)"`
@@ -203,7 +204,7 @@ func ResetPassword(ctx *iris.Context) {
 		return
 	}
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{},
@@ -211,7 +212,7 @@ func ResetPassword(ctx *iris.Context) {
 }
 
 // Signin 用户登录
-func Signin(ctx *iris.Context) {
+func Signin(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type UserData struct {
 		SigninInput string  `json:"signinInput" valid:"-"`
@@ -264,9 +265,9 @@ func Signin(ctx *iris.Context) {
 	}
 
 	if queryUser.CheckPassword(userData.Password) {
-		session := ctx.Session()
-		session.Set("user", queryUser)
-		ctx.JSON(iris.StatusOK, iris.Map{
+		sessmanager.Sess.Start(ctx).Set("user", queryUser)
+		sessmanager.Sess.ShiftExpiration(ctx)
+		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
 			"data"  : queryUser,
@@ -278,7 +279,7 @@ func Signin(ctx *iris.Context) {
 }
 
 // Signup 用户注册
-func Signup(ctx *iris.Context) {
+func Signup(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	reqStartTime := time.Now()
 	type userReqData struct {
@@ -300,7 +301,7 @@ func Signup(ctx *iris.Context) {
 	userData.Name      = strings.TrimSpace(userData.Name)
 	userData.Email     = strings.TrimSpace(userData.Email)
 
-	checkSignupData := func(userData userReqData, ctx *iris.Context) bool {
+	checkSignupData := func(userData userReqData, ctx iris.Context) bool {
 		if strings.Index(userData.Name, "@") != -1 {
 			SendErrJSON("用户名中不能含有@字符", ctx)
 			return false	
@@ -337,7 +338,7 @@ func Signup(ctx *iris.Context) {
 	}
 
 	curTime   := time.Now().Unix()
-	session   := ctx.Session()
+	session   := sessmanager.Sess.Start(ctx)
 	session.Set(fmt.Sprintf("activeTime%d", newUser.ID), curTime)
 	go func() {
 		sendMail("/active", "账号激活", curTime, newUser, ctx)
@@ -345,7 +346,7 @@ func Signup(ctx *iris.Context) {
 
 	fmt.Println("signup duration: ", time.Now().Sub(reqStartTime).Seconds())
 
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : newUser,
@@ -353,10 +354,10 @@ func Signup(ctx *iris.Context) {
 }
 
 // Signout 退出登录
-func Signout(ctx *iris.Context) {
-	session := ctx.Session()
+func Signout(ctx iris.Context) {
+	session := sessmanager.Sess.Start(ctx)
 	session.Set("user", nil)
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{},
@@ -364,7 +365,7 @@ func Signout(ctx *iris.Context) {
 }
 
 // UpdateInfo 更新用户信息
-func UpdateInfo(ctx *iris.Context) {
+func UpdateInfo(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userReqData model.User
 	if err := ctx.ReadJSON(&userReqData); err != nil {
@@ -372,8 +373,7 @@ func UpdateInfo(ctx *iris.Context) {
 		return
 	}
 
-	session     := ctx.Session();
-	user        := session.Get("user").(model.User)
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
 
 	user.Signature = strings.TrimSpace(userReqData.Signature)
 	if len(user.Signature) > 100 {
@@ -384,7 +384,7 @@ func UpdateInfo(ctx *iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{},
@@ -392,7 +392,7 @@ func UpdateInfo(ctx *iris.Context) {
 }
 
 // UpdatePassword 更新用户密码
-func UpdatePassword(ctx *iris.Context) {
+func UpdatePassword(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type userReqData struct {
 		Password  string  `json:"password" valid:"runelength(6|20)"`
@@ -410,8 +410,7 @@ func UpdatePassword(ctx *iris.Context) {
 		return
 	}
 
-	session  := ctx.Session();
-	user     := session.Get("user").(model.User)
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
 
 	if err := model.DB.First(&user, user.ID).Error; err != nil {
 		SendErrJSON("error", ctx)
@@ -424,7 +423,7 @@ func UpdatePassword(ctx *iris.Context) {
 			SendErrJSON("原密码不正确", ctx)
 			return
 		}
-		ctx.JSON(iris.StatusOK, iris.Map{
+		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
 			"data"  : iris.Map{},
@@ -436,12 +435,12 @@ func UpdatePassword(ctx *iris.Context) {
 }
 
 // PublicInfo 用户公开的信息
-func PublicInfo(ctx *iris.Context) {
+func PublicInfo(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userID int
 	var idErr error
 
-	if userID, idErr = ctx.ParamInt("id"); idErr != nil {
+	if userID, idErr = ctx.Params().GetInt("id"); idErr != nil {
 		fmt.Println(idErr.Error())
 		SendErrJSON("无效的ID", ctx)
 		return
@@ -452,7 +451,7 @@ func PublicInfo(ctx *iris.Context) {
 		SendErrJSON("无效的ID", ctx)
 		return
 	}
-	ctx.JSON(iris.StatusOK, iris.Map{
+	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
@@ -462,32 +461,26 @@ func PublicInfo(ctx *iris.Context) {
 }
 
 // Info 返回用户信息
-func Info(ctx *iris.Context) {
-	SendErrJSON := common.SendErrJSON
-	session     := ctx.Session();
-	user, ok    := session.Get("user").(model.User)
-	if ok {
-		session.Set("user", user)
-		ctx.JSON(iris.StatusOK, iris.Map{
-			"errNo" : model.ErrorCode.SUCCESS,
-			"msg"   : "success",
-			"data"  : iris.Map{
-				"user": user,
-			},
-		})	
-	} else {
-		SendErrJSON("用户未登录", model.ErrorCode.LoginTimeout, ctx)	
-	}
+func Info(ctx iris.Context) {
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"user": user,
+		},
+	})
 }
 
-func topN(n int, ctx *iris.Context) {
+func topN(n int, ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var users []model.User
 	if err := model.DB.Order("score DESC").Limit(n).Find(&users).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 	} else {	
-		ctx.JSON(iris.StatusOK, iris.Map{
+		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
 			"data"  : iris.Map{
@@ -498,11 +491,11 @@ func topN(n int, ctx *iris.Context) {
 }
 
 // Top10 返回积分排名前10的用户
-func Top10(ctx *iris.Context) {
+func Top10(ctx iris.Context) {
 	topN(10, ctx)
 }
 
 // Top100 返回积分排名前100的用户
-func Top100(ctx *iris.Context) {
+func Top100(ctx iris.Context) {
 	topN(100, ctx)
 }
