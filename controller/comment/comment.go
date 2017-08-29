@@ -78,16 +78,15 @@ func Save(isEdit bool, ctx iris.Context) {
 			return	
 		}
 
-		if err := model.DB.Model(&user).Updates(map[string]interface{} {
-					"comment_count" : user.CommentCount + 1, 
-					"score"         : user.Score + config.UserConfig.CreateCommentScore,
-				}).Error; err != nil {
+		if err := model.DB.Model(&user).Update("comment_count", user.CommentCount + 1).Error; err != nil {
 			SendErrJSON("error", ctx)
 			return
 		}
 		sessmanager.Sess.Start(ctx).Set("user", user)
 
+		var author model.User
 		if comment.SourceName == model.CommentSourceArticle {
+			author.ID = article.UserID
 			article.CommentCount++
 			article.LastUserID = user.ID
 			if err := model.DB.Save(&article).Error; err != nil {
@@ -95,6 +94,7 @@ func Save(isEdit bool, ctx iris.Context) {
 				return
 			}
 		} else if comment.SourceName == model.CommentSourceVote {
+			author.ID = vote.UserID
 			vote.CommentCount++
 			vote.LastUserID = user.ID
 			if err := model.DB.Save(&vote).Error; err != nil {
@@ -102,6 +102,17 @@ func Save(isEdit bool, ctx iris.Context) {
 				return
 			}
 		}
+
+		if err := model.DB.First(&author, author.ID).Error; err != nil {
+			SendErrJSON("error", ctx)
+			return	
+		}
+		authorScore := author.Score + config.UserConfig.CreateCommentScore
+		if err := model.DB.Model(&author).Update("score", authorScore).Error; err != nil {
+			SendErrJSON("error", ctx)
+			return
+		}
+	
 	} else {
 		if err := model.DB.First(&updatedComment, comment.ID).Error; err != nil {
 			SendErrJSON("无效的评论id", ctx)
