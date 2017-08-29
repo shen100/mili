@@ -2,6 +2,7 @@ package config
 
 type userConfig struct {
 	CreateArticleScore uint
+	CreateCommentScore uint
 	MaxNameLen         uint
 	MinNameLen         uint
 	MaxPassLen         uint
@@ -13,6 +14,7 @@ var UserConfig userConfig
 
 func init() {
 	UserConfig.CreateArticleScore = 5	
+	UserConfig.CreateCommentScore = 2
 	UserConfig.MaxNameLen = 20	
 	UserConfig.MinNameLen = 4	
 	UserConfig.MaxPassLen = 6	

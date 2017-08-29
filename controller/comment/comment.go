@@ -77,6 +77,16 @@ func Save(isEdit bool, ctx iris.Context) {
 			SendErrJSON("error", ctx)
 			return	
 		}
+
+		if err := model.DB.Model(&user).Updates(map[string]interface{} {
+					"comment_count" : user.CommentCount + 1, 
+					"score"         : user.Score + config.UserConfig.CreateCommentScore,
+				}).Error; err != nil {
+			SendErrJSON("error", ctx)
+			return
+		}
+		sessmanager.Sess.Start(ctx).Set("user", user)
+
 		if comment.SourceName == model.CommentSourceArticle {
 			article.CommentCount++
 			article.LastUserID = user.ID

@@ -35,9 +35,10 @@ module.exports = {
         })
       }
     },
-    vendor: ['axios']
+    vendor: ['axios', 'iview']
   },
   plugins: [
+    { src: '~plugins/iview.js', ssr: true },
     { src: '~plugins/ga.js', ssr: false }
   ]
 }

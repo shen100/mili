@@ -70,5 +70,9 @@ func main() {
 	})
 
 	addr := iris.Addr(":" + strconv.Itoa(config.ServerConfig.Port))
-	app.Run(addr)
+	if config.ServerConfig.Env == model.DevelopmentMode {
+		app.Run(addr)
+	} else {
+		app.Run(addr, iris.WithoutVersionChecker)
+	}
 }

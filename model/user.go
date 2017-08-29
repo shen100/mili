@@ -20,6 +20,7 @@ type User struct {
     Phone          string             `json:"phone"`
     Score          uint               `json:"score"`
     ArticleCount   uint               `json:"articleCount"`
+    CommentCount   uint               `json:"commentCount"`
     Collects       []Collect          `json:"collects"`
     CollectCount   uint               `json:"collectCount"`
     Signature      string             `json:"signature"`
@@ -63,6 +64,7 @@ func (user User) PublicInfo() User {
         Name           : user.Name,
         Score          : user.Score,
         ArticleCount   : user.ArticleCount,
+        CommentCount   : user.CommentCount,
         CollectCount   : user.CollectCount,
         Signature      : user.Signature,
         AvatarURL      : user.AvatarURL,
