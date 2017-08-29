@@ -33,16 +33,12 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import iview from 'iview'
     import request from '~/net/request'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
     import dateTool from '~/utils/date'
     import VoteStatus from '~/constant/VoteStatus'
-
-    Vue.use(iview)
 
     export default {
         data () {

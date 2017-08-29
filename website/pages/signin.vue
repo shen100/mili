@@ -24,12 +24,8 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import iview from 'iview'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
-
-    Vue.use(iview)
 
     export default {
         data () {

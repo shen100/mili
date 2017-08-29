@@ -38,7 +38,7 @@
                     <div class="message-mail-right">
                         <p class="signup-reminder-text">我们发送了一封验证邮件到<span class="signup-resend">{{formCustom.email}}</span></p>
                         <p class="signup-reminder-text">请到您的邮箱收信，并点击其中的链接验证您的邮箱</p>
-                        <a :href="`http://mail.${formCustom.email.split('@')[formCustom.email.split('@').length - 1]}`"><i-button type="primary">去邮箱验证</i-button></a>
+                        <a :href="`http://mail.${formCustom.email.split('@')[formCustom.email.split('@').length - 1]}`" target="_blank"><i-button type="primary">去邮箱验证</i-button></a>
                         <p class="signup-reminder-text signup-text-bottom">收不到邮件？</p>
                         <p class="signup-reminder-small">请检查您的垃圾邮箱或广告箱，邮件有可能被认为垃圾或广告邮件</p>
                         <p class="signup-reminder-small signup-resend click-mouse">重新发送</p>
@@ -51,15 +51,11 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import iview from 'iview'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
-
-    Vue.use(iview)
 
     export default {
         data () {

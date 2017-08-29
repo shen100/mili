@@ -55,16 +55,12 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import iview from 'iview'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import editor from '~/components/article/editor'
     import request from '~/net/request'
     import dataTool from '~/utils/date'
     import ErrorCode from '~/constant/ErrorCode'
-
-    Vue.use(iview)
 
     export default {
         data () {

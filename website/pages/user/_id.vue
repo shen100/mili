@@ -50,14 +50,10 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import iview from 'iview'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
-
-    Vue.use(iview)
 
     export default {
         data () {

@@ -29,14 +29,10 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import iview from 'iview'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
-
-    Vue.use(iview)
 
     let id = ''
     let key = ''

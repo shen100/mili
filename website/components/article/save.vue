@@ -54,11 +54,7 @@
 
 <script>
     import request from '~/net/request'
-    import vue from 'vue'
-    import iview from 'iview'
     import editor from '~/components/article/editor'
-
-    vue.use(iview)
 
     export default {
         props: [

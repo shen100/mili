@@ -32,12 +32,8 @@
 </template>
 
 <script>
-    import vue from 'vue'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
-    import iview from 'iview'
-
-    vue.use(iview)
 
     export default {
         data () {

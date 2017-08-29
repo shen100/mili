@@ -19,14 +19,10 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import iview from 'iview'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
     import request from '~/net/request'
-
-    Vue.use(iview)
 
     export default {
         data () {
