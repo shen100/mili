@@ -66,6 +66,11 @@ const api = {
         method: 'GET',
         desc: '获取积分排名前10的用户'
     },
+    getTop100: {
+        url: url + '/user/score/top100',
+        method: 'GET',
+        desc: '获取积分排名前100的用户'
+    },
     getUserArticles: {
         url: url + '/articles/user/:userID',
         method: 'GET',
