@@ -272,6 +272,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .golang-user-info-action, .sidebar-articles-title {
 	margin: 0 3px;
 	color: #778087;
+    line-height: 22px;
 }
 
 .golang-user-info-action:hover {
@@ -367,10 +368,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .CodeMirror-line  {
-    background: #fff!important;
+    background: none!important;
     padding: 0!important;
     border-left: none!important;
     margin-bottom: 0!important;
+}
+
+.golang123-editor .CodeMirror-measure pre {
+    padding: 0!important;
 }
 
 .editor-preview {
