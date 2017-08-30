@@ -8,14 +8,15 @@
                     <li class="common-body-nav-sep"><span>/</span></li>
                     <li><span class="top100-label">Top 100 积分榜</span></li>
                 </ul>
+                <div class="rank-container">
+                    <Table
+                        class="rank-list"
+                        :rowClassName="rowClassName"
+                        :data="topList"
+                        :columns="columns"/>
+                </div>
             </div>
-            <div class="rank-container">
-                <Table
-                    class="rank-list"
-                    :rowClassName="rowClassName"
-                    :data="topList"
-                    :columns="columns"/>
-            </div>
+            <app-sidebar :score="score" :user="user" :userLoginVisible="true" :maxComment="maxComment" :pubTopic="true" :maxBrowse="maxBrowse"/>
         </div>
         <app-footer />
     </div>
@@ -24,7 +25,7 @@
 <script>
     import request from '~/net/request'
     import Header from '~/components/Header'
-    import ErrorCode from '~/constant/ErrorCode'
+    import Sidebar from '~/components/Sidebar'
     import Footer from '~/components/Footer'
 
     export default {
@@ -73,20 +74,36 @@
             }
         },
         asyncData (context) {
-            return request.getTop100({
-                client: context.req
-            }).then(res => {
-                if (res.errNo === ErrorCode.SUCCESS) {
-                    let topList = res.data.users || []
-                    topList.map((item, index) => {
-                        item.index = index + 1
-                    })
-                    return {
-                        user: context.user,
-                        topList: topList
-                    }
-                } else {
-                    context.error({ statusCode: 404, message: 'Page not found' })
+            return Promise.all([
+                request.getTop10({
+                    client: context.req
+                }),
+                request.getMaxComment({
+                    client: context.req
+                }),
+                request.getMaxBrowse({
+                    client: context.req
+                }),
+                request.getTop100({
+                    client: context.req
+                })
+            ]).then(data => {
+                let user = context.user
+                let score = data[0].data.users
+                let maxComment = data[1].data.articles || []
+                let maxBrowse = data[2].data.articles || []
+                let topList = data[3].data.users || []
+
+                topList.map((item, index) => {
+                    item.index = index + 1
+                })
+
+                return {
+                    score: score,
+                    user: user,
+                    maxComment: maxComment,
+                    maxBrowse: maxBrowse,
+                    topList: topList
                 }
             }).catch(err => {
                 console.log(err)
@@ -106,7 +123,8 @@
         },
         components: {
             'app-header': Header,
-            'app-footer': Footer
+            'app-footer': Footer,
+            'app-sidebar': Sidebar
         }
     }
 </script>
