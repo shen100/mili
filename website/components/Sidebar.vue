@@ -33,7 +33,7 @@
             </ul>
         </div>
         <div v-if="score" class="golang-cell">
-			<div class="title">积分榜<span>TOP 100>></span></div>
+			<div class="title">积分榜<a class="top100-link" href="/rank">TOP 100>></a></div>
 			<ul>
 				<li v-for="item in score" class="golang-cell-item">
 					<span class="golang-score-item">{{item.score}}</span>

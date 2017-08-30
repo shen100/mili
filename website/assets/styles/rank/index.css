@@ -22,6 +22,10 @@ body {
     background-color: #fff;
 }
 
+.top100-label {
+    color: #999;
+}
+
 .rank-line-active td {
     background-color: #f9f9f9;
 }
@@ -46,4 +50,8 @@ body {
     width: 30px;
     height: 30px;
     margin-right: 5px;
+}
+
+th .ivu-table-cell {
+    font-weight: bold;
 }

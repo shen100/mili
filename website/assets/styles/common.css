@@ -470,6 +470,15 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     font-weight: bold;
 }
 
+.top100-link {
+    color: #08c;
+    padding-left: 8px;
+}
+
+.top100-link:hover {
+    color: #08c;
+}
+
 .golang-common-link {
 	color: gray;
 }

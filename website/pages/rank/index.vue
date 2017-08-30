@@ -6,7 +6,7 @@
                 <ul class="common-body-nav">
                     <li><a href="/"><span>主页</span></a></li>
                     <li class="common-body-nav-sep"><span>/</span></li>
-                    <li><span class="publish-label">注册</span></li>
+                    <li><span class="top100-label">Top 100 积分榜</span></li>
                 </ul>
             </div>
             <div class="rank-container">
@@ -62,12 +62,12 @@
                         key: 'score'
                     },
                     {
-                        title: '文章数',
+                        title: '主题数',
                         key: 'articleCount'
                     },
                     {
-                        title: '关注数',
-                        key: 'collectCount'
+                        title: '评论数',
+                        key: 'commentCount'
                     }
                 ]
             }
