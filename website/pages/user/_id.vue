@@ -17,9 +17,9 @@
                         暂无个人消息
                     </p>
                     <a class="mine-info-btn">
-                        <Button type="primary" size="large">编辑个人资料</Button>  
+                        <Button type="primary" size="large">编辑个人资料</Button>
                     </a>
-                </div>    
+                </div>
             </div>
             <div class="golang-mine-content">
                 <div class="mine-content-left">
@@ -56,14 +56,15 @@
     import Footer from '~/components/Footer'
 
     export default {
+        name: 'user',
         data () {
             return {
                 activeMenu: 'index'
             }
         },
         validate ({ params }) {
-            const id = !!params.id
-            return id
+            const hasId = !!params.id
+            return hasId
         },
         asyncData (context) {
             return request.getPublicUser({
@@ -73,9 +74,10 @@
                 }
             }).then(res => {
                 if (res.errNo === ErrorCode.SUCCESS) {
+                    let currentUser = res.data.user
                     return {
                         user: context.user,
-                        currentUser: res.data.user
+                        currentUser: currentUser
                     }
                 } else {
                     context.error({ statusCode: 404, message: 'Page not found' })

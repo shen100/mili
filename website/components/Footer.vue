@@ -22,7 +22,7 @@
         <div class="golang-footer-copyright">
             <span>Copyright&nbsp;©&nbsp;2017&nbsp;-&nbsp;至今&nbsp;<a href="/">golang中文社区</a>&nbsp;<a href="/">golang123.com</a>&nbsp;版权所有</span>
             <span>&nbsp;|&nbsp;</span>
-            <span>京ICP证xxxxxx号</span>
+            <span>京ICP备12045181号-2</span>
         </div>
     </div>
 </template>
