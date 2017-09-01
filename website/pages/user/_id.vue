@@ -13,10 +13,15 @@
                         </div>
                     </div>
                     <p class="mine-info-line mine-info-name">{{currentUser.name}}</p>
-                    <p class="mine-info-line mine-info-desc">
-                        暂无个人消息
+                    <p class="mine-info-line mine-info-item">
+                        <span class="mine-info-label">性别</span>
+                        <span class="mine-info-value">男</span>
                     </p>
-                    <a class="mine-info-btn">
+                    <p class="mine-info-line mine-info-item">
+                        <span class="mine-info-label">邮箱</span>
+                        <span class="mine-info-value">{{currentUser.email}}</span>
+                    </p>
+                    <a class="mine-info-btn" v-if="user && currentUser.id === user.id" href="/user/edit">
                         <Button type="primary" size="large">编辑个人资料</Button>
                     </a>
                 </div>
@@ -97,8 +102,8 @@
         },
         mounted () {
             let route = this.$route.path.split('/')
+            console.log(this.currentUser)
             if (route[3]) {
-                console.log(route[3])
                 this.activeMenu = route[3]
             }
         },
