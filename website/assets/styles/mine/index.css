@@ -15,7 +15,13 @@ body {
 
 .mine-info-container {
     position: relative;
-    height: 100px;
+    height: 120px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.mine-edit-container {
+    position: relative;
     padding: 10px;
     background-color: #fff;
 }
@@ -227,4 +233,20 @@ body {
     font-size: 14px;
     color: #8590a6;
     text-align: center;
+}
+
+.mine-info-item {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.mine-info-label {
+    width: 100px;
+    display: inline-block;
+}
+
+.mine-edit-form {
+    width: 800px;
+    margin-top: 20px;
+    margin-left: 200px;
 }
