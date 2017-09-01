@@ -176,6 +176,13 @@
                 })
                 this.simplemde.value(this.value)
             })
+        },
+        watch: {
+            value: function (newVal, oldVal) {
+                if (newVal !== oldVal && newVal === '') {
+                    this.simplemde.value('')
+                }
+            }
         }
     }
 </script>

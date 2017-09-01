@@ -8,7 +8,6 @@ import (
 	"unicode/utf8"
 	"github.com/kataras/iris"
 	"github.com/microcosm-cc/bluemonday"
-    "github.com/russross/blackfriday"
 	"golang123/config"
 	"golang123/model"
 	"golang123/sessmanager"
@@ -356,7 +355,7 @@ func save(isEdit bool, ctx iris.Context) {
 		saveErr = model.DB.Create(&article).Error
 		if saveErr == nil {
 			// 发表文章后，用户的积分、文章数会增加，如果保存失败了，不作处理
-			if userErr := model.DB.Save(&user).Error; userErr != nil {
+			if userErr := model.DB.Model(&user).Update("score", user.Score).Error; userErr != nil {
 				fmt.Println(userErr.Error())
 			}
 		}
@@ -435,6 +434,7 @@ func Info(ctx iris.Context) {
 			SendErrJSON("error", ctx)
 			return
 		}
+		article.Comments[i].Content = utils.MarkdownToHTML(article.Comments[i].Content)
 		parentID := article.Comments[i].ParentID
 		var parents []model.Comment
 		for parentID != 0 {
@@ -455,29 +455,7 @@ func Info(ctx iris.Context) {
 	}
 
 	if ctx.FormValue("f") != "md" {
-		myHTMLFlags := 0 |
-			blackfriday.HTML_USE_XHTML |
-			blackfriday.HTML_USE_SMARTYPANTS |
-			blackfriday.HTML_SMARTYPANTS_FRACTIONS |
-			blackfriday.HTML_SMARTYPANTS_DASHES |
-			blackfriday.HTML_SMARTYPANTS_LATEX_DASHES
-
-		myExtensions := 0 |
-			blackfriday.EXTENSION_NO_INTRA_EMPHASIS |
-			blackfriday.EXTENSION_TABLES |
-			blackfriday.EXTENSION_FENCED_CODE |
-			blackfriday.EXTENSION_AUTOLINK |
-			blackfriday.EXTENSION_STRIKETHROUGH |
-			blackfriday.EXTENSION_SPACE_HEADERS |
-			blackfriday.EXTENSION_HEADER_IDS |
-			blackfriday.EXTENSION_BACKSLASH_LINE_BREAK |
-			blackfriday.EXTENSION_DEFINITION_LISTS | 
-			blackfriday.EXTENSION_HARD_LINE_BREAK
-
-		renderer := blackfriday.HtmlRenderer(myHTMLFlags, "", "")
-		unsafe := blackfriday.MarkdownOptions([]byte(article.Content), renderer, blackfriday.Options{
-			Extensions: myExtensions})
-		article.Content = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
+		article.Content = utils.MarkdownToHTML(article.Content)
 	}
 
 	totalDur := fmt.Sprintf("%f", time.Now().Sub(reqStartTime).Seconds())

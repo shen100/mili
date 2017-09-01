@@ -54,7 +54,7 @@
 
 <script>
     import request from '~/net/request'
-    import editor from '~/components/article/editor'
+    import Editor from '~/components/Editor'
 
     export default {
         props: [
@@ -122,7 +122,7 @@
             }
         },
         components: {
-            'md-editor': editor
+            'md-editor': Editor
         }
     }
 </script>

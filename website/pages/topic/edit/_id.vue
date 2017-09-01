@@ -1,8 +1,8 @@
 <template>
     <div>
-        <go-header />
+        <app-header :user="user" />
         <article-save :categories="categories" :article="article" :recentArticles="recentArticles" :hasRecentArticles="hasRecentArticles" :id="id"></article-save>
-        <go-footer></go-footer>
+        <app-footer></app-footer>
     </div>
 </template>
 
@@ -57,6 +57,7 @@
                     return
                 }
                 return {
+                    user: context.user,
                     categories: categories,
                     article: article,
                     recentArticles: recentArticles,
@@ -80,8 +81,8 @@
         },
         middleware: 'userRequired',
         components: {
-            'go-header': Header,
-            'go-footer': Footer,
+            'app-header': Header,
+            'app-footer': Footer,
             'article-save': ArticleSave
         }
     }

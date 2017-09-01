@@ -11,6 +11,7 @@ import (
 	"github.com/kataras/iris"
 	"golang123/config"
 	"golang123/model"
+	"golang123/utils"
 	"golang123/sessmanager"
 	"golang123/controller/common"
 )
@@ -319,6 +320,7 @@ func Info(ctx iris.Context) {
 			SendErrJSON("error", ctx)
 			return
 		}
+		vote.Comments[i].Content = utils.MarkdownToHTML(vote.Comments[i].Content)
 		parentID := vote.Comments[i].ParentID
 		var parents []model.Comment
 		for parentID != 0 {
@@ -337,6 +339,8 @@ func Info(ctx iris.Context) {
 		}
 		vote.Comments[i].Parents = parents
 	}
+
+	vote.Content = utils.MarkdownToHTML(vote.Content)
 
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,

@@ -56,8 +56,8 @@
                             </div>
                         </template>
                         <p class="not-signin" v-if="!article.commentCount && user">暂时还没有人回复过这个话题</p>
-                        <p class="not-signin" v-if="!article.commentCount && !user">暂时还没有人回复过这个话题,&nbsp;要回复话题, 请先&nbsp;<a href="/signin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
-                        <p class="not-signin not-signin-border" v-if="article.commentCount && !user">要回复话题, 请先&nbsp;<a href="/signin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
+                        <p class="not-signin" v-if="!article.commentCount && !user">暂时还没有人回复过这个话题,&nbsp;要回复话题, 请先&nbsp;<a @click="onSignin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
+                        <p class="not-signin not-signin-border" v-if="article.commentCount && !user">要回复话题, 请先&nbsp;<a @click="onSignin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
                     </div>
                 </div>
                 <div class="golang-cell comment-box" v-if="user">
@@ -68,7 +68,7 @@
                                 <md-editor :value="formData.content" @change="onContentChage" />
                             </Form-item>
                         </Form>
-                        <Button type="primary" @click="onSubmit">发表回复</Button>
+                        <Button type="primary" @click="onSubmitReply">发表回复</Button>
                     </div>
                 </div>
             </div>
@@ -83,7 +83,7 @@
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
-    import editor from '~/components/article/editor'
+    import Editor from '~/components/Editor'
     import request from '~/net/request'
     import dateTool from '~/utils/date'
 
@@ -179,6 +179,9 @@
         },
         middleware: 'userInfo',
         methods: {
+            onSignin () {
+                location.href = '/signin?ref=' + encodeURIComponent(location.href)
+            },
             onDelete () {
                 let self = this
                 this.$Modal.confirm({
@@ -211,7 +214,7 @@
             onContentChage (content) {
                 this.formData.content = content
             },
-            onSubmit () {
+            onSubmitReply () {
                 this.$refs['formData'].validate((valid) => {
                     if (!this.loading && valid) {
                         this.loading = true
@@ -256,7 +259,7 @@
             'app-header': Header,
             'app-footer': Footer,
             'app-sidebar': Sidebar,
-            'md-editor': editor
+            'md-editor': Editor
         }
     }
 </script>

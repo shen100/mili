@@ -3,7 +3,7 @@
         <template v-if="!user && userLoginVisible">
             <div class="golang-cell golang-user-info">
                 <p>golang中文社区</p>
-                <p>您可以<a class="golang-user-info-action" href="/signin">登录</a>或<a class="golang-user-info-action" href="/signup">注册</a></p>
+                <p>您可以<a class="golang-user-info-action" @click="onSignin">登录</a>或<a class="golang-user-info-action" href="/signup">注册</a></p>
             </div>
         </template>
         <div v-if="user && pubTopic" class="golang-user-publish">
@@ -89,7 +89,11 @@
             }
         },
         mounted () {
-            console.log(this.user)
+        },
+        methods: {
+            onSignin () {
+                location.href = '/signin?ref=' + encodeURIComponent(location.href)
+            }
         }
     }
 </script>

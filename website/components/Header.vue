@@ -24,10 +24,10 @@
                     <li><a href="https://github.com/shen100/golang123" target="_blank">golang123源码</a></li>
                     <li><a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a></li>
                     <template v-if="userData">
-                        <li @click="logout">退出</li>
+                        <li @click="onSignout">退出</li>
                     </template>
 					<template v-else>
-						<a href="/signin"><li>登录</li></a>
+						<a @click="onSignin"><li>登录</li></a>
                         <a href="/signup"><li>注册</li></a>
 					</template>
 				</ul>
@@ -50,7 +50,10 @@
             }
         },
         methods: {
-            logout () {
+            onSignin () {
+                location.href = '/signin?ref=' + encodeURIComponent(location.href)
+            },
+            onSignout () {
                 request
                     .logout()
                     .then(res => {

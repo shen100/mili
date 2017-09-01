@@ -57,7 +57,7 @@
 <script>
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
-    import editor from '~/components/article/editor'
+    import Editor from '~/components/Editor'
     import request from '~/net/request'
     import dataTool from '~/utils/date'
     import ErrorCode from '~/constant/ErrorCode'
@@ -168,7 +168,7 @@
         components: {
             'app-header': Header,
             'app-footer': Footer,
-            'md-editor': editor
+            'md-editor': Editor
         }
     }
 </script>
