@@ -190,7 +190,6 @@
                                 id: self.article.id
                             }
                         }).then(res => {
-                            console.log(res)
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 self.$Message.success('已删除!')
                                 setTimeout(function () {

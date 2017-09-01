@@ -24,6 +24,28 @@
                             <Button type="primary" class="vote-item" @click="onVoteSubmit(item.id)">支持<span class="vote-item-label">{{item.name}}</span><span class="vote-item-label">{{item.count}}</span></Button>
                         </span>
                     </div>
+                    <div class="vote-actions">
+                        <div class="vote-share">
+                            <div class="vote-share-btn">
+                                <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;"></Icon>
+                                <span>收藏</span>
+                            </div>
+                            <div class="vote-share-btn">
+                                <Icon type="android-share-alt" style="font-size: 16px"></Icon>
+                                <span>分享</span>
+                            </div>
+                            <template v-if="isAuthor">
+                                <div class="vote-share-btn">
+                                    <Icon type="edit" style="font-size: 16px"></Icon>
+                                    <a :href="'/topic/edit/' + vote.id"><span>编辑</span></a>
+                                </div>
+                                <div class="vote-share-btn">
+                                    <Icon type="android-delete" style="font-size: 17px;"></Icon>
+                                    <span @click="onDelete">删除</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
                 </div>
                 <div class="golang-cell comment-box">
                     <div class="title">{{vote.commentCount > 0 ? vote.commentCount : '暂无'}}回复</div>
@@ -111,7 +133,9 @@
                 let votesMaxBrowse = arr[1].data.votes
                 let votesMaxComment = arr[2].data.votes
                 let score = arr[3].data.users
+                let isAuthor = context.user && context.user.id === vote.user.id
                 return {
+                    isAuthor: isAuthor,
                     vote: vote,
                     user: context.user,
                     votesMaxBrowse: votesMaxBrowse,
@@ -126,6 +150,35 @@
         },
         middleware: 'userInfo',
         methods: {
+            onDelete () {
+                let self = this
+                this.$Modal.confirm({
+                    title: '删除投票',
+                    content: '确认删除这个投票?',
+                    onOk () {
+                        request.deleteVote({
+                            params: {
+                                id: self.vote.id
+                            }
+                        }).then(res => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                self.$Message.success('已删除!')
+                                setTimeout(function () {
+                                    location.href = '/vote'
+                                }, 500)
+                            } else {
+                                self.$Message.error(res.msg)
+                            }
+                        }).catch(err => {
+                            err = '内部错误'
+                            self.$Message.error(err)
+                        })
+                    },
+                    onCancel () {
+
+                    }
+                })
+            },
             onContentChage (content) {
                 this.formData.content = content
             },
@@ -194,7 +247,6 @@
             }
         },
         mounted () {
-            console.log('111', this.vote)
         },
         head () {
             return {

@@ -294,6 +294,13 @@ func Info(ctx iris.Context) {
 		return
 	}
 
+	if err := model.DB.Model(&vote).Related(&vote.User, "users").Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+	vote.User = vote.User.PublicInfo()
+
 	if err := model.DB.Model(&vote).Related(&vote.VoteItems, "vote_items").Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
@@ -340,6 +347,7 @@ func Info(ctx iris.Context) {
 
 // Delete 删除投票
 func Delete(ctx iris.Context) {
+	// 只删除投票本身，用户的投票记录保留
 	SendErrJSON := common.SendErrJSON
 	voteID, idErr := ctx.Params().GetInt("id")
 	if idErr != nil {
@@ -361,11 +369,6 @@ func Delete(ctx iris.Context) {
 		return
 	}
 	if err := tx.Exec("DELETE FROM vote_items WHERE vote_id = ?", vote.ID).Error; err != nil {
-		tx.Rollback()
-		SendErrJSON("error", ctx)
-		return	
-	}
-	if err := tx.Exec("DELETE FROM user_votes WHERE vote_id = ?", vote.ID).Error; err != nil {
 		tx.Rollback()
 		SendErrJSON("error", ctx)
 		return	

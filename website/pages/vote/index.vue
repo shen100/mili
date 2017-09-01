@@ -5,7 +5,7 @@
             <div class="golang-home-body-left">
                 <div class="home-categoties-box">
                     <a href="/vote" class="categoties-item" :class="{'categoties-select': !status}">全部</a>
-                    <a class="categoties-item" :href="'/vote?status=' + voteStatus.VOTE_UNDERWAY" :class="{'categoties-select': status == voteStatus.VOTE_UNDERWAY}">进行中</a>
+                    <a class="categoties-item" :href="'/vote?status=' + voteStatus.VOTE_UNDERWAY" :class="{'categoties-select': status == voteStatus.VOTE_UNDERWAY}">投票中</a>
                     <a class="categoties-item" :href="'/vote?status=' + voteStatus.VOTE_OVER" :class="{'categoties-select': status == voteStatus.VOTE_OVER}">已结束</a>
                 </div>
                 <div class="home-articles-box">

@@ -67,10 +67,12 @@ function send (key, options) {
         var startTime = new Date().getTime()
         axios(axiosConfig)
             .then(function (response) {
-                console.log({
-                    url: url,
-                    time: (new Date().getTime() - startTime) + 'ms'
-                })
+                if (typeof window === 'undefined') {
+                    console.log({
+                        url: url,
+                        time: (new Date().getTime() - startTime) + 'ms'
+                    })
+                }
                 return resolve(response.data)
             })
             .catch(function (error) {

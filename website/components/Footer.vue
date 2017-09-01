@@ -7,20 +7,20 @@
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a href="/vote">投票</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-            <a>帮助中心</a>
+            <!--<a>帮助中心</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a>服务条款</a>
-            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span> -->
             <a href="/links">友情链接</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-            <a>联系我们</a>
-            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+            <!-- <a>联系我们</a>
+            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span> -->
             <a href="/timeline">成长历史</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a href="/about">关于我们</a>
         </div>
         <div class="golang-footer-copyright">
-            <span>Copyright&nbsp;©&nbsp;2017&nbsp;-&nbsp;至今&nbsp;<a href="/">golang中文社区</a>&nbsp;<a href="/">golang123.com</a>&nbsp;版权所有</span>
+            <span>©&nbsp;2017&nbsp;<a href="/">golang中文社区</a>&nbsp;<a href="/">golang123.com</a>&nbsp;版权所有</span>
             <span>&nbsp;|&nbsp;</span>
             <span>京ICP备12045181号-2</span>
         </div>

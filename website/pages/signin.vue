@@ -26,6 +26,7 @@
 <script>
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
+    import url from 'url'
 
     export default {
         data () {
@@ -48,13 +49,21 @@
         },
         asyncData (context) {
             let user = context.user
-            let redirectURL = context.req.headers['referer'] || '/'
+            let redirectURL
+
+            let myURL = url.parse(context.req.url, true)
+            if (myURL.query && myURL.query.ref) {
+                redirectURL = decodeURIComponent(myURL.query.ref)
+            } else {
+                redirectURL = '/'
+            }
             if (user) {
                 context.redirect(redirectURL)
                 return
             }
             return {
                 user: user,
+                ref: myURL.query.ref,
                 redirectURL: redirectURL
             }
         },
@@ -81,7 +90,6 @@
                         }).then(res => {
                             this.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                this.$Message.success('登录成功!')
                                 window.location.href = this.redirectURL
                             } else {
                                 this.$Message.error(res.msg)

@@ -3,8 +3,8 @@ body, .golang-home-body-left {
 }
 
 .detail-title-box {
-    padding: 10px; 
-    background-color: #fff; 
+    padding: 10px;
+    background-color: #fff;
     border-radius: 3px 3px 0 0;
     border-bottom: 1px solid #e5e5e5;
 }
@@ -113,3 +113,39 @@ body, .golang-home-body-left {
 .vote-item-label {
     margin: 0 5px;
 }
+
+.vote-actions {
+    background: #fff;
+    padding-left: 26px;
+    padding-right: 26px;
+    height: 40px;
+    color: #808080;
+}
+
+.vote-actions .ivu-icon {
+    vertical-align: top;
+}
+
+.vote-actions span {
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 16px;
+    margin-left: 4px;
+}
+
+.vote-share {
+    float: right;
+}
+
+.vote-share-btn {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.vote-share-btn a {
+    color: #808080;
+}
+

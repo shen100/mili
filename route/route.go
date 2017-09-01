@@ -84,7 +84,7 @@ func Route(app *iris.Application) {
 		routes.Get("/votes/user/:userID",   vote.UserVoteList)
 		routes.Post("/vote/create",         auth.EditorRequired,
 											vote.Create)
-		routes.Post("/vote/delete",         auth.EditorRequired,
+		routes.Post("/vote/delete/:id",     auth.EditorRequired,
 											vote.Delete)
 		routes.Get("/vote/:id",             vote.Info)
 		routes.Post("/vote/item/create",    auth.EditorRequired,

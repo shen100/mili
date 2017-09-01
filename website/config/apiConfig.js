@@ -176,6 +176,11 @@ const api = {
         method: 'GET',
         desc: '回复最多的投票'
     },
+    deleteVote: {
+        url: url + '/vote/delete/:id',
+        method: 'POST',
+        desc: '删除投票'
+    },
     getTopList: {
         url: url + '/articles/top',
         method: 'GET',
