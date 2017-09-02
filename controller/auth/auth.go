@@ -40,7 +40,7 @@ func ActiveRequired(ctx iris.Context) {
 				msg = "账号已被冻结"
 			}
 		}
-		SendErrJSON(msg, ctx)
+		SendErrJSON(msg, model.ErrorCode.InActive, ctx)
 	}
 }
 

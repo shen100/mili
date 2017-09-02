@@ -5,7 +5,7 @@
             title="上传图片"
             @on-ok="ok"
             @on-cancel="cancel">
-            <Upload :on-success="onUploadSuccess" :name="'upFile'"
+            <Upload :on-success="onUploadCallback" :name="'upFile'"
                 :format="['jpg', 'jpeg', 'png', 'gif']"
                 :action="uploadURL">
                 <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
@@ -16,6 +16,7 @@
 
 <script>
     import ErrorCode from '~/constant/ErrorCode'
+    import UserStatus from '~/constant/UserStatus'
     import config from '~/config'
 
     export default {
@@ -23,6 +24,9 @@
             value: {
                 type: String,
                 required: true
+            },
+            user: {
+                type: Object
             }
         },
         data () {
@@ -38,20 +42,28 @@
         },
         methods: {
             ok () {
-                this.$Message.info('点击了确定')
             },
             cancel () {
-                this.$Message.info('点击了取消')
             },
             showUpload () {
+                if (this.user.status === UserStatus.STATUS_IN_ACTIVE) {
+                    this.$Message.error('账号未激活，不能上传图片')
+                    return
+                }
                 this.modalVisible = true
             },
-            onUploadSuccess (res, file) {
+            onUploadCallback (res, file) {
                 if (res) {
                     if (res.errNo === ErrorCode.SUCCESS) {
                         var url = 'https://' + this.host + res.data.url
                         this.simplemde.setImageURL(url)
                         this.SimpleMDE.drawImage(this.simplemde)
+                    } else if (res.errNo === ErrorCode.IN_ACTIVE) {
+                        this.modalVisible = false
+                        this.$Message.error('账号未激活，不能上传图片')
+                    } else if (res.errNo === ErrorCode.ERROR) {
+                        this.modalVisible = false
+                        this.$Message.error(res.msg)
                     } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
                         location.href = '/signin'
                     }

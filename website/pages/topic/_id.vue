@@ -80,6 +80,7 @@
 
 <script>
     import ErrorCode from '~/constant/ErrorCode'
+    import UserStatus from '~/constant/UserStatus'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
@@ -215,6 +216,10 @@
                 this.formData.content = content
             },
             onSubmitReply () {
+                if (this.user && this.user.status === UserStatus.STATUS_IN_ACTIVE) {
+                    this.$Message.error('账号未激活，不能回复话题')
+                    return
+                }
                 this.$refs['formData'].validate((valid) => {
                     if (!this.loading && valid) {
                         this.loading = true
@@ -235,6 +240,11 @@
                                         id: this.$route.params.id
                                     }
                                 })
+                            } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
+                                location.href = '/signin?ref=' + encodeURIComponent(location.href)
+                                return Promise.reject(new Error(''))
+                            } else if (res.errNo === ErrorCode.IN_ACTIVE) {
+                                return Promise.reject(new Error('账号未激活，不能回复话题'))
                             } else {
                                 return Promise.reject(new Error(res.msg))
                             }
@@ -244,7 +254,9 @@
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.message)
+                            if (err.message) {
+                                this.$Message.error(err.message)
+                            }
                         })
                     }
                 })

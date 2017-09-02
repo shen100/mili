@@ -1,7 +1,7 @@
 <template>
     <div>
         <app-header :user="user" />
-        <article-save :categories="categories" :article="article" :recentArticles="recentArticles" :hasRecentArticles="hasRecentArticles" :id="id"></article-save>
+        <article-save :categories="categories" :article="article" :recentArticles="recentArticles" :hasRecentArticles="hasRecentArticles" :id="id" :user="user"></article-save>
         <app-footer></app-footer>
     </div>
 </template>

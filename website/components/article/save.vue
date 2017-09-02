@@ -18,7 +18,7 @@
                             </Select>
                         </Form-item>
                         <Form-item class="topic-content" :label-width="0" prop="content">
-                            <md-editor :value="formValidate.content" @change="onContentChage"></md-editor>
+                            <md-editor :value="formValidate.content" :user="user" @change="onContentChage"></md-editor>
                         </Form-item>
                         <Form-item class="topic-submit" :label-width="0">
                             <Button size="large" v-if="isMounted" type="primary" @click="onSubmit()">{{id ? '保存话题' : '发布话题'}}</Button>
@@ -55,6 +55,8 @@
 <script>
     import request from '~/net/request'
     import Editor from '~/components/Editor'
+    import ErrorCode from '~/constant/ErrorCode'
+    import UserStatus from '~/constant/UserStatus'
 
     export default {
         props: [
@@ -62,7 +64,8 @@
             'article',
             'recentArticles',
             'hasRecentArticles',
-            'id'
+            'id',
+            'user'
         ],
         data () {
             return {
@@ -94,6 +97,14 @@
                 this.formValidate.content = content
             },
             onSubmit (name) {
+                if (this.user.status === UserStatus.STATUS_IN_ACTIVE) {
+                    if (this.id) {
+                        this.$Message.error('账号未激活，不能保存话题')
+                    } else {
+                        this.$Message.error('账号未激活，不能发布话题')
+                    }
+                    return
+                }
                 this.$refs['formValidate'].validate((valid) => {
                     if (valid) {
                         let self = this
@@ -110,15 +121,28 @@
                                 ]
                             }
                         }).then(res => {
-                            self.$Message.success('提交成功!')
-                            setTimeout(function () {
-                                location.href = '/topic/' + res.data.id
-                            }, 500)
+                            if (res.errNo === ErrorCode.ERROR) {
+                                self.$Message.error(res.msg)
+                            } else if (res.errNo === ErrorCode.IN_ACTIVE) {
+                                if (self.id) {
+                                    self.$Message.error('账号未激活，不能保存话题')
+                                } else {
+                                    self.$Message.error('账号未激活，不能发布话题')
+                                }
+                            } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
+                                location.href = '/signin?ref=' + encodeURIComponent(location.href)
+                            } else if (res.errNo === ErrorCode.SUCCESS) {
+                                self.$Message.success('提交成功!')
+                                setTimeout(function () {
+                                    location.href = '/topic/' + res.data.id
+                                }, 500)
+                            }
                         }).catch(err => {
                             self.$Message.error(err.msg)
                         })
                     }
                 })
+                return false
             }
         },
         components: {

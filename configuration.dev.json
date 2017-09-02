@@ -45,6 +45,8 @@
 		"MaxContentLen"       : 50000,        /*最大的内容长度*/
 		"MaxArticleCateCount" : 6,            /*文章最多的分类个数*/
 		"MaxCommentLen"       : 5000,         /*最大的评论长度*/
+		/*base64加密字符*/
+		"Base64Table"         : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+_",
 		"PassSalt"            : "salt",       /*用户密码加盐*/
 		"MailUser"            : "",           /*域名邮箱账号*/
 		"MailPass"            : "",           /*域名邮箱密码*/

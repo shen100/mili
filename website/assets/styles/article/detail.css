@@ -3,7 +3,7 @@ body, .golang-home-body-left {
 }
 
 .detail-title-box {
-	padding: 10px 10px 16px 26px;
+	padding: 10px 20px;
 	border-radius: 3px 3px 0 0;
 	border-bottom: 1px solid #e5e5e5;
 }
@@ -31,7 +31,7 @@ body, .golang-home-body-left {
 }
 
 .home-articles-box {
-	padding: 20px 26px 40px 26px;
+	padding: 20px 20px 40px 20px;
 	border-radius: 0 0 3px 3px;
 }
 
@@ -122,8 +122,8 @@ body, .golang-home-body-left {
 
 .article-actions {
     background: #fff;
-    padding-left: 26px;
-    padding-right: 26px;
+    padding-left: 20px;
+    padding-right: 20px;
     height: 40px;
     color: #808080;
 }

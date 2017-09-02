@@ -12,6 +12,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"golang123/model"
 	"golang123/config"
+	"golang123/utils"
 	"golang123/sessmanager"
 	"golang123/controller/common"
 	"golang123/controller/mail"
@@ -84,6 +85,30 @@ func verifyLink(cacheKey string, duration int64, ctx iris.Context) (model.User, 
 		return user, errors.New("无效的链接")
 	}
 	return user, nil	
+}
+
+// ActiveSendMail 发送激活账号的邮件
+func ActiveSendMail(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var user model.User
+	if err := ctx.ReadJSON(&user); err != nil {
+		SendErrJSON("参数无效", ctx)
+		return
+	}
+	if err := model.DB.Where("email = ?", user.Email).First(&user).Error; err != nil {
+		SendErrJSON("参数无效", ctx)
+		return
+	}
+	curTime   := time.Now().Unix()
+	go func() {
+		sendMail("/active", "账号激活", curTime, user, ctx)
+	}()
+
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{},
+	})
 }
 
 // VerifyActiveLink 验证激活账号的链接是否失效
@@ -265,6 +290,16 @@ func Signin(ctx iris.Context) {
 	}
 
 	if queryUser.CheckPassword(userData.Password) {
+		if queryUser.Status == model.UserStatusInActive {
+			ctx.JSON(iris.Map{
+				"errNo" : model.ErrorCode.InActive,
+				"msg"   : "账号未激活",
+				"data"  : iris.Map{
+					"email": utils.Base64Encode(queryUser.Email, config.ServerConfig.Base64Table),
+				},
+			})
+			return	
+		}
 		sessmanager.Sess.Start(ctx).Set("user", queryUser)
 		sessmanager.Sess.ShiftExpiration(ctx)
 		ctx.JSON(iris.Map{

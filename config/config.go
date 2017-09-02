@@ -76,6 +76,7 @@ type serverConfig struct {
 	MaxContentLen       int
 	MaxArticleCateCount int
 	MaxCommentLen       int
+	Base64Table         string
 	PassSalt            string
 	MailUser            string  //域名邮箱账号
 	MailPass            string  //域名邮箱密码
