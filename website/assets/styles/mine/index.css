@@ -22,7 +22,7 @@ body {
 
 .mine-edit-container {
     position: relative;
-    padding: 10px;
+    padding: 20px;
     background-color: #fff;
 }
 
@@ -159,12 +159,12 @@ body {
 }
 
 .articles-container {
-    padding: 0 10px 10px 10px;
+    padding: 0 20px 20px 20px;
 }
 
 .article-top {
     padding: 15px 0;
-    border-bottom: 1px solid #ccd8e1;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .article-top h1 {
@@ -201,7 +201,7 @@ body {
 
 .articles-item {
     padding: 15px 0;
-    border-top: 1px solid #ccd8e1;
+    border-top: 1px solid #e5e5e5;
 }
 
 .articles-item-no {
@@ -242,6 +242,7 @@ body {
 
 .mine-info-label {
     width: 100px;
+    font-weight: 700;
     display: inline-block;
 }
 
@@ -249,4 +250,94 @@ body {
     width: 800px;
     margin-top: 20px;
     margin-left: 200px;
+}
+
+.info-button {
+    display: inline-block;
+    padding: 0 16px;
+    font-size: 14px;
+    line-height: 32px;
+    color: #0f88eb;
+    border: 1px solid #0f88eb;
+    text-align: center;
+    cursor: pointer;
+    background: none;
+    border-radius: 3px;
+}
+
+.info-button:hover {
+    background-color: rgba(13,121,209,.06);
+}
+
+.mine-info-box {
+    margin-left: 200px;
+}
+
+.mine-info-edit-top {
+    font-size: 14px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 30px;
+}
+
+.mine-info-edit {
+    font-size: 14px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.mine-info-value {
+    display: inline-block;
+    min-width: 200px;
+}
+
+.mine-info-value .ivu-icon {
+    margin-right: 20px;
+}
+
+.mine-info-value:hover .edit-action {
+    display: inline;
+}
+
+.edit-action {
+    display: none;
+    margin-left: 10px;
+    color: #175199;
+    cursor: pointer;
+}
+
+.edit-action .ivu-icon {
+    margin-right: 5px;
+}
+
+.edit-item {
+    display: inline-block;
+    vertical-align: text-top;
+}
+
+.edit-item .ivu-radio-wrapper {
+    margin-right: 30px;
+}
+
+.radio-label {
+    font-size: 14px;
+}
+
+.button-box {
+    margin-top: 20px;
+}
+
+.button-seq {
+    margin-right: 20px;
+}
+
+.home-link-box {
+    float: right;
+    font-size: 14px;
+    color: #8590a6;
+}
+
+.home-link-box:hover {
+    color: #8590a6;
 }

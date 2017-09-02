@@ -12,24 +12,61 @@
                             <p>修改我的头像</p>
                         </div>
                     </div>
-                    <p class="mine-info-line mine-info-name">{{user.name}}</p>
-                    <Form class="mine-edit-form">
-                        <Form ref="formCustom" :model="formCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">
-                            <Form-item label="性别" prop="gender">
-                                <i-input size="large" type="text" v-model="formCustom.gender" class="signup-input"></i-input>
-                            </Form-item>
-                            <Form-item label="一句话介绍" prop="desc">
-                                <i-input size="large" type="textarea" v-model="formCustom.desc" class="signup-input"></i-input>
-                            </Form-item>
-                            <Form-item label="所在地" prop="home">
-                                <i-input size="large" type="text" v-model="formCustom.home" class="signup-input"></i-input>
-                            </Form-item>
-                            <Form-item label="个人简介" prop="info">
-                                <i-input size="large" type="textarea" v-model="formCustom.info" class="signup-input"></i-input>
-                            </Form-item>
-                            <i-button type="primary" size="large" class="signup-button" @click="handleSubmit('formCustom')">提交</i-button>
-                        </Form>
-                    </Form>
+                    <p class="mine-info-line mine-info-name">
+                        {{user.name}}
+                        <a class="home-link-box no-underline" :href="`/user/${user.id}`">返回我的首页&nbsp&nbsp<Icon type="chevron-right"></Icon></a>
+                    </p>
+                    <div class="mine-info-line mine-info-edit-top">
+                        <span class="mine-info-label">性别</span>
+                        <span class="mine-info-value" v-if="editIndex[0] === 0">未知<span class="edit-action" @click="editItem('gender', 0)"><Icon type="edit"></Icon>修改</span></span>
+                        <div class="edit-item" v-else>
+                            <RadioGroup v-model="formCustom.gender" size="large">
+                                <Radio label="1">
+                                    <span class="radio-label">男</span>
+                                </Radio>
+                                <Radio label="2">
+                                    <span class="radio-label">女</span>
+                                </Radio>
+                                <Row class="button-box">
+                                    <Button type="primary" class="button-seq">确定</Button>
+                                    <Button type="ghost" @click="close('gender', 0)">取消</Button>
+                                </Row>
+                            </RadioGroup>
+                        </div>
+                    </div>
+                    <div class="mine-info-line mine-info-edit">
+                        <span class="mine-info-label">一句话介绍</span>
+                        <span class="mine-info-value" v-if="editIndex[1] === 0">未知<span class="edit-action" @click="editItem('desc', 1)"><Icon type="edit"></Icon>修改</span></span>
+                        <div v-else class="edit-item">
+                        <Input v-model="formCustom.desc" style="width: 300px" type="textarea"></Input>
+                        <Row class="button-box">
+                            <Button type="primary" class="button-seq">确定</Button>
+                            <Button type="ghost" @click="close('desc', 1)">取消</Button>
+                        </Row>
+                        </div>
+                    </div>
+                    <div class="mine-info-line mine-info-edit">
+                        <span class="mine-info-label">所在地</span>
+                        <span class="mine-info-value" v-if="editIndex[2] === 0">未知<span class="edit-action" @click="editItem('home', 2)"><Icon type="edit"></Icon>修改</span></span>
+                        <div v-else class="edit-item">
+                            <Input v-model="formCustom.home" style="width: 300px" type="textarea"></Input>
+                            <Row class="button-box">
+                                <Button type="primary" class="button-seq">确定</Button>
+                                <Button type="ghost" @click="close('home', 2)">取消</Button>
+                            </Row>
+                        </div>
+                    </div>
+                    <div class="mine-info-line mine-info-edit">
+                        <span class="mine-info-label">个人简介</span>
+                        <span class="mine-info-value" v-if="editIndex[3] === 0">未知<span class="edit-action" @click="editItem('info', 3)"><Icon type="edit"></Icon>修改</span></span>
+                        <div v-else class="edit-item">
+                            <Input v-model="formCustom.info" style="width: 300px" type="textarea"></Input>
+                            <Row class="button-box">
+                                <Button type="primary" class="button-seq">确定</Button>
+                                <Button type="ghost" @click="close('info', 3)">取消</Button>
+                            </Row>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -44,23 +81,29 @@
     export default {
         data () {
             return {
+                editIndex: [0, 0, 0, 0],
                 formCustom: {
                     gender: '',
                     desc: '',
                     home: '',
                     info: ''
                 },
-                success: false,
-                ruleCustom: {
-                    gender: [
-                        { required: true, message: '请输入性别', trigger: 'blur' }
-                    ]
-                }
+                success: false
             }
         },
         asyncData (context) {
             return {
                 user: context.user
+            }
+        },
+        methods: {
+            editItem (name, index) {
+                this.editIndex[index] = 1
+                this.editIndex = Array.from(this.editIndex)
+            },
+            close (name, index) {
+                this.editIndex[index] = 0
+                this.editIndex = Array.from(this.editIndex)
             }
         },
         middleware: 'userRequired',

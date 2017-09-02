@@ -14,15 +14,13 @@
                     </div>
                     <p class="mine-info-line mine-info-name">{{currentUser.name}}</p>
                     <p class="mine-info-line mine-info-item">
-                        <span class="mine-info-label">性别</span>
-                        <span class="mine-info-value">男</span>
+                        <span class="mine-info-value"><Icon type="male"></Icon>男</span>
                     </p>
                     <p class="mine-info-line mine-info-item">
-                        <span class="mine-info-label">邮箱</span>
-                        <span class="mine-info-value">{{currentUser.email}}</span>
+                        <span class="mine-info-value">个性签名</span>
                     </p>
                     <a class="mine-info-btn" v-if="user && currentUser.id === user.id" href="/user/edit">
-                        <Button type="primary" size="large">编辑个人资料</Button>
+                        <button class="ivu-btn-large info-button">编辑个人资料</button>
                     </a>
                 </div>
             </div>
