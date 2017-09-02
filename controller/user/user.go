@@ -650,3 +650,59 @@ func AddSchool(ctx iris.Context) {
 		"data"  : school,
 	})
 }
+
+// DeleteCareer 删除职业经历
+func DeleteCareer(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var id int
+	var idErr error
+	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
+		SendErrJSON("无效的id", ctx)
+		return	
+	}
+	var career model.Career
+	if err := model.DB.First(&career, id).Error; err != nil {
+		SendErrJSON("无效的id.", ctx)
+		return
+	}
+
+	if err := model.DB.Delete(&career).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return	
+	}
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"id": career.ID,
+		},
+	})
+}
+
+// DeleteSchool 删除教育经历
+func DeleteSchool(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var id int
+	var idErr error
+	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
+		SendErrJSON("无效的id", ctx)
+		return	
+	}
+	var school model.School
+	if err := model.DB.First(&school, id).Error; err != nil {
+		SendErrJSON("无效的id.", ctx)
+		return
+	}
+
+	if err := model.DB.Delete(&school).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return	
+	}
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"id": school.ID,
+		},
+	})
+}
