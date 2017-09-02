@@ -91,6 +91,8 @@
                             this.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 window.location.href = this.redirectURL
+                            } else if (res.errNo === ErrorCode.IN_ACTIVE) {
+                                window.location.href = '/verify/mail?e=' + res.data.email
                             } else {
                                 this.$Message.error(res.msg)
                             }

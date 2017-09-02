@@ -17,9 +17,9 @@
                 <div>
                     <div class="message-mail-icon"><img src="~assets/images/mail.png" alt=""></div>
                     <div class="message-mail-right">
-                        <p class="signup-reminder-text">我们发送了一封验证邮件到<span class="signup-resend">{{user.email}}</span></p>
+                        <p class="signup-reminder-text">我们发送了一封验证邮件到<span class="signup-resend">{{email}}</span></p>
                         <p class="signup-reminder-text">请到您的邮箱收信，并点击其中的链接验证您的邮箱</p>
-                        <a :href="`http://mail.${user.email.split('@')[user.email.split('@').length - 1]}`" target="_blank"><i-button type="primary">去邮箱验证</i-button></a>
+                        <a :href="`http://mail.${email.split('@')[email.split('@').length - 1]}`" target="_blank"><i-button type="primary">去邮箱验证</i-button></a>
                         <p class="signup-reminder-text signup-text-bottom">收不到邮件？</p>
                         <p class="signup-reminder-small">请查看您的垃圾邮件和广告邮件，邮件有可能会被误认为是垃圾邮件或广告邮件</p>
                         <p class="signup-reminder-small signup-resend click-mouse">重新发送</p>
@@ -32,18 +32,42 @@
 </template>
 
 <script>
+    // import ErrorCode from '~/constant/ErrorCode'
     import Footer from '~/components/Footer'
+    // import request from '~/net/request'
+    // import base64 from '~/utils/base64'
 
     export default {
         data () {
-            return {}
-        },
-        asyncData (context) {
             return {
-                user: context.user
+                email: ''
             }
         },
-        middleware: 'userRequired',
+        asyncData (context) {
+            // const query = context.query || {}
+            // console.log(base64.decode(query.e))
+            // if (!query.e) {
+            //     return context.error({ message: 'Not Found', statusCode: 404 })
+            // }
+            // return request.sendmail({
+            //     client: context.req,
+            //     body: {
+            //         email: base64.decode(query.e)
+            //     }
+            // }).then(res => {
+            //     console.log(res)
+            //     if (res.errNo === ErrorCode.SUCCESS) {
+            //         return {
+            //             email: base64.decode(query.e)
+            //         }
+            //     } else {
+            //         return context.error({ message: 'Not Found', statusCode: 404 })
+            //     }
+            // }).catch(err => {
+            //     console.log(err)
+            //     context.error({ message: 'Not Found', statusCode: 404 })
+            // })
+        },
         head () {
             return {
                 title: '邮箱验证'

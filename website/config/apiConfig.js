@@ -205,6 +205,11 @@ const api = {
         url: url + '/user/info/public/:id',
         method: 'GET',
         desc: '获取其他用户信息'
+    },
+    sendmail: {
+        url: url + '/active/sendmail',
+        method: 'POST',
+        desc: '发送邮件'
     }
 }
 
