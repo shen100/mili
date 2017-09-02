@@ -92,7 +92,17 @@ func MarkdownToHTML(md string) string {
 }
 
 // Base64Encode Base64加密
-func Base64Encode(str string, base64Table string) string {
+func Base64Encode(s string, base64Table string) string {
     coder := base64.NewEncoding(base64Table)
-	return coder.EncodeToString([]byte(str))
+	return coder.EncodeToString([]byte(s))
+}
+
+// Base64Decode Base64解密
+func Base64Decode(s string, base64Table string) (string, error) {
+    coder := base64.NewEncoding(base64Table)
+    bytes, err := coder.DecodeString(s)
+    if err != nil {
+        return "", err
+    }
+    return string(bytes), err
 }

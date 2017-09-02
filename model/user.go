@@ -17,6 +17,9 @@ type User struct {
     Name           string             `json:"name"`
     Pass           string             `json:"-"`
     Email          string             `json:"email"`
+    Sex            uint               `json:"sex"`
+    Location       string             `json:"location"`
+    Introduce      string             `json:"Introduce"`
     Phone          string             `json:"phone"`
     Score          uint               `json:"score"`
     ArticleCount   uint               `json:"articleCount"`
@@ -63,6 +66,9 @@ func (user User) PublicInfo() User {
         CreatedAt      : user.CreatedAt,
         Name           : user.Name,
         Score          : user.Score,
+        Sex            : user.Sex,
+        Location       : user.Location,
+        Introduce      : user.Introduce,
         ArticleCount   : user.ArticleCount,
         CommentCount   : user.CommentCount,
         CollectCount   : user.CollectCount,
@@ -94,4 +100,12 @@ const (
 
     // UserStatusFrozen 已冻结
     UserStatusFrozen    = 3
+)
+
+const (
+    // UserSexMale 男
+    UserSexMale   = 0
+
+    // UserSexFemale 女
+    UserSexFemale = 1
 )

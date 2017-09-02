@@ -8,8 +8,10 @@ import (
 	"strings"
 	"math/rand"
 	"time"
+	"unicode/utf8"
 	"github.com/kataras/iris"
 	"github.com/asaskevich/govalidator"
+	"github.com/microcosm-cc/bluemonday"
 	"golang123/model"
 	"golang123/config"
 	"golang123/utils"
@@ -365,6 +367,7 @@ func Signup(ctx iris.Context) {
 	newUser.Pass      = newUser.EncryptPassword(userData.Password, newUser.Salt())
 	newUser.Role      = model.UserRoleNormal
 	newUser.Status    = model.UserStatusInActive
+	newUser.Sex       = model.UserSexMale
 	newUser.AvatarURL = "/images/avatar/" + strconv.Itoa(rand.Intn(2)) + ".png"
 
 	if err := model.DB.Create(&newUser).Error; err != nil {
@@ -508,6 +511,19 @@ func Info(ctx iris.Context) {
 	})
 }
 
+// InfoDetail 返回用户详情信息
+func InfoDetail(ctx iris.Context) {
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"user": user,
+		},
+	})
+}
+
 func topN(n int, ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var users []model.User
@@ -533,4 +549,104 @@ func Top10(ctx iris.Context) {
 // Top100 返回积分排名前100的用户
 func Top100(ctx iris.Context) {
 	topN(100, ctx)
+}
+
+// AddCareer 添加职业经历
+func AddCareer(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var career model.Career
+	if err := ctx.ReadJSON(&career); err != nil {
+		SendErrJSON("参数无效", ctx)
+		return
+	}
+
+	career.Company = strings.TrimSpace(career.Company)
+	career.Company = bluemonday.UGCPolicy().Sanitize(career.Company)
+	career.Title   = strings.TrimSpace(career.Title)
+	career.Title   = bluemonday.UGCPolicy().Sanitize(career.Title)
+
+	if career.Company == "" {
+		SendErrJSON("公司或组织名称不能为空", ctx)
+		return
+	}
+
+	if utf8.RuneCountInString(career.Company) > model.CareerMaxCompanyLen {
+		SendErrJSON("公司或组织名称不能超过" + fmt.Sprintf("%d", model.CareerMaxCompanyLen) + "个字符", ctx)
+		return	
+	}
+
+	if career.Title == "" {
+		SendErrJSON("职位不能为空", ctx)
+		return
+	}
+
+	if utf8.RuneCountInString(career.Title) > model.CareerMaxTitleLen {
+		SendErrJSON("职位不能超过" + fmt.Sprintf("%d", model.CareerMaxTitleLen) + "个字符", ctx)
+		return	
+	}
+
+	session := sessmanager.Sess.Start(ctx)
+	user    := session.Get("user").(model.User)
+	career.UserID = user.ID
+
+	if err := model.DB.Create(&career).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : career,
+	})
+}
+
+// AddSchool 添加教育经历
+func AddSchool(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var school model.School
+	if err := ctx.ReadJSON(&school); err != nil {
+		SendErrJSON("参数无效", ctx)
+		return
+	}
+
+	school.Name       = strings.TrimSpace(school.Name)
+	school.Name       = bluemonday.UGCPolicy().Sanitize(school.Name)
+	school.Speciality = strings.TrimSpace(school.Speciality)
+	school.Speciality = bluemonday.UGCPolicy().Sanitize(school.Speciality)
+
+	if school.Name == "" {
+		SendErrJSON("学校或教育机构名不能为空", ctx)
+		return
+	}
+
+	if utf8.RuneCountInString(school.Name) > model.SchoolMaxNameLen {
+		SendErrJSON("学校或教育机构名不能超过" + fmt.Sprintf("%d", model.SchoolMaxNameLen) + "个字符", ctx)
+		return	
+	}
+
+	if school.Speciality == "" {
+		SendErrJSON("专业方向不能为空", ctx)
+		return
+	}
+
+	if utf8.RuneCountInString(school.Speciality) > model.SchoolMaxSpecialityLen {
+		SendErrJSON("专业方向不能超过" + fmt.Sprintf("%d", model.SchoolMaxSpecialityLen) + "个字符", ctx)
+		return	
+	}
+
+	session := sessmanager.Sess.Start(ctx)
+	user    := session.Get("user").(model.User)
+	school.UserID = user.ID
+
+	if err := model.DB.Create(&school).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : school,
+	})
 }

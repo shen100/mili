@@ -34,12 +34,18 @@ func Route(app *iris.Application) {
 		routes.Get("/user/info/public/:id",  user.PublicInfo)
 		routes.Get("/user/info",             auth.SigninRequired,  
 											 user.Info)
+		routes.Get("/user/info/detail",      auth.SigninRequired,  
+											 user.InfoDetail)
 		routes.Post("/user/update",          auth.ActiveRequired,       
 										     user.UpdateInfo)
 		routes.Post("/user/password/update", auth.ActiveRequired,       
 											 user.UpdatePassword)
 		routes.Get("/user/score/top10",      user.Top10)
 		routes.Get("/user/score/top100",     user.Top100)
+		routes.Post("/user/career/add",      auth.ActiveRequired,
+											 user.AddCareer)
+		routes.Post("/user/school/add",      auth.ActiveRequired,
+											 user.AddSchool)
 
 		routes.Post("/upload",               auth.ActiveRequired,          
 											 common.Upload)
