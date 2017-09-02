@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"reflect"
     "errors"
-    "encoding/base64"
     "github.com/russross/blackfriday"
 )
 
@@ -89,20 +88,4 @@ func MarkdownToHTML(md string) string {
 	bytes    := blackfriday.MarkdownOptions([]byte(md), renderer, blackfriday.Options{
         Extensions: myExtensions})
     return string(bytes)
-}
-
-// Base64Encode Base64加密
-func Base64Encode(s string, base64Table string) string {
-    coder := base64.NewEncoding(base64Table)
-	return coder.EncodeToString([]byte(s))
-}
-
-// Base64Decode Base64解密
-func Base64Decode(s string, base64Table string) (string, error) {
-    coder := base64.NewEncoding(base64Table)
-    bytes, err := coder.DecodeString(s)
-    if err != nil {
-        return "", err
-    }
-    return string(bytes), err
 }

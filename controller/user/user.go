@@ -2,6 +2,7 @@ package user
 
 import (
 	"crypto/md5"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"strconv"
@@ -14,7 +15,6 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"golang123/model"
 	"golang123/config"
-	"golang123/utils"
 	"golang123/sessmanager"
 	"golang123/controller/common"
 	"golang123/controller/mail"
@@ -97,6 +97,15 @@ func ActiveSendMail(ctx iris.Context) {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
+	
+	var decodeBytes []byte
+	var decodedErr error
+	if decodeBytes, decodedErr = base64.StdEncoding.DecodeString(user.Email); decodedErr != nil {
+		SendErrJSON("参数无效", ctx)
+		return	
+	}
+	user.Email = string(decodeBytes)
+
 	if err := model.DB.Where("email = ?", user.Email).First(&user).Error; err != nil {
 		SendErrJSON("参数无效", ctx)
 		return
@@ -109,7 +118,9 @@ func ActiveSendMail(ctx iris.Context) {
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : iris.Map{},
+		"data"  : iris.Map{
+			"email": user.Email,
+		},
 	})
 }
 
@@ -293,11 +304,12 @@ func Signin(ctx iris.Context) {
 
 	if queryUser.CheckPassword(userData.Password) {
 		if queryUser.Status == model.UserStatusInActive {
+			encodedEmail := base64.StdEncoding.EncodeToString([]byte(queryUser.Email))
 			ctx.JSON(iris.Map{
 				"errNo" : model.ErrorCode.InActive,
 				"msg"   : "账号未激活",
 				"data"  : iris.Map{
-					"email": utils.Base64Encode(queryUser.Email, config.ServerConfig.Base64Table),
+					"email": encodedEmail,
 				},
 			})
 			return	
@@ -405,27 +417,38 @@ func Signout(ctx iris.Context) {
 // UpdateInfo 更新用户信息
 func UpdateInfo(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
+	field := ctx.Params().Get("field")
+	switch field {
+		
+	}
+		
+
 	var userReqData model.User
 	if err := ctx.ReadJSON(&userReqData); err != nil {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
+	userReqData.Signature = strings.TrimSpace(userReqData.Signature)
+	userReqData.Signature = bluemonday.UGCPolicy().Sanitize(userReqData.Signature)
 
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
-
-	user.Signature = strings.TrimSpace(userReqData.Signature)
-	if len(user.Signature) > 100 {
-		SendErrJSON("个性签名不能超过100个字符", ctx)
+	// 个性签名可以为空
+	if utf8.RuneCountInString(userReqData.Signature) > model.UserSignatureMaxLen {
+		SendErrJSON("个性签名不能超过" + fmt.Sprintf("%d", model.UserSignatureMaxLen) + "个字符", ctx)
 		return
 	}
-	if err := model.DB.Save(&user).Error; err != nil {
+	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	if err := model.DB.Model(&user).Update("signature", userReqData.Signature).Error; err != nil {
+		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
 	}
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : iris.Map{},
+		"data"  : iris.Map{
+			"id" : user.ID,
+			"signature": user.Signature,
+		},
 	})
 }
 

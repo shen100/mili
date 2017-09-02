@@ -109,3 +109,6 @@ const (
     // UserSexFemale 女
     UserSexFemale = 1
 )
+
+// UserSignatureMaxLen 个性签名最大长度
+const UserSignatureMaxLen = 200
