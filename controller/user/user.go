@@ -585,6 +585,16 @@ func InfoDetail(ctx iris.Context) {
 		return
 	}
 
+	if err := model.DB.Model(&user).Related(&user.Schools).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return	
+	}
+
+	if err := model.DB.Model(&user).Related(&user.Careers).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return	
+	}
+
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",

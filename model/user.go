@@ -29,6 +29,8 @@ type User struct {
     Role           int                `json:"role"`
     AvatarURL      string             `json:"avatarURL"`
     Status         int                `json:"status"`    
+    Schools        []School           `json:"schools"`    
+    Careers        []Career           `json:"careers"`    
 }
 
 // CheckPassword 验证密码是否正确
