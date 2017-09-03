@@ -85,8 +85,7 @@ func Route(app *iris.Application) {
 		routes.Post("/collect/delete/:id",     auth.ActiveRequired,
 											   collect.DeleteCollect)
 		routes.Get("/collect/folders/:userID", collect.Folders)
-		routes.Get("/collects",                auth.SigninRequired,
-											   collect.Collects)
+		routes.Get("/collects",                collect.Collects)
 
 		routes.Post("/comment/create",       auth.ActiveRequired,
 											 comment.Create)

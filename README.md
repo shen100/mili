@@ -22,6 +22,9 @@ golang123 是使用 **vue**、 **node.js** 和 **golang** 开发的社区系统�
 
 有任何问题或建议都欢迎提 issue  
 
+## 技术交流  
+qq群: 32550512 
+
 ## License
 [GPL](https://github.com/shen100/golang123-api/blob/master/LICENSE "")      
 Copyright (c) 2013-present, shen100

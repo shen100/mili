@@ -9,6 +9,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"golang123/config"
 	"golang123/model"
+	"golang123/utils"
 	"golang123/sessmanager"
 	"golang123/controller/common"
 )
@@ -209,6 +210,17 @@ func Collects(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var collects []model.Collect
 
+	userID, userIDErr := strconv.Atoi(ctx.FormValue("userID"))
+	if userIDErr != nil {
+		SendErrJSON("无效的userID", ctx)
+		return	
+	}
+	var user model.User
+	if err := model.DB.First(&user, userID).Error; err != nil {
+		SendErrJSON("无效的userID", ctx)
+		return
+	}
+
 	pageNo, pageNoErr := strconv.Atoi(ctx.FormValue("pageNo"))
 
 	if pageNoErr != nil || pageNo < 1 {
@@ -230,7 +242,7 @@ func Collects(ctx iris.Context) {
 	offset   := (pageNo - 1) * config.ServerConfig.PageSize
 	pageSize := config.ServerConfig.PageSize
 
-	if err := model.DB.Where("folder_id = ?", folderID).Offset(offset).
+	if err := model.DB.Where("folder_id = ? AND user_id = ?", folderID, userID).Offset(offset).
 			Limit(pageSize).Order("created_at DESC").Find(&collects).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
@@ -242,23 +254,25 @@ func Collects(ctx iris.Context) {
 		data := make(map[string]interface{})
 		var article model.Article
 		var vote model.Vote
-		data["id"]      = collects[i].ID
+		data["id"] = collects[i].ID
 		if (collects[i].SourceName == model.CollectSourceArticle) {
 			if err := model.DB.Model(&collects[i]).Related(&article, "articles", "source_id").Error; err != nil {
 				fmt.Println(err.Error())
 				SendErrJSON("error", ctx)
 				return
 			}
-			data["articleID"]   = article.ID
-			data["articleName"] = article.Name
+			data["articleID"]      = article.ID
+			data["articleName"]    = article.Name
+			data["articleContent"] = utils.MarkdownToHTML(article.Content)
 		} else if (collects[i].SourceName == model.CollectSourceVote) {
 			if err := model.DB.Model(&collects[i]).Related(&vote, "votes", "source_id").Error; err != nil {
 				fmt.Println(err.Error())
 				SendErrJSON("error", ctx)
 				return
 			}
-			data["voteID"]   = vote.ID
-			data["voteName"] = vote.Name
+			data["voteID"]      = vote.ID
+			data["voteName"]    = vote.Name
+			data["voteContent"] = utils.MarkdownToHTML(vote.Content)
 		}
 		results = append(results, data)
 	}
@@ -267,7 +281,7 @@ func Collects(ctx iris.Context) {
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
-			"collects": collects,
+			"collects": results,
 		},
 	})
 }
