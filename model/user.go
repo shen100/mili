@@ -24,7 +24,6 @@ type User struct {
     Score          uint               `json:"score"`
     ArticleCount   uint               `json:"articleCount"`
     CommentCount   uint               `json:"commentCount"`
-    Collects       []Collect          `json:"collects"`
     CollectCount   uint               `json:"collectCount"`
     Signature      string             `json:"signature"`
     Role           int                `json:"role"`
@@ -112,3 +111,9 @@ const (
 
 // UserSignatureMaxLen 个性签名最大长度
 const UserSignatureMaxLen = 200
+
+// UserLocationMaxLen 居住地的最大长度
+const UserLocationMaxLen = 200
+
+// UserIntroduceMaxLen 个人简介的最大长度
+const UserIntroduceMaxLen = 500

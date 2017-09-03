@@ -11,6 +11,7 @@ type Article struct {
     Name              string             `json:"name"`
     BrowseCount       int                `json:"browseCount"`
     CommentCount      int                `json:"commentCount"`
+    CollectCount      int                `json:"collectCount"`
     Status            int                `json:"status"`
     Content           string             `json:"content"`
     Categories        []Category         `gorm:"many2many:article_category;ForeignKey:ID;AssociationForeignKey:ID" json:"categories"`

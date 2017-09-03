@@ -417,38 +417,79 @@ func Signout(ctx iris.Context) {
 // UpdateInfo 更新用户信息
 func UpdateInfo(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	field := ctx.Params().Get("field")
-	switch field {
-		
-	}
-		
-
 	var userReqData model.User
 	if err := ctx.ReadJSON(&userReqData); err != nil {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
-	userReqData.Signature = strings.TrimSpace(userReqData.Signature)
-	userReqData.Signature = bluemonday.UGCPolicy().Sanitize(userReqData.Signature)
-
-	// 个性签名可以为空
-	if utf8.RuneCountInString(userReqData.Signature) > model.UserSignatureMaxLen {
-		SendErrJSON("个性签名不能超过" + fmt.Sprintf("%d", model.UserSignatureMaxLen) + "个字符", ctx)
-		return
-	}
 	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
-	if err := model.DB.Model(&user).Update("signature", userReqData.Signature).Error; err != nil {
-		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
-		return
+
+	field        := ctx.Params().Get("field")
+	resData      := make(map[string]interface{})
+	resData["id"] = user.ID
+
+	switch field {
+		case "sex":
+			if userReqData.Sex != model.UserSexMale && userReqData.Sex != model.UserSexFemale {
+				SendErrJSON("无效的性别", ctx)
+				return	
+			}
+			if err := model.DB.Model(&user).Update("sex", userReqData.Sex).Error; err != nil {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return
+			}
+			resData[field] = userReqData.Sex
+		case "signature":
+			userReqData.Signature = strings.TrimSpace(userReqData.Signature)
+			userReqData.Signature = bluemonday.UGCPolicy().Sanitize(userReqData.Signature)
+			// 个性签名可以为空
+			if utf8.RuneCountInString(userReqData.Signature) > model.UserSignatureMaxLen {
+				SendErrJSON("个性签名不能超过" + fmt.Sprintf("%d", model.UserSignatureMaxLen) + "个字符", ctx)
+				return
+			}
+			if err := model.DB.Model(&user).Update("signature", userReqData.Signature).Error; err != nil {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return
+			}
+			resData[field] = userReqData.Signature
+		case "location":
+			userReqData.Location = strings.TrimSpace(userReqData.Location)
+			userReqData.Location = bluemonday.UGCPolicy().Sanitize(userReqData.Location)
+			// 居住地可以为空
+			if utf8.RuneCountInString(userReqData.Location) > model.UserLocationMaxLen {
+				SendErrJSON("居住地不能超过" + fmt.Sprintf("%d", model.UserLocationMaxLen) + "个字符", ctx)
+				return
+			}
+			if err := model.DB.Model(&user).Update("location", userReqData.Location).Error; err != nil {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return
+			}
+			resData[field] = userReqData.Location	
+		case "introduce":
+			userReqData.Introduce = strings.TrimSpace(userReqData.Introduce)
+			userReqData.Introduce = bluemonday.UGCPolicy().Sanitize(userReqData.Introduce)
+			// 个人简介可以为空
+			if utf8.RuneCountInString(userReqData.Introduce) > model.UserIntroduceMaxLen {
+				SendErrJSON("个人简介不能超过" + fmt.Sprintf("%d", model.UserIntroduceMaxLen) + "个字符", ctx)
+				return
+			}
+			if err := model.DB.Model(&user).Update("introduce", userReqData.Introduce).Error; err != nil {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return
+			}
+			resData[field] = userReqData.Introduce
+		default:
+			SendErrJSON("参数无效", ctx)	
+			return
 	}
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : iris.Map{
-			"id" : user.ID,
-			"signature": user.Signature,
-		},
+		"data"  : resData,
 	})
 }
 
