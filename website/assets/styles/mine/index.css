@@ -341,3 +341,31 @@ body {
 .home-link-box:hover {
     color: #8590a6;
 }
+
+.schools-item {
+    margin-left: 100px;
+    padding: 10px;
+    font-size: 15px;
+    color: #262626;
+    font-weight: 600;
+    width: 400px;
+}
+
+.schools-item:hover {
+    background-color: #f7f8fa;
+    border-radius: 4px;
+}
+
+.schools-item:hover .schools-delete {
+    display: inline;
+}
+
+.schools-delete {
+    float: right;
+    cursor: pointer;
+    display: none;
+}
+
+.mine-info-edit .schools-item:nth-of-type(1) {
+    margin-top: 10px;
+}

@@ -220,6 +220,26 @@ const api = {
         url: url + '/user/update/:type',
         method: 'POST',
         desc: '修改用户信息'
+    },
+    schoolAdd: {
+        url: url + '/user/school/add',
+        method: 'POST',
+        desc: '添加教育经历'
+    },
+    schoolDelete: {
+        url: url + '/user/school/delete/:id',
+        method: 'POST',
+        desc: '删除教育经历'
+    },
+    careerAdd: {
+        url: url + '/user/career/add',
+        method: 'POST',
+        desc: '增加工作经历'
+    },
+    careerDelete: {
+        url: url + '/user/career/delete/:id',
+        method: 'POST',
+        desc: '删除工作经历'
     }
 }
 

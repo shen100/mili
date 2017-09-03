@@ -50,7 +50,7 @@
                             </span>
                         </span>
                         <div v-else class="edit-item">
-                        <Input v-model="formCustom.signature" style="width: 300px" type="textarea"></Input>
+                        <Input v-model="formCustom.signature" style="width: 700px"></Input>
                         <Row class="button-box">
                             <Button type="primary" class="button-seq" @click="submit('signature', 1)">确定</Button>
                             <Button type="ghost" @click="close('signature', 1)">取消</Button>
@@ -66,7 +66,7 @@
                             </span>
                         </span>
                         <div v-else class="edit-item">
-                            <Input v-model="formCustom.location" style="width: 300px" type="textarea"></Input>
+                            <Input v-model="formCustom.location" style="width: 700px"></Input>
                             <Row class="button-box">
                                 <Button type="primary" class="button-seq" @click="submit('location', 2)">确定</Button>
                                 <Button type="ghost" @click="close('location', 2)">取消</Button>
@@ -83,11 +83,59 @@
                             </span>
                         </span>
                         <div v-else class="edit-item">
-                            <Input v-model="formCustom.introduce" style="width: 300px" type="textarea"></Input>
+                            <Input v-model="formCustom.introduce" style="width: 700px" type="textarea"></Input>
                             <Row class="button-box">
                                 <Button type="primary" class="button-seq" @click="submit('introduce', 3)">确定</Button>
                                 <Button type="ghost" @click="close('introduce', 3)">取消</Button>
                             </Row>
+                        </div>
+                    </div>
+                    <div class="mine-info-line mine-info-edit">
+                        <span class="mine-info-label">教育经历</span>
+                        <span class="mine-info-value">
+                            <span 
+                                class="edit-action" 
+                                style="display: inline;" 
+                                @click="editItem('school', 4)">
+                                    <i class="ivu-icon ivu-icon-android-add-circle"></i>
+                                    添加教育经历
+                            </span>
+                        </span>
+                        <p 
+                            class="schools-item" 
+                            v-for="(item, index) in userInfo.schools">
+                                {{item.name}}&nbsp{{item.speciality ? '•&nbsp' + item.speciality : ''}}
+                                <i class="ivu-icon ivu-icon-close schools-delete" @click="deleteSchool(item.id)"></i>
+                            </p>
+                        <div v-if="editIndex[4] === 1" class="edit-item" style="margin-left: 110px; margin-top: 10px">
+                            <Input v-model="formCustom.school.name" placeholder="学校或教育机构名" class="button-seq" style="width: 300px"></Input>
+                            <Input v-model="formCustom.school.speciality" placeholder="专业方向" class="button-seq" style="width: 300px"></Input>
+                            <Button type="primary" class="button-seq" @click="addSchool">保存</Button>
+                            <Button type="ghost" @click="close('school', 4)">取消</Button>
+                        </div>
+                    </div>
+                    <div class="mine-info-line mine-info-edit">
+                        <span class="mine-info-label">职业经历</span>
+                        <span class="mine-info-value">
+                            <span 
+                                class="edit-action" 
+                                style="display: inline;" 
+                                @click="editItem('career', 5)">
+                                    <i class="ivu-icon ivu-icon-android-add-circle"></i>
+                                    添加职业经历
+                            </span>
+                        </span>
+                        <p 
+                            class="schools-item" 
+                            v-for="(item, index) in userInfo.careers">
+                                {{item.company}}&nbsp{{'•&nbsp' + item.title}}
+                                <i class="ivu-icon ivu-icon-close schools-delete" @click="deleteCareer(item.id)"></i>
+                            </p>
+                        <div v-if="editIndex[5] === 1" class="edit-item" style="margin-left: 110px; margin-top: 10px">
+                            <Input v-model="formCustom.career.company" placeholder="公司或组织名称" class="button-seq" style="width: 300px"></Input>
+                            <Input v-model="formCustom.career.title" placeholder="你的职位" class="button-seq" style="width: 300px"></Input>
+                            <Button type="primary" class="button-seq" @click="addCareer">保存</Button>
+                            <Button type="ghost" @click="close('career', 5)">取消</Button>
                         </div>
                     </div>
                 </div>
@@ -106,7 +154,7 @@
     export default {
         data () {
             return {
-                editIndex: [0, 0, 0, 0],
+                editIndex: [0, 0, 0, 0, 0, 0],
                 success: false
             }
         },
@@ -120,7 +168,9 @@
                         sex: userInfo.sex,
                         signature: userInfo.signature,
                         location: userInfo.location,
-                        introduce: userInfo.introduce
+                        introduce: userInfo.introduce,
+                        school: {},
+                        career: {}
                     }
                     return {
                         userInfo: userInfo,
@@ -163,12 +213,90 @@
                     if (res.errNo === ErrorCode.SUCCESS) {
                         this.$Message.success('更新信息成功')
                         this.userInfo[name] = res.data[name]
+                        this.close(name, index)
                     } else {
                         this.$Message.error(res.msg)
                     }
-                    this.close(name, index)
                 }).catch(err => {
-                    console.log(err.message)
+                    this.$Message.error(err.message)
+                })
+            },
+            addSchool () {
+                if (!this.formCustom.school.name) {
+                    return this.$Message.error('教育机构不能为空')
+                }
+                request.schoolAdd({
+                    body: {
+                        name: this.formCustom.school.name || '',
+                        speciality: this.formCustom.school.speciality || ''
+                    }
+                }).then(res => {
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        this.formCustom.school.name = ''
+                        this.formCustom.school.speciality = ''
+                        this.userInfo.schools.push(res.data)
+                        this.close('school', 4)
+                    } else {
+                        this.$Message.error(res.msg)
+                    }
+                }).catch(err => {
+                    this.$Message.error(err.message)
+                })
+            },
+            deleteSchool (id) {
+                request.schoolDelete({
+                    params: {
+                        id: id
+                    }
+                }).then(res => {
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        let id = res.data.id
+                        this.userInfo.schools = this.userInfo.schools.filter(item => item.id !== id)
+                        this.$Message.success('操作成功')
+                    } else {
+                        this.$Message.error(res.msg)
+                    }
+                }).catch(err => {
+                    this.$Message.error(err.message)
+                })
+            },
+            addCareer () {
+                if (!this.formCustom.career.company || !this.formCustom.career.title) {
+                    return this.$Message.error('信息不完整')
+                }
+                request.careerAdd({
+                    body: {
+                        company: this.formCustom.career.company || '',
+                        title: this.formCustom.career.title || ''
+                    }
+                }).then(res => {
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        this.formCustom.career.company = ''
+                        this.formCustom.career.title = ''
+                        this.userInfo.careers.push(res.data)
+                        this.close('career', 5)
+                    } else {
+                        this.$Message.error(res.msg)
+                    }
+                }).catch(err => {
+                    this.$Message.error(err.message)
+                })
+            },
+            deleteCareer (id) {
+                request.careerDelete({
+                    params: {
+                        id: id
+                    }
+                }).then(res => {
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        let id = res.data.id
+                        this.userInfo.careers = this.userInfo.careers.filter(item => item.id !== id)
+                        this.$Message.success('操作成功')
+                    } else {
+                        this.$Message.error(res.msg)
+                    }
+                }).catch(err => {
+                    this.$Message.error(err.message)
                 })
             }
         },
