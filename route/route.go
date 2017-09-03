@@ -34,7 +34,7 @@ func Route(app *iris.Application) {
 		routes.Get("/user/info/public/:id",    user.PublicInfo)
 		routes.Get("/user/info",               auth.SigninRequired,  
 											   user.Info)
-		routes.Get("/user/info/detail",        auth.SigninRequired,  
+		routes.Get("/user/info/detail",        auth.SigninRequired, 
 											   user.InfoDetail)
 		routes.Post("/user/update/:field",     auth.ActiveRequired,       
 										       user.UpdateInfo)
@@ -78,14 +78,15 @@ func Route(app *iris.Application) {
 		routes.Post("/article/deltop/:id",     auth.EditorRequired,    
 											   article.DeleteTop)
 
-		routes.Post("/collect/folder/create", auth.ActiveRequired,
-											  collect.CreateFolder)									   
-		routes.Post("/collect/create",        auth.ActiveRequired,
-											  collect.Collect)
-		routes.Post("/collect/delete/:id",    auth.ActiveRequired,
-										      collect.DeleteCollect)
-		routes.Get("/collects",               auth.SigninRequired,
-											  collect.List)
+		routes.Post("/collect/folder/create",  auth.ActiveRequired,
+											   collect.CreateFolder)									   
+		routes.Post("/collect/create",         auth.ActiveRequired,
+											   collect.CreateCollect)
+		routes.Post("/collect/delete/:id",     auth.ActiveRequired,
+											   collect.DeleteCollect)
+		routes.Get("/collect/folders/:userID", collect.Folders)
+		routes.Get("/collects",                auth.SigninRequired,
+											   collect.Collects)
 
 		routes.Post("/comment/create",       auth.ActiveRequired,
 											 comment.Create)

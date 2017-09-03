@@ -577,7 +577,13 @@ func Info(ctx iris.Context) {
 
 // InfoDetail 返回用户详情信息
 func InfoDetail(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
 	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+
+	if err := model.DB.First(&user, user.ID).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
 
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,

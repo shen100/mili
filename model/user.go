@@ -19,7 +19,7 @@ type User struct {
     Email          string             `json:"email"`
     Sex            uint               `json:"sex"`
     Location       string             `json:"location"`
-    Introduce      string             `json:"Introduce"`
+    Introduce      string             `json:"introduce"`
     Phone          string             `json:"phone"`
     Score          uint               `json:"score"`
     ArticleCount   uint               `json:"articleCount"`

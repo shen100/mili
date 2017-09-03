@@ -33,3 +33,6 @@ const (
     // CollectSourceVote 对投票进行收藏
     CollectSourceVote    = "collect_source_vote"
 )
+
+// MaxFolderCount 最多能创建的收藏夹个数
+const MaxFolderCount = 20
