@@ -32,10 +32,9 @@
 </template>
 
 <script>
-    // import ErrorCode from '~/constant/ErrorCode'
+    import ErrorCode from '~/constant/ErrorCode'
     import Footer from '~/components/Footer'
-    // import request from '~/net/request'
-    // import base64 from '~/utils/base64'
+    import request from '~/net/request'
 
     export default {
         data () {
@@ -44,29 +43,28 @@
             }
         },
         asyncData (context) {
-            // const query = context.query || {}
-            // console.log(base64.decode(query.e))
-            // if (!query.e) {
-            //     return context.error({ message: 'Not Found', statusCode: 404 })
-            // }
-            // return request.sendmail({
-            //     client: context.req,
-            //     body: {
-            //         email: base64.decode(query.e)
-            //     }
-            // }).then(res => {
-            //     console.log(res)
-            //     if (res.errNo === ErrorCode.SUCCESS) {
-            //         return {
-            //             email: base64.decode(query.e)
-            //         }
-            //     } else {
-            //         return context.error({ message: 'Not Found', statusCode: 404 })
-            //     }
-            // }).catch(err => {
-            //     console.log(err)
-            //     context.error({ message: 'Not Found', statusCode: 404 })
-            // })
+            const query = context.query || {}
+            if (!query.e) {
+                return context.error({ message: 'Not Found', statusCode: 404 })
+            }
+            return request.sendmail({
+                client: context.req,
+                body: {
+                    email: decodeURIComponent(query.e)
+                }
+            }).then(res => {
+                console.log(res)
+                if (res.errNo === ErrorCode.SUCCESS) {
+                    return {
+                        email: res.data.email
+                    }
+                } else {
+                    return context.error({ message: 'Not Found', statusCode: 404 })
+                }
+            }).catch(err => {
+                console.log(err)
+                context.error({ message: 'Not Found', statusCode: 404 })
+            })
         },
         head () {
             return {

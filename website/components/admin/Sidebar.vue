@@ -19,10 +19,12 @@
             </Menu-item>
         </Menu-group>
         <Menu-group title="统计分析">
-            <Menu-item name="3">
-                <Icon type="heart"></Icon>
-                用户留存
-            </Menu-item>
+            <router-link to="/admin/user/list">
+                <Menu-item name="3">
+                    <Icon type="heart"></Icon>
+                    用户管理
+                </Menu-item>
+            </router-link>
             <Menu-item name="4">
                 <Icon type="heart-broken"></Icon>
                 流失用户

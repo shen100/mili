@@ -9,7 +9,7 @@ export default function (context, next) {
                 context.redirect('/signin')
             } else {
                 let user = data.data.user
-                if (user.role === UserRole.UserRoleAdmin || user.role === UserRole.UserRoleSuperAdmin) {
+                if (user.role === UserRole.USER_ROLE_ADMIN || user.role === UserRole.USER_ROLE_SUPER_ADMIN) {
                     next()
                 } else {
                     context.error({ statusCode: 403, message: 'forbidden' })

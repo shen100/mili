@@ -210,6 +210,16 @@ const api = {
         url: url + '/active/sendmail',
         method: 'POST',
         desc: '发送邮件'
+    },
+    userInfoDetail: {
+        url: url + '/user/info/detail',
+        method: 'GET',
+        desc: '获取用户详情'
+    },
+    updateInfo: {
+        url: url + '/user/update/:type',
+        method: 'POST',
+        desc: '修改用户信息'
     }
 }
 
