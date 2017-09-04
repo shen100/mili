@@ -1,7 +1,7 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>我的文章</h1>
+            <h1>{{user.id == currentId ? '我' : '他'}}的文章</h1>
         </div>
         <template v-if="articles.length > 0">
             <div v-for="(article, index) in articles" class="articles-item" :class="{'articles-item-no': index === 0}">
@@ -27,7 +27,7 @@
 
     export default {
         data () {
-
+            return {}
         },
         asyncData (context) {
             return request.getUserArticles({
@@ -43,7 +43,8 @@
             }).then(res => {
                 return {
                     articles: res.data.articles || [],
-                    user: context.user
+                    user: context.user,
+                    currentId: context.params.id
                 }
             }).catch(err => {
                 console.log(err)

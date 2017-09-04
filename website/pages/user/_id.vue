@@ -14,10 +14,10 @@
                     </div>
                     <p class="mine-info-line mine-info-name">{{currentUser.name}}</p>
                     <p class="mine-info-line mine-info-item">
-                        <span class="mine-info-value"><Icon type="male"></Icon>男</span>
+                        <span class="mine-info-value" :class="currentUser.sex == 1 ? 'women' : 'male'"><Icon type="male"></Icon>{{currentUser.sex == 1 ? '女' : '男'}}</span>
                     </p>
                     <p class="mine-info-line mine-info-item">
-                        <span class="mine-info-value">个性签名</span>
+                        <span class="mine-info-desc text-italic">{{currentUser.signature ? currentUser.signature : '这家伙很懒，什么个性签名都没有留下'}}</span>
                     </p>
                     <a class="mine-info-btn" v-if="user && currentUser.id === user.id" href="/user/edit">
                         <button class="ivu-btn-large info-button">编辑个人资料</button>
@@ -37,11 +37,11 @@
                 <div class="mine-content-right">
                     <div class="mine-attention-box">
                         <div class="attention-item right-border">
-                            <p class="attention-item-label">关注了</p>
+                            <p class="attention-item-label">话题数</p>
                             <p class="attention-item-num">0</p>
                         </div>
                         <div class="attention-item">
-                            <p class="attention-item-label">关注者</p>
+                            <p class="attention-item-label">回复数</p>
                             <p class="attention-item-num">0</p>
                         </div>
                     </div>

@@ -107,6 +107,7 @@ body {
     display: inline-block;
     min-height: 300px;
     border-radius: 3px;
+    padding: 0 20px 20px 20px;
     overflow: hidden;
     background-color: #fff;
 }
@@ -154,12 +155,9 @@ body {
 }
 
 .mine-menu-item {
-    width: 9em;
     text-align: center;
-}
-
-.articles-container {
-    padding: 0 20px 20px 20px;
+    margin-right: 40px;
+    padding: 0 !important;
 }
 
 .article-top {
@@ -241,6 +239,7 @@ body {
 }
 
 .mine-info-label {
+    line-height: 30px;
     width: 100px;
     font-weight: 700;
     display: inline-block;
@@ -293,7 +292,7 @@ body {
 }
 
 .mine-info-value .ivu-icon {
-    margin-right: 20px;
+    margin-right: 5px;
 }
 
 .mine-info-value:hover .edit-action {
@@ -302,18 +301,17 @@ body {
 
 .edit-action {
     display: none;
-    margin-left: 10px;
     color: #175199;
     cursor: pointer;
 }
 
 .edit-action .ivu-icon {
-    margin-right: 5px;
+    margin-right: 0px;
 }
 
 .edit-item {
     display: inline-block;
-    vertical-align: text-top;
+    vertical-align: top;
 }
 
 .edit-item .ivu-radio-wrapper {
@@ -368,4 +366,12 @@ body {
 
 .mine-info-edit .schools-item:nth-of-type(1) {
     margin-top: 10px;
+}
+
+.male {
+    color: #2196f3;
+}
+
+.women {
+    color: #fb8db2;
 }

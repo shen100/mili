@@ -1,7 +1,7 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>我的回复</h1>
+            <h1>{{user.id == currentId ? '我' : '他'}}的回复</h1>
         </div>
         <template v-if="comments.length > 0">
             <div v-for="(comment, index) in comments" class="articles-item" :class="{'articles-item-no': index === 0}">
@@ -38,15 +38,14 @@
                 }
             }).then(res => {
                 return {
-                    comments: res.data.comments || []
+                    comments: res.data.comments || [],
+                    user: context.user,
+                    currentId: context.params.id
                 }
             }).catch(err => {
                 console.log(err)
                 context.error({ statusCode: 404, message: 'Page not found' })
             })
-        },
-        mounted () {
-            console.log(this.$route)
         }
     }
 </script>

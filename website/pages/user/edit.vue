@@ -34,7 +34,7 @@
                                     <span class="radio-label">女</span>
                                 </Radio>
                                 <Row class="button-box">
-                                    <Button type="primary" class="button-seq" @click="submit('sex', 0)">确定</Button>
+                                    <Button type="primary" class="button-seq" @click="submit('sex', 0)">保存</Button>
                                     <Button type="ghost" @click="close('sex', 0)">取消</Button>
                                 </Row>
                             </RadioGroup>
@@ -52,7 +52,7 @@
                         <div v-else class="edit-item">
                         <Input v-model="formCustom.signature" style="width: 700px"></Input>
                         <Row class="button-box">
-                            <Button type="primary" class="button-seq" @click="submit('signature', 1)">确定</Button>
+                            <Button type="primary" class="button-seq" @click="submit('signature', 1)">保存</Button>
                             <Button type="ghost" @click="close('signature', 1)">取消</Button>
                         </Row>
                         </div>
@@ -68,10 +68,58 @@
                         <div v-else class="edit-item">
                             <Input v-model="formCustom.location" style="width: 700px"></Input>
                             <Row class="button-box">
-                                <Button type="primary" class="button-seq" @click="submit('location', 2)">确定</Button>
+                                <Button type="primary" class="button-seq" @click="submit('location', 2)">保存</Button>
                                 <Button type="ghost" @click="close('location', 2)">取消</Button>
                             </Row>
                         </div>
+                    </div>
+                    <div class="mine-info-line mine-info-edit">
+                        <span class="mine-info-label">教育经历</span>
+                        <span class="mine-info-value" v-if="editIndex[4] === 0">
+                            <span 
+                                class="edit-action" 
+                                style="display: inline-block;padding: 8px 0 9px 0;"
+                                @click="editItem('school', 4)">
+                                    <i class="ivu-icon ivu-icon-android-add-circle"></i>
+                                    添加教育经历
+                            </span>
+                        </span>
+                        <div v-else class="edit-item">
+                            <Input v-model="formCustom.school.name" placeholder="学校或教育机构名" class="button-seq" style="width: 300px"></Input>
+                            <Input v-model="formCustom.school.speciality" placeholder="专业方向" class="button-seq" style="width: 300px"></Input>
+                            <Button type="primary" class="button-seq" @click="addSchool">保存</Button>
+                            <Button type="ghost" @click="close('school', 4)">取消</Button>
+                        </div>
+                        <p 
+                            class="schools-item" 
+                            v-for="(item, index) in userInfo.schools">
+                                {{item.name}}&nbsp{{item.speciality ? '•&nbsp' + item.speciality : ''}}
+                                <i class="ivu-icon ivu-icon-close schools-delete" @click="deleteSchool(item.id)"></i>
+                            </p>
+                    </div>
+                    <div class="mine-info-line mine-info-edit">
+                        <span class="mine-info-label">职业经历</span>
+                        <span class="mine-info-value" v-if="editIndex[5] === 0">
+                            <span 
+                                class="edit-action" 
+                                style="display: inline-block;padding: 8px 0 9px 0;" 
+                                @click="editItem('career', 5)">
+                                    <i class="ivu-icon ivu-icon-android-add-circle"></i>
+                                    添加职业经历
+                            </span>
+                        </span>
+                        <div v-else class="edit-item">
+                            <Input v-model="formCustom.career.company" placeholder="公司或组织名称" class="button-seq" style="width: 300px"></Input>
+                            <Input v-model="formCustom.career.title" placeholder="你的职位" class="button-seq" style="width: 300px"></Input>
+                            <Button type="primary" class="button-seq" @click="addCareer">保存</Button>
+                            <Button type="ghost" @click="close('career', 5)">取消</Button>
+                        </div>
+                        <p 
+                            class="schools-item" 
+                            v-for="(item, index) in userInfo.careers">
+                                {{item.company}}&nbsp{{'•&nbsp' + item.title}}
+                                <i class="ivu-icon ivu-icon-close schools-delete" @click="deleteCareer(item.id)"></i>
+                            </p>
                     </div>
                     <div class="mine-info-line mine-info-edit">
                         <span class="mine-info-label">个人简介</span>
@@ -83,59 +131,11 @@
                             </span>
                         </span>
                         <div v-else class="edit-item">
-                            <Input v-model="formCustom.introduce" style="width: 700px" type="textarea"></Input>
+                            <Input v-model="formCustom.introduce" style="width: 700px" :rows="4" type="textarea"></Input>
                             <Row class="button-box">
-                                <Button type="primary" class="button-seq" @click="submit('introduce', 3)">确定</Button>
+                                <Button type="primary" class="button-seq" @click="submit('introduce', 3)">保存</Button>
                                 <Button type="ghost" @click="close('introduce', 3)">取消</Button>
                             </Row>
-                        </div>
-                    </div>
-                    <div class="mine-info-line mine-info-edit">
-                        <span class="mine-info-label">教育经历</span>
-                        <span class="mine-info-value">
-                            <span 
-                                class="edit-action" 
-                                style="display: inline;" 
-                                @click="editItem('school', 4)">
-                                    <i class="ivu-icon ivu-icon-android-add-circle"></i>
-                                    添加教育经历
-                            </span>
-                        </span>
-                        <p 
-                            class="schools-item" 
-                            v-for="(item, index) in userInfo.schools">
-                                {{item.name}}&nbsp{{item.speciality ? '•&nbsp' + item.speciality : ''}}
-                                <i class="ivu-icon ivu-icon-close schools-delete" @click="deleteSchool(item.id)"></i>
-                            </p>
-                        <div v-if="editIndex[4] === 1" class="edit-item" style="margin-left: 110px; margin-top: 10px">
-                            <Input v-model="formCustom.school.name" placeholder="学校或教育机构名" class="button-seq" style="width: 300px"></Input>
-                            <Input v-model="formCustom.school.speciality" placeholder="专业方向" class="button-seq" style="width: 300px"></Input>
-                            <Button type="primary" class="button-seq" @click="addSchool">保存</Button>
-                            <Button type="ghost" @click="close('school', 4)">取消</Button>
-                        </div>
-                    </div>
-                    <div class="mine-info-line mine-info-edit">
-                        <span class="mine-info-label">职业经历</span>
-                        <span class="mine-info-value">
-                            <span 
-                                class="edit-action" 
-                                style="display: inline;" 
-                                @click="editItem('career', 5)">
-                                    <i class="ivu-icon ivu-icon-android-add-circle"></i>
-                                    添加职业经历
-                            </span>
-                        </span>
-                        <p 
-                            class="schools-item" 
-                            v-for="(item, index) in userInfo.careers">
-                                {{item.company}}&nbsp{{'•&nbsp' + item.title}}
-                                <i class="ivu-icon ivu-icon-close schools-delete" @click="deleteCareer(item.id)"></i>
-                            </p>
-                        <div v-if="editIndex[5] === 1" class="edit-item" style="margin-left: 110px; margin-top: 10px">
-                            <Input v-model="formCustom.career.company" placeholder="公司或组织名称" class="button-seq" style="width: 300px"></Input>
-                            <Input v-model="formCustom.career.title" placeholder="你的职位" class="button-seq" style="width: 300px"></Input>
-                            <Button type="primary" class="button-seq" @click="addCareer">保存</Button>
-                            <Button type="ghost" @click="close('career', 5)">取消</Button>
                         </div>
                     </div>
                 </div>
