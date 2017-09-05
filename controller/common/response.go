@@ -8,6 +8,9 @@ import (
 
 // SendErrJSON 有错误发生时，发送错误JSON
 func SendErrJSON(msg string, args ...interface{}) {
+	if len(args) == 0 {
+		panic("缺少 iris.Context")
+	}
 	var ctx iris.Context
 	var errNo = model.ErrorCode.ERROR
 	if len(args) == 1 {

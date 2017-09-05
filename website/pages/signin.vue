@@ -54,6 +54,12 @@
             let myURL = url.parse(context.req.url, true)
             if (myURL.query && myURL.query.ref) {
                 redirectURL = decodeURIComponent(myURL.query.ref)
+                let redirectObj = url.parse(redirectURL, true)
+                let pathname = redirectObj.pathname
+                // 由重置密码或激活账号跳过来的，登录后直接跳到首页
+                if (pathname.match(/\/reset\/.+/) || pathname.match(/\/active\/.+/)) {
+                    redirectURL = '/'
+                }
             } else {
                 redirectURL = '/'
             }

@@ -6,11 +6,6 @@ if (typeof window === 'undefined') {
 }
 
 const api = {
-    heartbeat: {
-        url: url + '/heartbeat',
-        method: 'GET',
-        desc: '发送心跳'
-    },
     getCategories: {
         url: url + '/categories',
         method: 'GET',

@@ -24,10 +24,9 @@ func Route(app *iris.Application) {
 		routes.Post("/signup",                   user.Signup)
 		routes.Post("/signout",                  user.Signout)
 		routes.Post("/active/sendmail",          user.ActiveSendMail)
-		routes.Get("/active/verify/:id/:secret", user.VerifyActiveLink)
 		routes.Post("/active/:id/:secret",       user.ActiveAccount)
 		routes.Post("/reset",                    user.ResetPasswordMail)
-		routes.Get("/reset/verify/:id/:secret",  user.VerifyResetPasswordLink)
+		routes.Get("/reset/verify/:id/:secret",  user.VerifyResetPasswordLink)		
 		routes.Post("/reset/:id/:secret",        user.ResetPassword)
 
 		routes.Get("/user/info/public/:id",    user.PublicInfo)

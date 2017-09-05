@@ -56,7 +56,7 @@ func sendMail(action string, title string, curTime int64, user model.User, ctx i
 	mail.SendMail(user.Email, title, content)
 }
 
-func verifyLink(cacheKey string, duration int64, ctx iris.Context) (model.User, error) {
+func verifyLink(cacheKey string, ctx iris.Context) (model.User, error) {
 	var user model.User
 	userID, err := ctx.Params().GetInt("id")
 	if err != nil || userID <= 0 {
@@ -72,11 +72,6 @@ func verifyLink(cacheKey string, duration int64, ctx iris.Context) (model.User, 
 		return user, errors.New("无效的链接")
 	}
 
-	curTime := time.Now().Unix()
-	if curTime - emailTime > duration {
-		return user, errors.New("链接已失效")	
-	}
-
 	if err := model.DB.First(&user, userID).Error; err != nil {
 		return user, errors.New("无效的链接")		
 	}
@@ -85,6 +80,7 @@ func verifyLink(cacheKey string, duration int64, ctx iris.Context) (model.User, 
 	secretStr  = fmt.Sprintf("%x", md5.Sum([]byte(secretStr)))
 
 	if secret != secretStr {
+		fmt.Println(secret, secretStr)
 		return user, errors.New("无效的链接")
 	}
 	return user, nil	
@@ -94,6 +90,7 @@ func verifyLink(cacheKey string, duration int64, ctx iris.Context) (model.User, 
 func ActiveSendMail(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var user model.User
+	// 只接收一个email参数
 	if err := ctx.ReadJSON(&user); err != nil {
 		SendErrJSON("参数无效", ctx)
 		return
@@ -108,14 +105,14 @@ func ActiveSendMail(ctx iris.Context) {
 	user.Email = string(decodeBytes)
 
 	if err := model.DB.Where("email = ?", user.Email).First(&user).Error; err != nil {
-		SendErrJSON("参数无效", ctx)
+		SendErrJSON("无效的邮箱", ctx)
 		return
 	}
 
 	curTime    := time.Now().Unix()
 	activeUser := fmt.Sprintf("activeTime%d", user.ID)
 	if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
-		fmt.Println("redis set failed:", err)		
+		fmt.Println("redis set failed:", err)
 	}
 	go func() {
 		sendMail("/active", "账号激活", curTime, user, ctx)
@@ -130,60 +127,59 @@ func ActiveSendMail(ctx iris.Context) {
 	})
 }
 
-// VerifyActiveLink 验证激活账号的链接是否失效
-func VerifyActiveLink(ctx iris.Context) {
-	SendErrJSON := common.SendErrJSON
-	if _, err := verifyLink("activeTime", activeDuration, ctx); err != nil {
-		fmt.Println(err.Error())
-		SendErrJSON("激活链接已失效", ctx)
-		return	
-	}
-	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{},
-	})
-}
-
 // ActiveAccount 激活账号
 func ActiveAccount(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var err error
 	var user model.User
-	if user, err = verifyLink("activeTime", activeDuration, ctx); err != nil {
+	if user, err = verifyLink("activeTime", ctx); err != nil {
 		SendErrJSON("激活链接已失效", ctx)
 		return
 	}
 
-	user.Status = model.UserStatusActived
+	if user.ID <= 0 {
+		SendErrJSON("激活链接已失效", ctx)
+		return	
+	}
 
-	if err := model.DB.Save(&user).Error; err != nil {
+	if err := model.DB.Model(&user).Update("status", model.UserStatusActived).Error; err != nil {
 		SendErrJSON("error", ctx)
 		return
 	}
 
+	if _, err := manager.C.Do("DEL", fmt.Sprintf("activeTime%d", user.ID)); err != nil {
+        fmt.Println("redis delelte failed:", err)
+    }
+
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : user,
+		"data"  : iris.Map{
+			"email": user.Email,
+		},
 	})
 }
 
 // ResetPasswordMail 发送重置密码的邮件
 func ResetPasswordMail(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	type userReqData struct {
-		Email     string  `json:"email"`
+	type UserReqData struct {
+		Email     string  `json:"email" valid:"email,runelength(5|50)"`
 	}
-	var userData userReqData
+	var userData UserReqData
 	if err := ctx.ReadJSON(&userData); err != nil {
-		SendErrJSON("参数无效", ctx)
+		SendErrJSON("无效的邮箱", ctx)
+		return
+	}
+
+	if _, err := govalidator.ValidateStruct(userData); err != nil {
+		SendErrJSON("无效的邮箱.", ctx)
 		return
 	}
 
 	var user model.User
 	if err := model.DB.Where("email = ?", userData.Email).Find(&user).Error; err != nil {
-		SendErrJSON("没有邮箱为" + userData.Email + "的用户", ctx)
+		SendErrJSON("没有邮箱为 " + userData.Email + " 的用户", ctx)
 		return
 	}
 
@@ -206,7 +202,7 @@ func ResetPasswordMail(ctx iris.Context) {
 // VerifyResetPasswordLink 验证重置密码的链接是否失效
 func VerifyResetPasswordLink(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	if _, err := verifyLink("resetTime", resetDuration, ctx); err != nil {
+	if _, err := verifyLink("resetTime", ctx); err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("重置链接已失效", ctx)
 		return	
@@ -221,10 +217,10 @@ func VerifyResetPasswordLink(ctx iris.Context) {
 // ResetPassword 重置密码
 func ResetPassword(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	type userReqData struct {
+	type UserReqData struct {
 		Password  string  `json:"password" valid:"runelength(6|20)"`
 	}
-	var userData userReqData
+	var userData UserReqData
 
 	if err := ctx.ReadJSON(&userData); err != nil {
 		SendErrJSON("参数无效", ctx)
@@ -236,19 +232,27 @@ func ResetPassword(ctx iris.Context) {
 		return
 	}
 
-	var err error
+	var verifErr error
 	var user model.User 
-	if user, err = verifyLink("resetTime", resetDuration, ctx); err != nil {
+	if user, verifErr = verifyLink("resetTime", ctx); verifErr != nil {
 		SendErrJSON("重置链接已失效", ctx)
 		return	
 	}
 
 	user.Pass = user.EncryptPassword(userData.Password, user.Salt())
 
-	if err := model.DB.Save(&user).Error; err != nil {
+	if user.ID <= 0 {
+		SendErrJSON("重置链接已失效", ctx)
+		return	
+	}
+	if err := model.DB.Model(&user).Update("pass", user.Pass).Error; err != nil {
 		SendErrJSON("error", ctx)
 		return
 	}
+
+    if _, err := manager.C.Do("DEL", fmt.Sprintf("resetTime%d", user.ID)); err != nil {
+        fmt.Println("redis delelte failed:", err)
+    }
 
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
@@ -265,7 +269,6 @@ func Signin(ctx iris.Context) {
     	Password    string  `json:"password" valid:"runelength(6|20)"`
 	}
 	var userData UserData
-
 	if err := ctx.ReadJSON(&userData); err != nil {
 		SendErrJSON("参数无效", ctx)
 		return
@@ -278,11 +281,6 @@ func Signin(ctx iris.Context) {
 
 	if userData.SigninInput == "" {
 		SendErrJSON("用户名或邮箱不能为空", ctx)
-		return	
-	}
-
-	if userData.Password == "" {
-		SendErrJSON("密码不能为空", ctx)
 		return	
 	}
 
@@ -305,7 +303,7 @@ func Signin(ctx iris.Context) {
 		msg = "用户名或密码错误"
 	}
 
-	if err := model.DB.Where(sql, userData.SigninInput).Find(&queryUser).Error; err != nil {
+	if err := model.DB.Where(sql, userData.SigninInput).First(&queryUser).Error; err != nil {
 		SendErrJSON(msg, ctx)
 		return
 	}
@@ -322,11 +320,11 @@ func Signin(ctx iris.Context) {
 			})
 			return	
 		}
-		manager.Sess.Start(ctx).Set("user", queryUser)
+		manager.Sess.Start(ctx).Set("user", queryUser.PublicInfo())
 		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
-			"data"  : queryUser,
+			"data"  : queryUser.PublicInfo(),
 		})
 	} else {
 		SendErrJSON(msg, ctx)
@@ -336,46 +334,39 @@ func Signin(ctx iris.Context) {
 
 // Signup 用户注册
 func Signup(ctx iris.Context) {
-	SendErrJSON := common.SendErrJSON
-	reqStartTime := time.Now()
-	type userReqData struct {
+	SendErrJSON  := common.SendErrJSON
+	type UserReqData struct {
 		Name      string  `json:"name" valid:"runelength(4|20)"`
 		Email     string  `json:"email" valid:"email,runelength(5|50)"`
 		Password  string  `json:"password" valid:"runelength(6|20)"`
 	}
-	var userData userReqData
+
+	var userData UserReqData
 	if err := ctx.ReadJSON(&userData); err != nil {
 		SendErrJSON("参数无效", ctx)
-		return
-	}
-
-	if _, err := govalidator.ValidateStruct(userData); err != nil {
-		SendErrJSON("参数无效.", ctx)
 		return
 	}
 
 	userData.Name      = strings.TrimSpace(userData.Name)
 	userData.Email     = strings.TrimSpace(userData.Email)
 
-	checkSignupData := func(userData userReqData, ctx iris.Context) bool {
-		if strings.Index(userData.Name, "@") != -1 {
-			SendErrJSON("用户名中不能含有@字符", ctx)
-			return false	
-		}
-		return true
+	if _, err := govalidator.ValidateStruct(userData); err != nil {
+		SendErrJSON("参数无效.", ctx)
+		return
 	}
 
-	if !checkSignupData(userData, ctx) {
-		return
+	if strings.Index(userData.Name, "@") != -1 {
+		SendErrJSON("用户名中不能含有@字符", ctx)
+		return	
 	}
 
 	var user model.User
 	if err := model.DB.Where("email = ? OR name = ?", userData.Email, userData.Name).Find(&user).Error; err == nil {	
 		if user.Name == userData.Name {
-			SendErrJSON("用户名已存在", ctx)
+			SendErrJSON("用户名 " + user.Name + " 已被注册", ctx)
 			return
 		} else if user.Email == userData.Email {
-			SendErrJSON("邮箱已存在", ctx)
+			SendErrJSON("邮箱 " + user.Email + " 已存在", ctx)
 			return	
 		}	
 	}
@@ -404,8 +395,6 @@ func Signup(ctx iris.Context) {
 		sendMail("/active", "账号激活", curTime, newUser, ctx)
 	}()
 
-	fmt.Println("signup duration: ", time.Now().Sub(reqStartTime).Seconds())
-
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
@@ -415,8 +404,7 @@ func Signup(ctx iris.Context) {
 
 // Signout 退出登录
 func Signout(ctx iris.Context) {
-	session := manager.Sess.Start(ctx)
-	session.Set("user", nil)
+	manager.Sess.Destroy(ctx)
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
