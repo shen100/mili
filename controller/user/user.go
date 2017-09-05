@@ -10,12 +10,13 @@ import (
 	"math/rand"
 	"time"
 	"unicode/utf8"
+	"github.com/garyburd/redigo/redis"
 	"github.com/kataras/iris"
 	"github.com/asaskevich/govalidator"
 	"github.com/microcosm-cc/bluemonday"
 	"golang123/model"
 	"golang123/config"
-	"golang123/sessmanager"
+	"golang123/manager"
 	"golang123/controller/common"
 	"golang123/controller/mail"
 )
@@ -66,11 +67,11 @@ func verifyLink(cacheKey string, duration int64, ctx iris.Context) (model.User, 
 		return user, errors.New("无效的链接")
 	}
 	
-	session       := sessmanager.Sess.Start(ctx)
-	emailTime, ok := session.Get(cacheKey + fmt.Sprintf("%d", userID)).(int64)
-	if !ok {
-		return user, errors.New("链接已失效")	
+	emailTime, redisErr := redis.Int64(manager.C.Do("GET", cacheKey + fmt.Sprintf("%d", userID)))
+	if redisErr != nil {
+		return user, errors.New("无效的链接")
 	}
+
 	curTime := time.Now().Unix()
 	if curTime - emailTime > duration {
 		return user, errors.New("链接已失效")	
@@ -110,7 +111,12 @@ func ActiveSendMail(ctx iris.Context) {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
-	curTime   := time.Now().Unix()
+
+	curTime    := time.Now().Unix()
+	activeUser := fmt.Sprintf("activeTime%d", user.ID)
+	if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
+		fmt.Println("redis set failed:", err)		
+	}
 	go func() {
 		sendMail("/active", "账号激活", curTime, user, ctx)
 	}()
@@ -181,9 +187,11 @@ func ResetPasswordMail(ctx iris.Context) {
 		return
 	}
 
-	session := sessmanager.Sess.Start(ctx)
 	curTime   := time.Now().Unix()
-	session.Set(fmt.Sprintf("resetTime%d", user.ID), curTime)
+	resetUser := fmt.Sprintf("resetTime%d", user.ID)
+	if _, err := manager.C.Do("SET", resetUser, curTime, "EX", resetDuration); err != nil {
+		fmt.Println("redis set failed:", err)		
+	}
 	go func() {
 		sendMail("/reset", "修改密码", curTime, user, ctx)
 	}()
@@ -314,8 +322,7 @@ func Signin(ctx iris.Context) {
 			})
 			return	
 		}
-		sessmanager.Sess.Start(ctx).Set("user", queryUser)
-		sessmanager.Sess.ShiftExpiration(ctx)
+		manager.Sess.Start(ctx).Set("user", queryUser)
 		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
@@ -387,9 +394,12 @@ func Signup(ctx iris.Context) {
 		return
 	}
 
-	curTime   := time.Now().Unix()
-	session   := sessmanager.Sess.Start(ctx)
-	session.Set(fmt.Sprintf("activeTime%d", newUser.ID), curTime)
+	curTime    := time.Now().Unix()
+	activeUser := fmt.Sprintf("activeTime%d", newUser.ID)
+    if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
+        fmt.Println("redis set failed:", err)
+	}
+	
 	go func() {
 		sendMail("/active", "账号激活", curTime, newUser, ctx)
 	}()
@@ -405,7 +415,7 @@ func Signup(ctx iris.Context) {
 
 // Signout 退出登录
 func Signout(ctx iris.Context) {
-	session := sessmanager.Sess.Start(ctx)
+	session := manager.Sess.Start(ctx)
 	session.Set("user", nil)
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
@@ -422,7 +432,7 @@ func UpdateInfo(ctx iris.Context) {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	field        := ctx.Params().Get("field")
 	resData      := make(map[string]interface{})
@@ -512,7 +522,7 @@ func UpdatePassword(ctx iris.Context) {
 		return
 	}
 
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	if err := model.DB.First(&user, user.ID).Error; err != nil {
 		SendErrJSON("error", ctx)
@@ -564,8 +574,8 @@ func PublicInfo(ctx iris.Context) {
 
 // Info 返回用户信息
 func Info(ctx iris.Context) {
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
-
+	fmt.Println(12345, ctx.GetCookie("golang123thesessid"))
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
@@ -578,7 +588,7 @@ func Info(ctx iris.Context) {
 // InfoDetail 返回用户详情信息
 func InfoDetail(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	if err := model.DB.First(&user, user.ID).Error; err != nil {
 		SendErrJSON("error", ctx)
@@ -665,7 +675,7 @@ func AddCareer(ctx iris.Context) {
 		return	
 	}
 
-	session := sessmanager.Sess.Start(ctx)
+	session := manager.Sess.Start(ctx)
 	user    := session.Get("user").(model.User)
 	career.UserID = user.ID
 
@@ -715,7 +725,7 @@ func AddSchool(ctx iris.Context) {
 		return	
 	}
 
-	session := sessmanager.Sess.Start(ctx)
+	session := manager.Sess.Start(ctx)
 	user    := session.Get("user").(model.User)
 	school.UserID = user.ID
 

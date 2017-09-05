@@ -6,7 +6,8 @@ import (
 	"time"
 	"strconv"
     _ "github.com/jinzhu/gorm/dialects/mysql"
-    "github.com/asaskevich/govalidator"
+	"github.com/asaskevich/govalidator"
+	"github.com/garyburd/redigo/redis"
 	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
@@ -14,7 +15,7 @@ import (
 	"golang123/config"
 	"golang123/model"
 	"golang123/route"
-	"golang123/sessmanager"
+	"golang123/manager"
 )
 
 func init() {
@@ -23,21 +24,25 @@ func init() {
 		fmt.Println(err.Error())
 		os.Exit(-1)
 	}
-	
 	if config.ServerConfig.Env == model.DevelopmentMode {
 		db.LogMode(true)
 	}
-
 	db.DB().SetMaxIdleConns(config.DBConfig.MaxIdleConns);
 	db.DB().SetMaxOpenConns(config.DBConfig.MaxOpenConns)
-
 	model.DB = db;
+
+	c, err := redis.Dial("tcp", config.RedisConfig.URL)
+    if err != nil {
+		fmt.Println("Connect to redis error", err)
+		os.Exit(-1)
+	}
+	manager.C = c
 
 	sess := sessions.New(sessions.Config{
 		Cookie: config.ServerConfig.SessionID,
 		Expires: time.Minute * time.Duration(config.ServerConfig.SessionTimeout),
 	})
-	sessmanager.Sess = sess
+	manager.Sess = sess
 
 	govalidator.SetFieldsRequiredByDefault(true)
 }

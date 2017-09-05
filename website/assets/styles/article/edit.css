@@ -114,6 +114,13 @@ body {
     background: #fff;
 }
 
+.editor-fullScreen-save {
+    position: fixed;
+    top: 7px;
+    right: 20px;
+    z-index: 9;
+}
+
 .topic-none {
 	text-align: center;
     color: #a8a8a8;

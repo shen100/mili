@@ -11,6 +11,9 @@
                 <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
             </Upload>
         </Modal>
+        <div v-if="isFullscreen" class="editor-fullScreen-save">
+             <Button @click="onSave" type="primary">保&nbsp;&nbsp;存</Button>
+        </div>
     </div>
 </template>
 
@@ -37,7 +40,8 @@
                 SimpleMDE: null,
                 uploadURL: config.apiURL + '/upload',
                 modalVisible: false,
-                toolbar: null
+                toolbar: null,
+                isFullscreen: false
             }
         },
         methods: {
@@ -51,6 +55,13 @@
                     return
                 }
                 this.modalVisible = true
+            },
+            onToggleFullScreen (editor) {
+                editor.toggleFullScreen()
+                this.isFullscreen = !this.isFullscreen
+            },
+            onSave () {
+                this.$emit('save')
             },
             onUploadCallback (res, file) {
                 if (res) {
@@ -160,7 +171,7 @@
                     },
                     {
                         name: 'fullscreen',
-                        action: SimpleMDE.toggleFullScreen,
+                        action: this.onToggleFullScreen,
                         className: 'fa fa-arrows-alt no-disable no-mobile',
                         title: '全屏'
                     }

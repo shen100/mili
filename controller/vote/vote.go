@@ -12,7 +12,7 @@ import (
 	"golang123/config"
 	"golang123/model"
 	"golang123/utils"
-	"golang123/sessmanager"
+	"golang123/manager"
 	"golang123/controller/common"
 )
 
@@ -213,7 +213,7 @@ func Create(ctx iris.Context) {
 		return	
 	}
 
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	tx := model.DB.Begin()
 	if vote, voteErr = save(false, reqData.Vote, user, tx); voteErr != nil {
@@ -250,7 +250,7 @@ func Update(ctx iris.Context) {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	var voteErr error
 	tx := model.DB.Begin()
@@ -463,7 +463,7 @@ func UserVoteVoteItem(ctx iris.Context) {
 		return	
 	}
 
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	var existUserVote model.UserVote
 	if err := model.DB.Where("user_id = ? and vote_id = ?", user.ID, vote.ID).Find(&existUserVote).Error; err == nil {

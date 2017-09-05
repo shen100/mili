@@ -10,7 +10,7 @@ import (
 	"golang123/config"
 	"golang123/model"
 	"golang123/utils"
-	"golang123/sessmanager"
+	"golang123/manager"
 	"golang123/controller/common"
 )
 
@@ -72,7 +72,7 @@ func CreateCollect(ctx iris.Context) {
 		}
 	}
 
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 	collect.UserID = user.ID
 
 	if err := model.DB.Save(&collect).Error; err != nil {
@@ -86,7 +86,7 @@ func CreateCollect(ctx iris.Context) {
 		SendErrJSON("error", ctx)
 		return	
 	}
-	sessmanager.Sess.Start(ctx).Set("user", user)
+	manager.Sess.Start(ctx).Set("user", user)
 
 	if collect.SourceName == model.CollectSourceArticle {
 		if err := model.DB.Model(&article).Update("collect_count", article.CollectCount + 1).Error; err != nil {
@@ -156,7 +156,7 @@ func DeleteCollect(ctx iris.Context) {
 		return	
 	}
 	
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	if err := model.DB.First(&user, user.ID).Error; err != nil {
 		fmt.Println(err.Error())
@@ -169,7 +169,7 @@ func DeleteCollect(ctx iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
-	sessmanager.Sess.Start(ctx).Set("user", user)
+	manager.Sess.Start(ctx).Set("user", user)
 
 	// 删除收藏后，相关积分保持不变
 	if collect.SourceName == model.CollectSourceArticle {
@@ -317,7 +317,7 @@ func CreateFolder(ctx iris.Context) {
 		}
 	}
 
-	user := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	var folders []model.Folder
 	var queryFoldersErr error

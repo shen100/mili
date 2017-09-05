@@ -3,14 +3,15 @@ package auth
 import (
 	"github.com/kataras/iris"
 	"golang123/model"
-	"golang123/sessmanager"
+	"golang123/manager"
 	"golang123/controller/common"
 )
 
 // SigninRequired 必须是登录用户
 func SigninRequired(ctx iris.Context) {
+	manager.Sess.ShiftExpiration(ctx)
 	SendErrJSON := common.SendErrJSON
-	_, ok := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	_, ok := manager.Sess.Start(ctx).Get("user").(model.User)
 	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
 		return	
@@ -20,8 +21,9 @@ func SigninRequired(ctx iris.Context) {
 
 // ActiveRequired 用户必须是激活状态
 func ActiveRequired(ctx iris.Context) {
+	manager.Sess.ShiftExpiration(ctx)
 	SendErrJSON := common.SendErrJSON
-	user, ok := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, ok := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
@@ -46,8 +48,9 @@ func ActiveRequired(ctx iris.Context) {
 
 // EditorRequired 必须是网站编辑
 func EditorRequired(ctx iris.Context) {
+	manager.Sess.ShiftExpiration(ctx)
 	SendErrJSON := common.SendErrJSON
-	user, ok := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, ok := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
@@ -63,8 +66,9 @@ func EditorRequired(ctx iris.Context) {
 
 // AdminRequired 必须是管理员
 func AdminRequired(ctx iris.Context) {
+	manager.Sess.ShiftExpiration(ctx)
 	SendErrJSON := common.SendErrJSON
-	user, ok := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, ok := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)

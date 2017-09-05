@@ -8,7 +8,7 @@ import (
 	"github.com/kataras/iris"
 	"golang123/controller/common"
 	"golang123/model"
-	"golang123/sessmanager"
+	"golang123/manager"
 	"golang123/config"
 )
 
@@ -65,7 +65,7 @@ func Save(isEdit bool, ctx iris.Context) {
 		return
 	}
 
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	comment.Status = model.CommentVerifying
 	comment.UserID = user.ID
@@ -82,7 +82,7 @@ func Save(isEdit bool, ctx iris.Context) {
 			SendErrJSON("error", ctx)
 			return
 		}
-		sessmanager.Sess.Start(ctx).Set("user", user)
+		manager.Sess.Start(ctx).Set("user", user)
 
 		var author model.User
 		if comment.SourceName == model.CommentSourceArticle {

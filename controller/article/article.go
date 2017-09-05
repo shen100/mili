@@ -10,7 +10,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"golang123/config"
 	"golang123/model"
-	"golang123/sessmanager"
+	"golang123/manager"
 	"golang123/utils"
 	"golang123/controller/common"
 )
@@ -280,7 +280,7 @@ func save(isEdit bool, ctx iris.Context) {
 		}
 	}
 
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 	article.UserID  = user.ID
 
 	if isEdit {
@@ -293,7 +293,7 @@ func save(isEdit bool, ctx iris.Context) {
 		article.Status       = model.ArticleVerifying
 		user.Score           = user.Score + config.UserConfig.CreateArticleScore
 		user.ArticleCount    = user.ArticleCount + 1
-		sessmanager.Sess.Start(ctx).Set("user", user)
+		manager.Sess.Start(ctx).Set("user", user)
 	}
 
 	article.Name = strings.TrimSpace(article.Name)
@@ -637,7 +637,7 @@ func Delete(ctx iris.Context) {
 		return
 	}
 
-	user, _ := sessmanager.Sess.Start(ctx).Get("user").(model.User)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	if user.ID != article.UserID {
 		SendErrJSON("您无权限执行此操作", ctx)

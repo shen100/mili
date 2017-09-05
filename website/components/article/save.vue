@@ -18,10 +18,10 @@
                             </Select>
                         </Form-item>
                         <Form-item class="topic-content" :label-width="0" prop="content">
-                            <md-editor :value="formValidate.content" :user="user" @change="onContentChage"></md-editor>
+                            <md-editor :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChage"></md-editor>
                         </Form-item>
                         <Form-item class="topic-submit" :label-width="0">
-                            <Button size="large" v-if="isMounted" type="primary" @click="onSubmit()">{{id ? '保存话题' : '发布话题'}}</Button>
+                            <Button size="large" v-if="isMounted" type="primary" @click="onSubmit">{{id ? '保存话题' : '发布话题'}}</Button>
                         </Form-item>
                     </Form>
                 </div>
@@ -96,7 +96,7 @@
             onContentChage (content) {
                 this.formValidate.content = content
             },
-            onSubmit (name) {
+            onSubmit () {
                 if (this.user.status === UserStatus.STATUS_IN_ACTIVE) {
                     if (this.id) {
                         this.$Message.error('账号未激活，不能保存话题')
@@ -143,6 +143,9 @@
                     }
                 })
                 return false
+            },
+            onContentSave () {
+                this.onSubmit()
             }
         },
         components: {

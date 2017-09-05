@@ -11,6 +11,10 @@
 		"MaxIdleConns" : 5,          /*空闲时最大的连接数*/
 		"MaxOpenConns" : 10          /*最大的连接数*/
 	},
+	"redis": {
+		"Host"         : "127.0.0.1",/*redis所在机器的ip*/
+		"Port"         : 6379        /*redis的端口*/	
+	},
 	"nodejs": {
 		"webPoweredBy": "golang123",/*前端node.js加的X-Powered-By*/
 		"staticPoweredBy": "golang123Static",/*前端静态文件服务器加的X-Powered-By*/
@@ -35,7 +39,7 @@
 		"ImgPath"             : "/upload/img",  /*上传后的图片请求地址前缀*/
 		"Port"                : 8023,           /*go监听的端口*/
 		"SessionID"           : "golang123sid", /*后台设置的session id*/
-		"SessionTimeout"      : 30,             /*session超时时间，单位秒*/
+		"SessionTimeout"      : 30,           /*session超时时间，单位分钟*/
 		"MaxOrder"            : 10000,        /*最大的排序号*/
 		"MinOrder"            : 0,            /*最小的排序号*/
 		"PageSize"            : 20,           /*默认每页的条数*/

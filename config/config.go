@@ -57,6 +57,21 @@ func initDB() {
 	DBConfig.URL = url
 }
 
+type redisConfig struct {
+	Host         string
+	Port         int
+	URL          string
+}
+
+// RedisConfig redis相关配置
+var RedisConfig redisConfig
+
+func initRedis() {
+	utils.SetStructByJSON(&RedisConfig, jsonData["redis"].(map[string]interface{}))
+	url := fmt.Sprintf("%s:%d", RedisConfig.Host, RedisConfig.Port)
+	RedisConfig.URL = url
+}
+
 type serverConfig struct {
 	APIPoweredBy        string
 	SiteName            string
@@ -106,6 +121,7 @@ func initAPI() {
 func init() {
 	initJSON()
 	initDB()
+	initRedis()
 	initServer()
 	initAPI()
 }
