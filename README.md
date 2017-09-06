@@ -6,7 +6,7 @@ golang123 是使用 **vue**、 **node.js** 和 **golang** 开发的社区系统�
 
 *golang123目前正处于活跃的开发中，预计十月初发布Beta版*
 
-## 🌈 项目截图
+## 🌅 项目截图
 <img src="https://user-images.githubusercontent.com/2443162/30106321-a234dc0c-932d-11e7-8f66-020975158dcd.jpeg" width="1000" alt=""/>
 
 ## Golang123线上机器配置
@@ -43,7 +43,7 @@ npm install
 npm install --registry=https://registry.npm.taobao.org
 ```
 
-## go程序依赖的库
+### go程序依赖的库
 
 ```
 //iris web框架
