@@ -127,7 +127,7 @@ QQ群中的消息很可能还没被看到，就被后来的消息给冲掉，有
 ## 💰 赞助
 您可以通过扫描下图中的二维码来赞助我, 金额任意😃 
 
-<img src="https://user-images.githubusercontent.com/2443162/30115061-3838c70e-934c-11e7-802f-e04403e9ac63.png" width="700" alt=""/>
+<img src="https://user-images.githubusercontent.com/2443162/30115315-f3ef9392-934c-11e7-8b62-edeb998d864c.png" width="700" alt=""/>
 
 
 ## License
