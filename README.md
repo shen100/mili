@@ -1,14 +1,12 @@
 Golang123   
 =
 
-## 介绍
-
 golang123 是使用 **vue**、 **node.js** 和 **golang** 开发的社区系统。界面优雅，功能丰富，小巧迅速，
 已在[golang中文社区](https://www.golang123.com) 得到应用，你完全可以用它来搭建自己的社区。  
 
-> golang123目前正处于活跃的开发中，预计十月初发布Beta版
+*golang123目前正处于活跃的开发中，预计十月初发布Beta版*
 
-## 项目截图
+## 🌈 项目截图
 <img src="https://user-images.githubusercontent.com/2443162/30106321-a234dc0c-932d-11e7-8f66-020975158dcd.jpeg" width="1000" alt=""/>
 
 ## Golang123线上机器配置
@@ -16,7 +14,7 @@ golang123 是使用 **vue**、 **node.js** 和 **golang** 开发的社区系统�
 |:---------|:-------:|
 | **内存**     |  **512 MB** |
 | **带宽**  |  **1Mbps** |
-## 安装
+## 🚀 安装
 
 ### node.js
 todo
@@ -67,7 +65,7 @@ go get -u github.com/microcosm-cc/bluemonday
 go get github.com/russross/blackfriday
 ```
 
-## 配置
+## ⚙️ 配置
 ### 配置hosts   
 127.0.0.1 dev.golang123.com  
 
@@ -118,14 +116,14 @@ server {
 4. 修改图片上传的目录
 5. 修改域名邮箱的用户名及密码(golang123使用的是QQ域名邮箱)
 
-## 问题
+## ❓问题
 
 有任何问题或建议都欢迎提 issue  
 
-## 技术交流  
+## 👥 技术交流  
 qq群: 32550512 
 
-## 赞助
+## 💰 赞助
 您可以通过扫描下图中的二维码来赞助我, 金额任意😃 
     
 <img src="https://user-images.githubusercontent.com/2443162/30103439-3fbb8722-9325-11e7-9cfc-52de89b77a4a.png" height="400" alt=""/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://user-images.githubusercontent.com/2443162/30106247-6b433842-932d-11e7-8f22-bc14a05ab427.png" height="400" alt=""/>
