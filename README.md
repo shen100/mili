@@ -69,8 +69,8 @@ go get github.com/russross/blackfriday
 ### 配置nginx 
 1. 将`golang123/nginx/dev.golang123.com.conf`文件拷贝到nginx的虚拟主机目录下
 2. 将`golang123/nginx/server.key`和`golang123/nginx/server.crt`拷贝到某个目录下
-3. 打开nginx的虚拟主机目录下的`dev.golang123.com.conf`文件，然后修改访问日志和错误日志的路径，即access\_log和error\_log(注意：有两处要修改，分别在) 
-4. 修改证书路径，即ssl_certificate和ssl\_certificate\_key
+3. 修改证书路径为server.key和server.crt所在的路径，即ssl_certificate和ssl\_certificate\_key
+4. 打开nginx的虚拟主机目录下的`dev.golang123.com.conf`文件，然后修改访问日志和错误日志的路径，即access\_log和error\_log。注意：有两处要修改，如下图所示:<br/><img src="http://res.cloudinary.com/dcemaqxcp/image/upload/q_40/v1504682407/c_yugl2q.jpg" width="1000" alt=""/> 
 
 ### 前端配置
 将`golang123/website/config/index.example.js`文件重命名为`index.js`
