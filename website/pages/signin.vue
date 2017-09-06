@@ -5,7 +5,11 @@
             <p class="golang-signin-desc">和地鼠们分享你的知识、经验和见解</p>
         	<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" class="signup-form">
         		<Form-item prop="username">
-                    <i-input size="large" v-model="formCustom.username" placeholder="用户名 / 邮箱"></i-input>
+                    <i-input 
+                        size="large" 
+                        v-model="formCustom.username" 
+                        @on-blur="blur('formCustom.username')" 
+                        placeholder="用户名 / 邮箱"></i-input>
                 </Form-item>
                 <Form-item prop="passwd">
                     <i-input size="large" type="password" v-model="formCustom.passwd" placeholder="密码" @keydown.native="handleKeyUp"></i-input>
@@ -27,6 +31,7 @@
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
     import url from 'url'
+    import {trim, trimBlur} from '~/utils/tool'
 
     export default {
         data () {
@@ -90,8 +95,8 @@
                         this.loading = true
                         request.signin({
                             body: {
-                                signinInput: this.formCustom.username,
-                                password: this.formCustom.passwd
+                                signinInput: trim(this.formCustom.username),
+                                password: trim(this.formCustom.passwd)
                             }
                         }).then(res => {
                             this.loading = false
@@ -113,6 +118,9 @@
                 if (e.keyCode === 13) {
                     return this.handleSubmit('formCustom')
                 }
+            },
+            blur (name) {
+                trimBlur(name, this)
             }
         }
     }

@@ -61,6 +61,7 @@
     import request from '~/net/request'
     import dataTool from '~/utils/date'
     import ErrorCode from '~/constant/ErrorCode'
+    import {trim} from '~/utils/tool'
 
     export default {
         data () {
@@ -118,13 +119,13 @@
                         request.createVote({
                             body: {
                                 vote: {
-                                    name: this.formValidate.voteName,
+                                    name: trim(this.formValidate.voteName),
                                     content: this.formValidate.content,
                                     endAt: dataTool.parse(this.formValidate.date)
                                 },
                                 voteItems: this.formValidate.items.map(item => {
                                     return {
-                                        name: item.value
+                                        name: trim(item.value)
                                     }
                                 })
                             }

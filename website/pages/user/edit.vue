@@ -150,6 +150,7 @@
     import Footer from '~/components/Footer'
     import request from '~/net/request'
     import ErrorCode from '~/constant/ErrorCode'
+    import {trim} from '~/utils/tool'
 
     export default {
         data () {
@@ -200,7 +201,7 @@
                     return this.$Message.error('信息不能为空')
                 }
                 let body = {}
-                body[name] = this.formCustom[name]
+                body[name] = trim(this.formCustom[name])
                 if (name === 'sex') {
                     body[name] = parseInt(body[name])
                 }
@@ -227,8 +228,8 @@
                 }
                 request.schoolAdd({
                     body: {
-                        name: this.formCustom.school.name || '',
-                        speciality: this.formCustom.school.speciality || ''
+                        name: trim(this.formCustom.school.name || ''),
+                        speciality: trim(this.formCustom.school.speciality || '')
                     }
                 }).then(res => {
                     if (res.errNo === ErrorCode.SUCCESS) {
@@ -266,8 +267,8 @@
                 }
                 request.careerAdd({
                     body: {
-                        company: this.formCustom.career.company || '',
-                        title: this.formCustom.career.title || ''
+                        company: trim(this.formCustom.career.company || ''),
+                        title: trim(this.formCustom.career.title || '')
                     }
                 }).then(res => {
                     if (res.errNo === ErrorCode.SUCCESS) {

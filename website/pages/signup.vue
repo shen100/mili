@@ -15,7 +15,12 @@
             </div>
     		<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">
     			<Form-item label="用户名" prop="username">
-    	            <i-input size="large" type="text" v-model="formCustom.username" class="signup-input"></i-input>
+    	            <i-input 
+                        size="large" 
+                        type="text" 
+                        v-model="formCustom.username" 
+                        @on-blur="blur('formCustom.username')" 
+                        class="signup-input"></i-input>
                     <span class="signup-label">4-20位可由中文、数字、字母组成</span>
     	        </Form-item>
     	        <Form-item label="密码" prop="passwd">
@@ -27,7 +32,11 @@
                     <span class="signup-label">请在此确认您的密码</span>
     	        </Form-item>
     	        <Form-item label="邮箱" prop="email">
-    	            <i-input size="large" v-model="formCustom.email" class="signup-input"></i-input>
+    	            <i-input 
+                        size="large" 
+                        @on-blur="blur('formCustom.email')"
+                        v-model="formCustom.email" 
+                        class="signup-input"></i-input>
                     <span class="signup-label">请输入有效的电子邮箱</span>
     	        </Form-item>
 	            <i-button type="primary" size="large" class="signup-button" @click="handleSubmit('formCustom')">立即注册</i-button>
@@ -56,6 +65,7 @@
     import Sidebar from '~/components/Sidebar'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
+    import {trim, trimBlur} from '~/utils/tool'
 
     export default {
         data () {
@@ -145,9 +155,9 @@
                         this.loading = true
                         request.signup({
                             body: {
-                                name: this.formCustom.username,
-                                password: this.formCustom.passwd,
-                                email: this.formCustom.email
+                                name: trim(this.formCustom.username),
+                                password: trim(this.formCustom.passwd),
+                                email: trim(this.formCustom.email)
                             }
                         }).then(res => {
                             this.loading = false
@@ -163,6 +173,9 @@
                         })
                     }
                 })
+            },
+            blur (name) {
+                trimBlur(name, this)
             }
         },
         components: {
