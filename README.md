@@ -11,6 +11,11 @@ golang123 是使用 **vue**、 **node.js** 和 **golang** 开发的社区系统�
 ## 项目截图
 <img src="http://res.cloudinary.com/dcemaqxcp/image/upload/q_40/v1504680530/golang123_idhkxm.jpg" width="1000" alt=""/>
 
+## Golang123线上机器配置
+| CPU | 1核     |  
+|:---------|:-------:|
+| **内存**     |  **512 MB** |
+| **带宽**  |  **1Mbps** |
 ## 安装
 
 ### node.js
@@ -119,6 +124,13 @@ server {
 
 ## 技术交流  
 qq群: 32550512 
+
+## 赞助
+您可以扫描下图中的二维码来支持我, 金额任意^_^  
+    
+<img src="https://user-images.githubusercontent.com/2443162/30103439-3fbb8722-9325-11e7-9cfc-52de89b77a4a.png" height="400" alt=""/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://user-images.githubusercontent.com/2443162/30103402-27ad94ea-9325-11e7-8fcc-712741b4824b.png" height="400" alt=""/>
+
+
 
 ## License
 [GPL](https://github.com/shen100/golang123-api/blob/master/LICENSE "")      
