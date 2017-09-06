@@ -30,7 +30,7 @@ todo
 * Windows下安装(todo)
 * Mac下安装(todo)
 
-### 前端项目依赖的模块
+### 前端依赖的模块
 进入`golang123/website/`目录，输入命令
 
 ```
@@ -43,7 +43,7 @@ npm install
 npm install --registry=https://registry.npm.taobao.org
 ```
 
-### go程序依赖的库
+### 后端依赖的库
 
 ```
 //iris web框架
@@ -66,10 +66,10 @@ go get github.com/russross/blackfriday
 ```
 
 ## ⚙️ 配置
-### 配置hosts   
+### hosts   
 127.0.0.1 dev.golang123.com  
 
-### 配置nginx 
+### nginx 
 1. 将`golang123/nginx/dev.golang123.com.conf`文件拷贝到nginx的虚拟主机目录下
 2. 将`golang123/nginx/server.key`和`golang123/nginx/server.crt`拷贝到某个目录下
 3. 打开nginx的虚拟主机目录下的`dev.golang123.com.conf`文件，然后修改访问日志和错误日志的路径，即access\_log和error\_log。
