@@ -121,13 +121,13 @@ server {
 有任何问题或建议都欢迎提 issue  
 
 ## 👥 技术交流  
-qq群: 32550512 
+QQ群: 32550512   
+QQ群中的消息很可能还没被看到，就被后来的消息给冲掉，有问题还是建议大家开issue
 
 ## 💰 赞助
 您可以通过扫描下图中的二维码来赞助我, 金额任意😃 
-    
-<img style="display:inline-block;vertical-align: top;" src="https://user-images.githubusercontent.com/2443162/30111902-10954434-9342-11e7-8e38-40ea8471c628.png" height="380" alt=""/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://user-images.githubusercontent.com/2443162/30106247-6b433842-932d-11e7-8f22-bc14a05ab427.png" height="400" alt=""/>
 
+<img src="https://user-images.githubusercontent.com/2443162/30115061-3838c70e-934c-11e7-802f-e04403e9ac63.png" width="700" alt=""/>
 
 
 ## License
