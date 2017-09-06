@@ -320,7 +320,7 @@ func Signin(ctx iris.Context) {
 			})
 			return	
 		}
-		manager.Sess.Start(ctx).Set("user", queryUser.PublicInfo())
+		manager.Sess.Start(ctx).Set("user", queryUser)
 		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
@@ -562,7 +562,6 @@ func PublicInfo(ctx iris.Context) {
 
 // Info 返回用户信息
 func Info(ctx iris.Context) {
-	fmt.Println(12345, ctx.GetCookie("golang123thesessid"))
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,

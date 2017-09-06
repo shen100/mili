@@ -12,7 +12,7 @@ import (
 var jsonData map[string]interface{}
 
 func initJSON() {
-    bytes, err := ioutil.ReadFile("./configuration.json")
+    bytes, err := ioutil.ReadFile("./config.json")
     if err != nil {
         fmt.Println("ReadFile: ", err.Error())
     }
