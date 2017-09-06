@@ -69,8 +69,37 @@ go get github.com/russross/blackfriday
 ### 配置nginx 
 1. 将`golang123/nginx/dev.golang123.com.conf`文件拷贝到nginx的虚拟主机目录下
 2. 将`golang123/nginx/server.key`和`golang123/nginx/server.crt`拷贝到某个目录下
-3. 修改证书路径为server.key和server.crt所在的路径，即ssl_certificate和ssl\_certificate\_key
-4. 打开nginx的虚拟主机目录下的`dev.golang123.com.conf`文件，然后修改访问日志和错误日志的路径，即access\_log和error\_log。注意：有两处要修改，如下图所示:<br/><img src="http://res.cloudinary.com/dcemaqxcp/image/upload/q_40/v1504683080/n_qcodoi.jpg" width="1000" alt=""/> 
+3. 打开nginx的虚拟主机目录下的`dev.golang123.com.conf`文件，然后修改访问日志和错误日志的路径，即access\_log和error\_log。
+4. 修改证书路径为server.key和server.crt所在的路径，即ssl_certificate和ssl\_certificate\_key
+
+请参考如下配置中`请修改`标记的地方:
+
+```
+server {
+    listen 80;
+    server_name dev.golang123.com;
+
+    access_log /path/logs/golang123.access.log; #请修改
+    error_log /path/logs/golang123.error.log;   #请修改
+
+    rewrite ^(.*) https://$server_name$1 permanent;
+}
+
+server {
+    listen       443;
+    server_name dev.golang123.com;
+
+    access_log /path/logs/golang123.access.log; #请修改
+    error_log /path/logs/golang123.error.log;   #请修改
+
+    ssl on;
+    ssl_certificate /path/cert/golang123/server.crt;     #请修改
+    ssl_certificate_key /path/cert/golang123/server.key; #请修改
+    
+    ...
+    
+}
+```
 
 ### 前端配置
 将`golang123/website/config/index.example.js`文件重命名为`index.js`
