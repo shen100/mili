@@ -126,7 +126,7 @@ server {
 qq群: 32550512 
 
 ## 赞助
-您可以扫描下图中的二维码来支持我, 金额任意^_^  
+您可以通过扫描下图中的二维码来赞助我, 金额任意😃 
     
 <img src="https://user-images.githubusercontent.com/2443162/30103439-3fbb8722-9325-11e7-9cfc-52de89b77a4a.png" height="400" alt=""/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://user-images.githubusercontent.com/2443162/30103402-27ad94ea-9325-11e7-8fcc-712741b4824b.png" height="400" alt=""/>
 
