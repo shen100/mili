@@ -1,7 +1,7 @@
 Golang123   
 =
 
-golang123 是一个开源的社区系统。界面优雅，功能丰富，小巧迅速，
+golang123 是一个开源的社区系统，界面优雅，功能丰富，小巧迅速。
 已在[golang中文社区](https://www.golang123.com) 得到应用，你完全可以用它来搭建自己的社区。       
 
 golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**、**node.js**、**nuxt**等技术来开发, 后端使用**go**、**gorm**、**iris**等技术来开发。golang123的技术选型也是超前的, 我们大胆得使用**nuxt**来做**前后端同构渲染**。    
@@ -110,13 +110,11 @@ server {
 将`golang123/website/config/index.example.js`文件重命名为`index.js`
 
 ### 后端配置
-即修改`golang123/website/config/index.js`文件中go字段下的配置  
-
-1. 将`golang123/config.example.json`文件重命名为`config.json`
-2. 打开`config.json`，修改mysql连接地址及端口
-3. 修改redis的连接地址及端口
-4. 修改图片上传的目录
-5. 修改域名邮箱的用户名及密码(golang123使用的是QQ域名邮箱)
+将`golang123/config.example.json`文件重命名为`config.json`，然后修改go字段下的配置  
+1. 修改mysql连接地址及端口
+2. 修改redis的连接地址及端口
+3. 修改图片上传的目录
+4. 修改域名邮箱的用户名及密码(golang123使用的是QQ域名邮箱)
 
 ## ❓问题
 
