@@ -13,27 +13,27 @@ golang123 是使用 **vue**、 **node.js** 和 **golang** 开发的社区系统�
 
 ## 安装
 
-### 安装node.js
+### node.js
 todo
 
-### 安装golang
+### golang
 todo
 
-### 安装mysql
+### mysql
 todo
 
-### 安装redis
+### redis
 * [Linux下安装](https://www.golang123.com/topic/10)
 * Windows下安装(todo)
 * Mac下安装(todo)
 
-### 安装前端项目依赖的模块
+### 前端项目依赖的模块
 进入`golang123/website/`目录，输入命令
 
 ```
 npm install
 ```
-## 依赖go程序依赖的库
+## go程序依赖的库
 
 ```
 //iris web框架
