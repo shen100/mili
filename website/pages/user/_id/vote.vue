@@ -1,7 +1,7 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>{{user.id == currentId ? '我' : '他'}}参与的投票</h1>
+            <h1>{{user && user.id == currentId ? '我' : '他'}}参与的投票</h1>
         </div>
         <template v-if="votes.length > 0">
             <div v-for="(vote, index) in votes" class="articles-item" :class="{'articles-item-no': index === 0}">
