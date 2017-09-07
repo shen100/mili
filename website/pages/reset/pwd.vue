@@ -9,7 +9,11 @@
                     <div v-if="!success">
                         <Form ref="formCustom" :model="formCustom" :rules="ruleCustom">
                             <Form-item prop="email">
-                                <i-input size="large" v-model="formCustom.email" placeholder="请输入邮箱"></i-input>
+                                <i-input 
+                                    size="large" 
+                                    v-model="formCustom.email" 
+                                    @on-blur="blur('formCustom.email')"
+                                    placeholder="请输入邮箱"></i-input>
                             </Form-item>
                         </Form>
                         <i-button type="primary" class="forget-button" size="large" @click="handleSubmit('formCustom')">发送邮件</i-button>
@@ -30,6 +34,7 @@
     import Footer from '~/components/Footer'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
+    import {trim, trimBlur} from '~/utils/tool'
 
     export default {
         data () {
@@ -69,7 +74,7 @@
                         this.loading = true
                         request.sendEmailPwd({
                             body: {
-                                email: this.formCustom.email
+                                email: trim(this.formCustom.email)
                             }
                         }).then(res => {
                             this.loading = false
@@ -106,6 +111,9 @@
                     this.loading = false
                     this.$Message.error(err.msg)
                 })
+            },
+            blur (name) {
+                trimBlur(name, this)
             }
         },
         mounted () {

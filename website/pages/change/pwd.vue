@@ -32,6 +32,7 @@
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import request from '~/net/request'
+    import {trim} from '~/utils/tool'
 
     export default {
         data () {
@@ -93,8 +94,8 @@
                         this.loading = true
                         request.changePwd({
                             body: {
-                                password: this.formCustom.lastPasswd,
-                                newPwd: this.formCustom.passwd
+                                password: trim(this.formCustom.lastPasswd),
+                                newPwd: trim(this.formCustom.passwd)
                             }
                         }).then(res => {
                             this.loading = false

@@ -29,7 +29,7 @@
                     <Menu mode="horizontal" theme="light" :active-name="activeMenu" @on-select="onMenuSelect">
                         <Menu-item name="index" class="mine-menu-item">话题</Menu-item>
                         <Menu-item name="reply" class="mine-menu-item">回复</Menu-item>
-                        <Menu-item name="3" class="mine-menu-item">参与的投票</Menu-item>
+                        <Menu-item name="vote" class="mine-menu-item">参与的投票</Menu-item>
                         <Menu-item name="4" class="mine-menu-item">收藏</Menu-item>
                     </Menu>
                     <nuxt-child/>
@@ -107,10 +107,11 @@
         },
         methods: {
             onMenuSelect (name) {
+                console.log(name)
                 if (name === 'index') {
-                    this.$router.push(`/user/${this.currentUser.id}`)
+                    window.location.href = `/user/${this.currentUser.id}`
                 } else {
-                    this.$router.push(`/user/${this.currentUser.id}/${name}`)
+                    window.location.href = `/user/${this.currentUser.id}/${name}`
                 }
             }
         },

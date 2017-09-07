@@ -196,6 +196,11 @@ const api = {
         method: 'GET',
         desc: '获取当前用户回复'
     },
+    getMineVote: {
+        url: url + '/votes/user/:userID',
+        method: 'GET',
+        desc: '获取当前用户投票'
+    },
     getPublicUser: {
         url: url + '/user/info/public/:id',
         method: 'GET',

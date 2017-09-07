@@ -59,7 +59,7 @@
                     .then(res => {
                         if (res.errNo === ErrorCode.SUCCESS) {
                             this.userData = null
-                            window.location.reload()
+                            window.location.href = '/signin'
                         }
                     })
                     .catch(err => {
