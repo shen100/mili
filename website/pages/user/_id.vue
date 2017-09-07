@@ -100,7 +100,6 @@
         },
         mounted () {
             let route = this.$route.path.split('/')
-            console.log(this.currentUser)
             if (route[3]) {
                 this.activeMenu = route[3]
             }

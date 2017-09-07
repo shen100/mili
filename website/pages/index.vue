@@ -9,7 +9,7 @@
                 </div>
                 <div class="home-articles-box">
                     <div v-for="article in articles" class="articles-cell">
-                        <a class="user-icon-box"><img :src="article.user.avatarURL" alt=""></a>
+                        <a class="user-icon-box" :href="`/user/${article.user.id}`"><img :src="article.user.avatarURL" alt=""></a>
                         <span class="home-tip-container">
                             <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
                                 <a :href="'/topic/' + article.id" class="no-underline">

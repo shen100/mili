@@ -1,7 +1,7 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>{{user && user.id == currentId ? '我' : '他'}}的回复</h1>
+            <h1>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}的回复</h1>
         </div>
         <template v-if="comments.length > 0">
             <div v-for="(comment, index) in comments" class="articles-item" :class="{'articles-item-no': index === 0}">
@@ -23,7 +23,9 @@
 
     export default {
         data () {
-            return {}
+            return {
+                sex: 0
+            }
         },
         asyncData (context) {
             return request.getMineComment({
@@ -46,6 +48,9 @@
                 console.log(err)
                 context.error({ statusCode: 404, message: 'Page not found' })
             })
+        },
+        mounted () {
+            this.$data.sex = this.$parent.currentUser.sex
         }
     }
 </script>

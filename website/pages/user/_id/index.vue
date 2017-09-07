@@ -1,7 +1,7 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>{{user && user.id == currentId ? '我' : '他'}}的文章</h1>
+            <h1>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}的话题</h1>
         </div>
         <template v-if="articles.length > 0">
             <div v-for="(article, index) in articles" class="articles-item" :class="{'articles-item-no': index === 0}">
@@ -27,7 +27,9 @@
 
     export default {
         data () {
-            return {}
+            return {
+                sex: 0
+            }
         },
         asyncData (context) {
             return request.getUserArticles({
@@ -50,6 +52,9 @@
                 console.log(err)
                 context.error({ statusCode: 404, message: 'Page not found' })
             })
+        },
+        mounted () {
+            this.$data.sex = this.$parent.currentUser.sex
         }
     }
 </script>

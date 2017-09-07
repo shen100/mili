@@ -1,7 +1,7 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>{{user && user.id == currentId ? '我' : '他'}}参与的投票</h1>
+            <h1>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}参与的投票</h1>
         </div>
         <template v-if="votes.length > 0">
             <div v-for="(vote, index) in votes" class="articles-item" :class="{'articles-item-no': index === 0}">
@@ -23,7 +23,9 @@
 
     export default {
         data () {
-            return {}
+            return {
+                sex: 0
+            }
         },
         asyncData (context) {
             return request.getMineVote({
@@ -49,7 +51,7 @@
             })
         },
         mounted () {
-            console.log(this.votes)
+            this.$data.sex = this.$parent.currentUser.sex
         }
     }
 </script>
