@@ -110,7 +110,7 @@ func ActiveSendMail(ctx iris.Context) {
 	}
 
 	curTime    := time.Now().Unix()
-	activeUser := fmt.Sprintf("activeTime%d", user.ID)
+	activeUser := fmt.Sprintf("%s%d", model.ActiveTime, user.ID)
 	if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
 		fmt.Println("redis set failed:", err)
 	}
@@ -132,7 +132,7 @@ func ActiveAccount(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var err error
 	var user model.User
-	if user, err = verifyLink("activeTime", ctx); err != nil {
+	if user, err = verifyLink(model.ActiveTime, ctx); err != nil {
 		SendErrJSON("激活链接已失效", ctx)
 		return
 	}
@@ -147,7 +147,7 @@ func ActiveAccount(ctx iris.Context) {
 		return
 	}
 
-	if _, err := manager.C.Do("DEL", fmt.Sprintf("activeTime%d", user.ID)); err != nil {
+	if _, err := manager.C.Do("DEL", fmt.Sprintf("%s%d", model.ActiveTime, user.ID)); err != nil {
         fmt.Println("redis delelte failed:", err)
     }
 
@@ -184,7 +184,7 @@ func ResetPasswordMail(ctx iris.Context) {
 	}
 
 	curTime   := time.Now().Unix()
-	resetUser := fmt.Sprintf("resetTime%d", user.ID)
+	resetUser := fmt.Sprintf("%s%d", model.ResetTime, user.ID)
 	if _, err := manager.C.Do("SET", resetUser, curTime, "EX", resetDuration); err != nil {
 		fmt.Println("redis set failed:", err)		
 	}
@@ -202,7 +202,7 @@ func ResetPasswordMail(ctx iris.Context) {
 // VerifyResetPasswordLink 验证重置密码的链接是否失效
 func VerifyResetPasswordLink(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	if _, err := verifyLink("resetTime", ctx); err != nil {
+	if _, err := verifyLink(model.ResetTime, ctx); err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("重置链接已失效", ctx)
 		return	
@@ -234,7 +234,7 @@ func ResetPassword(ctx iris.Context) {
 
 	var verifErr error
 	var user model.User 
-	if user, verifErr = verifyLink("resetTime", ctx); verifErr != nil {
+	if user, verifErr = verifyLink(model.ResetTime, ctx); verifErr != nil {
 		SendErrJSON("重置链接已失效", ctx)
 		return	
 	}
@@ -250,7 +250,7 @@ func ResetPassword(ctx iris.Context) {
 		return
 	}
 
-    if _, err := manager.C.Do("DEL", fmt.Sprintf("resetTime%d", user.ID)); err != nil {
+    if _, err := manager.C.Do("DEL", fmt.Sprintf("%s%d", model.ResetTime, user.ID)); err != nil {
         fmt.Println("redis delelte failed:", err)
     }
 
@@ -386,7 +386,7 @@ func Signup(ctx iris.Context) {
 	}
 
 	curTime    := time.Now().Unix()
-	activeUser := fmt.Sprintf("activeTime%d", newUser.ID)
+	activeUser := fmt.Sprintf("%s%d", model.ActiveTime, newUser.ID)
     if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
         fmt.Println("redis set failed:", err)
 	}

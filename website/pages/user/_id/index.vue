@@ -1,7 +1,7 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>{{user.id == currentId ? '我' : '他'}}的文章</h1>
+            <h1>{{user && user.id == currentId ? '我' : '他'}}的文章</h1>
         </div>
         <template v-if="articles.length > 0">
             <div v-for="(article, index) in articles" class="articles-item" :class="{'articles-item-no': index === 0}">

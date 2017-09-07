@@ -1,84 +1,52 @@
-# ************************************************************
-# Sequel Pro SQL dump
-# Version 4541
-#
-# http://www.sequelpro.com/
-# https://github.com/sequelpro/sequelpro
-#
-# Host: 127.0.0.1 (MySQL 5.6.35)
-# Database: golang123
-# Generation Time: 2017-09-03 11:29:24 +0000
-# ************************************************************
-
+-- MySQL dump 10.13  Distrib 5.6.36, for Linux (x86_64)
+--
+-- Host: localhost    Database: golang123
+-- ------------------------------------------------------
+-- Server version	5.6.36
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
-# Dump of table article_category
-# ------------------------------------------------------------
+--
+-- Table structure for table `article_category`
+--
 
 DROP TABLE IF EXISTS `article_category`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `article_category` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `article_id` int(11) unsigned NOT NULL,
   `category_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `article_category`
+--
 
 LOCK TABLES `article_category` WRITE;
 /*!40000 ALTER TABLE `article_category` DISABLE KEYS */;
-
-INSERT INTO `article_category` (`id`, `article_id`, `category_id`)
-VALUES
-	(52,33,15),
-	(53,32,12),
-	(74,34,12),
-	(75,35,13),
-	(76,36,15),
-	(84,37,13),
-	(85,38,13),
-	(86,39,13),
-	(87,40,14),
-	(88,41,15),
-	(89,42,13),
-	(90,43,13),
-	(95,44,12),
-	(97,46,14),
-	(98,45,12),
-	(99,47,15),
-	(100,48,14),
-	(101,49,15),
-	(102,50,12),
-	(103,51,12),
-	(104,52,13),
-	(105,53,12),
-	(106,54,13),
-	(107,55,12),
-	(108,56,13),
-	(109,57,13),
-	(110,58,13),
-	(111,59,13),
-	(112,60,13),
-	(113,61,12),
-	(114,62,12),
-	(115,63,12);
-
+INSERT INTO `article_category` VALUES (48,4,4),(110,9,1),(112,1,1),(113,2,4),(114,3,1),(115,5,4),(116,6,1),(118,7,4),(119,8,1),(142,10,1),(149,11,1);
 /*!40000 ALTER TABLE `article_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table articles
-# ------------------------------------------------------------
+--
+-- Table structure for table `articles`
+--
 
 DROP TABLE IF EXISTS `articles`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -93,42 +61,26 @@ CREATE TABLE `articles` (
   `user_id` int(11) unsigned NOT NULL,
   `last_user_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `articles`
+--
 
 LOCK TABLES `articles` WRITE;
 /*!40000 ALTER TABLE `articles` DISABLE KEYS */;
-
-INSERT INTO `articles` (`id`, `name`, `browse_count`, `comment_count`, `collect_count`, `status`, `content`, `created_at`, `updated_at`, `deleted_at`, `user_id`, `last_user_id`)
-VALUES
-	(45,'a',52,2,0,1,'```\n<template>\n    <div>\n        <app-header :user=\"user\" />\n        <div class=\"golang-home-body\">\n            <div class=\"golang-home-body-left\">\n                <div class=\"detail-title-box\">\n                    <p class=\"vote-detail-title\"><span class=\"vote-categoties\" :class=\"status ? \'vote-categoties-running\' : \'vote-categoties-end\'\">{{status ? \'进行中\' : \'已结束\'}}</span>{{vote.name}}</p>\n                    <p class=\"vote-title-info\">\n                        <span class=\"vote-title-info-item\">\n                            发布于{{vote.createdAt | getReplyTime}}\n                        </span>\n                        <span class=\"vote-title-info-item\">\n                            作者{{vote.user.name}}\n                        </span>\n                        <span class=\"vote-title-info-item\">\n                            {{vote.browseCount}}次浏览\n                        </span>\n                    </p>\n                </div>\n                <div class=\"home-vote-box\">\n                    <div class=\"golang123-editor\" v-html=\"vote.content\"></div>\n                    <div class=\"\">\n                        <span v-for=\"item in vote.voteItems\">\n                            <Button type=\"primary\" class=\"vote-item\" @click=\"onVoteSubmit(item.id)\">支持<span class=\"vote-item-label\">{{item.name}}</span><span class=\"vote-item-label\">{{item.count}}</span></Button>\n                        </span>\n                    </div>\n                    <div class=\"vote-actions\">\n                        <div class=\"vote-share\">\n                            <div class=\"vote-share-btn\">\n                                <Icon type=\"android-star-outline\" style=\"font-size: 20px;margin-top:-2px;\"></Icon>\n                                <span>收藏</span>\n                            </div>\n                            <div class=\"vote-share-btn\">\n                                <Icon type=\"android-share-alt\" style=\"font-size: 16px\"></Icon>\n                                <span>分享</span>\n                            </div>\n                            <template v-if=\"isAuthor\">\n                                <div class=\"vote-share-btn\">\n                                    <Icon type=\"edit\" style=\"font-size: 16px\"></Icon>\n                                    <a :href=\"\'/topic/edit/\' + vote.id\"><span>编辑</span></a>\n                                </div>\n                                <div class=\"vote-share-btn\">\n                                    <Icon type=\"android-delete\" style=\"font-size: 17px;\"></Icon>\n                                    <span @click=\"onDelete\">删除</span>\n                                </div>\n                            </template>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"golang-cell comment-box\">\n                    <div class=\"title\">{{vote.commentCount > 0 ? vote.commentCount : \'暂无\'}}回复</div>\n                    <div class=\"comment-content\">\n                        <template v-if=\"vote.commentCount\">\n                            <div class=\"comment-item\" v-for=\"(item, index) in vote.comments\">\n                                <a class=\"reply-user-icon\">\n                                    <img src=\"~assets/images/head.png\" alt=\"\">\n                                </a>\n                                <a class=\"reply-user-name\">{{item.user.name}}</a>\n                                <span class=\"reply-time\">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>\n                                <div class=\"golang123-editor\" v-html=\"item.content\"></div>\n                            </div>\n                        </template>\n                        <p class=\"not-signin\" v-if=\"!vote.commentCount && user\">暂时还没有人回复过这个投票</p>\n                        <p class=\"not-signin\" v-if=\"!vote.commentCount && !user\">暂时还没有人回复过这个投票,&nbsp;要回复投票, 请先&nbsp;<a @click=\"onSignin\">登录</a>&nbsp;或&nbsp;<a href=\"/signup\">注册</a></p>\n                        <p class=\"not-signin not-signin-border\" v-if=\"vote.commentCount && !user\">要回复投票, 请先&nbsp;<a @click=\"onSignin\">登录</a>&nbsp;或&nbsp;<a href=\"/signup\">注册</a></p>\n                    </div>\n                </div>\n                <div class=\"golang-cell comment-box\" v-if=\"user\">\n                    <div class=\"title\">添加回复</div>\n                    <div class=\"comment-content\">\n                        <Form ref=\"formData\" :model=\"formData\" :rules=\"formRule\">\n                            <Form-item prop=\"content\">\n                                <md-editor :value=\"formData.content\" @change=\"onContentChage\" />\n                            </Form-item>\n                        </Form>\n                        <Button type=\"primary\" @click=\"onSubmit\">发表回复</Button>\n                    </div>\n                </div>\n            </div>\n            <app-sidebar :score=\"score\" :votesMaxBrowse=\"votesMaxBrowse\" :votesMaxComment=\"votesMaxComment\"/>\n        </div>\n        <app-footer />\n    </div>\n</template>\n\n<script>\n    import ErrorCode from \'~/constant/ErrorCode\'\n    import VoteStatus from \'~/constant/VoteStatus\'\n    import Header from \'~/components/Header\'\n    import Footer from \'~/components/Footer\'\n    import Sidebar from \'~/components/Sidebar\'\n    import editor from \'~/components/article/editor\'\n    import request from \'~/net/request\'\n    import dateTool from \'~/utils/date\'\n\n    export default {\n        data () {\n            return {\n                loading: false,\n                formData: {\n                    content: \'\'\n                },\n                formRule: {\n                    content: [\n                        { required: true, message: \'请输入回复内容\', trigger: \'blur\' }\n                    ]\n                }\n            }\n        },\n        validate ({ params }) {\n            var hasId = !!params.id\n            return hasId\n        },\n        asyncData (context) {\n            return Promise.all([\n                request.getVote({\n                    client: context.req,\n                    params: {\n                        id: context.params.id\n                    }\n                }),\n                request.getVoteMaxBrowse({\n                    client: context.req\n                }),\n                request.getVoteMaxComment({\n                    client: context.req\n                }),\n                request.getTop10({\n                    client: context.req\n                })\n            ]).then(arr => {\n                let vote = arr[0].data\n                let votesMaxBrowse = arr[1].data.votes\n                let votesMaxComment = arr[2].data.votes\n                let score = arr[3].data.users\n                let isAuthor = context.user && context.user.id === vote.user.id\n                return {\n                    isAuthor: isAuthor,\n                    vote: vote,\n                    user: context.user,\n                    votesMaxBrowse: votesMaxBrowse,\n                    votesMaxComment: votesMaxComment,\n                    score: score,\n                    status: vote.status === VoteStatus.VOTE_UNDERWAY\n                }\n            }).catch(err => {\n                console.log(err)\n                context.error({ statusCode: 404, message: \'Page not found\' })\n            })\n        },\n        middleware: \'userInfo\',\n        methods: {\n            onSignin () {\n                location.href = \'/signin?ref=\' + encodeURIComponent(location.href)\n            },\n            onDelete () {\n                let self = this\n                this.$Modal.confirm({\n                    title: \'删除投票\',\n                    content: \'确认删除这个投票?\',\n                    onOk () {\n                        request.deleteVote({\n                            params: {\n                                id: self.vote.id\n                            }\n                        }).then(res => {\n                            if (res.errNo === ErrorCode.SUCCESS) {\n                                self.$Message.success(\'已删除!\')\n                                setTimeout(function () {\n                                    location.href = \'/vote\'\n                                }, 500)\n                            } else {\n                                self.$Message.error(res.msg)\n                            }\n                        }).catch(err => {\n                            err = \'内部错误\'\n                            self.$Message.error(err)\n                        })\n                    },\n                    onCancel () {\n\n                    }\n                })\n            },\n            onContentChage (content) {\n                this.formData.content = content\n            },\n            onSubmit () {\n                this.$refs[\'formData\'].validate((valid) => {\n                    if (!this.loading && valid) {\n                        this.loading = true\n                        request.commentCreate({\n                            body: {\n                                sourceID: parseInt(this.$route.params.id),\n                                parentID: 0,\n                                content: this.formData.content,\n                                sourceName: \'vote\'\n                            }\n                        }).then(res => {\n                            if (res.errNo === ErrorCode.SUCCESS) {\n                                this.formData.content = \'\'\n                                this.$Message.success(\'评论提交成功\')\n                                return request.getVote({\n                                    params: {\n                                        id: this.$route.params.id\n                                    }\n                                })\n                            } else {\n                                return Promise.reject(new Error(res.msg))\n                            }\n                        }).then(res => {\n                            if (res.errNo === ErrorCode.SUCCESS) {\n                                this.vote = res.data\n                            }\n                        }).catch(err => {\n                            this.loading = false\n                            this.$Message.error(err.message)\n                        })\n                    }\n                })\n            },\n            onVoteSubmit (id) {\n                if (!this.loading) {\n                    this.loading = true\n                    request.userVote({\n                        params: {\n                            id: id\n                        }\n                    }).then(res => {\n                        this.loading = false\n                        if (res.errNo === ErrorCode.SUCCESS) {\n                            return request.getVote({\n                                params: {\n                                    id: this.$route.params.id\n                                }\n                            })\n                        } else {\n                            return Promise.reject(new Error(res.msg))\n                        }\n                    }).then(res => {\n                        if (res.errNo === ErrorCode.SUCCESS) {\n                            this.vote = res.data\n                            this.$Message.success(\'投票成功\')\n                        }\n                    }).catch(err => {\n                        this.loading = false\n                        this.$Message.error(err.message)\n                    })\n                }\n            }\n        },\n        mounted () {\n        },\n        head () {\n            return {\n                title: this.vote.name,\n                link: [\n                    { rel: \'stylesheet\', href: \'/styles/editor/simplemde.min.css\' }\n                ]\n            }\n        },\n        filters: {\n            getReplyTime: dateTool.getReplyTime\n        },\n        components: {\n            \'app-header\': Header,\n            \'app-footer\': Footer,\n            \'app-sidebar\': Sidebar,\n            \'md-editor\': editor\n        }\n    }\n</script>\n\n<style>\n    @import \'~assets/styles/vote/detail.css\'\n</style>\n\n```','2017-09-01 21:52:57','2017-09-02 00:42:38',NULL,63,63),
-	(46,'aaa',3,0,0,1,'aa','2017-09-01 23:21:02','2017-09-01 23:22:12','2017-09-01 23:22:14',63,0),
-	(47,'aew',1,0,0,1,'sdfsaf','2017-09-02 00:21:47','2017-09-02 00:21:47',NULL,63,0),
-	(48,'adsfasfd',6,0,0,1,'asdf','2017-09-02 00:22:19','2017-09-02 00:44:08',NULL,63,0),
-	(49,'asdfaf',2,0,0,1,'asdf','2017-09-02 00:22:34','2017-09-02 00:25:32',NULL,63,0),
-	(50,'adsf',0,0,0,1,'asdf','2017-09-02 15:31:55','2017-09-02 15:31:55',NULL,64,0),
-	(51,'aa222',0,0,0,1,'af','2017-09-02 15:32:34','2017-09-02 15:32:34',NULL,64,0),
-	(52,'dfaf',0,0,0,1,'adsfasf','2017-09-02 15:33:36','2017-09-02 15:33:36',NULL,64,0),
-	(53,'adsf',5,0,0,1,'asfaf','2017-09-02 15:38:08','2017-09-02 17:25:34',NULL,64,0),
-	(54,'a2',1,0,0,1,'asdfasf','2017-09-02 15:40:28','2017-09-03 16:11:00',NULL,64,0),
-	(55,'aaa',0,0,0,1,'adsfaf','2017-09-02 15:41:01','2017-09-02 15:41:01',NULL,64,0),
-	(56,'aaa',0,0,0,1,'asdf','2017-09-02 15:42:02','2017-09-02 15:42:02',NULL,64,0),
-	(57,'a',0,0,0,1,'adsfaf','2017-09-02 15:43:19','2017-09-02 15:43:19',NULL,64,0),
-	(58,'a',42,0,0,1,'adsfaf','2017-09-02 15:43:43','2017-09-02 16:15:35',NULL,64,0),
-	(59,'a',0,0,0,1,'adsfaf','2017-09-02 15:43:45','2017-09-02 15:43:45',NULL,64,0),
-	(60,'a',0,0,1,1,'adsfaf','2017-09-02 15:43:46','2017-09-03 15:33:09',NULL,64,0),
-	(61,'a3',9,0,6,1,'asfd','2017-09-02 15:44:50','2017-09-03 15:38:56',NULL,64,0),
-	(62,'aaaa的文章',7,0,5,1,'aaaa','2017-09-03 15:56:42','2017-09-03 18:19:49',NULL,64,0),
-	(63,'test的文章',6,0,10,1,'asdfaf','2017-09-03 15:57:02','2017-09-03 18:25:40',NULL,63,0);
-
+INSERT INTO `articles` VALUES (1,'服务端 I/O 性能大比拼：Node、PHP、Java 和 Go',211,0,0,1,'理解应用程序的输入/输出（I/O）模型，意味着其在计划处理负载与残酷的实际使用场景之间的差异。若应用程序比较小，也没有服务于很高的负载，也许它影响甚微。但随着应用程序的负载逐渐上涨，采用错误的I/O模型有可能会让你到处踩坑，伤痕累累。\n   \n正如大部分存在多种解决途径的场景一样，重点不在于哪一种途径更好，而是在于理解如何进行权衡。让我们来参观下I/O的景观，看下可以从中窃取点什么。\n![](https://www.golang123.com/upload/img/2017/08/23/d1d2f698-ce8a-443a-af2b-e84bdf839ec2.jpg)\n\n在这篇文章，我们将会结合Apache分别比较Node，Java，Go，和PHP，讨论这些不同的语言如何对他们的I/O进行建模，各个模型的优点和缺点，并得出一些初步基准的结论。如果你关心下一个Web应用的I/O性能，那你就找对文章了。\n\n## I/O基础知识：快速回顾\n为了理解与I/O密切相关的因素，必须先来回顾在操作系统底层的概念。虽然不会直接处理这些概念的大部分，但通过应用程序的运行时环境你一直在间接地处理他们。而关键在于细节。\n### 系统调用\n首先，我们有系统调用，它可以描述成这样：\n\n* 你的程序（在“用户区域”，正如他们所说的）必须让操作系统内核在它自身执行I/O操作。\n* “系统调用”（syscall）意味着你的程序要求内核做某事。不同的操作系统，实现系统调用的细节有所不同，但基本的概念是一样的。这将会有一些特定的指令，把控制权从你的程序转交到内核（类似函数调用但有一些专门用于处理这种场景的特殊sauce）。通常来说，系统调用是阻塞的，意味着你的程序需要等待内核返回到你的代码。\n* 内核在我们所说的物理设备（硬盘、网卡等）上执行底层的I/O操作，并回复给系统调用。在现实世界中，内核可能需要做很多事情才能完成你的请求，包括等待设备准备就绪，更新它的内部状态等，但作为一名应用程序开发人员，你可以不用关心这些。以下是内核的工作情况。\n![](https://www.golang123.com/upload/img/2017/08/23/20eff7fa-e9ea-4856-9744-457c255325e3.jpg)\n\n### 阻塞调用与非阻塞调用\n好了，我刚刚在上面说系统调用是阻塞的，通常来说这是对的。然而，有些调用被分类为“非阻塞”，意味着内核接收了你的请求后，把它放进了队列或者缓冲的某个地方，然后立即返回而并没有等待实际的I/O调用。所以它只是“阻塞”了一段非常短的时间，短到只是把你的请求入列而已。\n\n这里有一些有助于解释清楚的（Linux系统调用）例子：-`read()` 是阻塞调用——你传给它一个文件句柄和一个存放所读到数据的缓冲，然后此调用会在当数据好后返回。注意这种方式有着优雅和简单的优点。-`epoll_create()`, `epoll_ctl()` 和 `epoll_wait()` 这些调用分别是，让你创建一组用于侦听的句柄，从该组添加/删除句柄，和然后直到有活动时才阻塞。这使得你可以通过一个线程有效地控制一系列I/O操作。如果需要这些功能，这非常棒，但也正如你所看到的，使用起来当然也相当复杂。\n\n理解这里分时差异的数量级是很重要的。如果一个CPU内核运行在3GHz，在没有优化的情况下，它每秒执行30亿次循环（或者每纳秒3次循环）。非阻塞系统调用可能需要10纳秒这样数量级的周期才能完成——或者“相对较少的纳秒”。对于正在通过网络接收信息的阻塞调用可能需要更多的时间——例如200毫秒（0.2秒）。例如，假设非阻塞调用消耗了20纳秒，那么阻塞调用消耗了200,000,000纳秒。对于阻塞调用，你的程序多等待了1000万倍的时间。\n![](https://www.golang123.com/upload/img/2017/08/23/c7fb0e81-ef74-4dcc-86d0-e61c08d6d7a8.jpg)\n\n内核提供了阻塞I/O（“从网络连接中读取并把数据给我”）和非阻塞I/O（“当这些网络连接有新数据时就告诉我”）这两种方法。而使用何种机制，对应调用过程的阻塞时间明显长度不同。\n\n### 调度\n接下来第三件关键的事情是，当有大量线程或进程开始阻塞时怎么办。\n\n出于我们的目的，线程和进程之间没有太大的区别。实际上，最显而易见的执行相关的区别是，线程共享相同的内存，而每个进程则拥有他们独自的内存空间，使得分离的进程往往占据了大量的内存。但当我们讨论调度时，它最终可归结为一个事件清单（线程和进程类似），其中每个事件需要在有效的CPU内核上获得一片执行时间。如果你有300个线程正在运行并且运行在8核上，那么你得通过每个内核运行一段很短的时间然后切换到下一个线程的方式，把这些时间划分开来以便每个线程都能获得它的分时。这是通过“上下文切换”来实现的，使得CPU可以从正在运行的某个线程/进程切换到下一个。\n\n这些上下文切换有一定的成本——它们消耗了一些时间。在快的时候，可能少于100纳秒，但是根据实现的细节，处理器速度/架构，CPU缓存等，消耗1000纳秒甚至更长的时间也并不罕见。\n\n线程（或者进程）越多，上下文切换就越多。当我们谈论成千上万的线程，并且每一次切换需要数百纳秒时，速度将会变得非常慢。\n\n然而，非阻塞调用本质上是告诉内核“当你有一些新的数据或者这些连接中的任意一个有事件时才调用我”。这些非阻塞调用设计于高效地处理大量的I/O负载，以及减少上下文切换。\n\n到目前为止你还在看这篇文章吗？因为现在来到了有趣的部分：让我们来看下一些流利的语言如何使用这些工具，并就在易用性和性能之间的权衡作出一些结论……以及其他有趣的点评。\n\n请注意，虽然在这篇文章中展示的示例是琐碎的（并且是不完整的，只是显示了相关部分的代码），但数据库访问，外部缓存系统（memcache等全部）和需要I/O的任何东西，都以执行某些背后的I/O操作而结束，这些和展示的示例一样有着同样的影响。同样地，对于I/O被描述为“阻塞”（PHP，Java）这样的情节，HTTP请求与响应的读取与写入本身是阻塞的调用：再一次，更多隐藏在系统中的I/O及其伴随的性能问题需要考虑。\n\n为项目选择编程语言要考虑的因素有很多。当你只考虑性能时，要考虑的因素甚至有更多。但是，如果你关注的是程序主要受限于I/O，如果I/O性能对于你的项目至关重要，那这些都是你需要了解的。“保持简单”的方法：PHP。\n\n回到90年代的时候，很多人穿着匡威鞋，用Perl写着CGI脚本。随后出现了PHP，很多人喜欢使用它，它使得制作动态网页更为容易。\n\nPHP使用的模型相当简单。虽然有一些变化，但基本上PHP服务器看起来像：\n\nHTTP请求来自用户的浏览器，并且访问了你的Apache网站服务器。Apache为每个请求创建一个单独的进程，通过一些优化来重用它们，以便最大程度地减少其需要执行的次数（创建进程相对来说较慢）。Apache调用PHP并告诉它在磁盘上运行相应的php文件。PHP代码执行并做一些阻塞的I/O调用。若在PHP中调用了`file_get_contents()`，那在背后它会触发`read()`系统调用并等待结果返回。\n\n当然，实际的代码只是简单地嵌在你的页面中，并且操作是阻塞的：\n\n```\n<?php\n\n// 阻塞的文件I/O\n$file_data = file_get_contents(\'/path/to/file.dat\');\n\n// 阻塞的网络I/O\n$curl = curl_init(\'http://example.com/example-microservice\');\n$result = curl_exec($curl);\n\n// 更多阻塞的网络I/O\n$result = $db->query(\'SELECT id, data FROM examples ORDER BY id DESC limit 100\');\n\n?>\n```\n\n\n关于它如何与系统集成，就像这样：\n\n![](https://www.golang123.com/upload/img/2017/08/23/3ec46030-5b74-48bb-b515-52d8f28a4db4.jpg)\n\n相当简单：一个请求，一个进程。I/O是阻塞的。优点是什么呢？简单，可行。那缺点是什么呢？同时与20,000个客户端连接，你的服务器就挂了。由于内核提供的用于处理大容量I/O（epoll等）的工具没有被使用，所以这种方法不能很好地扩展。更糟糕的是，为每个请求运行一个单独的进程往往会使用大量的系统资源，尤其是内存，这通常是在这样的场景中遇到的第一件事情。\n\n注意：Ruby使用的方法与PHP非常相似，在广泛而普遍的方式下，我们可以将其视为是相同的。\n\n## 多线程的方式：Java\n所以就在你买了你的第一个域名的时候，Java来了，并且在一个句子之后随便说一句“dot com”是很酷的。而Java具有语言内置的多线程（特别是在创建时），这一点非常棒。\n\n大多数Java网站服务器通过为每个进来的请求启动一个新的执行线程，然后在该线程中最终调用作为应用程序开发人员的你所编写的函数。\n\n在Java的Servlet中执行I/O操作，往往看起来像是这样：\n\n```\npublic void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException\n{\n\n    // 阻塞的文件I/O\n    InputStream fileIs = new FileInputStream(\"/path/to/file\");\n\n    // 阻塞的网络I/O\n    URLConnection urlConnection = (new URL(\"http://example.com/example-microservice\")).openConnection();\n    InputStream netIs = urlConnection.getInputStream();\n\n    // 更多阻塞的网络I/O\n    out.println(\"...\");\n}\n```\n\n\n由于我们上面的`doGet`方法对应于一个请求并且在自己的线程中运行，而不是每次请求都对应需要有自己专属内存的单独进程，所以我们会有一个单独的线程。这样会有一些不错的优点，例如可以在线程之间共享状态、共享缓存的数据等，因为它们可以相互访问各自的内存，但是它如何与调度进行交互的影响，仍然与前面PHP例子中所做的内容几乎一模一样。每个请求都会产生一个新的线程，而在这个线程中的各种I/O操作会一直阻塞，直到这个请求被完全处理为止。为了最小化创建和销毁它们的成本，线程会被汇集在一起，但是依然，有成千上万个连接就意味着成千上万个线程，这对于调度器是不利的。\n\n一个重要的里程碑是，在Java 1.4 版本（和再次显著升级的1.7 版本）中，获得了执行非阻塞I/O调用的能力。大多数应用程序，网站和其他程序，并没有使用它，但至少它是可获得的。一些Java网站服务器尝试以各种方式利用这一点; 然而，绝大多数已经部署的Java应用程序仍然如上所述那样工作。\n\n![](https://www.golang123.com/upload/img/2017/08/23/3e2fcee7-705a-4c7a-8cd5-014c5877bd26.jpg)\n\nJava让我们更进了一步，当然对于I/O也有一些很好的“开箱即用”的功能，但它仍然没有真正解决问题：当你有一个严重I/O绑定的应用程序正在被数千个阻塞线程狂拽着快要坠落至地面时怎么办。\n\n## 作为一等公民的非阻塞I/O：Node\n当谈到更好的I/O时，Node.js无疑是新宠。任何曾经对Node有过最简单了解的人都被告知它是“非阻塞”的，并且它能有效地处理I/O。在一般意义上，这是正确的。但魔鬼藏在细节中，当谈及性能时这个巫术的实现方式至关重要。\n\n本质上，Node实现的范式不是基本上说“在这里编写代码来处理请求”，而是转变成“在这里写代码开始处理请求”。每次你都需要做一些涉及I/O的事情，发出请求或者提供一个当完成时Node会调用的回调函数。\n\n在请求中进行I/O操作的典型Node代码，如下所示：\n\n```\nhttp.createServer(function(request, response) {  \n    fs.readFile(\'/path/to/file\', \'utf8\', function(err, data) {\n        response.end(data);\n    });\n});\n```\n\n可以看到，这里有两个回调函数。第一个会在请求开始时被调用，而第二个会在文件数据可用时被调用。\n\n这样做的基本上给了Node一个在这些回调函数之间有效地处理I/O的机会。一个更加相关的场景是在Node中进行数据库调用，但我不想再列出这个烦人的例子，因为它是完全一样的原则：启动数据库调用，并提供一个回调函数给Node，它使用非阻塞调用单独执行I/O操作，然后在你所要求的数据可用时调用回调函数。这种I/O调用队列，让Node来处理，然后获取回调函数的机制称为“事件循环”。它工作得非常好。\n\n![](https://www.golang123.com/upload/img/2017/08/23/4a3e0cc0-1060-4794-bab1-02dbdcc132ee.jpg)\n\n然而，这个模型中有一道关卡。在幕后，究其原因，更多是如何实现JavaScript V8 引擎（Chrome的JS引擎，用于Node），而不是其他任何事情。你所编写的JS代码全部都运行在一个线程中。思考一下。这意味着当使用有效的非阻塞技术执行I/O时，正在进行CPU绑定操作的JS可以在运行在单线程中，每个代码块阻塞下一个。 一个常见的例子是循环数据库记录，在输出到客户端前以某种方式处理它们。以下是一个例子，演示了它如何工作：\n\n```\nvar handler = function(request, response) {\n    connection.query(\'SELECT ...\', function (err, rows) {\n        if (err) { throw err };\n        for (var i = 0; i < rows.length; i++) {\n            // 对每一行纪录进行处理\n        }\n        response.end(...); // 输出结果\n    })\n};\n```\n\n虽然Node确实可以有效地处理I/O，但上面的例子中的for循环使用的是在你主线程中的CPU周期。这意味着，如果你有10,000个连接，该循环有可能会让你整个应用程序慢如蜗牛，具体取决于每次循环需要多长时间。每个请求必须分享在主线程中的一段时间，一次一个。\n\n这个整体概念的前提是I/O操作是最慢的部分，因此最重要是有效地处理这些操作，即使意味着串行进行其他处理。这在某些情况下是正确的，但不是全都正确。\n\n另一点是，虽然这只是一个意见，但是写一堆嵌套的回调可能会令人相当讨厌，有些人认为它使得代码明显无章可循。在Node代码的深处，看到嵌套四层、嵌套五层、甚至更多层级的嵌套并不罕见。\n\n我们再次回到了权衡。如果你主要的性能问题在于I/O，那么Node模型能很好地工作。然而，它的阿喀琉斯之踵（译者注：来自希腊神话，表示致命的弱点）是如果不小心的话，你可能会在某个函数里处理HTTP请求并放置CPU密集型代码，最后使得每个连接慢得如蜗牛。\n\n## 真正的非阻塞：Go\n在进入Go这一章节之前，我应该披露我是一名Go粉丝。我已经在许多项目中使用Go，是其生产力优势的公开支持者，并且在使用时我在工作中看到了他们。\n\n也就是说，我们来看看它是如何处理I/O的。Go语言的一个关键特性是它包含自己的调度器。并不是每个线程的执行对应于一个单一的OS线程，Go采用的是“goroutines”这一概念。Go运行时可以将一个goroutine分配给一个OS线程并使其执行，或者把它挂起而不与OS线程关联，这取决于goroutine做的是什么。来自Go的HTTP服务器的每个请求都在单独的Goroutine中处理。\n\n此调度器工作的示意图，如下所示：\n![](https://www.golang123.com/upload/img/2017/08/23/d22ed0dd-fef8-4407-8430-f9aaefe5c094.jpg)\n这是通过在Go运行时的各个点来实现的，通过将请求写入/读取/连接/等实现I/O调用，让当前的goroutine进入睡眠状态，当可采取进一步行动时用信息把goroutine重新唤醒。\n\n实际上，除了回调机制内置到I/O调用的实现中并自动与调度器交互外，Go运行时做的事情与Node做的事情并没有太多不同。它也不受必须把所有的处理程序代码都运行在同一个线程中这一限制，Go将会根据其调度器的逻辑自动将Goroutine映射到其认为合适的OS线程上。最后代码类似这样：\n\n```\nfunc ServeHTTP(w http.ResponseWriter, r *http.Request) {\n    // 这里底层的网络调用是非阻塞的\n    rows, err := db.Query(\"SELECT ...\")\n    for _, row := range rows {\n        // 处理rows\n        // 每个请求在它自己的goroutine中\n    }\n    w.Write(...) // 输出响应结果，也是非阻塞的\n}\n```\n\n正如你在上面见到的，我们的基本代码结构像是更简单的方式，并且在背后实现了非阻塞I/O。\n\n在大多数情况下，这最终是“两个世界中最好的”。非阻塞I/O用于全部重要的事情，但是你的代码看起来像是阻塞，因此往往更容易理解和维护。Go调度器和OS调度器之间的交互处理了剩下的部分。这不是完整的魔法，如果你建立的是一个大型的系统，那么花更多的时间去理解它工作原理的更多细节是值得的; 但与此同时，“开箱即用”的环境可以很好地工作和很好地进行扩展。\n\nGo可能有它的缺点，但一般来说，它处理I/O的方式不在其中。\n\n## 谎言，诅咒的谎言和基准\n对这些各种模式的上下文切换进行准确的定时是很困难的。也可以说这对你来没有太大作用。所以取而代之，我会给出一些比较这些服务器环境的HTTP服务器性能的基准。请记住，整个端对端的HTTP请求/响应路径的性能与很多因素有关，而这里我放在一起所提供的数据只是一些样本，以便可以进行基本的比较。\n\n对于这些环境中的每一个，我编写了适当的代码以随机字节读取一个64k大小的文件，运行一个SHA-256哈希N次（N在URL的查询字符串中指定，例如`.../test.php?n=100`），并以十六进制形式打印生成的散列。我选择了这个示例，是因为使用一些一致的I/O和一个受控的方式增加CPU使用率来运行相同的基准测试是一个非常简单的方式。关于环境使用，更多细节请参考[这些基准要点](https://peabody.io/post/server-env-benchmarks/)\n\n首先，来看一些低并发的例子。运行2000次迭代，并发300个请求，并且每次请求只做一次散列（N = 1），可以得到：\n![](https://www.golang123.com/upload/img/2017/08/23/b7ec5b94-598c-472b-a351-7724e3ee0251.jpg)\n\n> 时间是在全部并发请求中完成请求的平均毫秒数。越低越好。\n\n很难从一个图表就得出结论，但对于我来说，似乎与连接和计算量这些方面有关，我们看到时间更多地与语言本身的一般执行有关，因此更多在于I/O。请注意，被认为是“脚本语言”（输入随意，动态解释）的语言执行速度最慢。\n\n但是如果将N增加到1000，仍然并发300个请求，会发生什么呢 —— 相同的负载，但是hash迭代是之前的100倍（显着增加了CPU负载）：\n![](https://www.golang123.com/upload/img/2017/08/23/e3db6f22-df3c-43d1-9e9b-1ab11831cea3.jpg)\n\n> 时间是在全部并发请求中完成请求的平均毫秒数。越低越好。\n\n忽然之间，Node的性能显着下降了，因为每个请求中的CPU密集型操作都相互阻塞了。有趣的是，在这个测试中，PHP的性能要好得多（相对于其他的语言），并且打败了Java。（值得注意的是，在PHP中，SHA-256实现是用C编写的，执行路径在这个循环中花费更多的时间，因为这次我们进行了1000次哈希迭代）。\n\n现在让我们尝试5000个并发连接（并且N = 1）—— 或者接近于此。不幸的是，对于这些环境的大多数，失败率并不明显。对于这个图表，我们会关注每秒的请求总数。越高越好：\n![](https://www.golang123.com/upload/img/2017/08/23/423faf40-6a23-42cb-8af6-720fd4de7d8a.jpg)\n\n> 每秒的请求总数。越高越好。\n\n这张照片看起来截然不同。这是一个猜测，但是看起来像是对于高连接量，每次连接的开销与产生新进程有关，而与PHP + Apache相关联的额外内存似乎成为主要的因素并制约了PHP的性能。显然，Go是这里的冠军，其次是Java和Node，最后是PHP。\n\n## 结论\n综上所述，很显然，随着语言的演进，处理大量I/O的大型应用程序的解决方案也随之不断演进。\n\n为了公平起见，暂且抛开本文的描述，PHP和Java确实有可用于Web应用程序的非阻塞I/O的实现。 但是这些方法并不像上述方法那么常见，并且需要考虑使用这种方法来维护服务器的伴随的操作开销。更不用说你的代码必须以与这些环境相适应的方式进行结构化; “正常”的PHP或Java Web应用程序通常不会在这样的环境中进行重大改动。\n\n作为比较，如果只考虑影响性能和易用性的几个重要因素，可以得到：\n\n| 语言 | 线程或进程 | 非阻塞I/O | 易用性 |\n| -------- | -------- | -------- |  -------- |\n| PHP     | 进程     | 否     |      |\n| Java     | 线程     | 可用     | 需要回调     |\n| Node.js     | 线程     | 是     | 需要回调     |\n| Go     | 线程（Goroutine）     | 是     | 不需要回调     |\n\n线程通常要比进程有更高的内存效率，因为它们共享相同的内存空间，而进程则没有。结合与非阻塞I/O相关的因素，当我们向下移动列表到一般的启动时，因为它与改善I/O有关，可以看到至少与上面考虑的因素一样。如果我不得不在上面的比赛中选出一个冠军，那肯定会是Go。\n\n即便这样，在实践中，选择构建应用程序的环境与你的团队对于所述环境的熟悉程度以及可以实现的总体生产力密切相关。因此，每个团队只是一味地扎进去并开始用Node或Go开发Web应用程序和服务可能没有意义。事实上，寻找开发人员或内部团队的熟悉度通常被认为是不使用不同的语言和/或不同的环境的主要原因。也就是说，过去的十五年来，时代已经发生了巨大的变化。\n\n希望以上内容可以帮助你更清楚地了解幕后所发生的事件，并就如何处理应用程序现实世界中的可扩展性为你提供的一些想法。快乐输入，快乐输出！\n\n> 原文出处: [BRAD PEABODY](https://www.toptal.com/back-end/server-side-io-performance-node-php-java-go) &nbsp;&nbsp;&nbsp;&nbsp;译文出处: [dogstar](http://www.itran.cc/2017/05/17/server-side-io-performance-node-php-java-go/)','2017-08-23 00:17:20','2017-09-06 23:12:28',NULL,44,0),(2,'股权众筹鼻祖Naval Ravikant发表36条对于区块链乃至整个世界的思考，不得不读！',49,0,0,1,'> 原文: Blockchain TweetStorm&nbsp;&nbsp;&nbsp;&nbsp;译者: 安翔\n\n![](https://www.golang123.com/upload/img/2017/08/24/26d9b5e6-f0c6-4685-b258-896087317b60.jpg)\n\n当走过史前纪事、中本魔咒、以太野望、沧海横流，发展了几近半个世纪的区块链已然成为了一种社会思潮，它预示着人类社会转型、换代的新时代的到来，以分布式网络架构为技术基础的区块链让互联网时代的组织及经济发展规律悄然发生改变。\n\n区块链用技术设计取代权威控制和情感信任，以此建立一种网络结构，所有人都可以参与成为无数节点之一，进行认证、确权、交易、追溯和调整等一系列动作，它公开透明，成本低、速度快、分布广，没有权威可以篡改伪造和取缔记录。我们可以充分地想象今天的商业、艺术、司法、科技、政治乃至社会等各个领域中，这样一个建立在运算能力和技术架构上的网络文明社会基础设施将是多么不同。\n\n尽管它毫无情怀和冷冰冰地运作，但从根本上，摈弃了狂热理想的驱使、自命权威的霸道、垄断财团的曲扭、民粹阴谋的盲动，商业诈骗和情感敲诈也会随之水落石出。\n\n无论我们是否喜欢，区块链理念所驱动的全新社会正在迅速形成。\n\n作为全球股权众筹鼻祖，Naval Ravikant 投资了数百家公司，其中便包括 Twitter、Uber 等。除此之外，他还创立了一个用于天使投资人和初创企业的快速配对平台 AngelList。在不久前，Naval Ravikant 在一天的时间里发布了 36 条推文，其中所包含的，是他关于区块链对社会乃至整个世界的思考结果的精粹。\n\n1. 区块链将用市场取代网络。\n2. 人类是网络化的物种，是第一个跨越遗传边界从而掌控世界的物种。\n3. 网络为我们提供合作的机会，否则我们将孤身一人。网络分配我们合作所得的成果。\n4. 重叠的网络创造和组织我们的社会。物理的、数字化和精神上的道路共同将所有人联系在一起。\n5. 金钱是一个网络。宗教是一个网络。公司是一个网络。道路是一个网络。电力也是一个网络。\n6. 网络必须按照规则进行组织。他们要求统治者执行这些规则，用于防备骗子。\n7. 网络具有“网络效应”。新增用户可以增加所有现有用户的网络价值。\n8. 网络效应创造一个赢者通吃的胜者。领先的网络往往成为最后唯一存在的网络。\n9. 这些网络的统治者成为社会中最强大的人物。\n10. 有些网络由国王和牧师经营，他们制定货币和法律，神圣不可亵渎。规则依附于权力，并且对外界不开放。\n11. 有些网络由公司经营，比如社交网络、搜索网络、电话或有线网络。这些网络最初就是关闭的。\n12. 有些网络由精英阶层经营，比如大学网络、医疗网络、银行网络。有点开放，有点精明。\n13. 有些是由普通人经营的，比如民主网络、互联网、平民网络。开放但是不够精明而且效率很低。\n14. 专制在战争中比民主更有效率。互联网和物理公共空间被滥用和垃圾邮件超载。\n15. 20世纪创建了一种新型的网络 —— 市场网络。其特点是开放与精明。\n16. 市场的优点取决于资源。资源是金钱，一种冷冻和交易时间的形式。\n17. 市场网络是巨人。比如信贷市场、股市、商品市场、货币市场。\n18. 他们打破市场网络在有承诺的金钱工作。否则他们只是普通网络，到目前为止都应用有限。\n19. 区块链是一种新的发明，允许开放网络中的精英无需统治者和资金的情况下参与政权。\n20. 它们是基于优点的、防篡改的、开放的投票系统。\n21. 网络由有价值的人推动。\n22. 就像社会给你金钱给从而获取你在社会中想要的东西，区块链给你硬币从而得到你想要的网络。\n23. 需要注意的是，区块链使用它独有的货币进行支付，而不是传统金融市场的普通（美元）货币。\n24. 区块链使用硬币支付，但硬币只是用来追踪完成的工作。不同的区块链需要不同的工作。\n25. 比特币用于支付固定账单，Etherium支付（执行和验证）计算。\n26. 区块链将民主和互联网的开放与市场的优点相结合。\n27. 对于区块链来说，它的优点表现在多个方面，比如安全性、计算能力、预判性、注意力、带宽、功率、存储能力、分发、内容，等等。\n28. 区块链将市场模式引入到曾经无法达到的地方。\n29. 区块链基于市场的开放性和优点可以取代先之前由国王、公司、贵族和暴民经营的网络。\n30. 拥有一块没有硬币的区块链是无意义的，就像你空有市场但是手头却没钱一样，毫无意义。\n31. 拥有一个由专政、公司、精英或暴徒控制的区块链也是没有意义的。\n32. 区块链为我们提供了管理网络的新方法。可用于银行业务、投票系统、搜索、社交媒体，以及电话和电力网。\n33. 网络不需要国王、牧师、精英、公司和暴徒。它可以由任何有价值的人来管理。\n34. 基于区块链的市场网络将取代现有网络。从一件事开始慢慢扩大范围，逐渐实现完全取代。\n35. 最终，一个国家就只是一个网络（区块链网络）。\n36. 感谢中本聪，以及所有成就他的人。','2017-08-24 10:01:30','2017-09-06 05:44:48',NULL,44,0),(3,'黑客是这样写JavaScript的',46,0,0,1,'> 原文: [garethheyes](https://dev.opera.com/authors/garethheyes)&nbsp;&nbsp;&nbsp;&nbsp;译者: Tianyi_Ting&nbsp;&nbsp;&nbsp;&nbsp;校核：myownghost\n\n![](https://www.golang123.com/upload/img/2017/08/24/2f36d04f-f209-4ded-8110-f332bce01631.jpg)\n\n> 注 XSS攻击即Cross Site Scripting，通常在网页链接地址URL中注入JS代码来达到攻击手段，很多大厂都中过招，如：Twitter，新浪微博，示例代码：`http://www.demo.cn/=<script>alert(document.cookie)</script>`其实此代码并不能在所有浏览器上执行，但仅需要一部分浏览器(如IE6)可用，即可达到攻击效果。目前很多网站都有自动过滤XSS代码的功能，此文即介绍了一些如何屏蔽XSS过滤器的手段，其实我们可以发现，大多数在前端执行的XSS过滤都是不安全的，这对于我们在防范XSS攻击时有一定的借鉴意义。\n\n我喜欢以一种意想不到的方式使用JavaScript，写出一些看起来奇怪但其实很管用的代码，这些代码常常能够执行一些出人意料功能。这听起来似 乎有些微不足道，但是基于这点发现足以总结出一些非常有用的编程技巧。下面写到的每一个小技巧都可以屏蔽掉XSS过滤器，这也是我写这些代码的初衷。然 而，学习这样的JavaScript代码可以明显加强你对语言本身的掌握，帮助你更好地处理输入，并且提高Web应用程序的安全性。\n\n下面就看看这些令人惊异的JavaScript代码吧！\n\n## 正则表达式替换可执行代码\n当用到带有replace的正则表达式时，第二个参数支持函数赋值。在Opera中，可以利用这个参量执行代码。例如，下面这个代码片段：\n\n```\n\'XSS\'.replace(/XSS/g, alert)\n```\n\n这个执行的结果将会等价于：alert(‘XSS’); 产生这种现象的原因是正则表达式的匹配项被被当成一个参数，传递到了alert函数。一般情况下，在匹配文本上你会用一个函数调用另一段代码，像这样：\n\n```\n\'somestring\'.replace(/some/, function($1) {\n    //do something with some\n})\n```\n\n\n但是，正如在第一个例子中所看到的，我们执行了一个本地alert调用，而不是用户自定义函数，并且参数由正则表达式传递到了本地调用。这是个很酷的技巧，可以屏蔽掉一些XSS过滤器。例如，先写一个字符串，再跟一个“卯点”，接着就可以调用任何你想调用的函数啦。\n\n为了看一看这个在XSS环境中是怎么使用的，想象一下：我们在字符串中有段未过滤的攻击代码，可能是JavaScript事件或者是script标签，即这个字符串中出现了一个注入。首先，我们注入一个有效的函数alert(1)，接着我们突破这个引号的限制，最后再写我们的正则表达式。\n\n```\n.replace(/.+/,eval)//\n```\n\n注意我在这里用了eval函数执行我想执行的任何代码，并且为了使攻击代码传递给eval，正则表达式必须匹配所有项。\n\n如果我把所有的代码放在一起，展示这个页的输出，这样的话就会更容易理解这个过程：\n\n页输出：\n\n```\n<script>somevariableUnfiltered=\"YOUR INPUT\"</script>\n```\n\n上面的代码在分析脚本中很常见，你上网搜索的所有字符串都被一些广告公司储存在这样的分析脚本中。你可能没有注意到这些脚本，但是如果 你观察一个 Web页面的源，你会发现这是经常出现的。另外，论坛也是一个经常会用到这些脚本的地方。“YOUR INPUT”是你所控制的字符串。如果输入没有被正确过滤时，这也将被称为基于DOM的XSS注入。(注：DOM，将 HTML 文档表达为树结构，通常指HTML结构)\n\n输入：\n\n```\nalert(1)\".replace(/.+/,eval)//\n```\n\n输出结果：\n\n```\n<script>somevariableUnfiltered=\"alert(1)\".replace(/.+/,eval)//\"</script>\n```\n\n注意这里”//”用于清除后面引用的单行注释。\n\n## Unicode 转义\n尽管在对Unicode字符转义时，用圆括号是不太可能的，但是我们可以对正在被调用的函数名进行转义。例如：\n\n```\n\\u0061\\u006c\\u0065\\u0072\\u0074(1)\n```\n\n这句代码调用了alert(1); \\u表明这是个转义字符，并且在\\u0061后面的十六进制数是“a”。\n\n另外，常规字符可以和转义字符混合或匹配使用，下面的例子就展示了这一点：\n\n```\n\\u0061lert(1)\n```\n\n你也可以将它们包含在字符串中，甚至用eval对它们求值。Unicode转义和常规的16进制或8进制转义有些不同，因为Unicode转义可以包含在一个字符串中，或者是引用函数、变量或对象中。\n\n下面的例子展示了如何使用被求值并且被分成两部分的Unicode转义。\n\n```\neval(\'\\\\u\'+\'0061\'+\'lert(1)\')\n```\n\n通过避免像命名为alert这样的常规函数，我们就可以愚弄XSS过滤器注入我们的代码。这个例子就是用来绕过PHPIDS（一个开源的IDS系 统），最终导致规则变得更健壮。如果为了分析可能运行的恶意代码，你需要在解码JavaScript时，需要考虑过滤尽可能多的编码方法。就像在这个例子中看到的，这不是个容易的工作。\n\n## JavaScript解析器引擎\nJavaScript是一个非常动态的语言。可以执行很大量的代码。这些代码第一眼看起来似乎不能执行，然而一旦理解了解析器工作的原理，你就能够逐渐理解它背后的逻辑。\n\nJavaScript在函数执行之前是不知道函数结果的，并且很明显它必须通过调用函数返回变量的类型。这点很有趣，举个例子：如果返回函数不能返回代码块的一个有效值，就会在函数执行之后出现语法错误。\n\n说的到底是什么意思呢？好吧！代码总比空谈更有说服力，看下面的例子：\n\n```\n+alert(1)--\n```\n\nalert函数执行后，返回一个未定义的量，然而已经有些太晚了，语法错误立刻就会出现，这是因为自减操作符的操作数应该是一个数字。\n\n下面是一些不会产生错误的例子：\n\n```\n+alert(1)\n1/alert(1)\nalert(1)>>>/abc/\n```\n\n你可能认为上面的例子没有什么意义，但是实际上它们深刻体现了JavaScript的工作过程。一旦你理解了这些细节，JavaScript这个大 家伙就变得清晰，了解代码的执行方式可以帮助你理解解析器是怎么工作的。我觉得这类例子在追踪语法错误，检测基于DOM的XSS攻击和检测XSS过滤器的 时候很有用。\n\n## Throw，Delete还有什么？\n你可以用想不到的方式进行删除操作，这会产生一些很古怪的语法。让我们看看将throw, delete, not和typeof操作符组合在一起会发生什么？\n\n```\nthrow delete~typeof~alert(1)\n```\n\n你可能认为这句代码不能运行，但是使用函数调用delete却是可以的，仍旧能够执行：\n\n```\ndelete alert(1)\n```\n\n这儿有一些更多的例子：\n\n```\ndelete~[a=alert]/delete a(1)\ndelete [a=alert],delete a(1)\n```\n\n第 一眼看过去，你会认为这样的代码有语法错误，但是当你仔细分析后，你觉得会有几分道理。解析器先发现一个数组内部的变量赋值，执行赋值操作后删除 数组。同样地，删除操作是在一个函数（注* [a=alert]）调用之后，因为删除操作需要在知道函数执行结果的情况下，才能删除返回的对象，即使返回的是NULL。\n\n同时，这些代码可以用来屏蔽XSS过滤器，因为它们经常会尝试着匹配有效的语法，不希望代码太晦涩。当你的应用程序进行数据验证的时候，你应该考虑这样的例子。\n\n## 声明全局对象\n在屏蔽XSS过滤器的特定实例中，攻击代码经常隐藏在一个类似英语文本中的变量中。聪明的系统如PHPIDS，可以使用语法分析去比较判断访问请求是否是恶意攻击，所以这是测试这些系统很有用的方法。\n\n仅使用全局对象或函数时，能够产生类似英文的代码块。事实上，在sla.ckers安全论坛上，我们可以玩个小游戏，用JavaScript形式产生类似英语的句子。为了了解这是怎么一回事，请看下面的例子：\n\n```\nstop, open, print && alert(1)\n```\n\n我自己杜撰了个名字，叫作Javascriptlish, 因为它可以产生一些看起来很不可思议的代码：\n\n```\njavascript : /is/^{ a : \' weird \' }[\' & wonderful \']/\" language \"\nthe_fun: [\'never \'] + stop[\'s\']\n```\n\n我们使用正则表达式/is/跟上一个操作符^，接着创造一个对象{ a : ‘weird’}(拥有a属性和赋值weird)。在我们刚刚创造的对象中，寻找’ & wonderful ‘属性，这个属性接着被一串字符分开。\n\n接下来我们用一个命名为the_fun 的标识和一个带有never的数组，用一个命名为stop的全局函数检查s… 的属性，所有这些都是正确的语法。\n\n## Getters/Setters函数\n当火狐增加 custom syntax for setters后， 屏蔽了一些不使用圆括弧的有趣XSS注入。Opera还不支持自定义语法—从安全角度来说，这是个优点，但对JavaScript黑客来说却不是个好 消息。然而Opera支持标准的defineSetter语法。这使我们能够通过赋值以达到调用函数的 目的，说起来这对屏蔽XSS过滤器来说也有些作用。\n\n```\ndefineSetter(\'x\',alert); x=1;\n```\n\n假如你不了解setters/getters，那么上面的例子就是为全局变量x创造了一个设值函数。当一个变量被设定时就会调用设值函数。第二个参数alert是函数调用赋值。这样，当x被赋值成1时，就会调用alert函数，并把1作为参数。\n\n## Location允许url编码\nlocation对象允许url用JavaScript编码。这允许你通过双重编码进一步掩饰XSS注入。\n\n```\nlocation=\'javascript:%61%6c%65%72%74%28%31%29\'\n```\n\n将它们与转义字符结合能够很好地隐藏字符串。\n\n```\nlocation=\'javascript:%5c%75%30%30%36%31%5c%75%30%30%36%63%5c%75%30%30%36%35%5c%75%30%30%37%32%5c%75%30%30%37%34(1)\'\n```\n\n第一个例子是可行的，因为Opera的地址栏可以识别编码的地址串。通过用URL编码，你可以隐藏JavaScript代码。这点很有用，特别是当传递XSS攻击代码的时候，我们为了更进一步地屏蔽过滤，可以进行双重URL编码。\n\n第二个例子结合了第一个例子利用转义字符的技巧。所以，当你对字符串解码时，就会导致alert函数以这样的形式显示：\n\n```\n\\u0061\\u006c\\u0065\\u0072\\u0074\n```\n\n注* a 的ASCII编码为0x61','2017-08-24 11:04:14','2017-09-06 23:12:16',NULL,44,0),(4,'为什么无服务器更适用于移动开发',5,0,0,1,'> 译者注：作者通过介绍Realm移动平台，引出无服务器开发模式的优点，解释无服务器架构为什么适合移动开发。\n\n![](https://www.shen100.com/upload/img/2017/08/25/e3eecbd2-125d-4e54-9c33-fc5610a84146.jpg)\n\n当我们将旧版服务器堆栈取消时，构建移动应用程序将变得无限简单\n\n当我们谈到构建移动应用时，我们真正的意思是构建与服务器技术交互的移动应用。这就意味着要与一个被设计为与以太网电缆连接的桌面计算机的世界进行交互。尽管世界已经超越了大屏幕和有线连接，但移动开发者还是不得不接受无休止的妥协，以获得他们想要的体验。\n\n要交付有用的服务器端代码，您需要大量新颖的、特定领域的技能。当开发人员构建一个应用程序并将其连接到服务器时，数据并不会神奇地开始流入有用的列和行。在发出第一个请求之前，您必须部署和管理这些服务器。而devops让这种可能性变得更加容易，但它们占用很多时间。\n\n接下来，你的服务器必须从请求中获取的任何格式（可能是JSON）数据进行序列化，然后必须将其存储在通常理解为SQL的数据库中，然后必须对该数据执行业务逻辑。 它将以服务器端语言完成所有这些操作，当然这与用于编写移动应用程序的Swift或Android Java不同。\n\n## 简化服务器\n现在有一个更好的方式，一种称为无服务器开发的新兴模式 ，在Realm，我们一直努力把这种模式带给移动开发人员。[无服务架构](https://www.infoworld.com/article/3175761/cloud-computing/serverless-computing-freedom-for-devs-at-last.html)','2017-08-25 10:21:39','2017-08-29 16:07:58','2017-08-29 16:08:14',44,0),(5,'为什么无服务器更适用于移动开发',40,0,0,1,'> 原文: [Alexander Stigsen](https://www.infoworld.com/article/3214467/node-js/why-serverless-was-made-for-mobile-development.html)&nbsp;&nbsp;&nbsp;&nbsp;译者: lloog\n\n译者注：作者通过介绍Realm移动平台，引出无服务器开发模式的优点，解释无服务器架构为什么适合移动开发。\n\n![](https://www.golang123.com/upload/img/2017/08/25/e3eecbd2-125d-4e54-9c33-fc5610a84146.jpg)\n\n**当我们将旧版服务器堆栈取消时，构建移动应用程序将变得无限简单**\n\n当我们谈到构建移动应用时，我们真正的意思是构建与服务器技术交互的移动应用。这就意味着要与一个被设计为与以太网电缆连接的桌面计算机的世界进行交互。尽管世界已经超越了大屏幕和有线连接，但移动开发者还是不得不接受无休止的妥协，以获得他们想要的体验。\n\n要交付有用的服务器端代码，您需要大量新颖的、特定领域的技能。当开发人员构建一个应用程序并将其连接到服务器时，数据并不会神奇地开始流入有用的列和行。在发出第一个请求之前，您必须部署和管理这些服务器。而devops让这种可能性变得更加容易，但它们占用很多时间。\n\n接下来，你的服务器必须从请求中获取的任何格式（可能是JSON）数据进行序列化，然后必须将其存储在通常理解为SQL的数据库中，然后必须对该数据执行业务逻辑。 它将以服务器端语言完成所有这些操作，当然这与用于编写移动应用程序的Swift或Android Java不同。\n\n## 简化服务器\n现在有一个更好的方式，一种称为无服务器开发的新兴模式 ，在Realm，我们一直努力把这种模式带给移动开发人员。[无服务架构](https://www.infoworld.com/article/3175761/cloud-computing/serverless-computing-freedom-for-devs-at-last.html)旨在抽象出所有服务器端开发需要的基础设施和框架，从而，开发者只需要将注意力集中于：编写能够满足需求的，以及随时响应数据更改的代码。 服务器还在，但是所有的工作都已经消失了。\n\n这是Realm移动平台的背后理念。因为Realm对象服务器是与Realm移动数据库一起工作的对象同步和事件处理服务器。它只要对数据模型或控制器进行最小的更改，便可以在设备之间无缝自动地将数据保持同步。\n\n由于Realm对象服务器自动处理设备之间的数据同步，您可以直接进入Realm仪表板，创建一个新的Realm函数，然后开始编写JavaScript，以响应客户端应用程序生成的变化数据。\n\n这与正常的服务器端开发有什么不同呢?作为一名移动开发人员，您即使没有掌握服务器端开发知识，也可以有效地开展工作。不需要考虑如何让服务器运行，也不需要考虑如何将数据传输到服务器，你不需要做devops，也不需要学习如何处理Postgres和Redis以及其他复杂的应用程序所需要的服务器端技术。\n\n开发者不必学习一种全新的语言和框架，比如Django或Rails，只需要写一些JavaScript，而平台则负责我们所有使用框架的管道。该平台不需要处理中间件和URL路由，而是按照预期的格式获取所需的数据。您只需直接处理传入的数据，而不是构建基于rest的端点并将请求指向它们。\n\n我过去编写Django应用程序时，常常将数据发送到新视图，结果需要用到四到五个文件中的几十行代码。 相比之下，无服务器的Realm函数中的JavaScript代码只包含重要的部分，你按下运行按钮后便立即开始运行。\n\n## 专注于应用程序\n你最终也会写很多不那么移动的代码。与其在你的移动应用程序中编写网络和序列化代码，你所要做的就是你所创建的模型和数据。因为这个平台可以处理同步，所以你可以专注于应用代码，这将会让你的应用变得很好，而不是为了让你的应用程序工作而需要的代码。您可以从以前编写的那些用于与rest式的API进行交互、占用您剩余的时间的脆弱的代码中解脱出来。\n\n使用无服务器架构，您不再需要专门的devops和服务器团队。您不再需要知道服务器端框架， 只需要了解一点点JavaScript就足够了。而且，您甚至不需要编写与服务器通信所需的所有代码，因为该平台的设计初衷是为了避免此类工作。\n\nRealm移动平台是一个将[移动用例放在首位](https://www.infoworld.com/article/3178412/application-development/build-offline-first-mobile-apps-without-pain.html)的无服务器平台。数据同步是优秀移动应用程序的基础（无论是显示你的Uber驾驶员的位置还是Facebook上的家人最新的图片）。服务器端编码也是必需的，但不是编写所有在移动应用程序之间连接和共享数据的样板代码。你可以专注于现在服务器上编写的代码，而无需学习超过javascript外的东西。\n\n移动应用程序应该尽可能做到快速移动。像实时协作、双向数据同步、端点计算和“脱机优先”这样的特性通常都是昂贵且难以构建的。通过采用无服务器、移动优先的方式，开发人员可以拥有利用Realm功能来构建下一代的能力，而这只是我们用来构建的应用搭建舞台的一小部分资源。现在，我们可以开始工作，建设未来。','2017-08-25 10:26:10','2017-09-07 10:49:19',NULL,44,0),(6,'程序员编程生涯中会犯的7个错误',83,0,0,1,'![](https://www.golang123.com/upload/img/2017/08/25/c785eac9-03c8-40d8-ad4c-3bd5eaade740.png)\n作为软件开发人员生活和职业指导，我需要和很多程序员交流，帮助他们提升职业生涯，加速成长。时间久了，我发现很多程序员总是犯着相同的错误，前仆后继，却毫不自知。下面就是程序员在他们的软件开发生涯中最常犯的7个错误。\n\n## 1.没有明确的目标\n心中没有终点目标，那就只会随波逐流。如果你想在软件开发的职业生涯上获得成功，那么你需要有一个明确的目标。仅仅只是对遥远的未来有一个模糊的想法是不够的。相反，你应该有坚实的目标——在某个时间段内的首要目的——明确定义的目标。\n\n我认识许多程序员和所谓的专业人士庸庸碌碌地在同一个岗位上干了几十年，是的，你没听错，就是几十年！这是一场悲剧，但如果没有目标，这就是你人生的默认选择。请引以为戒，否则下一个悲剧就会是你。那么，我们能做些什么呢？\n\n从今天开始，从现在开始，花一些时间，好好想想你的编程生涯，并决定自己的近期目标。我的意思是，明确当前的首要目标。一旦达到这个目标之后，再制定一个新的目标，但是现在，请好好想想，你的编程生涯需要实现什么目的？你可以记下来，放到每天都能看到的位置，来提醒自己不断地朝着目标前进。\n\n![](https://www.golang123.com/upload/img/2017/08/25/641ef248-7a24-494f-9b37-20b9b643decc.jpg)\n\n## 2.不投资于非技术和“软技能”\n我认识很多程序员其实真的很擅长于写代码。我也认识很多程序员在算法上确实远远优于我。他们理解和思考复杂架构的水平，是我所望尘莫及的。但你猜怎么着？在我的软件开发职业生涯中，我超越了他们，不仅包括职位职务，还有工资，工作效率，性能等等。\n\n我说出来不是为了炫耀，只是想要说明软技能对我们的编程生涯有多重要，而不仅仅是那些大多数程序员重点关注的技术技能。作为一个软件开发人员，你肯定知道，你的工作并不仅仅是编写代码。还有其他许多必要的重点技能。我们得时常与人打交道，所以人际交往能力是必须的。紧张的时间期限，快速的变化则需要稳定的心理，能够全神贯注，并懂得自我激励。\n\n在一个不断变化的环境中，在一个充斥了各种繁多和意外的环境中，我们要学会如何优先安排，并尽可能地富有成效。此外我们也不能忽略健康以及经济因素，如果忽略它们的话也同样会导致失败甚至是毁灭。相关方面的内容还有很多，我就不一一赘述了，感兴趣的话，可以阅读《Soft Skills: The Software Developer’s Manual》 做深入的了解。\n\n总而言之，不管你做的是哪方面的工作，软技能几乎总是比硬技能、技术技能更重要——所以一定要好好学习这方面的知识。\n\n## 3.不参与社区\n我做的其中一件让我的编程生涯受益无穷的事就是，参与社区。这不但让我有了归属感，不再感觉孤单，还能帮助我提高技能，敢于设定更高的目标。所以，我强烈建议你加入到编程社区中。\n\n众人拾柴火焰高，参与社区，是一种积极的成长方式。\n\n如果你发现自己的软件开发职业生涯停滞不前，那么加入社区吧，里面的一些志同道合之人会为你提供助你克服困难，冲出困境的种种建议。成为社区的一份子，还可以让你获得关注，增加知名度，这将会大大有利于你的事业发展。\n\n那么，怎么加入社区呢？这很简单。世界各地都有这一类的团体，你可以简单地加入一个并参加聚会。比如说，你可以加入一年一次的，免费的，当地的Code Camp活动，那时许多软件开发人员会聚集到一起分享他们的工作心得。并且通常任何人都可以报名发表他们想要谈论的话题。如果你不喜欢这种聚会方式，也可以加入虚拟社区。对于初学者来说，不妨加入社区。社区里面提供技术开发交流，也有很多资讯和信息，非常不错。你也可以写博客，这也是参与社区的一种方式。话说，就是博客让我在社区众多程序员中脱颖而出的。\n\n![](https://www.golang123.com/upload/img/2017/08/25/b62545c0-b721-4c9e-b0d8-f2001a919db7.jpg)\n\n## 4.不专业\n如果你曾经看过我写的博客，或者读过我的书，你就会发现我几乎每次都会提到这个话题，因为它真的非常重要。专业化。为自己选定一个方向，然后专心致志地朝着这个方向发展。但这并不意味着你无需具备广泛的知识基础——我非常热衷于通晓多门编程语言——我的意思是，你应该选择某个区域，然后孜孜不倦一心一意于挖掘更深层次的内容。\n\n成为某种形式的专业人士是非常重要的，尤其是职业生涯的早期。专业人士的需求高，所以他们拿到的薪资也高，并且通常而言，他们还能够更快地塑造起威望来。另外，如果你的老板知道你在软件开发领域和技术上面钻研得很深，肯定会对此非常开心。你应该成为小池塘中的大鱼，而不是大池塘中的小鱼。\n\n或许最终你会因为个头太大而不再适合这个池塘——那个时候你可以大胆潜入到更深的水域——但是，以一个专业人士的身份开启你的软件开发生涯，可以在这一行中为你自己树立个人品牌和声誉。（关于这一点，下面我会详细说明。）\n\n最后，不要担心自己专业化了之后会被对号入座——这种事很少发生。并且，你也不需要真的研究得太深。话说，这么多年，我也没碰到有谁是太过于专业化的。\n\n## 5.不投资于个人品牌\n生活中的许多事情来来去去，犹如过往云烟。你可能会换工作，又或许甚至要换配偶；突然一夜暴富，也可能穷困潦倒；可能身体很健康，但也有可能会发胖——但无论生活中发生什么，有一样东西会永远与你同在……\n\n你的名字。所以，既然你的名字将贯穿你的一生，为什么不在这上面花些精力呢？你的名字，或者说你的个人品牌，是非常宝贵的财富，也是许多软件开发人员没有意识到的财富。你的名字，或者说你的个人品牌，是你找工作、升职、挖掘潜在客户、甚至是自己创业的强大工具。哪怕你的名字从字面上看并不与众不同，但只要你有良好的知名度和声誉，那么有时候搞定诸多麻烦只是举手之劳而已。\n\n我认识很多的软件开发人员因为已经具备了坚实的个人品牌，所以再也不必担心就业问题。因为无论发生什么事，他们都有把握找到另一份工作，因为他们的声誉众所周知。我们都听说过推销产品和服务，但你可曾想过推销自己？想在软件开发行业打造个人品牌，我的建议是写博客，选择一个特定的领域或专业，然后做到让你的名字如雷贯耳就行了。最好办法之一就是写一些对其他人有用的内容。\n\n就拿博客举例。我写的博客可以在互联网上构建了我的品牌和声誉。如果你觉得这篇文章，甚至是我的网站有价值，那么你可能会分享。也可能会为此页添加书签，或者订阅相关邮件，这样你就不会错过任何好的资讯。这只是打造个人品牌的方式之一。你还可以创建YouTube视频，发表自己的播客，写文章写书，在活动中发言。但这并不意味着你必须做上述所有这些事情，这只是我认为不错的一些点子而已。\n\n![](https://www.golang123.com/upload/img/2017/08/25/97415a81-86a7-4bf9-bfbf-de028ad86b55.jpg)\n\n## 6.不搞点业余项目\n我们手头应该总是有个业余项目在做。业余项目有很多你可能不知道的有益之处。\n\n首先，业余项目是改善技能的有效方式。并且，这远远比你朝九晚五的工作能更快地提升你的成长速度。开发业余项目也是学习新技能新技术的好方法，有助于你寻找新工作。常常有很多程序员抱怨说现在千篇一律的工作没法让他们学习新技术，使得他们跟不上市场的脚步。听到这样的话，我总是劝他们不妨试着用心仪的新技术去开发业余项目，这绝对是个学习相关技能的好办法。而且，业余项目还可以让你赚点外快。可能你一开始不会想着用业余项目赚钱，但是业余项目的确是能让你获取额外的收入。\n\n我大概在4年前开始开发Android和iOS app作为我的业余项目，并且至今它们依然在为我创造财富。我也认识不少软件开发人员最终将业余项目当作了他们的全职工作。开发业余项目其实很有趣。当你工作累了厌了，写一会自己喜欢的业余项目能很好地消除疲劳和压力。并且业余项目也是一个很好的出路，也许哪一天让你赚了大钱呢。\n\n## 7.没有自我教育的规划\n每次我面试软件开发人员时，问的第一个问题往往是关于他们自我教育和自我完善的规划。有没有去做点什么以便让自己成长得更为优秀呢？我经常会问他们用什么措施来跟上总是在不断变化的领域。我经常会问他们最近读了什么书，以及哪些是他们认为值得推荐给所有软件开发人员阅读的好书。我想从他们的答案中知道他们是否有一个用于自我教育，用于不断成长的确切规划。我之所以这么做是因为我知道一个致力于不断自我完善的人不仅会成就自己，也能带动周围的人一起朝着成功前行。\n\n然而，很可惜的是，很多程序员都没有任何形式的自我教育规划。如果你还没有用于学习和提升自我技能的规划，那么是时候为自己制定一个了。想听听我推荐的一个简单规划吗？保证每个月阅读一本技术或职业发展类的书籍。一年下来你就能累计阅读12本。我个人的话，每天至少投入45分钟到阅读上。\n\n请记住，千里之行始于足下。哪怕一天30分钟，持续一两年之后，就能给你带来巨大的改变。行动吧，骚年。希望这篇文章列举的这7个错误能警示各位，但是，如果你不采取任何行动，那么即使是灵丹妙药，也不会有一丝作用。所以，阅读完了之后，不要抛之脑后，请从今天就开始行动。先将定为至少改正自己已知的一个错误。\n\n欢迎留下评论以及分享你的成果。\n\n真正的勇士，敢于直面自己的不足之处，然后积极改正它们。\n\n```\n英文原文: https://simpleprogrammer.com/2015/05/18/7-mistakes-youre-making-in-your-programming-career/\n译文链接: http://www.codeceo.com/article/7-mistakes-programmer-do.html\n翻译作者: 码农网 – 小峰\n```','2017-08-25 14:43:46','2017-09-03 12:44:09',NULL,44,0),(7,'“好吃的”奥利奥 Android 8.0 正式发布：更快、更强大、更安全',69,0,0,1,'2017 年 8 月 21 日，随着日全食的到来，此前一直猜测是 OREO（奥利奥）还是 Orellete（加泰罗尼亚的点心）的 Android 8.0 最终拉开帷幕，Google 正式采取了“OREO”的甜品来命名。基于此，Google 最新的手机操作系统和 Android Nougat 的下一版本不仅由此而得名，而且 Google 还将最新的源代码推送至 Android 开源项目上（AOSP）。\n\n![](https://www.golang123.com/upload/img/2017/08/25/4b1954d9-0a80-41de-aa66-e9bc160c993e.jpg)\n\n整场 Android 8.0 的发布会从开始至结束只有短短的 55 秒，可谓是全球最短的发布会了。官方在直播中只公布了 Android 新版本叫 OREO , 然后就没有其他了，至于 Android 8.0什么时候到来？按照惯例，Google 旗下的自有品牌手机肯定是近水楼台先得月，Google 表示，正式版 Android 8.0 将很快推送给 Pixel 和 Nexus 设备，首批可以升到“OREO”的设备还包括 Pixel、Pixel XL、Pixel C、 Nexus 6P、Nexus 5X 以及 Nexus Player。而如果手持上述设备的用户加入了 Android Beta Program 并运行着最新的预览版系统，将会很快收到更新。\n\n此外，谷歌还承诺，包括 Essential、General Mobile、HMD Global Home、Nokia、华为、HTC、Kyocera、LG、摩托罗拉、三星、夏普和索尼等硬件制造商预计在“今年之内”升级设备至 Android 8.0 Oreo。\n\n那么 Android 8.0 与以往新增了哪些功能呢？接下来，我们一起来看一下：\n\n* **后台执行限制**。每次在后台运行时，应用都会消耗一部分有限的设备资源，例如 RAM。 这可能会影响用户体验，如果用户正在使用占用大量资源的应用（例如玩游戏或观看视频），影响尤为明显。为了提升用户体验，Android 8.0 对应用在后台运行时可以执行的操作施加了限制。应用主要在两个方面受到限制：后台服务限制和广播限制。\n* **重要通知**。以往我们会收到大量的通知，但很多通知相当于垃圾信息，Android 8.0 中新增了“重要通知”这一功能，用户可通过该功能进行筛选设置。![](https://www.golang123.com/upload/img/2017/08/25/dddc46f8-6a72-488d-bde6-897e1be09c06.jpg)\n* **Dot**。在 Android 7.1.1 中，已经有 Notification Dot 这一功能，可以长按桌面上的图标（判断 App 是否具有这样的设计），然后可以看到最新的通知及建立捷径。\n![](https://www.golang123.com/upload/img/2017/08/25/5795cb80-01f2-4413-a9ca-1b8d512788b1.gif)\n* **自动填充框架**。用户可以通过在设备中使用自动填充来节省填写表单的时间。引入自动填充框架后，Android 可以更轻松地填充表单。自动填充框架管理应用程序和自动填充服务之间的通信。只要你在 Google 账号中记录了你的用户及密码，当你在电话或手机甚至其他装置中，都不需要再次输入用户名及密码，只需要你进行指纹确认或手机锁确认。\n* **画中画模式**。Android 8.0 允许以画中画 (PIP) 模式启动操作组件。PIP 是一种特殊的多窗口模式，最常用于视频播放。目前，PIP 模式可用于 Android TV，而 Android 8.0则让该功能可进一步用于其他 Android 设备。这样的好处是在一款设备上，播放影片的同时不影响其他工作。![](https://www.golang123.com/upload/img/2017/08/25/24877bc6-fb19-41b3-83c1-41ed1fcf3b06.gif)\n* **用户界面**。新版 Android 中沒有重大的视觉变化。事实上，最引人注意的视觉差异是通知栏中快速设置区域的色彩变得明亮，它现在是浅灰色，不是深灰色。除了这种颜色变化，快速设置面板还有一些细微的重新排列，使设置，用户切换和编辑快捷键都由原本放置于顶部转为底部，主要原因估计是为了迁就未来推出的 18:9 屏幕手机 , 使用时更容易按到。![](https://www.golang123.com/upload/img/2017/08/25/e14b82c5-a103-4ce9-9e72-2e2275974b3c.gif)\n* **XML字体资源**。Android 8.0 推出一项新功能，即 XML 中的字体，允许用户使用字体作为资源。这意味着，不再需要以资产的形式捆绑字体。字体在 R 文件中编译，并且作为一种资源，可自动用于系统。然后，用户可以利用一种新的资源类型 font 来访问这些字体。在运行 API 版本 14 及更高版本的设备中，支持库 26 对此功能提供完全支持。\n* **可下载字体**。Android 8.0 和 Android 支持库 26 允许您从提供程序应用请求字体，而无需将字体绑定到 APK 中或让 APK 下载字体。此功能可减小 APK 大小，提高应用安装成功率，使多个应用可以共享同一种字体。\n* **表情符号兼容性**。Android 8.0 在 Emoji 5.0 中添加了一些新的表情符号 , 而且重新设计了图案，放弃了过去的布局造型。![](https://www.golang123.com/upload/img/2017/08/25/ff191ef2-fdcb-48e5-94cf-34d91a762b1e.jpg)\n\nGoogle 还改进了蓝牙音频，并新增了 Google Play Protect 机制，定期扫描所以的应用保证设备的安全。尽量减少在后台从应用程序中过度使用电池，另外操作系统优化会带来更快的启动时间（Pixel 上的两倍）和更流畅的 App。\n\n关于 Android 8.0 更多的功能和 API 可参考：[https://developer.android.com/about/versions/o/android-8.0.html](https://developer.android.com/about/versions/o/android-8.0.html)','2017-08-25 18:22:42','2017-09-06 00:15:57',NULL,44,0),(8,'为什么你的DevOps会失败？',43,0,0,1,'![](https://www.golang123.com/upload/img/2017/08/30/6e38b8a7-2fd9-4dfd-a1a3-88222acde86c.jpeg)\n\n**DevOps的目标非常明确：使应用软件高效迭代，可靠，质量更好**。这个目标非常理想，几乎所有人都不会对此产生异议。 \n\n许多人都说，他们已经开始了DevOps的实践，正遵循一些常见的框架，比如“CALMS”。然而，能得到非常满意结果的并不多，我们在与200多名DevOps专业人士交谈后，做了以下的数据统计，希望你能从中得出一些结论： \n\n* 68％的人表示，DevOps中所需的多种工具之间缺乏连接性； \n* 52％的人表示，他们的大部分测试仍然是手动的，速度缓慢； \n* 38％的人表示，他们混合了传统和现代应用，使得环境变得非常混乱，这给应用部署策略和工具链等方面制造了很多麻烦； \n* 27％的人仍然在努力消除孤立的团队，追求所预期的协作； \n* 23%的人对自助服务基础设施的访问仍然受限； \n* 以及一些其他的问题：找不到正确的DevOps思路，难以管理多种服务和环境的复杂性，缺乏预算和紧迫性，以及执行领导层的支持有限…… \n\n通过这些数据统计，我们能得出一些更深入的结论来： \n### 挑战1：DevOps工具链中缺少连接 \n许多DevOps工具会用于自动执行不同的任务，如CI，基础设施配置，测试，部署，配置管理，发布管理等，虽然这些组织开始采用DevOps，但他们往往不能一起工作。 \n![](https://www.golang123.com/upload/img/2017/08/30/2c708f03-adae-41c5-8050-3f4ba0984f70.jpeg)\n举一个典型的例子，某团队使用Capistrano进行部署，当需要部署新版本的应用程序时，或者当应用配置需更改时，研发人员仍然会通过JIRA tickets 与Test and Ops团队进行通信。\n\n运行Capistrano脚本所需的所有信息都可以在JIRA tickets 中使用，在运行之前，研发人员手动将其复制到脚本中，这个过程通常需要几个小时，需要仔细管理。而所需的配置其实被手动传输两次：先输入到JIRA，再将其复制到Capistrano。 这是一个简单的例子，但这个问题存在于整个工具链中。当DevOps工具链中的工具无法协作并且依赖于手动的时候，持续交付将变得非常困难。 \n\n### 挑战2：缺乏测试自动化 \n尽管所有的焦点都集中在TDD上，但大多数组织仍然在与自动化测试进行斗争。如果测试是手动的，那么几乎不可能执行整个测试套件，这将成为持续交付的障碍。团队试图通过运行一组核心的测试来处理这一问题，并定期运行完整的测试套件。但这意味着在你的软件交付工作流程中可能忽视很多bug，而且查找和修复的成本要高得多。\n![](https://www.golang123.com/upload/img/2017/08/30/215c1da6-6e9a-4b95-82df-36e2e96f396e.jpeg)\n测试自动化是DevOps采用过程的重要组成部分，因此需要成为首要任务。\n\n### 挑战3：布朗菲尔德环境 \n典型的IT组合在本质上是跨越了数十年的技术、云平台供应商、实验室、数据中心的私有云和公共云。创建跨越这些方面的工作流程是非常有挑战性的，因为相当一部分工具只能使用在特定的架构和技术上。这导致了工具链的蔓延，因为每个团队都希望使用最符合自己需求的工具链。\n\nDocker的兴起鼓励许多组织开发基于微服务架构进行。这也增加了DevOps自动化的复杂性，因为应用程序现在需要数百个异构微服务的部署管道。 \n\n### 挑战4：文化问题 \n开发人员开发了稳定优质的软件，然后由运维部门部署和运维。尽管所有这些团队都希望能够携手共同合作，但他们往往会有利益冲突。 \n\n开发人员可以快速迭代，QA团队确保没有软件错误，两个团队通常由SecOps和基础设施运维部门协调，他们被激励以确保生产不会中断。但成本中心的压力越来越大，这导致了一种反对变革的文化，因为变革引发了风险，破坏了事物的稳定，这意味着需要更多的资金和资源来控制影响。 \n\n开发人员也受到开发问题的困扰，大部分时间都花在之前的内容维护上，而不是创新新事物。大多数组织试图让所有团队参与SDLC的所有阶段，但这种方法仍然依赖于手动协作。 自动化是开发和运维合作的最佳方式。但是正如我们刚刚分析的那样，这种不太健康的自动化本身会降低你的速度并引入风险和错误。\n\n**我们需要更多关于DevOps理解和思考**\n\n一套完整的DevOps框架会包括文化、自动化、测试和共享。DevOps运动的雏形其实是一种文化运动，即使在今天，大多数的实现仍集中在文化上。 \n\n虽然文化是任何DevOps架构的重要组成部分，但想改变一个组织的文化是最困难的事情，因为文化会在时间的沉淀中形成。Ops团队不讨厌改变，他们试图快速改变生产过程，但他们更需要运维的稳定性。 把它们和开发人员一起放在一起，可能有助于使工作环境变得更加友好，但它并没有解决根本原因，Dev团队和Ops团队还有很长的路要走。\n\n```\n转载于: http://blog.csdn.net/ghostcloud2016/article/details/77684001\n```','2017-08-30 10:09:24','2017-09-06 12:00:02',NULL,44,0),(9,'React Native与原生模块交互之iOS篇',109,0,0,1,'![](https://dev.golang123.com/upload/img/2017/08/29/4bd6ae21-2a47-4163-89e1-444d7e1db9aa.jpg)\n# 为什么需要使用原生模块?\n有时候App需要访问平台API，但React Native可能还没有相应的模块封装；或者你需要复用Objective-C、Swift或C++代码，而不是用JavaScript重新实现一遍；又或者你需要实现某些高性能、多线程的代码，譬如图片处理、数据库、或者各种高级扩展等等。\n\n# JavaScript与Objective-C交互\n## Objective-C代码\nMyNativeModule.h\n```\n#import <React/RCTBridgeModule.h>\n#import <React/RCTEventEmitter.h>\n\n// 在React Native中，如果实现一个原生模块\n// 需要实现\"RCTBridgeModule\"协议，其中RCT就是ReaCT的缩写\n@interface MyNativeModule : RCTEventEmitter <RCTBridgeModule>\n\n@end\n```\n\nMyNativeModule.m\n```\n#import \"MyNativeModule.h\"\n\n@implementation MyNativeModule\n\n// 这个宏可以添加一个参数用来指定在JavaScript中访问这个模块的名字\n// 如果不指定，默认就会使用这个Objective-C类的名字\nRCT_EXPORT_MODULE();\n\n// RCT_EXPORT_METHOD()宏来实现要给JavaScript导出的方法\nRCT_EXPORT_METHOD(sayHello:(NSString *)name event:(RCTResponseSenderBlock)callback)\n{\n    NSString *result = [NSString stringWithFormat:@\"%@, %@\", @\"Hello\", name];\n    // 通过回调函数给JavaScript返回结果\n    // 第一个参数是错误对象，第二个参数是数组\n    callback(@[[NSNull null], result]);\n  \n    [self onStart:[NSString stringWithFormat:@\"%@, %@\", name, @\"data1 from onStart\"]];\n    [self onEnd:[NSString stringWithFormat:@\"%@, %@\", name, @\"data2 from onEnd\"]];\n}\n\n- (NSArray<NSString *> *)supportedEvents\n{\n    return @[@\"onStart\", @\"onEnd\"];\n}\n\n- (void)onStart:(NSString *)msg\n{\n    // Objective-C也可以直接给JavaScript发送事件\n    [self sendEventWithName:@\"onStart\" body:msg];\n}\n\n- (void)onEnd:(NSString *)msg\n{\n    // Objective-C也可以直接给JavaScript发送事件\n    [self sendEventWithName:@\"onEnd\" body:msg];\n}\n\n@end\n```\n\n## JavaScript代码\n```\nimport React, { Component } from \'react\';\nimport {\n    AppRegistry,\n    StyleSheet,\n    Text,\n    View,\n    NativeModules,\n    NativeEventEmitter\n} from \'react-native\';\n\nexport default class golang123ReactNative extends Component {\n    constructor() {\n        super();\n        this.onNativeEvent = this.onNativeEvent.bind(this);\n        this.state = {\n            helloMsg: \'\',\n            eventMsg: \'\'\n        };\n    }\n    componentDidMount() {\n        let MyNativeModule = NativeModules.MyNativeModule;\n\n         //创建自定义事件接口  \n        let myNativeEvt = new NativeEventEmitter(MyNativeModule);\n        //对应了原生端的事件名称\n        this.listener = myNativeEvt.addListener(\'onStart\', this.onNativeEvent); \n        this.listener = myNativeEvt.addListener(\'onEnd\', this.onNativeEvent);\n        // 调用原生端的方法sayHello，传字符串参数\"golang123\"\n        MyNativeModule.sayHello(\"golang123\", (err, result) => {\n            if (!err) {\n                this.setState({\n                    helloMsg: result\n                });\n            }\n        });\n    }\n\n    componentWillUnmount() {  \n        this.listener && this.listener.remove();\n        this.listener = null;  \n    }  \n\n    onNativeEvent(msg) {\n        this.setState({\n            eventMsg: this.state.eventMsg + \'\\n\'+ msg\n        });    \n    } \n\n    render() {\n        return (\n            <View style={styles.container}>\n                <Text style={styles.text}>{this.state.helloMsg}</Text>\n                <Text style={styles.text}>{this.state.eventMsg}</Text>\n            </View>\n        );\n    }\n}\n\nconst styles = StyleSheet.create({\n    container: {\n        flex: 1,\n        justifyContent: \'center\',\n        alignItems: \'center\',\n        backgroundColor: \'#F5FCFF\',\n    },\n    text: {\n        fontSize: 20,\n        paddingBottom: 12,\n        textAlign: \'center\',\n        margin: 10\n    }\n});\n\nAppRegistry.registerComponent(\'golang123ReactNative\', () => golang123ReactNative);\n```','2017-08-30 14:06:18','2017-09-07 10:27:06',NULL,44,0),(10,'Linux下Redis的安装和配置',98,0,0,1,'## Redis的安装\n1. 下载redis压缩包, 地址: [http://download.redis.io/releases/redis-4.0.1.tar.gz](http://download.redis.io/releases/redis-4.0.1.tar.gz)\n\n2. 将压缩包上传到Linux服务器的某个目录，然后解压\n```\ntar xzvf redis-4.0.1.tar.gz\n```\n\n3. 进入解压后的目录, 对Redis解压后的文件进行编译\n```\ncd redis-4.0.1\nmake\n```\n\n4. 执行redis的测试\n```\nmake test\n```\n测试通过后, 界面如下:\n![](https://www.golang123.com/upload/img/2017/09/06/9a7f80e1-4c7b-470c-a7ec-0c802c604482.jpg)\n\n5. 进入`redis-4.0.1/src`目录,  安装redis\n```\ncd src\nmake install\n```\n6. 安装完成\n\n## make test常见问题\n1. **You need tcl 8.5 or newer in order to run the Redis test**\n安装tcl\n```\nyum install tcl\n```\n\n2. **Executing test client: NOREPLICAS Not enough good slaves to write**\n这种情况下，可以修改redis-4.0.1/tests/integration/replication-2.tcl文件，将after 1000改为after 10000以延长等待时间。\n![](https://www.golang123.com/upload/img/2017/09/06/042c0471-2509-4387-b0a5-f87ba5012d5d.png)\n3. **Executing test client: I/O error reading reply**\n这种情况下，可以修改redis-4.0.1/tests/unit/memefficiency.tcl文件, 将expected_min_efficiency中的值改小一点。\n![](https://www.golang123.com/upload/img/2017/09/06/a758b06e-4eee-4387-aee9-d810d30bcbfd.png)\n\n## 运行\n打开`redis-4.0.1/redis.conf`文件, 找到daemonize，改为`daemonize yes`, 即后台daemon方式运行\n输入以下命令运行\n\n```\nredis-server /path/to/redis.conf\n```\n\n## 配置参数\n 参数 | 说明 \n -------- | -------- \n daemonize     | 是否以后台daemon方式运行 \n pidfile | pid文件位置 \n port | 监听的端口号 \n timeout | 请求超时时间 \n loglevel | log信息级别 \n logfile | log文件位置 \n databases | 开启数据库的数量 \n rdbcompression | 是否使用压缩 \n dbfilename | 数据快照文件名（只是文件名） \n dir | 数据快照的保存目录（仅目录） \n appendonly | 是否开启appendonlylog，开启的话每次写操作会记一条log，这会提高数据抗<br/>风险能力，但影响效率 \n appendfsync | appendonlylog如何同步到磁盘。三个选项，分别是每次写都强制调用fsync、<br/>每秒启用一次fsync、不调用fsync等待系统自己同步','2017-09-06 10:52:36','2017-09-07 11:09:23',NULL,44,0),(11,'golang123配置支持emoji🙂',17,0,0,1,'## 配置MySQL支持utf8mb4\n打开my.conf文件，按照如下的配置就可以支持utf8mb4的字符集了。(注意: MySQL的版本要5.5.3以上)\n```\n[client]\ndefault-character-set = utf8mb4\n\n[mysqld]\ncollation-server = utf8mb4_general_ci\ncharacter-set-server = utf8mb4\n```\n\n在修改完my.conf配置之后，重启mysql，检查字符集是否已经更改，除了`character_set_filesystem`和`character_set_system`外，其他的字符集都变成utf8mb4类型。\n\n```\nmysql> show variables like \'char%\';\n+----------------------------------+------------------------------------+\n| Variable_name              | Value                            |\n+----------------------------------+------------------------------------+\n| character_set_client        | utf8mb4                        |\n| character_set_connection | utf8mb4                        |\n| character_set_database   | utf8mb4                        |\n| character_set_filesystem  | binary                           |\n| character_set_results      | utf8mb4                         |\n| character_set_server       | utf8mb4                         |\n| character_set_system      | utf8                              |\n| character_sets_dir          | /usr/share/mysql/charsets/ |\n+-----------------------------------+------------------------------------+\n```\n\n## 配置gorm支持utf8mb4\n打开golang123/config.json文件，在database字段中的配置找到Charset， 改为utf8mb4\n```\n{\n	\"database\": {\n		\"Dialect\"            : \"mysql\",\n		\"Database\"        : \"golang123\",\n		\"User\"	             : \"\",\n		\"Password\"        : \"\",\n		\"Charset\"           : \"utf8mb4\",\n		\"Host\"               : \"127.0.0.1\",/*数据库ip*/\n		\"Port\"                : 3306,       /*数据库端口*/\n		\"MaxIdleConns\"   : 5,           /*空闲时最大的连接数*/\n		\"MaxOpenConns\" : 10          /*最大的连接数*/\n	}\n	...\n}\n```','2017-09-07 10:54:15','2017-09-07 11:06:10',NULL,44,0);
 /*!40000 ALTER TABLE `articles` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table careers
-# ------------------------------------------------------------
+--
+-- Table structure for table `careers`
+--
 
 DROP TABLE IF EXISTS `careers`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `careers` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -139,23 +91,24 @@ CREATE TABLE `careers` (
   `user_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `careers`
+--
 
 LOCK TABLES `careers` WRITE;
 /*!40000 ALTER TABLE `careers` DISABLE KEYS */;
-
-INSERT INTO `careers` (`id`, `created_at`, `updated_at`, `deleted_at`, `company`, `title`, `user_id`)
-VALUES
-	(1,'2017-09-02 21:13:22','2017-09-02 21:13:22','2017-09-02 21:34:44','酷六网','高级flash工程师',63);
-
 /*!40000 ALTER TABLE `careers` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table categories
-# ------------------------------------------------------------
+--
+-- Table structure for table `categories`
+--
 
 DROP TABLE IF EXISTS `categories`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `categories` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -167,28 +120,26 @@ CREATE TABLE `categories` (
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `categories`
+--
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-
-INSERT INTO `categories` (`id`, `name`, `slug`, `sequence`, `parent_id`, `status`, `created_at`, `updated_at`, `deleted_at`)
-VALUES
-	(12,'分享','',0,0,1,'2017-08-23 11:32:19','2017-09-03 15:57:02',NULL),
-	(13,'提问','',0,0,1,'2017-08-23 11:32:41','2017-09-02 15:43:46',NULL),
-	(14,'招聘','',0,0,1,'2017-08-23 11:32:47','2017-09-02 00:22:19',NULL),
-	(15,'头条','',0,0,1,'2017-08-24 10:14:52','2017-09-02 00:22:34',NULL),
-	(16,'test','',0,0,1,'2017-08-25 23:14:53','2017-08-25 23:14:53',NULL);
-
+INSERT INTO `categories` VALUES (1,'分享','',0,0,1,'2017-08-23 00:05:50','2017-09-07 11:06:01',NULL),(2,'提问','',0,0,1,'2017-08-23 00:06:13','2017-08-23 00:06:13',NULL),(3,'招聘','',0,0,1,'2017-08-23 00:06:20','2017-08-23 00:06:20',NULL),(4,'头条','',0,0,1,'2017-08-24 09:59:26','2017-09-01 17:04:04',NULL);
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table collects
-# ------------------------------------------------------------
+--
+-- Table structure for table `collects`
+--
 
 DROP TABLE IF EXISTS `collects`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `collects` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL,
@@ -200,32 +151,30 @@ CREATE TABLE `collects` (
   `folder_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `collects`
+--
 
 LOCK TABLES `collects` WRITE;
 /*!40000 ALTER TABLE `collects` DISABLE KEYS */;
-
-INSERT INTO `collects` (`id`, `user_id`, `created_at`, `updated_at`, `deleted_at`, `source_id`, `source_name`, `folder_id`)
-VALUES
-	(34,63,'2017-09-03 16:42:15','2017-09-03 16:42:15',NULL,39,'collect_source_vote',2),
-	(35,63,'2017-09-03 16:42:40','2017-09-03 16:42:40',NULL,40,'collect_source_vote',2),
-	(36,63,'2017-09-03 17:28:21','2017-09-03 17:28:21',NULL,62,'collect_source_article',2),
-	(37,63,'2017-09-03 17:29:08','2017-09-03 17:29:08',NULL,63,'collect_source_article',2);
-
 /*!40000 ALTER TABLE `collects` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table comments
-# ------------------------------------------------------------
+--
+-- Table structure for table `comments`
+--
 
 DROP TABLE IF EXISTS `comments`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `comments` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `content` varchar(10000) NOT NULL,
   `parent_id` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL,
-  `up_count` int(11) NOT NULL DEFAULT '0',
+  `ups` int(11) NOT NULL DEFAULT '0',
   `source_id` int(11) unsigned NOT NULL,
   `source_name` varchar(100) NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
@@ -233,32 +182,26 @@ CREATE TABLE `comments` (
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `comments`
+--
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-
-INSERT INTO `comments` (`id`, `content`, `parent_id`, `status`, `up_count`, `source_id`, `source_name`, `user_id`, `created_at`, `updated_at`, `deleted_at`)
-VALUES
-	(55,'aaa',0,1,0,45,'article',63,'2017-09-01 23:30:27','2017-09-01 23:30:27',NULL),
-	(56,'测试下',0,1,0,45,'article',63,'2017-09-01 23:30:46','2017-09-01 23:30:46',NULL),
-	(57,'测试下\n测试下\n测试下\n测试下a\nadf\n测试下adfaf',0,1,0,45,'article',63,'2017-09-01 23:30:58','2017-09-01 23:30:58',NULL),
-	(58,'aaa',0,1,0,36,'vote',63,'2017-09-01 23:38:08','2017-09-01 23:38:08',NULL),
-	(59,'```\n </template>\n                        <p class=\"not-signin\" v-if=\"!vote.commentCount && user\">暂时还没有人回复过这个投票</p>\n                        <p class=\"not-signin\" v-if=\"!vote.commentCount && !user\">暂时还没有人回复过这个投票,&nbsp;要回复投票, 请先&nbsp;<a @click=\"onSignin\">登录</a>&nbsp;或&nbsp;<a href=\"/signup\">注册</a></p>\n                        <p class=\"not-signin not-signin-border\" v-if=\"vote.commentCount && !user\">要回复投票, 请先&nbsp;<a @click=\"onSignin\">登录</a>&nbsp;或&nbsp;<a href=\"/signup\">注册</a></p>\n```',0,1,0,36,'vote',63,'2017-09-01 23:47:19','2017-09-01 23:47:19',NULL),
-	(60,'b',0,1,0,37,'vote',63,'2017-09-01 23:48:02','2017-09-01 23:48:02',NULL),
-	(61,'abc',0,1,0,45,'article',63,'2017-09-02 00:18:12','2017-09-02 00:18:12',NULL),
-	(62,'eee',0,1,0,45,'article',63,'2017-09-02 00:18:17','2017-09-02 00:18:17',NULL),
-	(63,'ccc\neee\nddd\naaaa',0,1,0,36,'vote',63,'2017-09-02 00:18:48','2017-09-02 00:18:48',NULL);
-
+INSERT INTO `comments` VALUES (1,'我以前偷懒都是直接命令安装，下载使用这个编译安装了 23333',0,1,0,10,'article',46,'2017-09-06 16:33:59','2017-09-06 16:33:59',NULL);
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table folders
-# ------------------------------------------------------------
+--
+-- Table structure for table `folders`
+--
 
 DROP TABLE IF EXISTS `folders`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `folders` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL,
@@ -269,25 +212,24 @@ CREATE TABLE `folders` (
   `parent_id` int(11) unsigned NOT NULL COMMENT '父收藏夹, 0表示无父收藏夹',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `folders`
+--
 
 LOCK TABLES `folders` WRITE;
 /*!40000 ALTER TABLE `folders` DISABLE KEYS */;
-
-INSERT INTO `folders` (`id`, `user_id`, `created_at`, `updated_at`, `deleted_at`, `name`, `parent_id`)
-VALUES
-	(2,63,'2017-09-03 12:13:48','2017-09-03 17:29:08',NULL,'a',0),
-	(3,63,'2017-09-03 15:34:53','2017-09-03 15:36:15',NULL,'b',2),
-	(4,63,'2017-09-03 15:38:36','2017-09-03 15:38:56',NULL,'bb',2);
-
 /*!40000 ALTER TABLE `folders` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table images
-# ------------------------------------------------------------
+--
+-- Table structure for table `images`
+--
 
 DROP TABLE IF EXISTS `images`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `images` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `url` varchar(200) NOT NULL DEFAULT '',
@@ -297,15 +239,26 @@ CREATE TABLE `images` (
   `title` varchar(100) NOT NULL DEFAULT '',
   `orignal_title` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `images`
+--
 
+LOCK TABLES `images` WRITE;
+/*!40000 ALTER TABLE `images` DISABLE KEYS */;
+INSERT INTO `images` VALUES (1,'/upload/img/2017/08/23/d1d2f698-ce8a-443a-af2b-e84bdf839ec2.jpg',0,0,'image/jpeg','d1d2f698-ce8a-443a-af2b-e84bdf839ec2.jpg','1.jpg'),(2,'/upload/img/2017/08/23/20eff7fa-e9ea-4856-9744-457c255325e3.jpg',0,0,'image/jpeg','20eff7fa-e9ea-4856-9744-457c255325e3.jpg','2.jpg'),(3,'/upload/img/2017/08/23/fe644057-29e1-48d0-af3b-83ff431a6424.jpg',0,0,'image/jpeg','fe644057-29e1-48d0-af3b-83ff431a6424.jpg','3.jpg'),(4,'/upload/img/2017/08/23/c7fb0e81-ef74-4dcc-86d0-e61c08d6d7a8.jpg',0,0,'image/jpeg','c7fb0e81-ef74-4dcc-86d0-e61c08d6d7a8.jpg','3.jpg'),(5,'/upload/img/2017/08/23/3ec46030-5b74-48bb-b515-52d8f28a4db4.jpg',0,0,'image/jpeg','3ec46030-5b74-48bb-b515-52d8f28a4db4.jpg','4.jpg'),(6,'/upload/img/2017/08/23/3e2fcee7-705a-4c7a-8cd5-014c5877bd26.jpg',0,0,'image/jpeg','3e2fcee7-705a-4c7a-8cd5-014c5877bd26.jpg','5.jpg'),(7,'/upload/img/2017/08/23/4a3e0cc0-1060-4794-bab1-02dbdcc132ee.jpg',0,0,'image/jpeg','4a3e0cc0-1060-4794-bab1-02dbdcc132ee.jpg','6.jpg'),(8,'/upload/img/2017/08/23/d22ed0dd-fef8-4407-8430-f9aaefe5c094.jpg',0,0,'image/jpeg','d22ed0dd-fef8-4407-8430-f9aaefe5c094.jpg','7.jpg'),(9,'/upload/img/2017/08/23/b7ec5b94-598c-472b-a351-7724e3ee0251.jpg',0,0,'image/jpeg','b7ec5b94-598c-472b-a351-7724e3ee0251.jpg','8.jpg'),(10,'/upload/img/2017/08/23/e3db6f22-df3c-43d1-9e9b-1ab11831cea3.jpg',0,0,'image/jpeg','e3db6f22-df3c-43d1-9e9b-1ab11831cea3.jpg','9.jpg'),(11,'/upload/img/2017/08/23/423faf40-6a23-42cb-8af6-720fd4de7d8a.jpg',0,0,'image/jpeg','423faf40-6a23-42cb-8af6-720fd4de7d8a.jpg','10.jpg'),(12,'/upload/img/2017/08/24/26d9b5e6-f0c6-4685-b258-896087317b60.jpg',0,0,'image/jpeg','26d9b5e6-f0c6-4685-b258-896087317b60.jpg','11.jpg'),(13,'/upload/img/2017/08/24/2f36d04f-f209-4ded-8110-f332bce01631.jpg',0,0,'image/jpeg','2f36d04f-f209-4ded-8110-f332bce01631.jpg','12.jpg'),(14,'/upload/img/2017/08/25/e3eecbd2-125d-4e54-9c33-fc5610a84146.jpg',0,0,'image/jpeg','e3eecbd2-125d-4e54-9c33-fc5610a84146.jpg','13.jpg'),(15,'/upload/img/2017/08/25/c785eac9-03c8-40d8-ad4c-3bd5eaade740.png',0,0,'image/png','c785eac9-03c8-40d8-ad4c-3bd5eaade740.png','14.png'),(16,'/upload/img/2017/08/25/641ef248-7a24-494f-9b37-20b9b643decc.jpg',0,0,'image/jpeg','641ef248-7a24-494f-9b37-20b9b643decc.jpg','15.jpg'),(17,'/upload/img/2017/08/25/97415a81-86a7-4bf9-bfbf-de028ad86b55.jpg',0,0,'image/jpeg','97415a81-86a7-4bf9-bfbf-de028ad86b55.jpg','16.jpg'),(18,'/upload/img/2017/08/25/b62545c0-b721-4c9e-b0d8-f2001a919db7.jpg',0,0,'image/jpeg','b62545c0-b721-4c9e-b0d8-f2001a919db7.jpg','17.jpg'),(19,'/upload/img/2017/08/25/4b1954d9-0a80-41de-aa66-e9bc160c993e.jpg',0,0,'image/jpeg','4b1954d9-0a80-41de-aa66-e9bc160c993e.jpg','18.jpg'),(20,'/upload/img/2017/08/25/dddc46f8-6a72-488d-bde6-897e1be09c06.jpg',0,0,'image/jpeg','dddc46f8-6a72-488d-bde6-897e1be09c06.jpg','19.jpg'),(21,'/upload/img/2017/08/25/5795cb80-01f2-4413-a9ca-1b8d512788b1.gif',0,0,'image/gif','5795cb80-01f2-4413-a9ca-1b8d512788b1.gif','20.gif'),(22,'/upload/img/2017/08/25/24877bc6-fb19-41b3-83c1-41ed1fcf3b06.gif',0,0,'image/gif','24877bc6-fb19-41b3-83c1-41ed1fcf3b06.gif','21.gif'),(23,'/upload/img/2017/08/25/a8fbdd22-6ef4-4a82-ba29-63bc3e33d4aa.gif',0,0,'image/gif','a8fbdd22-6ef4-4a82-ba29-63bc3e33d4aa.gif','21.gif'),(24,'/upload/img/2017/08/25/e14b82c5-a103-4ce9-9e72-2e2275974b3c.gif',0,0,'image/gif','e14b82c5-a103-4ce9-9e72-2e2275974b3c.gif','22.gif'),(25,'/upload/img/2017/08/25/ff191ef2-fdcb-48e5-94cf-34d91a762b1e.jpg',0,0,'image/jpeg','ff191ef2-fdcb-48e5-94cf-34d91a762b1e.jpg','22.jpg'),(26,'/upload/img/2017/08/30/6e38b8a7-2fd9-4dfd-a1a3-88222acde86c.jpeg',0,0,'image/jpeg','6e38b8a7-2fd9-4dfd-a1a3-88222acde86c.jpeg','24.jpeg'),(27,'/upload/img/2017/08/30/2c708f03-adae-41c5-8050-3f4ba0984f70.jpeg',0,0,'image/jpeg','2c708f03-adae-41c5-8050-3f4ba0984f70.jpeg','25.jpeg'),(28,'/upload/img/2017/08/30/215c1da6-6e9a-4b95-82df-36e2e96f396e.jpeg',0,0,'image/jpeg','215c1da6-6e9a-4b95-82df-36e2e96f396e.jpeg','26.jpeg'),(29,'/upload/img/2017/09/06/9a7f80e1-4c7b-470c-a7ec-0c802c604482.jpg',0,0,'image/jpeg','9a7f80e1-4c7b-470c-a7ec-0c802c604482.jpg','redis.jpg'),(30,'/upload/img/2017/09/06/a758b06e-4eee-4387-aee9-d810d30bcbfd.png',0,0,'image/png','a758b06e-4eee-4387-aee9-d810d30bcbfd.png','r2.png'),(31,'/upload/img/2017/09/06/042c0471-2509-4387-b0a5-f87ba5012d5d.png',0,0,'image/png','042c0471-2509-4387-b0a5-f87ba5012d5d.png','r1.png');
+/*!40000 ALTER TABLE `images` ENABLE KEYS */;
+UNLOCK TABLES;
 
-# Dump of table messages
-# ------------------------------------------------------------
+--
+-- Table structure for table `messages`
+--
 
 DROP TABLE IF EXISTS `messages`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `messages` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -320,14 +273,24 @@ CREATE TABLE `messages` (
   `chat_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `messages`
+--
 
+LOCK TABLES `messages` WRITE;
+/*!40000 ALTER TABLE `messages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `messages` ENABLE KEYS */;
+UNLOCK TABLES;
 
-# Dump of table schools
-# ------------------------------------------------------------
+--
+-- Table structure for table `schools`
+--
 
 DROP TABLE IF EXISTS `schools`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `schools` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -338,23 +301,24 @@ CREATE TABLE `schools` (
   `user_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `schools`
+--
 
 LOCK TABLES `schools` WRITE;
 /*!40000 ALTER TABLE `schools` DISABLE KEYS */;
-
-INSERT INTO `schools` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `speciality`, `user_id`)
-VALUES
-	(2,'2017-09-02 21:07:15','2017-09-02 21:07:15','2017-09-02 21:39:13','武汉工程大学','计算机科学与技术',63);
-
 /*!40000 ALTER TABLE `schools` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table top_articles
-# ------------------------------------------------------------
+--
+-- Table structure for table `top_articles`
+--
 
 DROP TABLE IF EXISTS `top_articles`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `top_articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `article_id` int(11) unsigned NOT NULL,
@@ -363,14 +327,24 @@ CREATE TABLE `top_articles` (
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `top_articles`
+--
 
+LOCK TABLES `top_articles` WRITE;
+/*!40000 ALTER TABLE `top_articles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `top_articles` ENABLE KEYS */;
+UNLOCK TABLES;
 
-# Dump of table ups
-# ------------------------------------------------------------
+--
+-- Table structure for table `ups`
+--
 
 DROP TABLE IF EXISTS `ups`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ups` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -381,14 +355,24 @@ CREATE TABLE `ups` (
   `user_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `ups`
+--
 
+LOCK TABLES `ups` WRITE;
+/*!40000 ALTER TABLE `ups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ups` ENABLE KEYS */;
+UNLOCK TABLES;
 
-# Dump of table user_votes
-# ------------------------------------------------------------
+--
+-- Table structure for table `user_votes`
+--
 
 DROP TABLE IF EXISTS `user_votes`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_votes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -399,14 +383,24 @@ CREATE TABLE `user_votes` (
   `vote_item_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `user_votes`
+--
 
+LOCK TABLES `user_votes` WRITE;
+/*!40000 ALTER TABLE `user_votes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_votes` ENABLE KEYS */;
+UNLOCK TABLES;
 
-# Dump of table users
-# ------------------------------------------------------------
+--
+-- Table structure for table `users`
+--
 
 DROP TABLE IF EXISTS `users`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -417,74 +411,65 @@ CREATE TABLE `users` (
   `phone` varchar(50) DEFAULT NULL,
   `pass` varchar(100) NOT NULL DEFAULT '',
   `score` int(11) unsigned NOT NULL,
-  `article_count` int(11) unsigned NOT NULL,
-  `comment_count` int(11) unsigned NOT NULL,
-  `collect_count` int(11) unsigned NOT NULL,
+  `article_count` int(11) unsigned NOT NULL DEFAULT '0',
+  `collect_count` int(11) unsigned NOT NULL DEFAULT '0',
   `signature` varchar(200) DEFAULT NULL,
   `role` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `avatar_url` varchar(500) NOT NULL DEFAULT '',
+  `comment_count` int(11) unsigned NOT NULL,
   `sex` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `location` varchar(200) DEFAULT NULL,
   `introduce` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-
-INSERT INTO `users` (`id`, `created_at`, `updated_at`, `deleted_at`, `name`, `email`, `phone`, `pass`, `score`, `article_count`, `comment_count`, `collect_count`, `signature`, `role`, `status`, `avatar_url`, `sex`, `location`, `introduce`)
-VALUES
-	(63,'2017-09-01 19:37:56','2017-09-03 18:27:45',NULL,'test','liushen_shen@163.com','','1504265876004495c7611526b233fce80021f5d735',1,2,9,21,'abc',3,2,'/images/avatar/1.png',0,'ddd','测试一下'),
-	(64,'2017-09-02 14:57:17','2017-09-03 17:28:21',NULL,'aaaa','a@qq.com','','1504335437cf4a0cb3a77b5a5a4f2a337adc64a97d',10,0,0,0,'',3,2,'/images/avatar/0.png',0,NULL,NULL),
-	(65,'2017-09-02 22:10:18','2017-09-03 16:26:44',NULL,'abcd','saf@qq.com','','150436141873eec14e3058a1632de3c74d0ad63da5',3,0,0,0,'',1,1,'/images/avatar/1.png',0,'',''),
-	(66,'2017-09-02 22:22:57','2017-09-03 16:26:44',NULL,'wang6756','wang6756@163.com','','1504362177f34b5bdb6afe8468f34c80ef045e6e53',4,0,0,0,'',1,1,'/images/avatar/0.png',0,'','');
-
+INSERT INTO `users` VALUES (44,'2017-08-20 16:01:08','2017-09-07 10:54:15',NULL,'shen100','liushen_shen@163.com','','150321606850159a1dc80fffd0ee9b9674c721aa77',72,12,0,'',3,2,'/images/avatar/1.png',0,0,NULL,NULL),(45,'2017-08-23 00:03:41','2017-08-23 00:04:12',NULL,'wang6756','wang6756@163.com','','15034178218490cbee62816a420341029cb77a9bce',0,0,0,'',1,2,'/images/avatar/1.png',0,0,NULL,NULL),(46,'2017-08-24 11:59:49','2017-09-06 16:36:53',NULL,'Charlotte','liruoxi@yeah.net','','1503547189bd01e6bfb7c3e316a68d76cda56ad0ff',0,0,0,'',1,2,'/images/avatar/1.png',1,1,'江苏南京',NULL),(47,'2017-08-29 16:26:21','2017-08-29 16:26:21',NULL,'basil','baisheng@outlook.com','','150399518031fc0255f47b77f33c30e5c3cb113f16',0,0,0,'',1,1,'/images/avatar/0.png',0,0,NULL,NULL),(48,'2017-08-29 16:43:56','2017-08-29 16:43:56',NULL,'byteman','154554381@qq.com','','15039962354c1ae87a9d09bcd12147fe28068b1429',0,0,0,'',1,1,'/images/avatar/0.png',0,0,NULL,NULL),(49,'2017-08-31 08:10:01','2017-09-06 09:22:35',NULL,'永遠的十七歲','xiaowuniang@yeah.net','','1504138201feee7cc751f4c2d39e08f13a3f558824',0,0,0,'',1,2,'/images/avatar/0.png',0,0,NULL,NULL),(50,'2017-08-31 23:51:55','2017-08-31 23:51:55',NULL,'test12345','test12345@123.com','','15041947151bc0adf2b59176f441a73dae0d3f466f',0,0,0,'',1,1,'/images/avatar/0.png',0,0,NULL,NULL),(51,'2017-09-01 13:12:11','2017-09-01 13:12:11',NULL,'aaaaaa','aaaaaa@a.com','','15042427312d549a98070414834369d27c2dba802e',0,0,0,'',1,1,'/images/avatar/0.png',0,0,NULL,NULL),(52,'2017-09-01 13:12:43','2017-09-01 13:13:43',NULL,'Rubin','3240118@qq.com','','15042427628bc2d653618ed61191a94f7d898e2790',0,0,0,'',1,2,'/images/avatar/1.png',0,0,NULL,NULL),(53,'2017-09-01 18:25:23','2017-09-01 18:25:53',NULL,'bangq','86792267@qq.com','','150426152303095542859776d2ff4702c3f4ad84ac',0,0,0,'',1,2,'/images/avatar/1.png',0,0,NULL,NULL),(54,'2017-09-01 18:48:26','2017-09-06 08:37:52',NULL,'zhou','364916431@qq.com','','15042629056d69885be798869f19d5783029e9b999',0,0,0,'',1,2,'/images/avatar/1.png',0,0,'',''),(55,'2017-09-01 19:40:02','2017-09-01 19:43:11',NULL,'liushen','251862218@qq.com','','1504266002eff5f4309934a8c77ce1f035ff30bf77',0,0,0,'',1,2,'/images/avatar/0.png',0,0,NULL,NULL),(56,'2017-09-02 13:42:21','2017-09-02 13:42:45',NULL,'xhdao','xhdao@qq.com','','15043309409e409eed13c97a44efdd29429533d59a',0,0,0,'',1,2,'/images/avatar/1.png',0,0,NULL,NULL),(57,'2017-09-02 14:48:25','2017-09-02 14:48:25',NULL,'theshen100','theshen@qq.com','','15043349059d3f44211fbc985eedc26cb254ef1584',0,0,0,'',1,1,'/images/avatar/1.png',0,0,NULL,NULL),(58,'2017-09-06 09:12:17','2017-09-06 09:12:17',NULL,'xiaodela','zcx713@163.com','','1504660337a7f9e3a94202d6edcd7a2430b4f31a60',0,0,0,'',1,1,'/images/avatar/0.png',0,0,'','');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table vote_items
-# ------------------------------------------------------------
+--
+-- Table structure for table `vote_items`
+--
 
 DROP TABLE IF EXISTS `vote_items`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vote_items` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `count` int(11) NOT NULL DEFAULT '0',
+  `count` int(11) unsigned NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
   `vote_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vote_items`
+--
 
 LOCK TABLES `vote_items` WRITE;
 /*!40000 ALTER TABLE `vote_items` DISABLE KEYS */;
-
-INSERT INTO `vote_items` (`id`, `name`, `count`, `created_at`, `updated_at`, `deleted_at`, `vote_id`)
-VALUES
-	(69,'a',0,'2017-09-01 23:34:26','2017-09-01 23:34:26',NULL,36),
-	(70,'b',0,'2017-09-01 23:34:26','2017-09-01 23:34:26',NULL,36),
-	(71,'adsf',0,'2017-09-01 23:47:56','2017-09-01 23:47:56',NULL,37),
-	(72,'sadf',0,'2017-09-01 23:47:56','2017-09-01 23:47:56',NULL,37),
-	(73,'a',0,'2017-09-01 23:51:57','2017-09-01 23:51:57',NULL,38),
-	(74,'b',0,'2017-09-01 23:51:57','2017-09-01 23:51:57',NULL,38),
-	(75,'a',0,'2017-09-03 16:23:54','2017-09-03 16:23:54',NULL,39),
-	(76,'b',0,'2017-09-03 16:23:54','2017-09-03 16:23:54',NULL,39),
-	(77,'asdfaf',0,'2017-09-03 16:24:26','2017-09-03 16:24:26',NULL,40),
-	(78,'asdfaf',0,'2017-09-03 16:24:26','2017-09-03 16:24:26',NULL,40);
-
 /*!40000 ALTER TABLE `vote_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Dump of table votes
-# ------------------------------------------------------------
+--
+-- Table structure for table `votes`
+--
 
 DROP TABLE IF EXISTS `votes`;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `votes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -501,28 +486,24 @@ CREATE TABLE `votes` (
   `last_user_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `votes`
+--
 
 LOCK TABLES `votes` WRITE;
 /*!40000 ALTER TABLE `votes` DISABLE KEYS */;
-
-INSERT INTO `votes` (`id`, `name`, `browse_count`, `comment_count`, `collect_count`, `status`, `content`, `end_at`, `created_at`, `updated_at`, `deleted_at`, `user_id`, `last_user_id`)
-VALUES
-	(34,'tttt',29,0,0,1,'aaa','2017-09-06 00:00:00','2017-09-01 21:52:37','2017-09-01 22:18:18','2017-09-01 22:18:31',63,0),
-	(35,'asdfa',3,0,0,1,'adfas','2017-09-13 00:00:00','2017-09-01 23:21:23','2017-09-01 23:21:34','2017-09-01 23:21:41',63,0),
-	(36,'aa',25,3,0,1,'adf','2017-09-06 00:00:00','2017-09-01 23:34:26','2017-09-03 17:18:33',NULL,63,63),
-	(37,'aaaaa',6,1,0,1,'aaa','2017-09-13 00:00:00','2017-09-01 23:47:56','2017-09-03 17:18:33',NULL,63,63),
-	(38,'aaccc',3,0,0,1,'```\n<template>\n    <div>\n        <app-header :user=\"user\" />\n        <div class=\"golang-home-body\">\n            <div class=\"golang-home-body-left\">\n                <div class=\"detail-title-box\">\n                    <p class=\"vote-detail-title\"><span class=\"vote-categoties\" :class=\"status ? \'vote-categoties-running\' : \'vote-categoties-end\'\">{{status ? \'进行中\' : \'已结束\'}}</span>{{vote.name}}</p>\n                    <p class=\"vote-title-info\">\n                        <span class=\"vote-title-info-item\">\n                            发布于{{vote.createdAt | getReplyTime}}\n                        </span>\n                        <span class=\"vote-title-info-item\">\n                            作者{{vote.user.name}}\n                        </span>\n                        <span class=\"vote-title-info-item\">\n                            {{vote.browseCount}}次浏览\n                        </span>\n                    </p>\n                </div>\n                <div class=\"home-vote-box\">\n                    <div class=\"golang123-editor\" v-html=\"vote.content\"></div>\n                    <div class=\"\">\n                        <span v-for=\"item in vote.voteItems\">\n                            <Button type=\"primary\" class=\"vote-item\" @click=\"onVoteSubmit(item.id)\">支持<span class=\"vote-item-label\">{{item.name}}</span><span class=\"vote-item-label\">{{item.count}}</span></Button>\n                        </span>\n                    </div>\n                    <div class=\"vote-actions\">\n                        <div class=\"vote-share\">\n                            <div class=\"vote-share-btn\">\n                                <Icon type=\"android-star-outline\" style=\"font-size: 20px;margin-top:-2px;\"></Icon>\n                                <span>收藏</span>\n                            </div>\n                            <div class=\"vote-share-btn\">\n                                <Icon type=\"android-share-alt\" style=\"font-size: 16px\"></Icon>\n                                <span>分享</span>\n                            </div>\n                            <template v-if=\"isAuthor\">\n                                <div class=\"vote-share-btn\">\n                                    <Icon type=\"edit\" style=\"font-size: 16px\"></Icon>\n                                    <a :href=\"\'/topic/edit/\' + vote.id\"><span>编辑</span></a>\n                                </div>\n                                <div class=\"vote-share-btn\">\n                                    <Icon type=\"android-delete\" style=\"font-size: 17px;\"></Icon>\n                                    <span @click=\"onDelete\">删除</span>\n                                </div>\n                            </template>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"golang-cell comment-box\">\n                    <div class=\"title\">{{vote.commentCount > 0 ? vote.commentCount : \'暂无\'}}回复</div>\n                    <div class=\"comment-content\">\n                        <template v-if=\"vote.commentCount\">\n                            <div class=\"comment-item\" v-for=\"(item, index) in vote.comments\">\n                                <a class=\"reply-user-icon\">\n                                    <img src=\"~assets/images/head.png\" alt=\"\">\n                                </a>\n                                <a class=\"reply-user-name\">{{item.user.name}}</a>\n                                <span class=\"reply-time\">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>\n                                <div class=\"golang123-editor\" v-html=\"item.content\"></div>\n                            </div>\n                        </template>\n                        <p class=\"not-signin\" v-if=\"!vote.commentCount && user\">暂时还没有人回复过这个投票</p>\n                        <p class=\"not-signin\" v-if=\"!vote.commentCount && !user\">暂时还没有人回复过这个投票,&nbsp;要回复投票, 请先&nbsp;<a @click=\"onSignin\">登录</a>&nbsp;或&nbsp;<a href=\"/signup\">注册</a></p>\n                        <p class=\"not-signin not-signin-border\" v-if=\"vote.commentCount && !user\">要回复投票, 请先&nbsp;<a @click=\"onSignin\">登录</a>&nbsp;或&nbsp;<a href=\"/signup\">注册</a></p>\n                    </div>\n                </div>\n                <div class=\"golang-cell comment-box\" v-if=\"user\">\n                    <div class=\"title\">添加回复</div>\n                    <div class=\"comment-content\">\n                        <Form ref=\"formData\" :model=\"formData\" :rules=\"formRule\">\n                            <Form-item prop=\"content\">\n                                <md-editor :value=\"formData.content\" @change=\"onContentChage\" />\n                            </Form-item>\n                        </Form>\n                        <Button type=\"primary\" @click=\"onSubmit\">发表回复</Button>\n                    </div>\n                </div>\n            </div>\n            <app-sidebar :score=\"score\" :votesMaxBrowse=\"votesMaxBrowse\" :votesMaxComment=\"votesMaxComment\"/>\n        </div>\n        <app-footer />\n    </div>\n</template>\n\n<script>\n    import ErrorCode from \'~/constant/ErrorCode\'\n    import VoteStatus from \'~/constant/VoteStatus\'\n    import Header from \'~/components/Header\'\n    import Footer from \'~/components/Footer\'\n    import Sidebar from \'~/components/Sidebar\'\n    import editor from \'~/components/article/editor\'\n    import request from \'~/net/request\'\n    import dateTool from \'~/utils/date\'\n\n    export default {\n        data () {\n            return {\n                loading: false,\n                formData: {\n                    content: \'\'\n                },\n                formRule: {\n                    content: [\n                        { required: true, message: \'请输入回复内容\', trigger: \'blur\' }\n                    ]\n                }\n            }\n        },\n        validate ({ params }) {\n            var hasId = !!params.id\n            return hasId\n        },\n        asyncData (context) {\n            return Promise.all([\n                request.getVote({\n                    client: context.req,\n                    params: {\n                        id: context.params.id\n                    }\n                }),\n                request.getVoteMaxBrowse({\n                    client: context.req\n                }),\n                request.getVoteMaxComment({\n                    client: context.req\n                }),\n                request.getTop10({\n                    client: context.req\n                })\n            ]).then(arr => {\n                let vote = arr[0].data\n                let votesMaxBrowse = arr[1].data.votes\n                let votesMaxComment = arr[2].data.votes\n                let score = arr[3].data.users\n                let isAuthor = context.user && context.user.id === vote.user.id\n                return {\n                    isAuthor: isAuthor,\n                    vote: vote,\n                    user: context.user,\n                    votesMaxBrowse: votesMaxBrowse,\n                    votesMaxComment: votesMaxComment,\n                    score: score,\n                    status: vote.status === VoteStatus.VOTE_UNDERWAY\n                }\n            }).catch(err => {\n                console.log(err)\n                context.error({ statusCode: 404, message: \'Page not found\' })\n            })\n        },\n        middleware: \'userInfo\',\n        methods: {\n            onSignin () {\n                location.href = \'/signin?ref=\' + encodeURIComponent(location.href)\n            },\n            onDelete () {\n                let self = this\n                this.$Modal.confirm({\n                    title: \'删除投票\',\n                    content: \'确认删除这个投票?\',\n                    onOk () {\n                        request.deleteVote({\n                            params: {\n                                id: self.vote.id\n                            }\n                        }).then(res => {\n                            if (res.errNo === ErrorCode.SUCCESS) {\n                                self.$Message.success(\'已删除!\')\n                                setTimeout(function () {\n                                    location.href = \'/vote\'\n                                }, 500)\n                            } else {\n                                self.$Message.error(res.msg)\n                            }\n                        }).catch(err => {\n                            err = \'内部错误\'\n                            self.$Message.error(err)\n                        })\n                    },\n                    onCancel () {\n\n                    }\n                })\n            },\n            onContentChage (content) {\n                this.formData.content = content\n            },\n            onSubmit () {\n                this.$refs[\'formData\'].validate((valid) => {\n                    if (!this.loading && valid) {\n                        this.loading = true\n                        request.commentCreate({\n                            body: {\n                                sourceID: parseInt(this.$route.params.id),\n                                parentID: 0,\n                                content: this.formData.content,\n                                sourceName: \'vote\'\n                            }\n                        }).then(res => {\n                            if (res.errNo === ErrorCode.SUCCESS) {\n                                this.formData.content = \'\'\n                                this.$Message.success(\'评论提交成功\')\n                                return request.getVote({\n                                    params: {\n                                        id: this.$route.params.id\n                                    }\n                                })\n                            } else {\n                                return Promise.reject(new Error(res.msg))\n                            }\n                        }).then(res => {\n                            if (res.errNo === ErrorCode.SUCCESS) {\n                                this.vote = res.data\n                            }\n                        }).catch(err => {\n                            this.loading = false\n                            this.$Message.error(err.message)\n                        })\n                    }\n                })\n            },\n            onVoteSubmit (id) {\n                if (!this.loading) {\n                    this.loading = true\n                    request.userVote({\n                        params: {\n                            id: id\n                        }\n                    }).then(res => {\n                        this.loading = false\n                        if (res.errNo === ErrorCode.SUCCESS) {\n                            return request.getVote({\n                                params: {\n                                    id: this.$route.params.id\n                                }\n                            })\n                        } else {\n                            return Promise.reject(new Error(res.msg))\n                        }\n                    }).then(res => {\n                        if (res.errNo === ErrorCode.SUCCESS) {\n                            this.vote = res.data\n                            this.$Message.success(\'投票成功\')\n                        }\n                    }).catch(err => {\n                        this.loading = false\n                        this.$Message.error(err.message)\n                    })\n                }\n            }\n        },\n        mounted () {\n        },\n        head () {\n            return {\n                title: this.vote.name,\n                link: [\n                    { rel: \'stylesheet\', href: \'/styles/editor/simplemde.min.css\' }\n                ]\n            }\n        },\n        filters: {\n            getReplyTime: dateTool.getReplyTime\n        },\n        components: {\n            \'app-header\': Header,\n            \'app-footer\': Footer,\n            \'app-sidebar\': Sidebar,\n            \'md-editor\': editor\n        }\n    }\n</script>\n\n<style>\n    @import \'~assets/styles/vote/detail.css\'\n</style>\n\n```','2017-09-14 00:00:00','2017-09-01 23:51:57','2017-09-03 17:18:33',NULL,63,0),
-	(39,'test的投票',4,0,6,1,'asdfaf','2017-09-14 00:00:00','2017-09-03 16:23:54','2017-09-03 17:25:13',NULL,63,0),
-	(40,'aaaa的投票',3,0,3,1,'asdfaf','2017-09-15 00:00:00','2017-09-03 16:24:26','2017-09-03 17:26:12',NULL,64,0);
-
 /*!40000 ALTER TABLE `votes` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-
-
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2017-09-07 11:11:57

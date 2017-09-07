@@ -6,7 +6,7 @@
 		"Database"     : "golang123",
 		"User"	       : "root",
 		"Password"     : "test1234",
-		"Charset"      : "utf8",
+		"Charset"      : "utf8mb4",
 		"Host"         : "127.0.0.1",/*数据库ip*/
 		"Port"         : 3306,       /*数据库端口*/
 		"URL"          : "",         /*数据库连接地址, 这个不用填，由程序来设置*/

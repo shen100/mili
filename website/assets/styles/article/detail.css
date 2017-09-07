@@ -116,10 +116,6 @@ body, .golang-home-body-left {
 	color: #108ee9;
 }
 
-.CodeMirror, .CodeMirror-scroll {
-    min-height: 200px;
-}
-
 .article-actions {
     background: #fff;
     padding-left: 20px;
@@ -153,5 +149,9 @@ body, .golang-home-body-left {
 
 .article-share-btn a {
     color: #808080;
+}
+
+.CodeMirror, .CodeMirror-scroll {
+    min-height: 200px;
 }
 

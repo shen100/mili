@@ -58,10 +58,6 @@ body {
 	padding: 0 20px 1px 20px;
 }
 
-.CodeMirror {
-    height: 400px;
-}
-
 .topic-content .ivu-form-item-content {
 	margin-left: 0!important;
 }
@@ -89,6 +85,13 @@ body {
     padding-right: 12px;
 }
 
+/* sidebar中的样式，和编辑器无关 */
+.markdown-codeblock p {
+    padding-top: 6px;
+    line-height: normal;
+    font-size: 14px;
+}
+
 .topic-sidebar-my {
     padding: 8px 0;
     line-height: normal;
@@ -104,16 +107,6 @@ body {
 	height: 40px;
 }
 
-.markdown-codeblock p {
-	padding-top: 6px;
-    line-height: normal;
-    font-size: 14px;
-}
-
-.editor-preview {
-    background: #fff;
-}
-
 .editor-fullScreen-save {
     position: fixed;
     top: 7px;
@@ -124,4 +117,8 @@ body {
 .topic-none {
 	text-align: center;
     color: #a8a8a8;
+}
+
+.CodeMirror {
+    height: 400px;
 }

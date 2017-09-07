@@ -8,29 +8,24 @@ golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**�
 
 *golang123目前正处于活跃的开发中，预计十月初发布Beta版*
 
-## 🌅 项目截图
+## 💎 项目截图
 <img src="https://user-images.githubusercontent.com/2443162/30106321-a234dc0c-932d-11e7-8f66-020975158dcd.jpeg" width="1000" alt=""/>
 
-## Golang123线上机器配置
+## 🖥 Golang123线上机器配置
 | CPU | 1核     |  
 |:---------|:-------:|
 | **内存**     |  **512 MB** |
 | **带宽**  |  **1Mbps** |
 ## 🚀 安装
 
-### node.js
-todo
+### 依赖的软件
 
-### golang
-todo
-
-### mysql
-todo
-
-### redis
-* [Linux下安装](https://www.golang123.com/topic/10)
-* Windows下安装(todo)
-* Mac下安装(todo)
+| 软件 | 我们使用的版本|  
+|:---------|:-------:|
+| node.js     |  8.4.0 |
+| golang  |  1.9 |
+| mysql  |  5.6.35 |
+| redis  |  4.0.1 |
 
 ### 前端依赖的模块
 进入`golang123/website/`目录，输入命令
@@ -125,7 +120,7 @@ QQ群: 32550512
 QQ群中的消息很可能还没被看到，就被后来的消息给冲掉，有问题还是建议大家开issue
 
 ## 💰 赞助
-您可以通过扫描下图中的二维码来赞助我, 金额任意😃 
+如果你觉得`golang123`这个项目还不错的话，可以通过扫描下面的二维码来赞助我, 金额任意，无上限😃 
 
 <img src="https://user-images.githubusercontent.com/2443162/30115315-f3ef9392-934c-11e7-8b62-edeb998d864c.png" width="700" alt=""/>
 
