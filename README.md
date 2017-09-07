@@ -22,10 +22,10 @@ golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**�
 
 | 软件 | 版本|  
 |:---------|:-------:|
-| node.js     |  8.4.0 以上 |
-| golang  |  1.9 以上 |
-| mysql  |  5.6.35 以上 |
-| redis  |  4.0.1 以上 |
+| node.js     |  8.4.0 (及以上) |
+| golang  |  1.9 (及以上) |
+| mysql  |  5.6.35 (及以上) |
+| redis  |  4.0.1 (及以上) |
 
 ### 克隆代码
 将`golang123`的代码克隆到gopath的src目录下，即`your/gopath/src/golang123`
