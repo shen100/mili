@@ -47,10 +47,10 @@
                     <div class="comment-content">
                         <template v-if="article.commentCount > 0">
                             <div class="comment-item" v-for="(item, index) in article.comments">
-                                <a class="reply-user-icon">
+                                <a :href="'/user/' + item.user.id" class="reply-user-icon">
                                     <img :src="item.user.avatarURL" alt="">
                                 </a>
-                                <span class="reply-user-name">{{item.user.name}}</span>
+                                <a :href="'/user/' + item.user.id" class="reply-user-name">{{item.user.name}}</a>
                                 <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
                                 <div class="golang123-editor" v-html="item.content"></div>
                             </div>
