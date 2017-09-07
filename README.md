@@ -27,6 +27,9 @@ golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**�
 | mysql  |  5.6.35 以上 |
 | redis  |  4.0.1 以上 |
 
+### 克隆代码
+将`golang123`的代码克隆到gopath的src目录下，即`your/gopath/src/golang123`
+
 ### 前端依赖的模块
 进入`golang123/website`目录，输入命令
 
@@ -106,10 +109,27 @@ server {
 
 ### 后端配置
 将`golang123/config.example.json`文件重命名为`config.json`，然后修改go字段下的配置  
+
 1. 修改mysql连接地址及端口
-2. 修改redis的连接地址及端口
-3. 修改图片上传的目录
-4. 修改域名邮箱的用户名及密码(golang123使用的是QQ域名邮箱)
+2. 修改mysql的用户名及密码
+3. 修改redis的连接地址及端口
+4. 修改图片上传的目录, 请使用绝对路径，不要使用相对路径
+5. 修改域名邮箱的用户名及密码(golang123使用的是QQ域名邮箱)
+
+## 运行
+### 运行前端项目
+进入`golang123/website`目录，然后运行
+
+```
+npm run dev
+```
+
+### 运行后端项目
+进入`golang123`目录，然后运行
+
+```
+go run main.go
+```
 
 ## ❓问题
 

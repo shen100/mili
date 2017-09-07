@@ -32,7 +32,7 @@
 	"go": {
 		"APIPoweredBy"        : "golang123 api",/*后台go加的X-Powered-By*/
 		"SiteName"            : "golang123社区", /*网站名称*/
-		"Host"                : "",             /*网站域名*/
+		"Host"                : "dev.golang123.com",/*网站域名*/
 		"Env"                 : "development",  /*模式(开发，测试，产品)*/
 		/*图片上传的目录, 请使用绝对路径，不要使用相对路径*/
 		"UploadImgDir"        : "",
