@@ -108,7 +108,7 @@ server {
 将`golang123/website/config/index.example.js`文件重命名为`index.js`
 
 ### 后端配置
-将`golang123/config.example.json`文件重命名为`config.json`，然后修改go字段下的配置  
+将`golang123/config.example.json`文件重命名为`config.json`，然后修改以下配置:  
 
 1. 修改mysql连接地址及端口
 2. 修改mysql的用户名及密码
@@ -116,7 +116,7 @@ server {
 4. 修改图片上传的目录, 请使用绝对路径，不要使用相对路径
 5. 修改域名邮箱的用户名及密码(golang123使用的是QQ域名邮箱)
 
-## 运行
+## 🚕 运行
 ### 运行前端项目
 进入`golang123/website`目录，然后运行
 
@@ -130,6 +130,9 @@ npm run dev
 ```
 go run main.go
 ```
+
+### 访问
+浏览器中访问 https://dev.golang123.com/
 
 ## ❓问题
 
