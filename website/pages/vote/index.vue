@@ -87,7 +87,6 @@
         },
         middleware: 'userInfo',
         mounted () {
-            console.log(this.votes)
         },
         filters: {
             getReplyTime: dateTool.getReplyTime

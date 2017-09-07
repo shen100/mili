@@ -272,22 +272,23 @@ func save(isEdit bool, ctx iris.Context) {
 		return
 	}
 
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 	var queryArticle model.Article
 	if isEdit {
 		if model.DB.First(&queryArticle, article.ID).Error != nil {
 			SendErrJSON("无效的文章ID", ctx)
 			return
 		}
+	} else {
+		article.UserID  = user.ID
 	}
 
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
-	article.UserID  = user.ID
-
 	if isEdit {
-		article.BrowseCount  = queryArticle.BrowseCount
-		article.CreatedAt    = queryArticle.CreatedAt
-		article.Status       = queryArticle.Status
-		article.UpdatedAt    = time.Now()
+		tempArticle       := article
+		article            = queryArticle
+		article.Name       = tempArticle.Name
+		article.Content    = tempArticle.Content
+		article.Categories = tempArticle.Categories
 	} else {
 		article.BrowseCount  = 0
 		article.Status       = model.ArticleVerifying

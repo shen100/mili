@@ -81,6 +81,10 @@ body, .golang-home-body-left {
     color: #08c;
 }
 
+.reply-user-name:hover {
+    color: #08c;
+}
+
 .reply-time {
     color: gray;
     cursor: default;

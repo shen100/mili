@@ -601,6 +601,35 @@ func InfoDetail(ctx iris.Context) {
 	})
 }
 
+// AllList 查询用户列表，只有管理员才能调此接口
+func AllList(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	pageNo, pageNoErr := strconv.Atoi(ctx.FormValue("pageNo"))
+	if pageNoErr != nil {
+		pageNo = 1	
+	}
+	if pageNo < 1 {
+		pageNo = 1
+	}
+
+	offset   := (pageNo - 1) * config.ServerConfig.PageSize
+	pageSize := config.ServerConfig.PageSize
+
+	var users []model.User
+	if err := model.DB.Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+	} else {	
+		ctx.JSON(iris.Map{
+			"errNo" : model.ErrorCode.SUCCESS,
+			"msg"   : "success",
+			"data"  : iris.Map{
+				"users": users,
+			},
+		})
+	}	
+}
+
 func topN(n int, ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var users []model.User

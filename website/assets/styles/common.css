@@ -255,6 +255,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	width: 10%;
 }
 
+.user-page-link {
+    color: #778087;
+}
+
+.user-page-link:hover {
+    color: #333;
+}
+
 .golang-user-info {
 	padding: 20px 10px 20px 10px;
 	background-color: #fff;

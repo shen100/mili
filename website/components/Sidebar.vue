@@ -13,7 +13,7 @@
             <div class="title">作者信息</div>
             <div class="golang-user-info" style="padding-top:16px;">
                 <div>
-                    <a class="golang-sidebar-icon-box">
+                    <a :href="'/user/' + author.id" class="golang-sidebar-icon-box">
                         <img class="golang-user-info-icon" :src="author.avatarURL" alt="">
                     </a>
                     <span class="golang-sidebar-info-box">
@@ -37,7 +37,7 @@
 			<ul>
 				<li v-for="item in score" class="golang-cell-item">
 					<span class="golang-score-item">{{item.score}}</span>
-					<span class="golang-score-item">{{item.name}}</span>
+					<span class="golang-score-item"><a class="user-page-link" :href="'/user/' + item.id">{{item.name}}</a></span>
 				</li>
 			</ul>
         </div>
