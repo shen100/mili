@@ -9,7 +9,6 @@ import (
 	"unicode/utf8"
 	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris"
-	"golang123/config"
 	"golang123/model"
 	"golang123/utils"
 	"golang123/manager"
@@ -34,8 +33,8 @@ func List(ctx iris.Context) {
 		pageNo = 1
 	}
 
-	offset   := (pageNo - 1) * config.ServerConfig.PageSize
-	pageSize := config.ServerConfig.PageSize
+	offset   := (pageNo - 1) * model.PageSize
+	pageSize := model.PageSize
 
 	statusStr := ctx.FormValue("status")
 	if statusStr == "" {
@@ -161,8 +160,8 @@ func save(isEdit bool, vote model.Vote, user model.User, tx *gorm.DB) (model.Vot
 		return vote, errors.New("名称不能为空")	
 	}
 	
-	if utf8.RuneCountInString(vote.Name) > config.ServerConfig.MaxNameLen {
-		msg := "名称不能超过" + strconv.Itoa(config.ServerConfig.MaxNameLen) + "个字符"
+	if utf8.RuneCountInString(vote.Name) > model.MaxNameLen {
+		msg := "名称不能超过" + strconv.Itoa(model.MaxNameLen) + "个字符"
 		return vote, errors.New(msg)	
 	}
 	
@@ -170,8 +169,8 @@ func save(isEdit bool, vote model.Vote, user model.User, tx *gorm.DB) (model.Vot
 		return vote, errors.New("内容不能为空")
 	}
 	
-	if utf8.RuneCountInString(vote.Content) > config.ServerConfig.MaxContentLen {	
-		msg := "内容不能超过" + strconv.Itoa(config.ServerConfig.MaxContentLen) + "个字符"	
+	if utf8.RuneCountInString(vote.Content) > model.MaxContentLen {	
+		msg := "内容不能超过" + strconv.Itoa(model.MaxContentLen) + "个字符"	
 		return vote, errors.New(msg)
 	}
 
@@ -394,8 +393,8 @@ func saveVoteItem(voteItem model.VoteItem, tx *gorm.DB) (model.VoteItem, error) 
 		return voteItem, errors.New("名称不能为空")
 	}
 	
-	if utf8.RuneCountInString(voteItem.Name) > config.ServerConfig.MaxNameLen {
-		msg := "名称不能超过" + strconv.Itoa(config.ServerConfig.MaxNameLen) + "个字符"
+	if utf8.RuneCountInString(voteItem.Name) > model.MaxNameLen {
+		msg := "名称不能超过" + strconv.Itoa(model.MaxNameLen) + "个字符"
 		return voteItem, errors.New(msg)
 	}
 	var vote model.Vote
@@ -516,8 +515,8 @@ func EditVoteItem(ctx iris.Context) {
 		return
 	}
 	
-	if utf8.RuneCountInString(voteItem.Name) > config.ServerConfig.MaxNameLen {
-		msg := "名称不能超过" + strconv.Itoa(config.ServerConfig.MaxNameLen) + "个字符"
+	if utf8.RuneCountInString(voteItem.Name) > model.MaxNameLen {
+		msg := "名称不能超过" + strconv.Itoa(model.MaxNameLen) + "个字符"
 		SendErrJSON(msg, ctx)
 		return
 	}
@@ -592,7 +591,7 @@ func UserVoteList(ctx iris.Context) {
 		return	
 	}
 
-	if pageSize < 1 || pageSize > config.ServerConfig.MaxPageSize {
+	if pageSize < 1 || pageSize > model.MaxPageSize {
 		SendErrJSON("无效的pageSize", ctx)
 		return	
 	}

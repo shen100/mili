@@ -59,8 +59,8 @@ func Save(isEdit bool, ctx iris.Context) {
 		return
 	} 
 	
-	if utf8.RuneCountInString(comment.Content) > config.ServerConfig.MaxCommentLen {
-		msg := "评论不能超过" + strconv.Itoa(config.ServerConfig.MaxCommentLen) + "个字符"
+	if utf8.RuneCountInString(comment.Content) > model.MaxCommentLen {
+		msg := "评论不能超过" + strconv.Itoa(model.MaxCommentLen) + "个字符"
 		SendErrJSON(msg, ctx)
 		return
 	}
@@ -203,7 +203,7 @@ func UserCommentList(ctx iris.Context) {
 		return	
 	}
 
-	if pageSize < 1 || pageSize > config.ServerConfig.MaxPageSize {
+	if pageSize < 1 || pageSize > model.MaxPageSize {
 		SendErrJSON("无效的pageSize", ctx)
 		return	
 	}

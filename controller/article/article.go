@@ -31,8 +31,8 @@ func queryList(isBackend bool, ctx iris.Context) {
 		pageNo = 1
 	}
 
-	offset   := (pageNo - 1) * config.ServerConfig.PageSize
-	pageSize := config.ServerConfig.PageSize
+	offset   := (pageNo - 1) * model.PageSize
+	pageSize := model.PageSize
 
 	//默认按创建时间，降序来排序
 	var orderField = "created_at"
@@ -185,7 +185,7 @@ func UserArticleList(ctx iris.Context) {
 		return	
 	}
 
-	if pageSize < 1 || pageSize > config.ServerConfig.MaxPageSize {
+	if pageSize < 1 || pageSize > model.MaxPageSize {
 		SendErrJSON("无效的pageSize", ctx)
 		return	
 	}
@@ -307,8 +307,8 @@ func save(isEdit bool, ctx iris.Context) {
 		return
 	}
 	
-	if utf8.RuneCountInString(article.Name) > config.ServerConfig.MaxNameLen {
-		msg := "文章名称不能超过" + strconv.Itoa(config.ServerConfig.MaxNameLen) + "个字符"
+	if utf8.RuneCountInString(article.Name) > model.MaxNameLen {
+		msg := "文章名称不能超过" + strconv.Itoa(model.MaxNameLen) + "个字符"
 		SendErrJSON(msg, ctx)
 		return
 	}
@@ -318,8 +318,8 @@ func save(isEdit bool, ctx iris.Context) {
 		return
 	}
 	
-	if utf8.RuneCountInString(article.Content) > config.ServerConfig.MaxContentLen {	
-		msg := "文章内容不能超过" + strconv.Itoa(config.ServerConfig.MaxContentLen) + "个字符"	
+	if utf8.RuneCountInString(article.Content) > model.MaxContentLen {	
+		msg := "文章内容不能超过" + strconv.Itoa(model.MaxContentLen) + "个字符"	
 		SendErrJSON(msg, ctx)
 		return
 	}
@@ -329,8 +329,8 @@ func save(isEdit bool, ctx iris.Context) {
 		return
 	}
 	
-	if len(article.Categories) > config.ServerConfig.MaxArticleCateCount {
-		msg := "文章最多属于" + strconv.Itoa(config.ServerConfig.MaxArticleCateCount) + "个版块"
+	if len(article.Categories) > model.MaxArticleCateCount {
+		msg := "文章最多属于" + strconv.Itoa(model.MaxArticleCateCount) + "个版块"
 		SendErrJSON(msg, ctx)
 		return
 	}

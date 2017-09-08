@@ -5,7 +5,6 @@ import (
 	"strings"
 	"strconv"
 	"github.com/kataras/iris"
-	"golang123/config"
 	"golang123/model"
 	"golang123/controller/common"
 )
@@ -14,8 +13,8 @@ import (
 func Save(isEdit bool, ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 
-	minOrder := config.ServerConfig.MinOrder
-	maxOrder := config.ServerConfig.MaxOrder
+	minOrder := model.MinOrder
+	maxOrder := model.MaxOrder
 
 	var category model.Category
 	if err := ctx.ReadJSON(&category); err != nil {
@@ -29,8 +28,8 @@ func Save(isEdit bool, ctx iris.Context) {
 		return
 	} 
 	
-	if utf8.RuneCountInString(category.Name) > config.ServerConfig.MaxNameLen {
-		msg := "分类名称不能超过" + strconv.Itoa(config.ServerConfig.MaxNameLen) + "个字符"
+	if utf8.RuneCountInString(category.Name) > model.MaxNameLen {
+		msg := "分类名称不能超过" + strconv.Itoa(model.MaxNameLen) + "个字符"
 		SendErrJSON(msg, ctx)
 		return
 	}
@@ -147,8 +146,8 @@ func AllList(ctx iris.Context) {
 		orderStr += " desc"	
 	}
 
-	offset   := (pageNo - 1) * config.ServerConfig.PageSize
-	queryErr := model.DB.Offset(offset).Limit(config.ServerConfig.PageSize).Order(orderStr).Find(&categories).Error
+	offset   := (pageNo - 1) * model.PageSize
+	queryErr := model.DB.Offset(offset).Limit(model.PageSize).Order(orderStr).Find(&categories).Error
 
 	if queryErr != nil {
 		SendErrJSON("error", ctx)

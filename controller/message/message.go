@@ -3,7 +3,6 @@ package message
 import (
 	"strconv"
 	"github.com/kataras/iris"
-	"golang123/config"
 	"golang123/model"
 	"golang123/controller/common"
 )
@@ -25,8 +24,8 @@ func Unread(ctx iris.Context) {
 		pageSize = 1
 	}
 
-	if pageSize > config.ServerConfig.MaxPageSize {
-		pageSize = config.ServerConfig.MaxPageSize
+	if pageSize > model.MaxPageSize {
+		pageSize = model.MaxPageSize
 	}
 
 	if model.DB.Where("has_read = ?", 0).Order("created_at DESC").

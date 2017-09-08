@@ -7,7 +7,6 @@ import (
 	"unicode/utf8"
 	"github.com/kataras/iris"
 	"github.com/microcosm-cc/bluemonday"
-	"golang123/config"
 	"golang123/model"
 	"golang123/utils"
 	"golang123/manager"
@@ -239,8 +238,8 @@ func Collects(ctx iris.Context) {
 		return
 	}
 
-	offset   := (pageNo - 1) * config.ServerConfig.PageSize
-	pageSize := config.ServerConfig.PageSize
+	offset   := (pageNo - 1) * model.PageSize
+	pageSize := model.PageSize
 
 	if err := model.DB.Where("folder_id = ? AND user_id = ?", folderID, userID).Offset(offset).
 			Limit(pageSize).Order("created_at DESC").Find(&collects).Error; err != nil {

@@ -606,14 +606,14 @@ func AllList(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	pageNo, pageNoErr := strconv.Atoi(ctx.FormValue("pageNo"))
 	if pageNoErr != nil {
-		pageNo = 1	
+		pageNo = 1
 	}
 	if pageNo < 1 {
 		pageNo = 1
 	}
 
-	offset   := (pageNo - 1) * config.ServerConfig.PageSize
-	pageSize := config.ServerConfig.PageSize
+	offset   := (pageNo - 1) * model.PageSize
+	pageSize := model.PageSize
 
 	var users []model.User
 	if err := model.DB.Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {

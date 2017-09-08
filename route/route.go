@@ -16,7 +16,7 @@ import (
 
 // Route 路由
 func Route(app *iris.Application) {
-	apiPrefix   := config.APIConfig.Prefix
+	apiPrefix   := config.ServerConfig.APIPrefix
 
 	routes := app.Party(apiPrefix) 
 	{	

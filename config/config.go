@@ -1,7 +1,7 @@
 package config
 
 import (
-    "strings"
+	"os"
     "encoding/json"
     "fmt"
 	"io/ioutil"
@@ -14,7 +14,8 @@ var jsonData map[string]interface{}
 func initJSON() {
     bytes, err := ioutil.ReadFile("./config.json")
     if err != nil {
-        fmt.Println("ReadFile: ", err.Error())
+		fmt.Println("ReadFile: ", err.Error())
+		os.Exit(-1)
     }
 
 	configStr := string(bytes[:])
@@ -24,7 +25,8 @@ func initJSON() {
 	bytes      = []byte(configStr)
 
     if err := json.Unmarshal(bytes, &jsonData); err != nil {
-        fmt.Println("invalid config: ", err.Error())
+		fmt.Println("invalid config: ", err.Error())
+		os.Exit(-1)
     }
 }
 
@@ -46,14 +48,8 @@ var DBConfig dBConfig
 
 func initDB() {
 	utils.SetStructByJSON(&DBConfig, jsonData["database"].(map[string]interface{}))
-	portStr := fmt.Sprintf("%d", DBConfig.Port)
-	url := "{user}:{password}@/{database}?charset={charset}&parseTime=True&loc=Local"
-	url  = strings.Replace(url, "{database}", DBConfig.Database, -1)
-	url  = strings.Replace(url, "{user}",     DBConfig.User,     -1)
-	url  = strings.Replace(url, "{password}", DBConfig.Password, -1)
-	url  = strings.Replace(url, "{host}",     DBConfig.Host,     -1)
-	url  = strings.Replace(url, "{port}",     portStr,           -1)
-	url  = strings.Replace(url, "{charset}",  DBConfig.Charset,  -1)
+	url := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local", 
+		DBConfig.User, DBConfig.Password, DBConfig.Host, DBConfig.Port, DBConfig.Database, DBConfig.Charset)
 	DBConfig.URL = url
 }
 
@@ -77,26 +73,18 @@ type serverConfig struct {
 	SiteName            string
 	Host                string
 	Env                 string
-	ImgPath             string
+	APIPrefix           string
 	UploadImgDir        string
+	ImgPath             string
 	Port                int
 	SessionID           string
 	SessionTimeout      int
-	MaxOrder            int
-	MinOrder            int
-	PageSize            int
-	MaxPageSize         int
-	MinPageSize         int
-	MaxNameLen          int
-	MaxContentLen       int
-	MaxArticleCateCount int
-	MaxCommentLen       int
-	Base64Table         string
 	PassSalt            string
 	MailUser            string  //域名邮箱账号
 	MailPass            string  //域名邮箱密码
 	MailHost            string  //smtp邮箱域名
 	MailPort            int     //smtp邮箱端口
+	Github              string
 }
 
 // ServerConfig 服务器相关配置
@@ -106,22 +94,9 @@ func initServer() {
 	utils.SetStructByJSON(&ServerConfig, jsonData["go"].(map[string]interface{}))
 }
 
-type apiConfig struct {
-	Prefix   string
-	URL      string
-}
-
-// APIConfig api相关配置
-var APIConfig apiConfig
-
-func initAPI() {
-	utils.SetStructByJSON(&APIConfig, jsonData["api"].(map[string]interface{}))
-}
-
 func init() {
 	initJSON()
 	initDB()
 	initRedis()
 	initServer()
-	initAPI()
 }
