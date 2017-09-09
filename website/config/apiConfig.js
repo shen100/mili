@@ -240,6 +240,21 @@ const api = {
         url: url + '/user/career/delete/:id',
         method: 'POST',
         desc: '删除工作经历'
+    },
+    getCollectDirList: {
+        url: url + '/collect/folders/:userID',
+        method: 'GET',
+        desc: '查询用户的收藏夹列表'
+    },
+    createCollectDir: {
+        url: url + '/collect/folder/create',
+        method: 'POST',
+        desc: '创建收藏夹'
+    },
+    createCollect: {
+        url: url + '/collect/create', // collect_source_article收藏文章; collect_source_vote收藏投票
+        method: 'POST',
+        desc: '收藏文章或收藏投票'
     }
 }
 

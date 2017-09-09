@@ -607,3 +607,20 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .no-underline:hover {
     text-decoration: none;
 }
+
+.info-button {
+    display: inline-block;
+    padding: 0 16px;
+    font-size: 14px;
+    line-height: 32px;
+    color: #0f88eb;
+    border: 1px solid #0f88eb;
+    text-align: center;
+    cursor: pointer;
+    background: none;
+    border-radius: 3px;
+}
+
+.info-button:hover {
+    background-color: rgba(13,121,209,.06);
+}
