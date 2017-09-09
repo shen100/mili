@@ -212,6 +212,7 @@
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.vote = res.data
                             }
+                            this.loading = false
                         }).catch(err => {
                             this.loading = false
                             this.$Message.error(err.message)
