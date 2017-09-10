@@ -25,33 +25,12 @@ const (
 
 	// MaxContentLen 最大的内容长度
 	MaxContentLen = 50000
-
-	// MaxArticleCateCount 文章最多的分类个数
-	MaxArticleCateCount = 6
-
-	// MaxCommentLen 最大的评论长度
-	MaxCommentLen = 5000
-)
-
-// 用户相关常量
-const (
-	// MaxUserNameLen 用户名的最大长度
-	MaxUserNameLen = 20	
-
-	// MinUserNameLen 用户名的最小长度
-	MinUserNameLen = 4	
-
-	// MaxPassLen 密码的最大长度
-	MaxPassLen = 20	
-
-	// MinPassLen 密码的最小长度
-	MinPassLen = 6
 )
 
 // 积分相关常量
 const (
-	// CreateArticleScore 创建话题时增加的积分
-	CreateArticleScore = 5	
+	// ArticleScore 创建话题时增加的积分
+	ArticleScore = 5	
 
 	// ByCommentScore 话题或投票被评论时增加的积分
 	ByCommentScore = 2

@@ -34,11 +34,6 @@ func Save(isEdit bool, ctx iris.Context) {
 		return
 	}
 	
-	if category.Status != model.CategoryStatusOpen && category.Status != model.CategoryStatusClose {
-		SendErrJSON("status无效", ctx)
-		return
-	} 
-	
 	if category.Sequence < minOrder || category.Sequence > maxOrder {
 		msg := "分类的排序要在" + strconv.Itoa(minOrder) + "到" + strconv.Itoa(maxOrder) + "之间"
 		SendErrJSON(msg, ctx)
@@ -66,7 +61,6 @@ func Save(isEdit bool, ctx iris.Context) {
 			updatedCategory.Name     = category.Name
 			updatedCategory.Sequence = category.Sequence
 			updatedCategory.ParentID = category.ParentID
-			updatedCategory.Status   = category.Status
 			if err := model.DB.Save(&updatedCategory).Error; err != nil {
 				SendErrJSON("error", ctx)
 				return
@@ -178,46 +172,6 @@ func List(ctx iris.Context) {
 		"msg"   : "success",
 		"data"  : iris.Map{
 			"categories": categories,
-		},
-	})
-}
-
-// UpdateStatus 开启或关闭分类
-func UpdateStatus(ctx iris.Context) {
-	SendErrJSON := common.SendErrJSON
-	var category model.Category
-
-	if err := ctx.ReadJSON(&category); err != nil {
-		SendErrJSON("无效的id或status", ctx)
-		return
-	}
-
-	id     := category.ID
-	status := category.Status
-
-	if status != model.CategoryStatusOpen && status != model.CategoryStatusClose {
-		SendErrJSON("无效的status!", ctx)
-		return
-	}
-
-	var cate model.Category
-	if err := model.DB.First(&cate, id).Error; err != nil {
-		SendErrJSON("无效的id!", ctx)
-		return
-	}
-
-	cate.Status = status
-
-	if err := model.DB.Save(&cate).Error; err != nil {
-		SendErrJSON("分类状态更新失败", ctx)
-		return
-	}
-	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
-			"id"     : id,
-			"status" : status,
 		},
 	})
 }

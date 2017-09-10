@@ -18,12 +18,12 @@ type Vote struct {
     Comments       []Comment          `gorm:"ForeignKey:SourceID" json:"comments"` 
     UserID         uint               `json:"userID"`
     User           User               `json:"user"`
-    LastUserID     uint               `json:"lastUserID"`
+    LastUserID     uint               `json:"lastUserID"`//最后一个回复投票、收藏投票、参与投票的人
     LastUser       User               `gorm:"AssociationForeignKey:LastUserID" json:"lastUser"`
     VoteItems      []VoteItem         `json:"voteItems"`
 }
 
-// VoteItem 投票项
+// VoteItem 投票项, 一个投票有多个投票项，用户选择投票项进行投票
 type VoteItem struct {
 	ID             uint               `gorm:"primary_key" json:"id"`
     CreatedAt      time.Time          `json:"createdAt"`
@@ -34,7 +34,7 @@ type VoteItem struct {
     VoteID         uint               `json:"voteID"`
 }
 
-// UserVote 用户投的票
+// UserVote 用户对哪个投票项进行了投票
 type UserVote struct {
 	ID             uint               `gorm:"primary_key" json:"id"`
     CreatedAt      time.Time          `json:"createdAt"`

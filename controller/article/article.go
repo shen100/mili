@@ -8,7 +8,6 @@ import (
 	"unicode/utf8"
 	"github.com/kataras/iris"
 	"github.com/microcosm-cc/bluemonday"
-	"golang123/config"
 	"golang123/model"
 	"golang123/manager"
 	"golang123/utils"
@@ -292,7 +291,7 @@ func save(isEdit bool, ctx iris.Context) {
 	} else {
 		article.BrowseCount  = 0
 		article.Status       = model.ArticleVerifying
-		user.Score           = user.Score + config.UserConfig.CreateArticleScore
+		user.Score           = user.Score + model.ArticleScore
 		user.ArticleCount    = user.ArticleCount + 1
 		manager.Sess.Start(ctx).Set("user", user)
 	}

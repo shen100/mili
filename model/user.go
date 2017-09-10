@@ -16,21 +16,21 @@ type User struct {
     DeletedAt      *time.Time         `sql:"index" json:"deletedAt"`
     Name           string             `json:"name"`
     Pass           string             `json:"-"`
-    Email          string             `json:"email"`
+    Email          string             `json:"-"`
     Sex            uint               `json:"sex"`
     Location       string             `json:"location"`
     Introduce      string             `json:"introduce"`
-    Phone          string             `json:"phone"`
+    Phone          string             `json:"-"`
     Score          uint               `json:"score"`
     ArticleCount   uint               `json:"articleCount"`
     CommentCount   uint               `json:"commentCount"`
     CollectCount   uint               `json:"collectCount"`
-    Signature      string             `json:"signature"`
-    Role           int                `json:"role"`
-    AvatarURL      string             `json:"avatarURL"`
-    Status         int                `json:"status"`    
-    Schools        []School           `json:"schools"`    
-    Careers        []Career           `json:"careers"`    
+    Signature      string             `json:"signature"`  //个人签名
+    Role           int                `json:"role"`       //角色
+    AvatarURL      string             `json:"avatarURL"`  //头像
+    Status         int                `json:"status"`     
+    Schools        []School           `json:"schools"`    //教育经历
+    Careers        []Career           `json:"careers"`    //职业经历
 }
 
 // CheckPassword 验证密码是否正确
@@ -58,24 +58,6 @@ func (user User) EncryptPassword(password, salt string) (hash string) {
     hash = salt + password + config.ServerConfig.PassSalt
     hash = salt + fmt.Sprintf("%x", md5.Sum([]byte(hash)))
     return
-}
-
-// PublicInfo 用户公开的信息
-func (user User) PublicInfo() User {
-    return User{
-        ID             : user.ID,
-        CreatedAt      : user.CreatedAt,
-        Name           : user.Name,
-        Score          : user.Score,
-        Sex            : user.Sex,
-        Location       : user.Location,
-        Introduce      : user.Introduce,
-        ArticleCount   : user.ArticleCount,
-        CommentCount   : user.CommentCount,
-        CollectCount   : user.CollectCount,
-        Signature      : user.Signature,
-        AvatarURL      : user.AvatarURL,
-    }
 }
 
 const (
@@ -109,13 +91,25 @@ const (
 
     // UserSexFemale 女
     UserSexFemale = 1
+
+    // MaxUserNameLen 用户名的最大长度
+	MaxUserNameLen = 20	
+    
+    // MinUserNameLen 用户名的最小长度
+    MinUserNameLen = 4	
+
+    // MaxPassLen 密码的最大长度
+    MaxPassLen = 20	
+
+    // MinPassLen 密码的最小长度
+    MinPassLen = 6
+
+    // MaxSignatureLen 个性签名最大长度
+    MaxSignatureLen = 200
+
+    // MaxLocationLen 居住地的最大长度
+    MaxLocationLen = 200
+
+    // MaxIntroduceLen 个人简介的最大长度
+    MaxIntroduceLen = 500
 )
-
-// UserSignatureMaxLen 个性签名最大长度
-const UserSignatureMaxLen = 200
-
-// UserLocationMaxLen 居住地的最大长度
-const UserLocationMaxLen = 200
-
-// UserIntroduceMaxLen 个人简介的最大长度
-const UserIntroduceMaxLen = 500

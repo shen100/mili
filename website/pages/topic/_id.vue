@@ -52,6 +52,12 @@
                                 </a>
                                 <a :href="'/user/' + item.user.id" class="reply-user-name">{{item.user.name}}</a>
                                 <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
+                                <div class="comment-actions">
+                                    <div class="comment-delete" @click="onCommentDelete(item.id)">
+                                        <Icon type="android-delete" style="font-size: 17px;"></Icon>
+                                        <span>删除</span>
+                                    </div>
+                                </div>
                                 <div class="golang123-editor" v-html="item.content"></div>
                             </div>
                         </template>
@@ -259,6 +265,15 @@
                             }
                         })
                     }
+                })
+            },
+            onCommentDelete (id) {
+                request.deleteComment({
+                    params: {
+                        id: id
+                    }
+                }).then((res) => {
+                    console.log(res)
                 })
             }
         },

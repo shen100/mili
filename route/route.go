@@ -16,9 +16,9 @@ import (
 
 // Route 路由
 func Route(app *iris.Application) {
-	apiPrefix   := config.ServerConfig.APIPrefix
+	apiPrefix := config.ServerConfig.APIPrefix
 
-	routes := app.Party(apiPrefix) 
+	routes := app.Party(apiPrefix, common.SessShiftExpiration)
 	{	
 		routes.Post("/signin",                   user.Signin)
 		routes.Post("/signup",                   user.Signup)
@@ -31,7 +31,7 @@ func Route(app *iris.Application) {
 
 		routes.Get("/user/info/public/:id",    user.PublicInfo)
 		routes.Get("/user/info",               auth.SigninRequired,  
-											   user.Info)
+											   user.SecretInfo)
 		routes.Get("/user/info/detail",        auth.SigninRequired, 
 											   user.InfoDetail)
 		routes.Post("/user/update/:field",     auth.ActiveRequired,       
@@ -57,7 +57,7 @@ func Route(app *iris.Application) {
 		routes.Get("/message/unread/count",  auth.SigninRequired,  
 											 message.UnreadCount)
 
-		routes.Get("/categories",            category.List)
+		routes.Get("/categories",              category.List)
 
 		routes.Get("/articles",                article.List)
 		routes.Get("/articles/user/:userID",   article.UserArticleList)
@@ -85,9 +85,14 @@ func Route(app *iris.Application) {
 		routes.Get("/collect/folders/:userID", collect.Folders)
 		routes.Get("/collects",                collect.Collects)
 
-		routes.Post("/comment/create",       auth.ActiveRequired,
-											 comment.Create)
-		routes.Get("/comments/user/:userID", comment.UserCommentList)
+		routes.Post("/comment/create",                auth.ActiveRequired,
+											          comment.Create)
+		routes.Post("/comment/delete/:id",            auth.ActiveRequired,
+											          comment.Delete)
+		routes.Post("/comment/update",                auth.ActiveRequired,
+											          comment.Update)
+		routes.Get("/comments/user/:userID",          comment.UserCommentList)
+		routes.Get("/comments/:sourceID/:sourceName", comment.SourceComments)
 
 		routes.Get("/votes",                vote.List)
 		routes.Get("/votes/maxbrowse",      vote.ListMaxBrowse)
@@ -95,6 +100,8 @@ func Route(app *iris.Application) {
 		routes.Get("/votes/user/:userID",   vote.UserVoteList)
 		routes.Post("/vote/create",         auth.EditorRequired,
 											vote.Create)
+		routes.Post("/vote/update",         auth.EditorRequired,
+											vote.Update)
 		routes.Post("/vote/delete/:id",     auth.EditorRequired,
 											vote.Delete)
 		routes.Get("/vote/:id",             vote.Info)
@@ -106,12 +113,11 @@ func Route(app *iris.Application) {
 											vote.UserVoteVoteItem)
     }
 
-	adminRoutes := app.Party(apiPrefix + "/admin", auth.AdminRequired)
+	adminRoutes := app.Party(apiPrefix + "/admin", common.SessShiftExpiration, auth.AdminRequired)
 	{
 		adminRoutes.Get("/categories",               category.AllList)
 		adminRoutes.Post("/category/create",         category.Create)
 		adminRoutes.Post("/category/update",         category.Update)
-		adminRoutes.Post("/category/status/update",  category.UpdateStatus)
 
 		adminRoutes.Get("/articles",                 article.AllList)
 		adminRoutes.Post("/article/status/update",   article.UpdateStatus)

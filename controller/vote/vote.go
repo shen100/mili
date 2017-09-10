@@ -299,7 +299,6 @@ func Info(ctx iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
-	vote.User = vote.User.PublicInfo()
 
 	if err := model.DB.Model(&vote).Related(&vote.VoteItems, "vote_items").Error; err != nil {
 		fmt.Println(err.Error())

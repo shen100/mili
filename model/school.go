@@ -9,12 +9,12 @@ type School struct {
     UpdatedAt      time.Time          `json:"updatedAt"`
     DeletedAt      *time.Time         `sql:"index" json:"deletedAt"`
     Name           string             `json:"name"`
-	Speciality     string             `json:"speciality"`
+	Speciality     string             `json:"speciality"` //专业
 	UserID         uint               `json:"userID"`
 }
 
-// SchoolMaxNameLen 学校或教育机构名的最大长度
-const SchoolMaxNameLen = 200
+// MaxSchoolNameLen 学校或教育机构名的最大长度
+const MaxSchoolNameLen = 200
 
-// SchoolMaxSpecialityLen 专业的最大长度
-const SchoolMaxSpecialityLen = 200
+// MaxSchoolSpecialityLen 专业的最大长度
+const MaxSchoolSpecialityLen = 200

@@ -126,6 +126,11 @@ const api = {
         method: 'POST',
         desc: '提交评论'
     },
+    deleteComment: {
+        url: url + '/comment/delete/:id',
+        method: 'POST',
+        desc: '删除评论'
+    },
     getMaxComment: {
         url: url + '/articles/maxcomment',
         method: 'GET',

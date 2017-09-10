@@ -20,9 +20,9 @@ type Collect struct {
     UpdatedAt  time.Time     `json:"updatedAt"`
 	DeletedAt  *time.Time    `sql:"index" json:"deletedAt"`
 	UserID     uint          `json:"userID"`
-	SourceName string        `json:"sourceName"` 
-    SourceID   uint          `json:"sourceID"`
-    FolderID   uint          `json:"folderID"`
+	SourceName string        `json:"sourceName"`//用来区分是对话题，还是对投票进行评论
+    SourceID   uint          `json:"sourceID"`  //话题或投票的ID
+    FolderID   uint          `json:"folderID"`  //收藏到哪个收藏夹
     Folder     Folder        `json:"folder"`
 }
 

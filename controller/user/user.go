@@ -324,7 +324,7 @@ func Signin(ctx iris.Context) {
 		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
-			"data"  : queryUser.PublicInfo(),
+			"data"  : queryUser,
 		})
 	} else {
 		SendErrJSON(msg, ctx)
@@ -442,8 +442,8 @@ func UpdateInfo(ctx iris.Context) {
 			userReqData.Signature = strings.TrimSpace(userReqData.Signature)
 			userReqData.Signature = bluemonday.UGCPolicy().Sanitize(userReqData.Signature)
 			// 个性签名可以为空
-			if utf8.RuneCountInString(userReqData.Signature) > model.UserSignatureMaxLen {
-				SendErrJSON("个性签名不能超过" + fmt.Sprintf("%d", model.UserSignatureMaxLen) + "个字符", ctx)
+			if utf8.RuneCountInString(userReqData.Signature) > model.MaxSignatureLen {
+				SendErrJSON("个性签名不能超过" + fmt.Sprintf("%d", model.MaxSignatureLen) + "个字符", ctx)
 				return
 			}
 			if err := model.DB.Model(&user).Update("signature", userReqData.Signature).Error; err != nil {
@@ -456,8 +456,8 @@ func UpdateInfo(ctx iris.Context) {
 			userReqData.Location = strings.TrimSpace(userReqData.Location)
 			userReqData.Location = bluemonday.UGCPolicy().Sanitize(userReqData.Location)
 			// 居住地可以为空
-			if utf8.RuneCountInString(userReqData.Location) > model.UserLocationMaxLen {
-				SendErrJSON("居住地不能超过" + fmt.Sprintf("%d", model.UserLocationMaxLen) + "个字符", ctx)
+			if utf8.RuneCountInString(userReqData.Location) > model.MaxLocationLen {
+				SendErrJSON("居住地不能超过" + fmt.Sprintf("%d", model.MaxLocationLen) + "个字符", ctx)
 				return
 			}
 			if err := model.DB.Model(&user).Update("location", userReqData.Location).Error; err != nil {
@@ -470,8 +470,8 @@ func UpdateInfo(ctx iris.Context) {
 			userReqData.Introduce = strings.TrimSpace(userReqData.Introduce)
 			userReqData.Introduce = bluemonday.UGCPolicy().Sanitize(userReqData.Introduce)
 			// 个人简介可以为空
-			if utf8.RuneCountInString(userReqData.Introduce) > model.UserIntroduceMaxLen {
-				SendErrJSON("个人简介不能超过" + fmt.Sprintf("%d", model.UserIntroduceMaxLen) + "个字符", ctx)
+			if utf8.RuneCountInString(userReqData.Introduce) > model.MaxIntroduceLen {
+				SendErrJSON("个人简介不能超过" + fmt.Sprintf("%d", model.MaxIntroduceLen) + "个字符", ctx)
 				return
 			}
 			if err := model.DB.Model(&user).Update("introduce", userReqData.Introduce).Error; err != nil {
@@ -555,13 +555,13 @@ func PublicInfo(ctx iris.Context) {
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
-			"user": user.PublicInfo(),
+			"user": user,
 		},
 	})
 }
 
-// Info 返回用户信息
-func Info(ctx iris.Context) {
+// SecretInfo 返回用户信息，包含一些私密字段
+func SecretInfo(ctx iris.Context) {
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
@@ -572,7 +572,7 @@ func Info(ctx iris.Context) {
 	})
 }
 
-// InfoDetail 返回用户详情信息
+// InfoDetail 返回用户详情信息，包含一些私密字段
 func InfoDetail(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
@@ -676,8 +676,8 @@ func AddCareer(ctx iris.Context) {
 		return
 	}
 
-	if utf8.RuneCountInString(career.Company) > model.CareerMaxCompanyLen {
-		SendErrJSON("公司或组织名称不能超过" + fmt.Sprintf("%d", model.CareerMaxCompanyLen) + "个字符", ctx)
+	if utf8.RuneCountInString(career.Company) > model.MaxCareerCompanyLen {
+		SendErrJSON("公司或组织名称不能超过" + fmt.Sprintf("%d", model.MaxCareerCompanyLen) + "个字符", ctx)
 		return	
 	}
 
@@ -686,8 +686,8 @@ func AddCareer(ctx iris.Context) {
 		return
 	}
 
-	if utf8.RuneCountInString(career.Title) > model.CareerMaxTitleLen {
-		SendErrJSON("职位不能超过" + fmt.Sprintf("%d", model.CareerMaxTitleLen) + "个字符", ctx)
+	if utf8.RuneCountInString(career.Title) > model.MaxCareerTitleLen {
+		SendErrJSON("职位不能超过" + fmt.Sprintf("%d", model.MaxCareerTitleLen) + "个字符", ctx)
 		return	
 	}
 
@@ -726,8 +726,8 @@ func AddSchool(ctx iris.Context) {
 		return
 	}
 
-	if utf8.RuneCountInString(school.Name) > model.SchoolMaxNameLen {
-		SendErrJSON("学校或教育机构名不能超过" + fmt.Sprintf("%d", model.SchoolMaxNameLen) + "个字符", ctx)
+	if utf8.RuneCountInString(school.Name) > model.MaxSchoolNameLen {
+		SendErrJSON("学校或教育机构名不能超过" + fmt.Sprintf("%d", model.MaxSchoolNameLen) + "个字符", ctx)
 		return	
 	}
 
@@ -736,8 +736,8 @@ func AddSchool(ctx iris.Context) {
 		return
 	}
 
-	if utf8.RuneCountInString(school.Speciality) > model.SchoolMaxSpecialityLen {
-		SendErrJSON("专业方向不能超过" + fmt.Sprintf("%d", model.SchoolMaxSpecialityLen) + "个字符", ctx)
+	if utf8.RuneCountInString(school.Speciality) > model.MaxSchoolSpecialityLen {
+		SendErrJSON("专业方向不能超过" + fmt.Sprintf("%d", model.MaxSchoolSpecialityLen) + "个字符", ctx)
 		return	
 	}
 

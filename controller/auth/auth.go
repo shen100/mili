@@ -9,19 +9,17 @@ import (
 
 // SigninRequired 必须是登录用户
 func SigninRequired(ctx iris.Context) {
-	manager.Sess.ShiftExpiration(ctx)
 	SendErrJSON := common.SendErrJSON
 	_, ok := manager.Sess.Start(ctx).Get("user").(model.User)
 	if !ok {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
-		return	
+		return
 	}
 	ctx.Next()
 }
 
 // ActiveRequired 用户必须是激活状态
 func ActiveRequired(ctx iris.Context) {
-	manager.Sess.ShiftExpiration(ctx)
 	SendErrJSON := common.SendErrJSON
 	user, ok := manager.Sess.Start(ctx).Get("user").(model.User)
 
@@ -48,7 +46,6 @@ func ActiveRequired(ctx iris.Context) {
 
 // EditorRequired 必须是网站编辑
 func EditorRequired(ctx iris.Context) {
-	manager.Sess.ShiftExpiration(ctx)
 	SendErrJSON := common.SendErrJSON
 	user, ok := manager.Sess.Start(ctx).Get("user").(model.User)
 
@@ -60,13 +57,12 @@ func EditorRequired(ctx iris.Context) {
 		ctx.Next()
 	} else {
 		SendErrJSON("没有权限", ctx)
-		return	
+		return
 	}
 }
 
 // AdminRequired 必须是管理员
 func AdminRequired(ctx iris.Context) {
-	manager.Sess.ShiftExpiration(ctx)
 	SendErrJSON := common.SendErrJSON
 	user, ok := manager.Sess.Start(ctx).Get("user").(model.User)
 
@@ -78,7 +74,7 @@ func AdminRequired(ctx iris.Context) {
 		ctx.Next()
 	} else {
 		SendErrJSON("没有权限", ctx)
-		return	
+		return
 	}
 }
 

@@ -13,8 +13,8 @@ type Career struct {
 	UserID         uint               `json:"userID"`
 }
 
-// CareerMaxCompanyLen 公司或组织名称的最大长度
-const CareerMaxCompanyLen = 200
+// MaxCareerCompanyLen 公司或组织名称的最大长度
+const MaxCareerCompanyLen = 200
 
-// CareerMaxTitleLen 职位的最大长度
-const CareerMaxTitleLen = 200
+// MaxCareerTitleLen 职位的最大长度
+const MaxCareerTitleLen = 200

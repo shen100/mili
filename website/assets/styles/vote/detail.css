@@ -69,6 +69,18 @@ body, .golang-home-body-left {
     margin-left: 40px;
 }
 
+.comment-actions {
+    float: right;
+}
+
+.comment-delete {
+    color: rgb(128, 128, 128);
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
 .reply-user-icon {
     float: left;
 }
