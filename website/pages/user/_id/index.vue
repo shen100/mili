@@ -17,7 +17,7 @@
             </div>
         </template>
         <div v-else class="articles-item-empty">
-            还没有文章
+            还没有话题
         </div>
     </div>
 </template>

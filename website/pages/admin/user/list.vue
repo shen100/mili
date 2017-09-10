@@ -11,11 +11,14 @@
         <Table
             class="admin-common-line"
             :columns="column"
-            :data="list"/>
+            :data="userList"/>
     </Row>
 </template>
 
 <script>
+    import request from '~/net/request'
+    import UserStatus from '~/constant/UserStatus'
+
     export default {
         data () {
             return {
@@ -23,9 +26,37 @@
                     {
                         title: '用户名',
                         key: 'name'
+                    },
+                    {
+                        title: '邮箱',
+                        key: 'email'
+                    },
+                    {
+                        title: '角色',
+                        key: 'role',
+                        render: (h, obj) => {
+                            let role = ''
+                            this.role.map(item => {
+                                if (obj.row.role === item.value) {
+                                    role = item.label
+                                }
+                            })
+                            return role
+                        }
+                    },
+                    {
+                        title: '状态',
+                        key: 'status',
+                        render: (h, obj) => {
+                            switch (obj.row.status) {
+                            case UserStatus.STATUS_IN_ACTIVE: return '未激活'
+                            case UserStatus.STATUS_ACTIVE: return '已激活'
+                            case UserStatus.STATUS_FROZEN: return '已冻结'
+                            default: return ''
+                            }
+                        }
                     }
                 ],
-                list: [],
                 roleIndex: 0,
                 role: [
                     {
@@ -52,7 +83,13 @@
             }
         },
         asyncData (context) {
-            return {}
+            return request.getAdminUserList({
+                client: context.req
+            }).then(res => {
+                return {
+                    userList: res.data.users
+                }
+            })
         },
         methods: {
             onSelectChange (value) {
@@ -63,6 +100,9 @@
             return {
                 title: '用户列表'
             }
+        },
+        mounted () {
+            console.log(this.userList)
         },
         layout: 'admin',
         middleware: 'adminRequired'

@@ -255,6 +255,11 @@ const api = {
         url: url + '/collect/create', // collect_source_article收藏文章; collect_source_vote收藏投票
         method: 'POST',
         desc: '收藏文章或收藏投票'
+    },
+    getAdminUserList: {
+        url: url + '/admin/users',
+        method: 'GET',
+        desc: '获取用户列表'
     }
 }
 

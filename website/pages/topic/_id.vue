@@ -86,7 +86,7 @@
                 justify="space-between"
                 align="middle"
                 v-for="(item, index) in collectDirList" key="index">
-                <span>{{item.name}}</span>
+                <span><a :href="`/user/${user.id}/collect`">{{item.name}}</a></span>
                 <Button v-if="item.hasCollect" class="info-button" style="width: 80px" disabled="disabled">已收藏</Button>
                 <Button v-else class="info-button" style="width: 80px" @click="createCollect(item.id)">收藏</Button>
             </Row>
