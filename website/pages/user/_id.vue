@@ -30,7 +30,7 @@
                         <Menu-item name="index" class="mine-menu-item">话题</Menu-item>
                         <Menu-item name="reply" class="mine-menu-item">回复</Menu-item>
                         <Menu-item name="vote" class="mine-menu-item">参与的投票</Menu-item>
-                        <Menu-item name="4" class="mine-menu-item">收藏</Menu-item>
+                        <Menu-item name="collect" class="mine-menu-item">收藏</Menu-item>
                     </Menu>
                     <nuxt-child/>
                 </div>

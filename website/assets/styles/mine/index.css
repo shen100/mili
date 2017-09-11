@@ -358,3 +358,12 @@ body {
 .women {
     color: #fb8db2;
 }
+
+.collect-line {
+    margin-top: 10px;
+}
+
+.collect-line span {
+    color: #8590a6;
+    font-size: 14px;
+}

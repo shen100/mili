@@ -11,6 +11,10 @@ const dateTool = {
     format (moment) {
         return moment.format('YYYY-MM-DDTHH:mm:ssZ')
     },
+    formatYMD (date) {
+        let time = dateTool.parse(date)
+        return moment(time).format('YYYY-MM-DD')
+    },
     getReplyTime (date) {
         let time = dateTool.parse(date).valueOf()
         let currentT = new Date().getTime()
