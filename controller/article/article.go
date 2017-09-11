@@ -60,8 +60,9 @@ func queryList(isBackend bool, ctx iris.Context) {
 		var sql = `SELECT distinct(articles.id), articles.name, articles.browse_count, articles.status,  
 					articles.created_at, articles.updated_at, articles.user_id 
 				FROM articles, article_category  
-				WHERE articles.id = article_category.article_id  
+				WHERE articles.id = article_category.article_id    
 				AND article_category.category_id = {categoryID} 
+				AND articles.deleted_at IS NULL 
 				ORDER BY {orderField} {orderASC}
 				LIMIT {offset}, {pageSize}`
 		sql = strings.Replace(sql, "{categoryID}", strconv.Itoa(categoryID), -1)

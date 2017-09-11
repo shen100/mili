@@ -10,3 +10,4 @@ npm-debug.log
 .nuxt
 website/config/index.js
 review.md
+build.md

@@ -251,23 +251,6 @@ body {
     margin-left: 200px;
 }
 
-.info-button {
-    display: inline-block;
-    padding: 0 16px;
-    font-size: 14px;
-    line-height: 32px;
-    color: #0f88eb;
-    border: 1px solid #0f88eb;
-    text-align: center;
-    cursor: pointer;
-    background: none;
-    border-radius: 3px;
-}
-
-.info-button:hover {
-    background-color: rgba(13,121,209,.06);
-}
-
 .mine-info-box {
     margin-left: 200px;
 }

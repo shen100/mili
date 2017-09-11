@@ -92,7 +92,7 @@ func Route(app *iris.Application) {
 		routes.Post("/comment/update",                auth.ActiveRequired,
 											          comment.Update)
 		routes.Get("/comments/user/:userID",          comment.UserCommentList)
-		routes.Get("/comments/:sourceID/:sourceName", comment.SourceComments)
+		routes.Get("/comments/:sourceName/:sourceID", comment.SourceComments)
 
 		routes.Get("/votes",                vote.List)
 		routes.Get("/votes/maxbrowse",      vote.ListMaxBrowse)

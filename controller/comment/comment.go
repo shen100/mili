@@ -8,6 +8,7 @@ import (
 	"github.com/kataras/iris"
 	"golang123/controller/common"
 	"golang123/model"
+	"golang123/utils"
 	"golang123/manager"
 )
 
@@ -17,6 +18,13 @@ func Save(isEdit bool, ctx iris.Context) {
 	var comment model.Comment
 
 	// 编辑评论时，只传id, content
+	// 创建评论时传
+	// {
+	//   "sourceID": 1,
+	//   "sourceName": "article",
+	//   "content": "这是一条评论",
+	//	 "parentID": 0
+	// }
 	if err := ctx.ReadJSON(&comment); err != nil {
 		SendErrJSON("参数无效", ctx)
 		return
@@ -27,7 +35,7 @@ func Save(isEdit bool, ctx iris.Context) {
 
 	if !isEdit {
 		if comment.SourceName != model.CommentSourceArticle && comment.SourceName != model.CommentSourceVote {
-			SendErrJSON("sourceName无效", ctx)
+			SendErrJSON("无效的sourceName", ctx)
 			return
 		}
 
@@ -51,18 +59,22 @@ func Save(isEdit bool, ctx iris.Context) {
 				SendErrJSON("无效的parentID", ctx)
 				return	
 			}	
+			if parentComment.SourceID != comment.SourceID {
+				SendErrJSON("无效的parentID", ctx)
+				return	
+			}
 		}
 	}
 
 	comment.Content = strings.TrimSpace(comment.Content)
 
 	if (comment.Content == "") {
-		SendErrJSON("评论不能为空", ctx)
+		SendErrJSON("回复不能为空", ctx)
 		return
 	} 
 	
 	if utf8.RuneCountInString(comment.Content) > model.MaxCommentLen {
-		msg := "评论不能超过" + strconv.Itoa(model.MaxCommentLen) + "个字符"
+		msg := "回复不能超过" + strconv.Itoa(model.MaxCommentLen) + "个字符"
 		SendErrJSON(msg, ctx)
 		return
 	}
@@ -75,12 +87,20 @@ func Save(isEdit bool, ctx iris.Context) {
 	var updatedComment model.Comment
 
 	if (!isEdit) {
-		if err := model.DB.Create(&comment).Error; err != nil {
+		tx := model.DB.Begin()
+		if err := tx.Create(&comment).Error; err != nil {
+			tx.Rollback()
 			SendErrJSON("error", ctx)
 			return	
 		}
+		
+		updateUserMap := map[string]interface{} {
+			"comment_count": user.CommentCount + 1,
+			"score": user.Score + model.CommentScore,
+		}
 
-		if err := model.DB.Model(&user).Update("comment_count", user.CommentCount + 1).Error; err != nil {
+		if err := tx.Model(&user).Updates(updateUserMap).Error; err != nil {
+			tx.Rollback()
 			SendErrJSON("error", ctx)
 			return
 		}
@@ -89,40 +109,55 @@ func Save(isEdit bool, ctx iris.Context) {
 		var author model.User
 		if comment.SourceName == model.CommentSourceArticle {
 			author.ID = article.UserID
-			article.CommentCount++
-			article.LastUserID = user.ID
-			if err := model.DB.Save(&article).Error; err != nil {
+			articleMap := map[string]interface{} {
+				"comment_count" : article.CommentCount + 1,
+				"last_user_id"  : user.ID,
+			}
+			if err := tx.Model(&article).Updates(articleMap).Error; err != nil {
+				tx.Rollback()
 				SendErrJSON("error", ctx)
 				return
 			}
 		} else if comment.SourceName == model.CommentSourceVote {
 			author.ID = vote.UserID
-			vote.CommentCount++
-			vote.LastUserID = user.ID
-			if err := model.DB.Save(&vote).Error; err != nil {
+			voteMap := map[string]interface{} {
+				"comment_count" : vote.CommentCount + 1,
+				"last_user_id"  : user.ID,
+			}
+			if err := tx.Model(&vote).Updates(voteMap).Error; err != nil {
+				tx.Rollback()
 				SendErrJSON("error", ctx)
 				return
 			}
 		}
 
-		if err := model.DB.First(&author, author.ID).Error; err != nil {
-			SendErrJSON("error", ctx)
-			return	
+		// 自己回复自己的话题（或投票）作者积分不增加，因为作者就是自己
+		if user.ID != author.ID {
+			if err := tx.First(&author, author.ID).Error; err != nil {
+				tx.Rollback()
+				SendErrJSON("error", ctx)
+				return	
+			}
+			authorScore := author.Score + model.ByCommentScore
+			if err := tx.Model(&author).Update("score", authorScore).Error; err != nil {
+				tx.Rollback()
+				SendErrJSON("error", ctx)
+				return
+			}
 		}
-		authorScore := author.Score + model.CommentScore
-		if err := model.DB.Model(&author).Update("score", authorScore).Error; err != nil {
-			SendErrJSON("error", ctx)
-			return
-		}
-	
+		tx.Commit()
 	} else {
 		if err := model.DB.First(&updatedComment, comment.ID).Error; err != nil {
-			SendErrJSON("无效的评论id", ctx)
+			SendErrJSON("无效的id", ctx)
 			return
 		}
+		if user.ID != updatedComment.UserID {
+			SendErrJSON("您无权执行此操作", ctx)
+			return	
+		}
 		updateMap := map[string]interface{} {
-			"Content" : comment.Content,
-			"Status"  : model.CommentVerifying,
+			"content" : comment.Content,
+			"status"  : model.CommentVerifying,
 		}
 		if err := model.DB.Model(&updatedComment).Updates(updateMap).Error; err != nil {
 			SendErrJSON("error", ctx)
@@ -175,7 +210,7 @@ func Delete(ctx iris.Context) {
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	if comment.UserID != user.ID {
-		SendErrJSON("没有权限", ctx)
+		SendErrJSON("您无权执行此操作", ctx)
 		return	
 	}
 
@@ -215,13 +250,16 @@ func Delete(ctx iris.Context) {
 		}
 	}
 
-	if err := tx.Model(&user).Update("comment_count", user.CommentCount - 1).Error; err != nil {
+	// 删除评论时，用户积分减少，作者积分不变
+	userMap := map[string]interface{} {
+		"comment_count" : user.CommentCount - 1,
+		"score"         : user.Score - model.CommentScore,
+	}
+	if err := tx.Model(&user).Updates(userMap).Error; err != nil {
 		tx.Rollback()	
 		SendErrJSON("error", ctx)
 		return
 	}
-
-	// todo 删除评论时，用户积分减少，作者积分不变
 
 	manager.Sess.Start(ctx).Set("user", user)
 
@@ -245,6 +283,8 @@ func UserCommentList(ctx iris.Context) {
 	var orderStr string
 	var isDESC int
 	var descErr error
+	var pageNo int
+	var pageNoErr error
 	var pageSize int
 	var pageSizeErr error
 
@@ -279,6 +319,14 @@ func UserCommentList(ctx iris.Context) {
 		return	
 	}
 
+	if pageNo, pageNoErr = strconv.Atoi(ctx.FormValue("pageNo")); pageNoErr != nil {
+		pageNo    = 1
+		pageNoErr = nil
+	}
+	if pageNo < 1 {
+		pageNo = 1
+	}
+
 	if pageSize, pageSizeErr = strconv.Atoi(ctx.FormValue("pageSize")); pageSizeErr != nil {
 		SendErrJSON("无效的pageSize", ctx)
 		return	
@@ -288,6 +336,8 @@ func UserCommentList(ctx iris.Context) {
 		SendErrJSON("无效的pageSize", ctx)
 		return	
 	}
+
+	offset   := (pageNo - 1) * pageSize
 
 	if orderType == 1 {
 		orderStr = "created_at"
@@ -302,7 +352,7 @@ func UserCommentList(ctx iris.Context) {
 	}
 
 	var comments []model.Comment
-	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Limit(pageSize).Find(&comments).Error; err != nil {
+	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Offset(offset).Limit(pageSize).Find(&comments).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
@@ -314,7 +364,7 @@ func UserCommentList(ctx iris.Context) {
 		var article model.Article
 		var vote model.Vote
 		data["id"]      = comments[i].ID
-		data["content"] = comments[i].Content
+		data["content"] = utils.MarkdownToHTML(comments[i].Content)
 		if (comments[i].SourceName == model.CommentSourceArticle) {
 			if err := model.DB.Model(&comments[i]).Related(&article, "articles", "source_id").Error; err != nil {
 				fmt.Println(err.Error())
@@ -346,5 +396,48 @@ func UserCommentList(ctx iris.Context) {
 
 // SourceComments 查询话题或投票的评论
 func SourceComments(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	sourceName  := ctx.Params().Get("sourceName")
+	if sourceName != model.CommentSourceArticle && sourceName != model.CommentSourceVote {
+		SendErrJSON("无效的sourceName", ctx)
+		return	
+	}
 
+	sourceID, sourceIDErr := ctx.Params().GetInt("sourceID")
+
+	if sourceIDErr != nil {
+		SendErrJSON("无效的sourceID", ctx)
+		return	
+	}
+	
+	var article model.Article
+	var vote model.Vote
+
+	if sourceName == model.CommentSourceArticle {
+		if err := model.DB.First(&article, sourceID).Error; err != nil {
+			SendErrJSON("无效的sourceID", ctx)
+			return	
+		}
+	}
+
+	if sourceName == model.CommentSourceVote {
+		if err := model.DB.First(&vote, sourceID).Error; err != nil {
+			SendErrJSON("无效的sourceID", ctx)
+			return	
+		}
+	}
+
+	var comments []model.Comment
+	if err := model.DB.Where("source_id = ?", sourceID).Preload("User").Find(&comments).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return	
+	}
+
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"comments": comments,
+		},
+	})
 }

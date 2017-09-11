@@ -1,7 +1,8 @@
 package utils
 
 import (
-    "github.com/russross/blackfriday"
+	"github.com/russross/blackfriday"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 // MarkdownToHTML 将markdown 转换为 html
@@ -29,5 +30,6 @@ func MarkdownToHTML(md string) string {
 	bytes    := blackfriday.MarkdownOptions([]byte(md), renderer, blackfriday.Options{
 		Extensions: myExtensions,
 	})
-    return string(bytes)
+	theHTML := string(bytes)
+	return bluemonday.UGCPolicy().Sanitize(theHTML)
 }
