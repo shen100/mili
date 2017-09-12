@@ -40,8 +40,6 @@
     import Sidebar from '~/components/Sidebar'
     import request from '~/net/request'
 
-    let testinAB = require('~/utils/ab')
-
     export default {
         data () {
             return {
@@ -62,10 +60,14 @@
         },
         head () {
             return {
-                title: '关于'
+                title: '关于',
+                script: [
+                    { src: 'http://ab.testin.cn/sdk/testin-ab.js?visualhttps=1' }
+                ]
             }
         },
         mounted () {
+            let testinAB = window.testinAB
             var appKey = 'TESTIN_h1df74977-03c2-459c-b157-da8f82af4f3b'
             testinAB.init(appKey)
 
