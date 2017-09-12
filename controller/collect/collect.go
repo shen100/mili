@@ -51,21 +51,12 @@ func CreateCollect(ctx iris.Context) {
 	}
 
 	var collects []model.Collect
-	if err := model.DB.Where("source_id = ? AND source_name =?", collect.SourceID, collect.SourceName).Find(&collects).Error; err == nil {
+	if err := model.DB.Where("source_id=? AND source_name=?", collect.SourceID, collect.SourceName).
+			Preload("Folder").Find(&collects).Error; err == nil {
 		for i := 0; i < len(collects); i++ {
-			if err := model.DB.Model(&collects[i]).Related(&collects[i].Folder, "folders").Error; err != nil {
-				SendErrJSON("error", ctx)
-				return	
-			}
 			if collects[i].FolderID == collect.FolderID {
 				// 在相同的收藏夹下，之前已经收藏过
-				ctx.JSON(iris.Map{
-					"errNo" : model.ErrorCode.SUCCESS,
-					"msg"   : "success",
-					"data"  : iris.Map{
-						"id": collects[i].ID,
-					},
-				})
+				SendErrJSON("之前已经收藏过", ctx)
 				return
 			}
 		}
@@ -74,33 +65,40 @@ func CreateCollect(ctx iris.Context) {
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 	collect.UserID = user.ID
 
-	if err := model.DB.Save(&collect).Error; err != nil {
+	tx := model.DB.Begin()
+
+	if err := tx.Save(&collect).Error; err != nil {
 		fmt.Println(err.Error())
+		tx.Rollback()
 		SendErrJSON("error", ctx)
 		return
 	}
 
-	if err := model.DB.Model(&user).Update("collect_count", user.CollectCount + 1).Error; err != nil {
+	if err := tx.Model(&user).Update("collect_count", user.CollectCount + 1).Error; err != nil {
 		fmt.Println(err.Error())
+		tx.Rollback()
 		SendErrJSON("error", ctx)
 		return	
 	}
 	manager.Sess.Start(ctx).Set("user", user)
 
 	if collect.SourceName == model.CollectSourceArticle {
-		if err := model.DB.Model(&article).Update("collect_count", article.CollectCount + 1).Error; err != nil {
+		if err := tx.Model(&article).Update("collect_count", article.CollectCount + 1).Error; err != nil {
 			fmt.Println(err.Error())
+			tx.Rollback()
 			SendErrJSON("error", ctx)
 			return	
 		}
-		if err := model.DB.Model(&article).Related(&article.User).Error; err != nil {
+		if err := tx.Model(&article).Related(&article.User).Error; err != nil {
 			SendErrJSON("error", ctx)
+			tx.Rollback()
 			return
 		}
 		// 自己收藏自己的话题，积分不增加
 		if article.User.ID != user.ID {
-			if err := model.DB.Model(&article.User).Update("score", article.User.Score + model.ByCollectScore).Error; err != nil {
+			if err := tx.Model(&article.User).Update("score", article.User.Score + model.ByCollectScore).Error; err != nil {
 				fmt.Println(err.Error())
+				tx.Rollback()
 				SendErrJSON("error", ctx)
 				return	
 			}
@@ -108,24 +106,29 @@ func CreateCollect(ctx iris.Context) {
 	}
 
 	if collect.SourceName == model.CollectSourceVote {
-		if err := model.DB.Model(&vote).Update("collect_count", vote.CollectCount + 1).Error; err != nil {
+		if err := tx.Model(&vote).Update("collect_count", vote.CollectCount + 1).Error; err != nil {
 			fmt.Println(err.Error())
+			tx.Rollback()
 			SendErrJSON("error", ctx)
 			return	
 		}
-		if err := model.DB.Model(&vote).Related(&vote.User).Error; err != nil {
+		if err := tx.Model(&vote).Related(&vote.User).Error; err != nil {
 			SendErrJSON("error", ctx)
+			tx.Rollback()
 			return
 		}
 		// 自己收藏自己的投票，积分不增加
 		if vote.User.ID != user.ID {
-			if err := model.DB.Model(&vote.User).Update("score", vote.User.Score + model.ByCollectScore).Error; err != nil {
+			if err := tx.Model(&vote.User).Update("score", vote.User.Score + model.ByCollectScore).Error; err != nil {
 				fmt.Println(err.Error())
+				tx.Rollback()
 				SendErrJSON("error", ctx)
 				return	
 			}
 		}
 	}
+
+	tx.Commit()
 
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
@@ -157,14 +160,10 @@ func DeleteCollect(ctx iris.Context) {
 	
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
-	if err := model.DB.First(&user, user.ID).Error; err != nil {
+	tx := model.DB.Begin()
+	if err := tx.Model(&user).Update("collect_count", user.CollectCount - 1).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
-		return
-	}
-	user.CollectCount--
-	if err := model.DB.Model(&user).Update("collect_count", user.CollectCount).Error; err != nil {
-		fmt.Println(err.Error())
+		tx.Rollback()
 		SendErrJSON("error", ctx)
 		return
 	}
@@ -173,12 +172,14 @@ func DeleteCollect(ctx iris.Context) {
 	// 删除收藏后，相关积分保持不变
 	if collect.SourceName == model.CollectSourceArticle {
 		var article model.Article
-		if err := model.DB.First(&article, collect.SourceID).Error; err != nil {
+		if err := tx.First(&article, collect.SourceID).Error; err != nil {
+			tx.Rollback()
 			SendErrJSON("error", ctx)
 			return	
 		}
-		if err := model.DB.Model(&article).Update("collect_count", article.CollectCount - 1).Error; err != nil {
+		if err := tx.Model(&article).Update("collect_count", article.CollectCount - 1).Error; err != nil {
 			fmt.Println(err.Error())
+			tx.Rollback()
 			SendErrJSON("error", ctx)
 			return	
 		}
@@ -186,21 +187,26 @@ func DeleteCollect(ctx iris.Context) {
 
 	if collect.SourceName == model.CollectSourceVote {
 		var vote model.Vote
-		if err := model.DB.First(&vote, collect.SourceID).Error; err != nil {
+		if err := tx.First(&vote, collect.SourceID).Error; err != nil {
+			tx.Rollback()
 			SendErrJSON("error", ctx)
 			return	
 		}
-		if err := model.DB.Model(&vote).Update("collect_count", vote.CollectCount - 1).Error; err != nil {
+		if err := tx.Model(&vote).Update("collect_count", vote.CollectCount - 1).Error; err != nil {
 			fmt.Println(err.Error())
+			tx.Rollback()
 			SendErrJSON("error", ctx)
 			return	
 		}
 	}
 
+	tx.Commit()
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : iris.Map{},
+		"data"  : iris.Map{
+			"id": collect.ID,
+		},
 	})
 }
 
@@ -241,7 +247,7 @@ func Collects(ctx iris.Context) {
 	offset   := (pageNo - 1) * model.PageSize
 	pageSize := model.PageSize
 
-	if err := model.DB.Where("folder_id = ? AND user_id = ?", folderID, userID).Offset(offset).
+	if err := model.DB.Where("folder_id=? AND user_id=?", folderID, userID).Offset(offset).
 			Limit(pageSize).Order("created_at DESC").Find(&collects).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
@@ -288,7 +294,6 @@ func Collects(ctx iris.Context) {
 // CreateFolder 创建收藏夹
 func CreateFolder(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-
 	var folder model.Folder
 	if err := ctx.ReadJSON(&folder); err != nil {
 		SendErrJSON("参数无效", ctx)
@@ -352,7 +357,7 @@ func queryFolders(userID int) ([]model.Folder, error) {
 	}
 
 	var folders []model.Folder
-	if err := model.DB.Where("user_id = ?", userID).Order("created_at DESC").Find(&folders).Error; err != nil {
+	if err := model.DB.Where("user_id=?", userID).Order("created_at DESC").Find(&folders).Error; err != nil {
 		return nil, err
 	}	
 	return folders, nil
@@ -378,6 +383,42 @@ func Folders(ctx iris.Context) {
 		"msg"   : "success",
 		"data"  : iris.Map{
 			"folders": folders,
+		},
+	})
+}
+
+// FoldersWithSource 查询用户的收藏夹列表，并且返回每个收藏夹中收藏了哪些话题或投票
+func FoldersWithSource(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	
+	user := manager.Sess.Start(ctx).Get("user").(model.User)
+
+	var folders []model.Folder
+	var queryFoldersErr error
+	if folders, queryFoldersErr = queryFolders(int(user.ID)); queryFoldersErr != nil {
+		SendErrJSON("error", ctx)
+		return	
+	}
+
+	var results []interface{}
+	for i := 0; i < len(folders); i++ {
+		var collects model.Collect
+		if err := model.DB.Where("folder_id=?", folders[i].ID).Find(&collects).Error; err != nil {
+			SendErrJSON("error", ctx)
+			return	
+		}
+		results = append(results, iris.Map{
+			"id"       : folders[i].ID,
+			"name"     : folders[i].Name,
+			"collects" : collects,
+		})
+	}
+
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"folders": results,
 		},
 	})
 }

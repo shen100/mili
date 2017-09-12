@@ -76,14 +76,16 @@ func Route(app *iris.Application) {
 		routes.Post("/article/deltop/:id",     auth.EditorRequired,    
 											   article.DeleteTop)
 
-		routes.Post("/collect/folder/create",  auth.ActiveRequired,
-											   collect.CreateFolder)									   
-		routes.Post("/collect/create",         auth.ActiveRequired,
-											   collect.CreateCollect)
-		routes.Post("/collect/delete/:id",     auth.ActiveRequired,
-											   collect.DeleteCollect)
-		routes.Get("/collect/folders/:userID", collect.Folders)
-		routes.Get("/collects",                collect.Collects)
+		routes.Post("/collect/folder/create",        auth.ActiveRequired,
+											         collect.CreateFolder)									   
+		routes.Post("/collect/create",               auth.ActiveRequired,
+											         collect.CreateCollect)
+		routes.Post("/collect/delete/:id",           auth.ActiveRequired,
+											         collect.DeleteCollect)
+		routes.Get("/collect/folders/:userID",       collect.Folders)
+		routes.Get("/collect/folders/source",        auth.ActiveRequired,
+												     collect.FoldersWithSource)
+		routes.Get("/collects",                      collect.Collects)
 
 		routes.Post("/comment/create",                auth.ActiveRequired,
 											          comment.Create)

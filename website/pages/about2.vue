@@ -62,7 +62,7 @@
             return {
                 title: '关于',
                 script: [
-                    { src: 'http://ab.testin.cn/sdk/testin-ab.js?visualhttps=1' }
+                    { src: 'https://ab.testin.cn/sdk/testin-ab.js?allowvisualhttps=1&v=1' }
                 ]
             }
         },
@@ -73,7 +73,7 @@
 
             testinAB.loadMultiLink()
             document.body.onclick = function () {
-                testinAB.track('myClick')
+                testinAB.track('myClick', 1)
             }
         },
         middleware: 'userInfo',
