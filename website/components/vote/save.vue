@@ -43,15 +43,25 @@
     import dataTool from '~/utils/date'
     import ErrorCode from '~/constant/ErrorCode'
     import {trim} from '~/utils/tool'
+    import UserStatus from '~/constant/UserStatus'
 
     export default {
+        props: [
+            'vote',
+            'user',
+            'id'
+        ],
         data () {
             return {
                 formValidate: {
-                    voteName: '',
-                    date: '',
-                    content: '',
-                    items: [
+                    voteName: (this.vote && this.vote.name) || '',
+                    date: (this.vote && this.vote.endAt) || '',
+                    content: (this.vote && this.vote.content) || '',
+                    items: (this.vote && this.vote.voteItems.map(item => {
+                        return {
+                            value: item.name
+                        }
+                    })) || [
                         {
                             value: ''
                         },
@@ -81,11 +91,29 @@
         },
         methods: {
             onSubmit () {
+                if (this.user.status === UserStatus.STATUS_IN_ACTIVE) {
+                    if (this.id) {
+                        this.$Message.error('账号未激活，不能保存投票')
+                    } else {
+                        this.$Message.error('账号未激活，不能发布投票')
+                    }
+                    return
+                }
                 this.$refs['formValidate'].validate((valid) => {
-                    console.log(this.formValidate.date)
+                    console.log(this.formValidate.date, valid)
                     if (valid) {
-                        request.createVote({
-                            body: {
+                        let self = this
+                        let postBody = {}
+                        let func = this.id ? request.updateVote : request.createVote
+                        if (this.id) {
+                            postBody = {
+                                id: parseInt(this.id),
+                                name: trim(this.formValidate.voteName),
+                                content: this.formValidate.content,
+                                endAt: dataTool.parse(this.formValidate.date)
+                            }
+                        } else {
+                            postBody = {
                                 vote: {
                                     name: trim(this.formValidate.voteName),
                                     content: this.formValidate.content,
@@ -97,14 +125,25 @@
                                     }
                                 })
                             }
+                        }
+                        func({
+                            body: postBody
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.$Message.success('创建话题成功')
                                 setTimeout(function () {
                                     location.href = '/vote/' + res.data.id
                                 }, 500)
+                            } else if (res.errNo === ErrorCode.IN_ACTIVE) {
+                                if (self.id) {
+                                    self.$Message.error('账号未激活，不能保存投票')
+                                } else {
+                                    self.$Message.error('账号未激活，不能发布投票')
+                                }
+                            } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
+                                location.href = '/signin?ref=' + encodeURIComponent(location.href)
                             } else {
-                                this.$Message.error(res.msg)
+                                self.$Message.error(res.msg)
                             }
                         }).catch(err => {
                             this.$Message.error(err.message)
@@ -116,7 +155,7 @@
                 this.formValidate.content = content
             },
             handleAdd () {
-                if (!(this.formValidate.length < 20)) {
+                if (!(this.formValidate.items.length < 20)) {
                     return this.$Message.error('投票项最多只能创建20个')
                 }
                 this.formValidate.items.push({

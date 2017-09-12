@@ -10,7 +10,7 @@
                 </ul>
                 <div class="vote-box-wrap">
                     <div class="vote-area">
-                        <vote-editor />
+                        <vote-editor :user="user"/>
                     </div>
                 </div>
             </div>

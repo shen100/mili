@@ -151,6 +151,11 @@ const api = {
         method: 'POST',
         desc: '创建投票'
     },
+    updateVote: {
+        url: url + '/vote/update',
+        method: 'POST',
+        desc: '编辑投票'
+    },
     getVotes: {
         url: url + '/votes',
         method: 'GET',
@@ -250,6 +255,11 @@ const api = {
         url: url + '/collect/folders/:userID',
         method: 'GET',
         desc: '查询用户的收藏夹列表'
+    },
+    getFoldersSource: {
+        url: url + '/collect/folders/source',
+        method: 'GET',
+        desc: '获取用户收藏列表'
     },
     createCollectDir: {
         url: url + '/collect/folder/create',

@@ -204,11 +204,8 @@
                     })
                 ]
                 if (context.user) {
-                    reqArr.push(request.getCollectDirList({
-                        client: context.req,
-                        params: {
-                            userID: context.user.id
-                        }
+                    reqArr.push(request.getFoldersSource({
+                        client: context.req
                     }))
                 }
                 return Promise.all(reqArr).then(arr => {
@@ -218,6 +215,7 @@
                     let maxComment = arr[3].data.articles
                     let topList = arr[4].data.articles || []
                     let collectDirList = []
+                    console.log(arr[5])
                     if (arr[5]) {
                         collectDirList = arr[5].data.folders || []
                         collectDirList.map(item => {

@@ -1,7 +1,7 @@
 <template>
     <div>
         <app-header :user="user" />
-        <div class="golang-home-body">
+        <div class="golang-user-body">
             <div class="golang-main-top">
                 <div class="mine-img-box"></div>
                 <div class="mine-info-container">
