@@ -39,7 +39,6 @@ module.exports = {
     vendor: ['axios', 'iview']
   },
   plugins: [
-    { src: '~plugins/iview.js', ssr: true },
-    { src: '~plugins/ga.js', ssr: false }
+    { src: '~plugins/iview.js', ssr: true }
   ]
 }

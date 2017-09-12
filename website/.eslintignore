@@ -2,3 +2,5 @@
 node_modules
 static
 plugins/ga.js
+utils/ab.js
+utils/bd.js

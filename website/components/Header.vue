@@ -39,6 +39,7 @@
 <script>
     import request from '~/net/request'
     import ErrorCode from '~/constant/ErrorCode'
+    import '~/utils/bd'
 
     export default {
         props: [

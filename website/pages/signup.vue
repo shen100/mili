@@ -15,11 +15,11 @@
             </div>
     		<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">
     			<Form-item label="用户名" prop="username">
-    	            <i-input 
-                        size="large" 
-                        type="text" 
-                        v-model="formCustom.username" 
-                        @on-blur="blur('formCustom.username')" 
+    	            <i-input
+                        size="large"
+                        type="text"
+                        v-model="formCustom.username"
+                        @on-blur="blur('formCustom.username')"
                         class="signup-input"></i-input>
                     <span class="signup-label">4-20位可由中文、数字、字母组成</span>
     	        </Form-item>
@@ -32,10 +32,10 @@
                     <span class="signup-label">请在此确认您的密码</span>
     	        </Form-item>
     	        <Form-item label="邮箱" prop="email">
-    	            <i-input 
-                        size="large" 
+    	            <i-input
+                        size="large"
                         @on-blur="blur('formCustom.email')"
-                        v-model="formCustom.email" 
+                        v-model="formCustom.email"
                         class="signup-input"></i-input>
                     <span class="signup-label">请输入有效的电子邮箱</span>
     	        </Form-item>
@@ -60,12 +60,12 @@
 </template>
 
 <script>
-    import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
     import {trim, trimBlur} from '~/utils/tool'
+    import '~/utils/bd'
 
     export default {
         data () {
@@ -179,7 +179,6 @@
             }
         },
         components: {
-            'app-header': Header,
             'app-footer': Footer,
             'app-sidebar': Sidebar
         }

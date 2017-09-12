@@ -44,7 +44,7 @@ function send (key, options) {
             url: url,
             headers: {}
         }
-        if (config.useProxy) {
+        if (config.useProxy && process.env.NODE_ENV === 'development') {
             axiosConfig.proxy = config.proxy
         }
         let client = options.client

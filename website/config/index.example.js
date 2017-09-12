@@ -4,6 +4,8 @@ var config = {
     useProxy: false,
     sessionName: 'sessid', // 后台设置的session id
     sessionTimeout: 30, // session超时时间，单位分钟
+    bdStatEnable: false,
+    bdStatSI: '',
     proxy: {
         host: '127.0.0.1',
         port: 8881

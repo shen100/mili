@@ -5,10 +5,10 @@
             <p class="golang-signin-desc">和地鼠们分享你的知识、经验和见解</p>
         	<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" class="signup-form">
         		<Form-item prop="username">
-                    <i-input 
-                        size="large" 
-                        v-model="formCustom.username" 
-                        @on-blur="blur('formCustom.username')" 
+                    <i-input
+                        size="large"
+                        v-model="formCustom.username"
+                        @on-blur="blur('formCustom.username')"
                         placeholder="用户名 / 邮箱"></i-input>
                 </Form-item>
                 <Form-item prop="passwd">
@@ -32,6 +32,7 @@
     import request from '~/net/request'
     import url from 'url'
     import {trim, trimBlur} from '~/utils/tool'
+    import '~/utils/bd'
 
     export default {
         data () {
