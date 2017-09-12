@@ -405,9 +405,9 @@ func FoldersWithSource(ctx iris.Context) {
 	for i := 0; i < len(folders); i++ {
 		var collects model.Collect
 		if err := model.DB.Where("folder_id=?", folders[i].ID).Find(&collects).Error; err != nil {
-			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
-			return	
+			// fmt.Println(err.Error())
+			// SendErrJSON("error", ctx)
+			// return	
 		}
 		results = append(results, iris.Map{
 			"id"       : folders[i].ID,
