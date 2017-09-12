@@ -39,7 +39,8 @@
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
     import request from '~/net/request'
-    import testinAB from '~/utils/ab';
+
+    let testinAB = require('~/utils/ab')
 
     export default {
         data () {
@@ -65,12 +66,12 @@
             }
         },
         mounted () {
-            var appKey = 'TESTIN_h1df74977-03c2-459c-b157-da8f82af4f3b';
-            testinAB.init(appKey);
+            var appKey = 'TESTIN_h1df74977-03c2-459c-b157-da8f82af4f3b'
+            testinAB.init(appKey)
 
-            testinAB.loadMultiLink();
-            document.body.onclick = function() {
-                testinAB.track('myClick');
+            testinAB.loadMultiLink()
+            document.body.onclick = function () {
+                testinAB.track('myClick')
             }
         },
         middleware: 'userInfo',
