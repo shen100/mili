@@ -396,6 +396,7 @@ func FoldersWithSource(ctx iris.Context) {
 	var folders []model.Folder
 	var queryFoldersErr error
 	if folders, queryFoldersErr = queryFolders(int(user.ID)); queryFoldersErr != nil {
+		fmt.Println(queryFoldersErr.Error())
 		SendErrJSON("error", ctx)
 		return	
 	}
@@ -404,6 +405,7 @@ func FoldersWithSource(ctx iris.Context) {
 	for i := 0; i < len(folders); i++ {
 		var collects model.Collect
 		if err := model.DB.Where("folder_id=?", folders[i].ID).Find(&collects).Error; err != nil {
+			fmt.Println(err.Error())
 			SendErrJSON("error", ctx)
 			return	
 		}
