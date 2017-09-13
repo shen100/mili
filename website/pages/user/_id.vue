@@ -3,7 +3,7 @@
         <app-header :user="user" />
         <div class="golang-user-body">
             <div class="golang-main-top">
-                <div class="mine-img-box"></div>
+                <div class="mine-img-box" :style="{'background-image': 'url(' + currentUser.coverURL + ')'}"></div>
                 <div class="mine-info-container">
                     <div class="mine-info-icon">
                         <img :src="currentUser.avatarURL" alt="" />

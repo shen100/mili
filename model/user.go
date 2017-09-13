@@ -28,6 +28,7 @@ type User struct {
     Signature      string             `json:"signature"`  //个人签名
     Role           int                `json:"role"`       //角色
     AvatarURL      string             `json:"avatarURL"`  //头像
+    CoverURL       string             `json:"coverURL"`   //个人主页背景图片URL
     Status         int                `json:"status"`     
     Schools        []School           `json:"schools"`    //教育经历
     Careers        []Career           `json:"careers"`    //职业经历

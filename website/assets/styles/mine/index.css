@@ -11,6 +11,9 @@ body {
 .mine-img-box {
     min-height: 140px;
     background-color: #96a1a9;
+    background-size: cover;
+    background-position: 50%;
+    background-repeat: no-repeat;
 }
 
 .mine-info-container {
