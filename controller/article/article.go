@@ -297,8 +297,8 @@ func save(isEdit bool, ctx iris.Context) {
 		manager.Sess.Start(ctx).Set("user", user)
 	}
 
-	article.Name = strings.TrimSpace(article.Name)
 	article.Name = bluemonday.UGCPolicy().Sanitize(article.Name)
+	article.Name = strings.TrimSpace(article.Name)
 
 	article.Content = strings.TrimSpace(article.Content)
 

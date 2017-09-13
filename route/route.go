@@ -117,7 +117,7 @@ func Route(app *iris.Application) {
 
 	adminRoutes := app.Party(apiPrefix + "/admin", common.SessShiftExpiration, auth.AdminRequired)
 	{
-		adminRoutes.Get("/categories",               category.AllList)
+		adminRoutes.Get("/categories",               category.List)
 		adminRoutes.Post("/category/create",         category.Create)
 		adminRoutes.Post("/category/update",         category.Update)
 

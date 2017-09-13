@@ -1,10 +1,12 @@
 package category
 
 import (
+	"fmt"
 	"unicode/utf8"
 	"strings"
 	"strconv"
 	"github.com/kataras/iris"
+	"github.com/microcosm-cc/bluemonday"
 	"golang123/model"
 	"golang123/controller/common"
 )
@@ -22,7 +24,9 @@ func Save(isEdit bool, ctx iris.Context) {
 		return
 	}
 
+	category.Name = bluemonday.UGCPolicy().Sanitize(category.Name)
 	category.Name = strings.TrimSpace(category.Name)
+
 	if (category.Name == "") {
 		SendErrJSON("分类名称不能为空", ctx)
 		return
@@ -58,10 +62,12 @@ func Save(isEdit bool, ctx iris.Context) {
 	} else {
 		//更新分类
 		if err := model.DB.First(&updatedCategory, category.ID).Error; err == nil {
-			updatedCategory.Name     = category.Name
-			updatedCategory.Sequence = category.Sequence
-			updatedCategory.ParentID = category.ParentID
-			if err := model.DB.Save(&updatedCategory).Error; err != nil {
+			updateMap := make(map[string]interface{})
+			updateMap["name"]      = category.Name
+			updateMap["sequence"]  = category.Sequence
+			updateMap["parent_id"] = category.ParentID
+			if err := model.DB.Model(&updatedCategory).Updates(updateMap).Error; err != nil {
+				fmt.Println(err.Error())
 				SendErrJSON("error", ctx)
 				return
 			}
@@ -85,7 +91,6 @@ func Save(isEdit bool, ctx iris.Context) {
 			"category": categoryJSON,
 		},
 	})
-	return
 }
 
 // Create 创建分类
@@ -122,47 +127,12 @@ func Info(ctx iris.Context) {
 	})
 }
 
-// AllList 所有的分类列表
-func AllList(ctx iris.Context) {
-	SendErrJSON := common.SendErrJSON
-	var categories []model.Category
-	pageNo, err := strconv.Atoi(ctx.FormValue("pageNo"))
- 
-	if err != nil || pageNo < 1 {
-		pageNo = 1
-	}
-
-	//默认按创建时间，降序来排序
-	var orderStr = "created_at"
-	if ctx.FormValue("asc") == "1" {
-		orderStr += " asc"
-	} else {
-		orderStr += " desc"	
-	}
-
-	offset   := (pageNo - 1) * model.PageSize
-	queryErr := model.DB.Offset(offset).Limit(model.PageSize).Order(orderStr).Find(&categories).Error
-
-	if queryErr != nil {
-		SendErrJSON("error", ctx)
-		return
-	}
-
-	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
-			"categories": categories,
-		},
-	})
-}
-
-// List 公开的分类列表
+// List 分类列表
 func List(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var categories []model.Category
 
-	if model.DB.Where("status = 1").Order("sequence asc").Find(&categories).Error != nil {
+	if model.DB.Order("sequence asc").Find(&categories).Error != nil {
 		SendErrJSON("error", ctx)
 		return
 	}

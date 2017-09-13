@@ -619,12 +619,22 @@ func AllList(ctx iris.Context) {
 	if err := model.DB.Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
-	} else {	
+	} else {
+		var results []interface{}	
+		for i := 0; i < len(users); i++ {
+			results = append(results, iris.Map{
+				"id"     : users[i].ID,
+				"name"   : users[i].Name,
+				"email"  : users[i].Email,
+				"role"   : users[i].Role,
+				"status" : users[i].Status,
+			})
+		}
 		ctx.JSON(iris.Map{
 			"errNo" : model.ErrorCode.SUCCESS,
 			"msg"   : "success",
 			"data"  : iris.Map{
-				"users": users,
+				"users": results,
 			},
 		})
 	}	

@@ -1,6 +1,7 @@
 package collect
 
 import (
+	"github.com/jinzhu/gorm"
 	"fmt"
 	"strings"
 	"strconv"
@@ -403,11 +404,13 @@ func FoldersWithSource(ctx iris.Context) {
 
 	var results []interface{}
 	for i := 0; i < len(folders); i++ {
-		var collects model.Collect
+		var collects []model.Collect
 		if err := model.DB.Where("folder_id=?", folders[i].ID).Find(&collects).Error; err != nil {
-			// fmt.Println(err.Error())
-			// SendErrJSON("error", ctx)
-			// return	
+			if err != gorm.ErrRecordNotFound {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return	
+			}
 		}
 		results = append(results, iris.Map{
 			"id"       : folders[i].ID,
