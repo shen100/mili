@@ -1,7 +1,7 @@
 <template>
     <div>
         <app-header :user="user" />
-        <div class="golang-user-body">
+        <div class="golang-home-body">
             <div class="golang-main-top">
                 <div class="mine-img-box"></div>
                 <div class="mine-edit-container">
@@ -50,7 +50,7 @@
                             </span>
                         </span>
                         <div v-else class="edit-item">
-                        <Input v-model="formCustom.signature" style="width: 600px"></Input>
+                        <Input v-model="formCustom.signature" style="width: 700px"></Input>
                         <Row class="button-box">
                             <Button type="primary" class="button-seq" @click="submit('signature', 1)">保存</Button>
                             <Button type="ghost" @click="close('signature', 1)">取消</Button>
@@ -66,7 +66,7 @@
                             </span>
                         </span>
                         <div v-else class="edit-item">
-                            <Input v-model="formCustom.location" style="width: 600px"></Input>
+                            <Input v-model="formCustom.location" style="width: 700px"></Input>
                             <Row class="button-box">
                                 <Button type="primary" class="button-seq" @click="submit('location', 2)">保存</Button>
                                 <Button type="ghost" @click="close('location', 2)">取消</Button>
@@ -85,8 +85,8 @@
                             </span>
                         </span>
                         <div v-else class="edit-item">
-                            <Input v-model="formCustom.school.name" placeholder="学校或教育机构名" class="button-seq" style="width: 230px"></Input>
-                            <Input v-model="formCustom.school.speciality" placeholder="专业方向" class="button-seq" style="width: 230px"></Input>
+                            <Input v-model="formCustom.school.name" placeholder="学校或教育机构名" class="button-seq" style="width: 300px"></Input>
+                            <Input v-model="formCustom.school.speciality" placeholder="专业方向" class="button-seq" style="width: 300px"></Input>
                             <Button type="primary" class="button-seq" @click="addSchool">保存</Button>
                             <Button type="ghost" @click="close('school', 4)">取消</Button>
                         </div>
@@ -109,8 +109,8 @@
                             </span>
                         </span>
                         <div v-else class="edit-item">
-                            <Input v-model="formCustom.career.company" placeholder="公司或组织名称" class="button-seq" style="width: 230px"></Input>
-                            <Input v-model="formCustom.career.title" placeholder="你的职位" class="button-seq" style="width: 230px"></Input>
+                            <Input v-model="formCustom.career.company" placeholder="公司或组织名称" class="button-seq" style="width: 300px"></Input>
+                            <Input v-model="formCustom.career.title" placeholder="你的职位" class="button-seq" style="width: 300px"></Input>
                             <Button type="primary" class="button-seq" @click="addCareer">保存</Button>
                             <Button type="ghost" @click="close('career', 5)">取消</Button>
                         </div>
@@ -131,7 +131,7 @@
                             </span>
                         </span>
                         <div v-else class="edit-item">
-                            <Input v-model="formCustom.introduce" style="width: 600px" :rows="4" type="textarea"></Input>
+                            <Input v-model="formCustom.introduce" style="width: 700px" :rows="4" type="textarea"></Input>
                             <Row class="button-box">
                                 <Button type="primary" class="button-seq" @click="submit('introduce', 3)">保存</Button>
                                 <Button type="ghost" @click="close('introduce', 3)">取消</Button>

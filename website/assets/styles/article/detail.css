@@ -170,18 +170,3 @@ body, .golang-home-body-left {
 .CodeMirror, .CodeMirror-scroll {
     min-height: 200px;
 }
-
-.collect-dir-btn {
-    margin: 20px auto;
-    width: 200px;
-    display: block;
-}
-
-.collect-modal .ivu-modal-body {
-    min-height: 100px;
-}
-
-.collect-row {
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-}

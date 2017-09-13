@@ -10,7 +10,7 @@
                 </div>
                 <div class="home-articles-box">
                     <div v-for="vote in votes" class="articles-cell">
-                        <a class="user-icon-box"><img :src="vote.user.avatarURL" alt=""></a>
+                        <a class="user-icon-box" :href="`/user/${vote.user.id}`"><img :src="vote.user.avatarURL" alt=""></a>
                         <span class="home-tip-container">
                             <Tooltip :content="`回复数${vote.commentCount}　浏览数${vote.browseCount}`" placement="bottom-start" class="home-tip-box">
                                 <a :href="'/vote/' + vote.id" class="no-underline">

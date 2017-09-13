@@ -624,3 +624,18 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .info-button:hover {
     background-color: rgba(13,121,209,.06);
 }
+
+.collect-dir-btn {
+    margin: 20px auto;
+    width: 200px;
+    display: block;
+}
+
+.collect-modal .ivu-modal-body {
+    min-height: 100px;
+}
+
+.collect-row {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}

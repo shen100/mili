@@ -20,6 +20,7 @@
                     <Input type="text" v-model="item.value" placeholder="请输入..."></Input>
                 </Col>
                 <Col span="4" offset="1">
+                    <Button v-if="id" type="primary" @click="addItem(index)" style="margin-right: 10px">保存</Button>
                     <Button type="ghost" @click="handleRemove(index)">删除</Button>
                 </Col>
             </Row>
@@ -59,6 +60,7 @@
                     content: (this.vote && this.vote.content) || '',
                     items: (this.vote && this.vote.voteItems.map(item => {
                         return {
+                            id: item.id,
                             value: item.name
                         }
                     })) || [
@@ -166,10 +168,42 @@
                 if (this.formValidate.items.length === 2) {
                     return this.$Message.error('至少保存两个投票项')
                 }
+                // if (this.id) {
+                //     request
+                // } else {
+                //     this.formValidate.items.splice(index, 1)
+                // }
                 this.formValidate.items.splice(index, 1)
             },
             onDateChange (date) {
                 this.formValidate.date = date
+            },
+            addItem (index) {
+                let body = {}
+                if (this.formValidate.items[index].id) {
+                    body = {
+                        id: this.formValidate.items[index].id,
+                        name: this.formValidate.items[index].value
+                    }
+                } else {
+                    body = {
+                        voteID: parseInt(this.id),
+                        name: this.formValidate.items[index].value
+                    }
+                }
+                let func = this.formValidate.items[index].id ? request.editVoteItem : request.addVoteItem
+                func({
+                    body: body
+                }).then(res => {
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        console.log(res)
+                        this.$Message.success('操作投票项成果')
+                    } else {
+                        this.$Message.error(res.msg)
+                    }
+                }).catch(err => {
+                    this.$Message.error(err.message)
+                })
             }
         },
         components: {

@@ -215,15 +215,15 @@
                     let maxComment = arr[3].data.articles
                     let topList = arr[4].data.articles || []
                     let collectDirList = []
-                    console.log(arr[5])
                     if (arr[5]) {
                         collectDirList = arr[5].data.folders || []
                         collectDirList.map(item => {
-                            if (item.collects.sourceID === parseInt(context.params.id) && item.collects.sourceName === 'collect_source_article') {
-                                item.hasCollect = true
-                            } else {
-                                item.hasCollect = false
-                            }
+                            item.hasCollect = false
+                            item.collects.map(items => {
+                                if (items.sourceID === parseInt(context.params.id) && items.sourceName === 'collect_source_article') {
+                                    item.hasCollect = true
+                                }
+                            })
                         })
                     }
                     topList.map(item => {

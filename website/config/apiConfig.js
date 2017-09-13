@@ -156,6 +156,21 @@ const api = {
         method: 'POST',
         desc: '编辑投票'
     },
+    deleteVote: {
+        url: url + '/vote/delete/:id',
+        method: 'POST',
+        desc: '删除投票'
+    },
+    editVoteItem: {
+        url: url + '/vote/item/edit',
+        method: 'POST',
+        desc: '编辑投票项'
+    },
+    addVoteItem: {
+        url: url + '/vote/item/create',
+        method: 'POST',
+        desc: '新增投票项'
+    },
     getVotes: {
         url: url + '/votes',
         method: 'GET',
@@ -180,11 +195,6 @@ const api = {
         url: url + '/votes/maxcomment',
         method: 'GET',
         desc: '回复最多的投票'
-    },
-    deleteVote: {
-        url: url + '/vote/delete/:id',
-        method: 'POST',
-        desc: '删除投票'
     },
     getTopList: {
         url: url + '/articles/top',

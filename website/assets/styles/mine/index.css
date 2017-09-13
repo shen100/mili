@@ -23,12 +23,6 @@ body {
     background-color: #fff;
 }
 
-.golang-user-body {
-    width: 1000px;
-    margin: 20px auto;
-    min-height: 300px;
-}
-
 .mine-edit-container {
     position: relative;
     padding: 20px;
@@ -112,7 +106,7 @@ body {
 }
 
 .mine-content-left {
-    width: 700px;
+    width: 900px;
     display: inline-block;
     min-height: 300px;
     border-radius: 3px;

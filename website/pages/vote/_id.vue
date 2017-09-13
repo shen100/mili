@@ -26,7 +26,7 @@
                     </div>
                     <div class="vote-actions">
                         <div class="vote-share">
-                            <div class="vote-share-btn">
+                            <div class="vote-share-btn" @click="collect">
                                 <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;"></Icon>
                                 <span>收藏</span>
                             </div>
@@ -86,6 +86,49 @@
             <app-sidebar :score="score" :votesMaxBrowse="votesMaxBrowse" :votesMaxComment="votesMaxComment"/>
         </div>
         <app-footer />
+        <Modal
+            v-model="collectShow"
+            class="collect-modal"
+            title="添加收藏"
+            @on-cancel="cancel">
+            <Row
+                class="not-signin-dividing collect-row"
+                type="flex"
+                justify="space-between"
+                align="middle"
+                v-for="(item, index) in collectDirList" key="index">
+                <span><a :href="`/user/${user.id}/collect`">{{item.name}}</a></span>
+                <Button v-if="item.hasCollect" class="info-button" style="width: 80px" disabled="disabled">已收藏</Button>
+                <Button v-else class="info-button" style="width: 80px" @click="createCollect(item.id)">收藏</Button>
+            </Row>
+            <Button
+                type="primary"
+                size="large"
+                class="collect-dir-btn" @click="createCollectDir">创建收藏夹</Button>
+            <div slot="footer"></div>
+        </Modal>
+        <Modal
+            v-model="collectShowDir"
+            class="collect-modal"
+            title="创建新收藏夹"
+            @on-cancel="cancel">
+            <Form
+                ref="CollectDir"
+                :model="collectData"
+                :rules="collectRule">
+                <Form-item prop="title">
+                    <i-input
+                        v-model="collectData.title"
+                        placeholder="收藏标题"
+                        size="large"/>
+                </Form-item>
+            </Form>
+            <Row type="flex" justify="space-between">
+                <Button type="ghost" style="width:48%" @click="collect">返回</Button>
+                <Button type="primary" style="width:48%" @click="submitCollectDir">确认创建</Button>
+            </Row>
+            <div slot="footer"></div>
+        </Modal>
     </div>
 </template>
 
@@ -98,10 +141,13 @@
     import Editor from '~/components/Editor'
     import request from '~/net/request'
     import dateTool from '~/utils/date'
+    import {trim} from '~/utils/tool'
 
     export default {
         data () {
             return {
+                collectShowDir: false,
+                collectShow: false,
                 loading: false,
                 formData: {
                     content: ''
@@ -109,6 +155,14 @@
                 formRule: {
                     content: [
                         { required: true, message: '请输入回复内容', trigger: 'blur' }
+                    ]
+                },
+                collectData: {
+                    title: ''
+                },
+                collectRule: {
+                    title: [
+                        { required: true, message: '请输入收藏标题', trigger: 'blur' }
                     ]
                 }
             }
@@ -118,7 +172,7 @@
             return hasId
         },
         asyncData (context) {
-            return Promise.all([
+            let arr = [
                 request.getVote({
                     client: context.req,
                     params: {
@@ -134,12 +188,30 @@
                 request.getTop10({
                     client: context.req
                 })
-            ]).then(arr => {
+            ]
+            if (context.user) {
+                arr.push(request.getFoldersSource({
+                    client: context.req
+                }))
+            }
+            return Promise.all(arr).then(arr => {
                 let vote = arr[0].data
                 let votesMaxBrowse = arr[1].data.votes
                 let votesMaxComment = arr[2].data.votes
                 let score = arr[3].data.users
                 let isAuthor = context.user && context.user.id === vote.user.id
+                let collectDirList = []
+                if (arr[4]) {
+                    collectDirList = arr[4].data.folders || []
+                    collectDirList.map(item => {
+                        item.hasCollect = false
+                        item.collects.map(items => {
+                            if (items.sourceID === parseInt(context.params.id) && items.sourceName === 'collect_source_vote') {
+                                item.hasCollect = true
+                            }
+                        })
+                    })
+                }
                 return {
                     isAuthor: isAuthor,
                     vote: vote,
@@ -147,7 +219,8 @@
                     votesMaxBrowse: votesMaxBrowse,
                     votesMaxComment: votesMaxComment,
                     score: score,
-                    status: vote.status === VoteStatus.VOTE_UNDERWAY
+                    status: vote.status === VoteStatus.VOTE_UNDERWAY,
+                    collectDirList: collectDirList
                 }
             }).catch(err => {
                 console.log(err)
@@ -263,6 +336,76 @@
                         this.$Message.error(err.message)
                     })
                 }
+            },
+            collect () {
+                if (!this.user) {
+                    window.location.href = '/signin'
+                }
+                this.collectShowDir = false
+                this.collectData.title = ''
+                this.collectShow = true
+            },
+            cancel () {
+                this.collectShowDir = false
+                this.collectShow = false
+                this.collectData.title = ''
+            },
+            createCollectDir () {
+                this.collectShowDir = true
+                this.collectShow = false
+            },
+            submitCollectDir () {
+                this.$refs['CollectDir'].validate(valid => {
+                    if (!this.loading && valid) {
+                        this.loading = true
+                        request.createCollectDir({
+                            body: {
+                                name: trim(this.collectData.title),
+                                parentID: 0
+                            }
+                        }).then(res => {
+                            this.loading = false
+                            console.log(res)
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                this.collectDirList.push(res.data)
+                                this.collect()
+                            } else {
+                                this.$Message.error(res.msg)
+                            }
+                        }).catch(err => {
+                            this.loading = false
+                            this.$Message.error(err.message)
+                        })
+                    }
+                })
+            },
+            createCollect (id) {
+                if (this.loading) {
+                    return
+                }
+                this.loading = true
+                request.createCollect({
+                    body: {
+                        sourceName: 'collect_source_vote',
+                        sourceID: parseInt(this.$route.params.id),
+                        folderID: id
+                    }
+                }).then(res => {
+                    this.loading = false
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        this.collectDirList.map(item => {
+                            if (item.id === id) {
+                                item.hasCollect = true
+                            }
+                        })
+                        console.log(this.collectDirList)
+                    } else {
+                        this.$Message.error(res.msg)
+                    }
+                }).catch(err => {
+                    this.loading = false
+                    this.$Message.error(err.message)
+                })
             }
         },
         mounted () {
