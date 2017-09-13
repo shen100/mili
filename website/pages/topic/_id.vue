@@ -219,7 +219,11 @@
                     if (arr[5]) {
                         collectDirList = arr[5].data.folders || []
                         collectDirList.map(item => {
-                            item.hasCollect = false
+                            if (item.collects.sourceID === parseInt(context.params.id) && item.collects.sourceName === 'collect_source_article') {
+                                item.hasCollect = true
+                            } else {
+                                item.hasCollect = false
+                            }
                         })
                     }
                     topList.map(item => {
@@ -417,6 +421,7 @@
         },
         mounted () {
             console.log(this.collectDirList)
+            console.log(this.article)
         },
         filters: {
             getReplyTime: dateTool.getReplyTime

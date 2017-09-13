@@ -37,7 +37,7 @@
                             <template v-if="isAuthor">
                                 <div class="vote-share-btn">
                                     <Icon type="edit" style="font-size: 16px"></Icon>
-                                    <a :href="'/topic/edit/' + vote.id"><span>编辑</span></a>
+                                    <a :href="'/vote/edit/' + vote.id"><span>编辑</span></a>
                                 </div>
                                 <div class="vote-share-btn">
                                     <Icon type="android-delete" style="font-size: 17px;"></Icon>
