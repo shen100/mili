@@ -2,16 +2,16 @@ package route
 
 import (
 	"github.com/kataras/iris"
-	"golang123/config"
-	"golang123/controller/common"
-	"golang123/controller/auth"
-	"golang123/controller/category"
-	"golang123/controller/article"
-	"golang123/controller/collect"
-	"golang123/controller/comment"
-	"golang123/controller/vote"
-	"golang123/controller/user"
-	"golang123/controller/message"
+	"github.com/shen100/golang123/config"
+	"github.com/shen100/golang123/controller/common"
+	"github.com/shen100/golang123/controller/auth"
+	"github.com/shen100/golang123/controller/category"
+	"github.com/shen100/golang123/controller/article"
+	"github.com/shen100/golang123/controller/collect"
+	"github.com/shen100/golang123/controller/comment"
+	"github.com/shen100/golang123/controller/vote"
+	"github.com/shen100/golang123/controller/user"
+	"github.com/shen100/golang123/controller/message"
 )
 
 // Route 路由
@@ -96,21 +96,23 @@ func Route(app *iris.Application) {
 		routes.Get("/comments/user/:userID",          comment.UserCommentList)
 		routes.Get("/comments/:sourceName/:sourceID", comment.SourceComments)
 
-		routes.Get("/votes",                vote.List)
-		routes.Get("/votes/maxbrowse",      vote.ListMaxBrowse)
-		routes.Get("/votes/maxcomment",     vote.ListMaxComment)
-		routes.Get("/votes/user/:userID",   vote.UserVoteList)
-		routes.Post("/vote/create",         auth.EditorRequired,
-											vote.Create)
-		routes.Post("/vote/update",         auth.EditorRequired,
-											vote.Update)
-		routes.Post("/vote/delete/:id",     auth.EditorRequired,
-											vote.Delete)
-		routes.Get("/vote/:id",             vote.Info)
-		routes.Post("/vote/item/create",    auth.EditorRequired,
-											vote.CreateVoteItem)
-		routes.Post("/vote/item/edit",      auth.EditorRequired,
-											vote.EditVoteItem)
+		routes.Get("/votes",                 vote.List)
+		routes.Get("/votes/maxbrowse",       vote.ListMaxBrowse)
+		routes.Get("/votes/maxcomment",      vote.ListMaxComment)
+		routes.Get("/votes/user/:userID",    vote.UserVoteList)
+		routes.Post("/vote/create",          auth.EditorRequired,
+											 vote.Create)
+		routes.Post("/vote/update",          auth.EditorRequired,
+											 vote.Update)
+		routes.Post("/vote/delete/:id",      auth.EditorRequired,
+											 vote.Delete)
+		routes.Get("/vote/:id",              vote.Info)
+		routes.Post("/vote/item/create",     auth.EditorRequired,
+											 vote.CreateVoteItem)
+		routes.Post("/vote/item/edit",       auth.EditorRequired,
+											 vote.EditVoteItem)
+		routes.Post("/vote/item/delete/:id", auth.EditorRequired,
+											 vote.DeleteItem)
 		routes.Post("/vote/uservote/:id",   auth.ActiveRequired,
 											vote.UserVoteVoteItem)
     }

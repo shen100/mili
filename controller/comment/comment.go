@@ -6,10 +6,10 @@ import (
 	"strings"
 	"unicode/utf8"
 	"github.com/kataras/iris"
-	"golang123/controller/common"
-	"golang123/model"
-	"golang123/utils"
-	"golang123/manager"
+	"github.com/shen100/golang123/controller/common"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/utils"
+	"github.com/shen100/golang123/manager"
 )
 
 // Save 保存评论（创建或更新）

@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"github.com/kataras/iris"
 	"github.com/microcosm-cc/bluemonday"
-	"golang123/model"
-	"golang123/controller/common"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/controller/common"
 )
 
 // Save 保存分类（创建或更新）

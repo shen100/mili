@@ -2,7 +2,7 @@ package common
 
 import (
 	"github.com/kataras/iris"
-	"golang123/manager"
+	"github.com/shen100/golang123/manager"
 )
 
 // SessShiftExpiration 延时session过期

@@ -3,7 +3,7 @@ package common
 import (
 	"fmt"
 	"github.com/kataras/iris"
-	"golang123/model"
+	"github.com/shen100/golang123/model"
 )
 
 // SendErrJSON 有错误发生时，发送错误JSON

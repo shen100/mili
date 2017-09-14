@@ -9,10 +9,10 @@ import (
 	"unicode/utf8"
 	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris"
-	"golang123/model"
-	"golang123/utils"
-	"golang123/manager"
-	"golang123/controller/common"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/utils"
+	"github.com/shen100/golang123/manager"
+	"github.com/shen100/golang123/controller/common"
 )
 
 // List 查询投票列表
@@ -537,6 +537,34 @@ func EditVoteItem(ctx iris.Context) {
 		"msg"   : "success",
 		"data"  : iris.Map{
 			"voteItem": queryVoteItem,
+		},
+	})
+}
+
+// DeleteItem 删除投票项
+func DeleteItem(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	voteItemID, idErr := ctx.Params().GetInt("id")
+	if idErr != nil {
+		fmt.Println(idErr.Error())
+		SendErrJSON("无效的ID", ctx)
+		return
+	}
+	var voteItem model.VoteItem
+	if err := model.DB.First(&voteItem, voteItemID).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("无效的ID", ctx)
+		return
+	}
+	if err := model.DB.Delete(&voteItem).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"voteItemID": voteItem.ID,
 		},
 	})
 }

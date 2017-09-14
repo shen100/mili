@@ -14,11 +14,11 @@ import (
 	"github.com/kataras/iris"
 	"github.com/asaskevich/govalidator"
 	"github.com/microcosm-cc/bluemonday"
-	"golang123/model"
-	"golang123/config"
-	"golang123/manager"
-	"golang123/controller/common"
-	"golang123/controller/mail"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/config"
+	"github.com/shen100/golang123/manager"
+	"github.com/shen100/golang123/controller/common"
+	"github.com/shen100/golang123/controller/mail"
 )
 
 const (

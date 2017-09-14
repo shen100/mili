@@ -12,10 +12,10 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
 	"github.com/kataras/iris/middleware/logger"
-	"golang123/config"
-	"golang123/model"
-	"golang123/route"
-	"golang123/manager"
+	"github.com/shen100/golang123/config"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/route"
+	"github.com/shen100/golang123/manager"
 )
 
 func init() {

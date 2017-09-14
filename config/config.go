@@ -6,7 +6,7 @@ import (
     "fmt"
 	"io/ioutil"
     "regexp"
-    "golang123/utils"
+    "github.com/shen100/golang123/utils"
 )
 
 var jsonData map[string]interface{}
