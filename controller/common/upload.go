@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"github.com/kataras/iris"
 	"github.com/satori/go.uuid"
-	"golang123/model"
-	"golang123/utils"
-	"golang123/config"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/utils"
+	"github.com/shen100/golang123/config"
 )
 
 // Upload 文件上传

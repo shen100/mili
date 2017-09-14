@@ -5,7 +5,7 @@ import (
     "crypto/md5"
     "strconv"
     "time"
-    "golang123/config"
+    "github.com/shen100/golang123/config"
 )
 
 // User 用户

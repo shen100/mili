@@ -2,9 +2,9 @@ package auth
 
 import (
 	"github.com/kataras/iris"
-	"golang123/model"
-	"golang123/manager"
-	"golang123/controller/common"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/manager"
+	"github.com/shen100/golang123/controller/common"
 )
 
 // SigninRequired 必须是登录用户

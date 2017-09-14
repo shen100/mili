@@ -8,10 +8,10 @@ import (
 	"unicode/utf8"
 	"github.com/kataras/iris"
 	"github.com/microcosm-cc/bluemonday"
-	"golang123/model"
-	"golang123/manager"
-	"golang123/utils"
-	"golang123/controller/common"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/manager"
+	"github.com/shen100/golang123/utils"
+	"github.com/shen100/golang123/controller/common"
 )
 
 func queryList(isBackend bool, ctx iris.Context) {

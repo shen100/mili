@@ -75,6 +75,13 @@ body, .golang-home-body-left {
     cursor: pointer;
 }
 
+.comment-delete-txt {
+    line-height: 17px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 2px;
+}
+
 .reply-user-icon {
 	float: left;
 }
