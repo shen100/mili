@@ -168,12 +168,29 @@
                 if (this.formValidate.items.length === 2) {
                     return this.$Message.error('至少保存两个投票项')
                 }
-                // if (this.id) {
-                //     request
-                // } else {
-                //     this.formValidate.items.splice(index, 1)
-                // }
-                this.formValidate.items.splice(index, 1)
+
+                if (this.id) {
+                    let itemId = this.formValidate.items[index].id || ''
+                    if (itemId) {
+                        request.deleteVoteItem({
+                            params: {
+                                id: itemId
+                            }
+                        }).then(res => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                this.formValidate.items.splice(index, 1)
+                            } else {
+                                this.$Message.error(res.msg)
+                            }
+                        }).catch(err => {
+                            this.$Message.error(err.message)
+                        })
+                    } else {
+                        this.formValidate.items.splice(index, 1)
+                    }
+                } else {
+                    this.formValidate.items.splice(index, 1)
+                }
             },
             onDateChange (date) {
                 this.formValidate.date = date

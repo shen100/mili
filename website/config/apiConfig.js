@@ -171,6 +171,11 @@ const api = {
         method: 'POST',
         desc: '新增投票项'
     },
+    deleteVoteItem: {
+        url: url + '/vote/item/delete/:id',
+        method: 'POST',
+        desc: '删除投票项'
+    },
     getVotes: {
         url: url + '/votes',
         method: 'GET',

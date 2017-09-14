@@ -8,7 +8,7 @@
                     <div class="mine-info-icon">
                         <img :src="currentUser.avatarURL" alt="" />
                         <div class="mine-info-upload" v-if="user && user.id === currentUser.id">
-                            <img src="~assets/images/camera_fill.png" alt="">
+                            <!-- <img src="~assets/images/camera_fill.png" alt=""> -->
                             <p>修改我的头像</p>
                         </div>
                     </div>
