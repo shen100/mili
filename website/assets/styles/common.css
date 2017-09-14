@@ -639,3 +639,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
+
+.collects-item-label {
+    font-size: 14px;
+    font-weight: 700px;
+}
+
+.collects-item-num {
+    font-size: 14px;
+    color: #8590a6;
+    margin-top: 4px;
+}

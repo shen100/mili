@@ -92,7 +92,10 @@
                 justify="space-between"
                 align="middle"
                 v-for="(item, index) in collectDirList" key="index">
-                <span><a :href="`/user/${user.id}/collect`">{{item.name}}</a></span>
+                <div>
+                    <span class="collects-item-label">{{item.name}}</span>
+                    <p class="collects-item-num">{{item.collects.length}}条内容</p>
+                </div>
                 <Button v-if="item.hasCollect" class="info-button" style="width: 80px" disabled="disabled">已收藏</Button>
                 <Button v-else class="info-button" style="width: 80px" @click="createCollect(item.id)">收藏</Button>
             </Row>
@@ -157,7 +160,7 @@
                 },
                 collectRule: {
                     title: [
-                        { required: true, message: '请输入收藏标题', trigger: 'blur' }
+                        { required: true, message: '请输入收藏夹名称', trigger: 'blur' }
                     ]
                 }
             }
