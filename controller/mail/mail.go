@@ -11,13 +11,14 @@ import (
 
 // SendMail 发送邮件
 func SendMail(toEmail, subject, content string) error {
-    host     := config.ServerConfig.MailHost
-    port     := config.ServerConfig.MailPort
-    email    := config.ServerConfig.MailUser
-	password := config.ServerConfig.MailPass
+    host      := config.ServerConfig.MailHost
+    port      := config.ServerConfig.MailPort
+    email     := config.ServerConfig.MailUser
+    password  := config.ServerConfig.MailPass
+    emailFrom := config.ServerConfig.MailFrom
 
     headers                := make(map[string]string)
-    headers["From"]         = "golang123<" + email + ">"
+    headers["From"]         = emailFrom + "<" + email + ">"
     headers["To"]           = toEmail
     headers["Subject"]      = subject
     headers["Content-Type"] = "text/html; charset=UTF-8"

@@ -84,6 +84,7 @@ type serverConfig struct {
 	MailPass            string  //域名邮箱密码
 	MailHost            string  //smtp邮箱域名
 	MailPort            int     //smtp邮箱端口
+	MailFrom            string  //邮件来源
 	Github              string
 }
 

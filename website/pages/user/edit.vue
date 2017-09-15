@@ -3,7 +3,7 @@
         <app-header :user="user" />
         <div class="golang-home-body">
             <div class="golang-main-top">
-                <div class="mine-img-box"></div>
+                <div class="mine-img-box" :style="{'background-image': 'url(' + userInfo.coverURL + ')'}"></div>
                 <div class="mine-edit-container">
                     <div class="mine-info-icon">
                         <img :src="user.avatarURL" alt="" />
@@ -76,8 +76,8 @@
                     <div class="mine-info-line mine-info-edit">
                         <span class="mine-info-label">教育经历</span>
                         <span class="mine-info-value" v-if="editIndex[4] === 0">
-                            <span 
-                                class="edit-action" 
+                            <span
+                                class="edit-action"
                                 style="display: inline-block;padding: 8px 0 9px 0;"
                                 @click="editItem('school', 4)">
                                     <i class="ivu-icon ivu-icon-android-add-circle"></i>
@@ -90,8 +90,8 @@
                             <Button type="primary" class="button-seq" @click="addSchool">保存</Button>
                             <Button type="ghost" @click="close('school', 4)">取消</Button>
                         </div>
-                        <p 
-                            class="schools-item" 
+                        <p
+                            class="schools-item"
                             v-for="(item, index) in userInfo.schools">
                                 {{item.name}}&nbsp{{item.speciality ? '•&nbsp' + item.speciality : ''}}
                                 <i class="ivu-icon ivu-icon-close schools-delete" @click="deleteSchool(item.id)"></i>
@@ -100,9 +100,9 @@
                     <div class="mine-info-line mine-info-edit">
                         <span class="mine-info-label">职业经历</span>
                         <span class="mine-info-value" v-if="editIndex[5] === 0">
-                            <span 
-                                class="edit-action" 
-                                style="display: inline-block;padding: 8px 0 9px 0;" 
+                            <span
+                                class="edit-action"
+                                style="display: inline-block;padding: 8px 0 9px 0;"
                                 @click="editItem('career', 5)">
                                     <i class="ivu-icon ivu-icon-android-add-circle"></i>
                                     添加职业经历
@@ -114,8 +114,8 @@
                             <Button type="primary" class="button-seq" @click="addCareer">保存</Button>
                             <Button type="ghost" @click="close('career', 5)">取消</Button>
                         </div>
-                        <p 
-                            class="schools-item" 
+                        <p
+                            class="schools-item"
                             v-for="(item, index) in userInfo.careers">
                                 {{item.company}}&nbsp{{'•&nbsp' + item.title}}
                                 <i class="ivu-icon ivu-icon-close schools-delete" @click="deleteCareer(item.id)"></i>

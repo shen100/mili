@@ -597,6 +597,12 @@ func InfoDetail(ctx iris.Context) {
 		return	
 	}
 
+	if user.Sex == model.UserSexFemale {
+		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/d20f62c6-bd11-4739-b79b-48c9fcbce392.jpg"
+	} else {
+		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/e672995e-7a39-4a05-9673-8802b1865c46.jpg"	
+	}
+
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
