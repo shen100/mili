@@ -153,5 +153,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/reset/pwd.css'
+    @import '../../../assets/styles/reset/pwd.css'
 </style>

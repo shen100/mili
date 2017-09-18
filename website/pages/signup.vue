@@ -186,5 +186,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/signup.css'
+    @import '../assets/styles/signup.css'
 </style>

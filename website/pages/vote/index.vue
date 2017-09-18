@@ -100,5 +100,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/vote/list.css'
+    @import '../../assets/styles/vote/list.css'
 </style>

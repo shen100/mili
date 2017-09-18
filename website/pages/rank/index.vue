@@ -130,5 +130,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/rank/index.css'
+    @import '../../assets/styles/rank/index.css'
 </style>

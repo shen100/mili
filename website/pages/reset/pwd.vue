@@ -9,9 +9,9 @@
                     <div v-if="!success">
                         <Form ref="formCustom" :model="formCustom" :rules="ruleCustom">
                             <Form-item prop="email">
-                                <i-input 
-                                    size="large" 
-                                    v-model="formCustom.email" 
+                                <i-input
+                                    size="large"
+                                    v-model="formCustom.email"
                                     @on-blur="blur('formCustom.email')"
                                     placeholder="请输入邮箱"></i-input>
                             </Form-item>
@@ -134,5 +134,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/reset/pwd.css'
+    @import '../../assets/styles/reset/pwd.css'
 </style>

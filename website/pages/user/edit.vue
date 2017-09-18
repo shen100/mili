@@ -318,5 +318,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/mine/index.css'
+    @import '../../assets/styles/mine/index.css'
 </style>

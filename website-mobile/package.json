@@ -1,20 +1,19 @@
 {
-  "name": "golang123-pc",
-  "version": "0.1.1",
-  "description": "golang123 pc project",
+  "name": "golang123-mobile",
+  "version": "0.0.1",
+  "description": "golang123 mobile project",
   "author": "shen100 <liushen_shen@163.com>",
   "private": true,
   "scripts": {
-    "dev": "HOST=0.0.0.0 PORT=8020 nuxt",
+    "dev": "HOST=0.0.0.0 PORT=8022 nuxt",
     "build": "nuxt build",
-    "start": "HOST=0.0.0.0 PORT=8020 nuxt start",
+    "start": "HOST=0.0.0.0 PORT=8022 nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .eslintignore .",
     "precommit": "npm run lint"
   },
   "dependencies": {
     "axios": "0.16.2",
-    "iview": "2.0.0",
     "moment": "2.18.1",
     "nuxt": "^1.0.0-rc11",
     "js-beautify": "1.6.14"

@@ -69,5 +69,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/article/edit.css'
+    @import '../../assets/styles/article/edit.css'
 </style>

@@ -119,5 +119,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/home.css'
+    @import '../assets/styles/home.css'
 </style>

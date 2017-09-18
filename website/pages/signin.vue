@@ -128,5 +128,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/signin.css'
+    @import '../assets/styles/signin.css'
 </style>

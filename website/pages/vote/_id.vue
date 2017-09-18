@@ -432,5 +432,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/vote/detail.css'
+    @import '../../assets/styles/vote/detail.css'
 </style>

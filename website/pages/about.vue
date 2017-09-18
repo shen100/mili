@@ -86,5 +86,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/about.css'
+    @import '../assets/styles/about.css'
 </style>

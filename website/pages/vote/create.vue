@@ -82,5 +82,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/vote/create.css';
+    @import '../../assets/styles/vote/create.css';
 </style>

@@ -61,5 +61,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/links.css'
+    @import '../assets/styles/links.css'
 </style>

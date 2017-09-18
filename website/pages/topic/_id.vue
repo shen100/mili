@@ -440,5 +440,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/article/detail.css'
+    @import '../../assets/styles/article/detail.css'
 </style>

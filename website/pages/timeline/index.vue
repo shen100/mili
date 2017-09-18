@@ -126,5 +126,5 @@
 </script>
 
 <style>
-@import '~assets/styles/timeline/timeline.css'
+    @import '../../assets/styles/timeline/timeline.css'
 </style>
