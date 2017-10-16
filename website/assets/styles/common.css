@@ -456,6 +456,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang123-editor a {
     color: #08c;
+    word-break: break-all;
 }
 
 .golang123-editor a:hover {
