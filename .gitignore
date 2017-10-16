@@ -9,5 +9,6 @@ node_modules
 npm-debug.log
 .nuxt
 website/config/index.js
+website-mobile/config/index.js
 review.md
 build.md

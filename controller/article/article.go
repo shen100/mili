@@ -2,6 +2,7 @@ package article
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -51,6 +52,8 @@ func queryList(isBackend bool, ctx iris.Context) {
 		return
 	}
 
+	totalCount := 0
+
 	if categoryID != 0 {
 		var category model.Category
 		if model.DB.First(&category, categoryID).Error != nil {
@@ -60,7 +63,8 @@ func queryList(isBackend bool, ctx iris.Context) {
 		var sql = `SELECT distinct(articles.id), articles.name, articles.browse_count, articles.status,  
 					articles.created_at, articles.updated_at, articles.user_id 
 				FROM articles, article_category  
-				WHERE articles.id = article_category.article_id    
+				WHERE articles.id = article_category.article_id   
+				{statusSQL}       
 				AND article_category.category_id = {categoryID} 
 				AND articles.deleted_at IS NULL 
 				ORDER BY {orderField} {orderASC}
@@ -70,6 +74,11 @@ func queryList(isBackend bool, ctx iris.Context) {
 		sql = strings.Replace(sql, "{orderASC}",   orderASC, -1)
 		sql = strings.Replace(sql, "{offset}",     strconv.Itoa(offset), -1)
 		sql = strings.Replace(sql, "{pageSize}",   strconv.Itoa(pageSize), -1)
+		if isBackend {
+			sql = strings.Replace(sql, "{statusSQL}", " ", -1)	
+		} else {
+			sql = strings.Replace(sql, "{statusSQL}", " AND (status = 1 OR status = 2)", -1)
+		}
 		err = model.DB.Raw(sql).Scan(&articles).Error
 		if err != nil {
 			SendErrJSON("error", ctx)
@@ -77,6 +86,21 @@ func queryList(isBackend bool, ctx iris.Context) {
 		}
 		for i := 0; i < len(articles); i++ {
 			articles[i].Categories = []model.Category{ category }
+		}
+
+		sqlCount1 := "deleted_at IS ? AND categoryID = ?"
+		sqlCount2 := "deleted_at IS ? AND categoryID = ? AND (status = 1 OR status = 2)"
+
+		if isBackend {
+			if err := model.DB.Where(sqlCount1, "NULL", categoryID).Count(&totalCount).Error; err != nil {
+				SendErrJSON("error", ctx)
+				return
+			}
+		} else {
+			if err := model.DB.Where(sqlCount2, "NULL", categoryID).Count(&totalCount).Error; err != nil {
+				SendErrJSON("error", ctx)
+				return
+			}	
 		}
 	} else {
 		orderStr := orderField + " " + orderASC
@@ -97,6 +121,21 @@ func queryList(isBackend bool, ctx iris.Context) {
 				return
 			}
 		}
+
+		sqlCount1 := "deleted_at IS NULL"
+		sqlCount2 := "deleted_at IS NULL AND (status = 1 OR status = 2)"
+
+		if isBackend {
+			if err := model.DB.Model(&model.Article{}).Where(sqlCount1).Count(&totalCount).Error; err != nil {
+				SendErrJSON("error", ctx)
+				return
+			}
+		} else {
+			if err := model.DB.Model(&model.Article{}).Where(sqlCount2).Count(&totalCount).Error; err != nil {
+				SendErrJSON("error", ctx)
+				return
+			}	
+		}
 	}
 
 	for i := 0; i < len(articles); i++ {
@@ -113,12 +152,14 @@ func queryList(isBackend bool, ctx iris.Context) {
 			}
 		}
 	}
-
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
 			"articles": articles,
+			"pageNo": pageNo,
+			"pageSize": pageSize,
+			"totalPage": math.Ceil(float64(totalCount) / float64(pageSize)),
 		},
 	})
 }

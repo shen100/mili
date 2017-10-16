@@ -12,7 +12,7 @@
             </Upload>
         </Modal>
         <div v-if="isFullscreen" class="editor-fullScreen-save">
-             <Button @click="onSave" type="primary">保&nbsp;&nbsp;存</Button>
+            <Button @click="onSave" type="primary">保&nbsp;&nbsp;存</Button>
         </div>
     </div>
 </template>
