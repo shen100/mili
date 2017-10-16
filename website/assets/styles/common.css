@@ -564,6 +564,11 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	padding: 0 8px;
 }
 
+.common-page {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .user-info-text {
     color: #000;
     font-size: 14px;

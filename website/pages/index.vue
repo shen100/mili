@@ -24,6 +24,15 @@
                         <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
                         <a class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""></a>
                     </div>
+                    <Row>
+                        <Page 
+                            class="common-page"
+                            :current="pageNo"
+                            :page-size="pageSize"
+                            :total="totalPage"
+                            @on-change="onPageChange"
+                            size="small"></Page>
+                    </Row>
                 </div>
             </div>
             <app-sidebar :score="score" :user="user" :userLoginVisible="true" :maxComment="maxComment" :pubTopic="true" :maxBrowse="maxBrowse"/>
@@ -54,7 +63,8 @@
                 request.getArticles({
                     client: context.req,
                     query: {
-                        cateId: query.cate || ''
+                        cateId: query.cate || '',
+                        pageNo: query.pageNo || 1
                     }
                 }),
                 request.getTop10({
@@ -72,6 +82,9 @@
             ]).then(data => {
                 let categories = data[0].data.categories || []
                 let articles = data[1].data.articles
+                let pageNo = data[1].data.pageNo
+                let totalPage = data[1].data.totalPage
+                let pageSize = data[1].data.pageSize
                 let score = data[2].data.users
                 let user = context.user
                 let cate = query.cate || ''
@@ -90,6 +103,9 @@
                 return {
                     categories: categories,
                     articles: articles,
+                    totalPage: totalPage * pageSize,
+                    pageNo: pageNo,
+                    pageSize: pageSize,
                     score: score,
                     user: user,
                     cate: cate,
@@ -109,6 +125,11 @@
         middleware: 'userInfo',
         filters: {
             getReplyTime: dateTool.getReplyTime
+        },
+        methods: {
+            onPageChange (value) {
+                window.location.href = `/?cate=${this.cate}&pageNo=${value}`
+            }
         },
         components: {
             'app-header': Header,
