@@ -24,14 +24,17 @@
                         <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
                         <a class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""></a>
                     </div>
-                    <Row>
+                    <Row
+                        v-if="articles.length > 0"
+                        type="flex"
+                        justify="end">
                         <Page 
                             class="common-page"
                             :current="pageNo"
                             :page-size="pageSize"
-                            :total="totalPage"
+                            :total="totalCount"
                             @on-change="onPageChange"
-                            size="small"></Page>
+                            show-total></Page>
                     </Row>
                 </div>
             </div>
@@ -81,9 +84,9 @@
                 })
             ]).then(data => {
                 let categories = data[0].data.categories || []
-                let articles = data[1].data.articles
+                let articles = data[1].data.articles || []
                 let pageNo = data[1].data.pageNo
-                let totalPage = data[1].data.totalPage
+                let totalCount = data[1].data.totalCount
                 let pageSize = data[1].data.pageSize
                 let score = data[2].data.users
                 let user = context.user
@@ -103,7 +106,7 @@
                 return {
                     categories: categories,
                     articles: articles,
-                    totalPage: totalPage * pageSize,
+                    totalCount: totalCount,
                     pageNo: pageNo,
                     pageSize: pageSize,
                     score: score,

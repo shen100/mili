@@ -75,7 +75,7 @@ html,body {
 }
 
 .admin-common-line {
-	margin: 10px 0;
+	margin: 11px 0;
 }
 
 .golang-top-header {
@@ -567,6 +567,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .common-page {
     margin-top: 10px;
     margin-bottom: 10px;
+    margin-right: 10px;
 }
 
 .user-info-text {
