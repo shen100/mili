@@ -93,16 +93,18 @@
                 let cate = query.cate || ''
                 let maxComment = data[3].data.articles || []
                 let maxBrowse = data[4].data.articles || []
-                let topList = data[5].data.articles || []
+                let topList = (data[5] && data[5].data.articles) || []
                 articles.map(items => {
                     items.isTop = false
-                    topList.map(item => {
-                        if (items.id === item.id) {
-                            items.isTop = true
-                        }
-                    })
                 })
-                articles = articles.sort((a, b) => a.isTop < b.isTop)
+                totalCount += topList.length
+                if (!query.pageNo || parseInt(query.pageNo) < 2) {
+                    topList.map(items => {
+                        items.isTop = true
+                    })
+                    pageSize += topList.length
+                    articles = topList.concat(articles)
+                }
                 return {
                     categories: categories,
                     articles: articles,

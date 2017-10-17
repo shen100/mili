@@ -12,6 +12,18 @@
             class="admin-common-line"
             :columns="column"
             :data="list"/>
+        <Row
+            v-if="list.length > 0"
+            type="flex"
+            justify="end">
+            <Page 
+                class="common-page"
+                :current="pageNo"
+                :page-size="pageSize"
+                :total="totalCount"
+                @on-change="onPageChange"
+                show-total></Page>
+        </Row>
     </Row>
 </template>
 
@@ -139,7 +151,8 @@
                 Request.getAdminArticles({
                     client: context.req,
                     query: {
-                        cateId: query.cateId || ''
+                        cateId: query.cateId || '',
+                        pageNo: query.pageNo || 1
                     }
                 }),
                 Request.getTopList({
@@ -148,8 +161,10 @@
             ]).then(arr => {
                 let select = arr[0].data.categories || []
                 let list = arr[1].data.articles || []
+                let pageNo = arr[1].data.pageNo
+                let totalCount = arr[1].data.totalCount
+                let pageSize = arr[1].data.pageSize
                 let topList = arr[2].data.articles || []
-                console.log(topList)
                 select.unshift({
                     id: 0,
                     name: '全部'
@@ -164,7 +179,11 @@
                 return {
                     select: select,
                     list: list,
+                    totalCount: totalCount,
+                    pageNo: pageNo,
+                    pageSize: pageSize,
                     selectIndex: selectIndex,
+                    cate: query.cateId || '',
                     topList: topList
                 }
             }).catch(err => {
@@ -178,9 +197,6 @@
             return {
                 title: '文章管理'
             }
-        },
-        mounted () {
-            console.log(this.list)
         },
         methods: {
             changeStatus (id, status) {
@@ -206,6 +222,9 @@
             },
             onSelectChange (value) {
                 window.location.href = `/admin/article/list?cateId=${value}`
+            },
+            onPageChange (value) {
+                window.location.href = `/admin/article/list?cate=${this.cate}&pageNo=${value}`
             },
             changeTop (id, status) {
                 const changeFunc = status ? Request.setTop : Request.delTop
