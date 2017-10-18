@@ -9,7 +9,7 @@
                 </div>
                 <div class="home-articles-box">
                     <div v-for="article in articles" class="articles-cell">
-                        <a :href="'/user/' + article.user.id" class="user-icon-box"><img :src="article.user.avatarURL" alt=""></a>
+                        <a :href="'/user/' + article.user.id" class="user-icon-box"><img :src="article.user.avatarURL" alt=""/></a>
                         <span class="home-tip-container">
                             <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
                                 <a :href="'/topic/' + article.id" class="no-underline">
@@ -22,19 +22,18 @@
                         <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
                         <a :href="'/topic/' + article.id" class="home-articles-title">{{article.name}}</a>
                         <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
-                        <a class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""></a>
+                        <a class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""/></a>
                     </div>
                     <Row
                         v-if="articles.length > 0"
                         type="flex"
                         justify="end">
-                        <Page 
-                            class="common-page"
+                        <span v-if="totalVisible" class="ivu-page-total" style="margin-top: 10px;">共 {{totalCount}} 条</span>
+                        <Page class="common-page"
                             :current="pageNo"
                             :page-size="pageSize"
                             :total="totalCount"
-                            @on-change="onPageChange"
-                            show-total></Page>
+                            @on-change="onPageChange"/>
                     </Row>
                 </div>
             </div>
@@ -97,7 +96,6 @@
                 articles.map(items => {
                     items.isTop = false
                 })
-                totalCount += topList.length
                 if (!query.pageNo || parseInt(query.pageNo) < 2) {
                     topList.map(items => {
                         items.isTop = true
@@ -106,6 +104,7 @@
                     articles = topList.concat(articles)
                 }
                 return {
+                    totalVisible: process.env.NODE_ENV !== 'production',
                     categories: categories,
                     articles: articles,
                     totalCount: totalCount,

@@ -1,11 +1,14 @@
 package config
 
 import (
-	"os"
     "encoding/json"
     "fmt"
 	"io/ioutil"
-    "regexp"
+	"os"
+	"unicode/utf8"
+	"path/filepath"
+	"regexp"
+	"strings"
     "github.com/shen100/golang123/utils"
 )
 
@@ -93,6 +96,20 @@ var ServerConfig serverConfig
 
 func initServer() {
 	utils.SetStructByJSON(&ServerConfig, jsonData["go"].(map[string]interface{}))
+	
+	if ServerConfig.UploadImgDir == "" {
+		sep := string(os.PathSeparator)
+		execPath := filepath.Dir(os.Args[0])
+		pathArr  := []string{"website", "static", "upload", "img"}
+		length   := utf8.RuneCountInString(execPath)
+		lastChar := execPath[length - 1:]
+		if lastChar != sep {
+			execPath = execPath + sep	
+		}
+		execPath = execPath + strings.Join(pathArr, sep)
+		fmt.Println(execPath)
+		ServerConfig.UploadImgDir = execPath
+	}
 }
 
 func init() {

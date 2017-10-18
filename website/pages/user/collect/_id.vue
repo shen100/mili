@@ -70,5 +70,5 @@
 </script>
 
 <style>
-    @import '~assets/styles/user/collectList.css'
+    @import '../../../assets/styles/user/collectList.css'
 </style>

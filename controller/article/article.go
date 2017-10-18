@@ -31,8 +31,8 @@ func queryList(isBackend bool, ctx iris.Context) {
 		pageNo = 1
 	}
 
-	offset   := (pageNo - 1) * model.PageSize
-	pageSize := model.PageSize
+	pageSize := 40
+	offset   := (pageNo - 1) * pageSize
 
 	//默认按创建时间，降序来排序
 	var orderField = "created_at"
@@ -52,7 +52,25 @@ func queryList(isBackend bool, ctx iris.Context) {
 		return
 	}
 
-	totalCount := 0
+	var topArticles []model.TopArticle
+	if err := model.DB.Find(&topArticles).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+	var topArr []string
+	for i := 0; i < len(topArticles); i++ {
+		topArr = append(topArr, strconv.Itoa(int(topArticles[i].ArticleID)))
+	}
+	topIDs := strconv.Itoa(model.NoParent)
+	if len(topArr) > 0 {
+		topIDs = strings.Join(topArr, ",")
+	}
+
+	type TotalCountResult struct {
+		TotalCount int
+	}
+
+	var totalCountResult TotalCountResult
 
 	if categoryID != 0 {
 		var category model.Category
@@ -67,10 +85,12 @@ func queryList(isBackend bool, ctx iris.Context) {
 				{statusSQL}       
 				AND article_category.category_id = {categoryID} 
 				AND articles.deleted_at IS NULL 
+				AND articles.id NOT IN ({topIDs})
 				ORDER BY {orderField} {orderASC}
 				LIMIT {offset}, {pageSize}`
 		sql = strings.Replace(sql, "{categoryID}", strconv.Itoa(categoryID), -1)
 		sql = strings.Replace(sql, "{orderField}", orderField, -1)
+		sql = strings.Replace(sql, "{topIDs}",     topIDs, -1)
 		sql = strings.Replace(sql, "{orderASC}",   orderASC, -1)
 		sql = strings.Replace(sql, "{offset}",     strconv.Itoa(offset), -1)
 		sql = strings.Replace(sql, "{pageSize}",   strconv.Itoa(pageSize), -1)
@@ -79,8 +99,7 @@ func queryList(isBackend bool, ctx iris.Context) {
 		} else {
 			sql = strings.Replace(sql, "{statusSQL}", " AND (status = 1 OR status = 2)", -1)
 		}
-		err = model.DB.Raw(sql).Scan(&articles).Error
-		if err != nil {
+		if err := model.DB.Raw(sql).Scan(&articles).Error; err != nil {
 			SendErrJSON("error", ctx)
 			return
 		}
@@ -88,26 +107,40 @@ func queryList(isBackend bool, ctx iris.Context) {
 			articles[i].Categories = []model.Category{ category }
 		}
 
-		sqlCount1 := "deleted_at IS ? AND categoryID = ?"
-		sqlCount2 := "deleted_at IS ? AND categoryID = ? AND (status = 1 OR status = 2)"
+		countSQL := `SELECT COUNT(distinct(articles.id)) AS total_count 
+				FROM articles, article_category  
+				WHERE articles.id = article_category.article_id   
+				{statusSQL}       
+				AND article_category.category_id = {categoryID}  
+				AND articles.id NOT IN ({topIDs})
+				AND articles.deleted_at IS NULL`
 
+		countSQL = strings.Replace(countSQL, "{categoryID}", strconv.Itoa(categoryID), -1)
+		countSQL = strings.Replace(countSQL, "{topIDs}",     topIDs, -1)
 		if isBackend {
-			if err := model.DB.Where(sqlCount1, "NULL", categoryID).Count(&totalCount).Error; err != nil {
+			countSQL = strings.Replace(countSQL, "{statusSQL}", " ", -1)
+			if err := model.DB.Raw(countSQL).Scan(&totalCountResult).Error; err != nil {
 				SendErrJSON("error", ctx)
 				return
 			}
 		} else {
-			if err := model.DB.Where(sqlCount2, "NULL", categoryID).Count(&totalCount).Error; err != nil {
+			countSQL = strings.Replace(countSQL, "{statusSQL}", " AND (status = 1 OR status = 2)", -1)
+			if err := model.DB.Raw(countSQL).Scan(&totalCountResult).Error; err != nil {
 				SendErrJSON("error", ctx)
 				return
-			}	
+			}
 		}
 	} else {
 		orderStr := orderField + " " + orderASC
+		excludeIDs := "id NOT IN ({topIDs})"
+		excludeIDs = strings.Replace(excludeIDs, "{topIDs}", topIDs, -1)
+
 		if isBackend {
-			err = model.DB.Offset(offset).Limit(pageSize).Order(orderStr).Find(&articles).Error
+			err = model.DB.Where(excludeIDs).Offset(offset).Limit(pageSize).
+				Order(orderStr).Find(&articles).Error
 		} else {
-			err = model.DB.Where("status = 1 OR status = 2").Offset(offset).Limit(pageSize).Order(orderStr).Find(&articles).Error
+			err = model.DB.Where(excludeIDs).Where("status = 1 OR status = 2").
+				Offset(offset).Limit(pageSize).Order(orderStr).Find(&articles).Error
 		}
 		
 		if err != nil {
@@ -122,16 +155,14 @@ func queryList(isBackend bool, ctx iris.Context) {
 			}
 		}
 
-		sqlCount1 := "deleted_at IS NULL"
-		sqlCount2 := "deleted_at IS NULL AND (status = 1 OR status = 2)"
-
 		if isBackend {
-			if err := model.DB.Model(&model.Article{}).Where(sqlCount1).Count(&totalCount).Error; err != nil {
+			if err := model.DB.Model(&model.Article{}).Where(excludeIDs).Count(&totalCountResult.TotalCount).Error; err != nil {
 				SendErrJSON("error", ctx)
 				return
 			}
 		} else {
-			if err := model.DB.Model(&model.Article{}).Where(sqlCount2).Count(&totalCount).Error; err != nil {
+			if err := model.DB.Model(&model.Article{}).Where(excludeIDs).Where("status = 1 OR status = 2").
+				Count(&totalCountResult.TotalCount).Error; err != nil {
 				SendErrJSON("error", ctx)
 				return
 			}	
@@ -159,7 +190,8 @@ func queryList(isBackend bool, ctx iris.Context) {
 			"articles": articles,
 			"pageNo": pageNo,
 			"pageSize": pageSize,
-			"totalPage": math.Ceil(float64(totalCount) / float64(pageSize)),
+			"totalPage": math.Ceil(float64(totalCountResult.TotalCount) / float64(pageSize)),
+			"totalCount": totalCountResult.TotalCount,
 		},
 	})
 }
@@ -184,11 +216,22 @@ func UserArticleList(ctx iris.Context) {
 	var orderStr string
 	var isDESC int
 	var descErr error
+	var pageNo int
 	var pageSize int
 	var pageSizeErr error
 	var f string
 
 	f = ctx.FormValue("f")
+
+	if pn, err := strconv.Atoi(ctx.FormValue("pageNo")); err != nil {
+		pageNo = 1
+	} else {
+		pageNo = pn
+	}
+ 
+	if pageNo < 1 {
+		pageNo = 1
+	}
 
 	if userID, userIDErr = ctx.Params().GetInt("userID"); userIDErr != nil {
 		SendErrJSON("无效的userID", ctx)
@@ -246,10 +289,18 @@ func UserArticleList(ctx iris.Context) {
 	}
 
 	var articles []model.Article
-	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Limit(pageSize).Find(&articles).Error; err != nil {
+	if err := model.DB.Where("user_id = ? AND (status = 1 OR status = 2)", user.ID).
+			Order(orderStr).Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
+	}
+
+	totalCount := 0
+	if err := model.DB.Model(&model.Article{}).Where("user_id = ? AND (status = 1 OR status = 2)", user.ID).Count(&totalCount).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return	
 	}
 
 	if f != "md" {
@@ -263,6 +314,10 @@ func UserArticleList(ctx iris.Context) {
 		"msg"   : "success",
 		"data"  : iris.Map{
 			"articles": articles,
+			"pageNo": pageNo,
+			"pageSize": pageSize,
+			"totalPage": math.Ceil(float64(totalCount) / float64(pageSize)),
+			"totalCount": totalCount,
 		},
 	})	
 }
@@ -271,7 +326,7 @@ func UserArticleList(ctx iris.Context) {
 func ListMaxComment(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
-	if err := model.DB.Order("comment_count DESC").Limit(5).Find(&articles).Error; err != nil {
+	if err := model.DB.Where("status = 1 OR status = 2").Order("comment_count DESC").Limit(5).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
@@ -289,7 +344,7 @@ func ListMaxComment(ctx iris.Context) {
 func ListMaxBrowse(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
-	if err := model.DB.Order("browse_count DESC").Limit(5).Find(&articles).Error; err != nil {
+	if err := model.DB.Where("status = 1 OR status = 2").Order("browse_count DESC").Limit(5).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
@@ -648,6 +703,13 @@ func Tops(ctx iris.Context) {
 			SendErrJSON("error", ctx)
 			return
 		}
+
+		if err := model.DB.Model(&article).Related(&article.User, "users").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+
 		articles = append(articles, article)
 	}
 

@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"unicode/utf8"
 	"mime"
 	"strconv"
 	"github.com/kataras/iris"
@@ -66,9 +67,18 @@ func Upload(ctx iris.Context) {
 
 	title := uuid.NewV4().String() + ext
 
-	uploadDir := config.ServerConfig.UploadImgDir + sep + timeDir
+	uploadDir := config.ServerConfig.UploadImgDir
+	length    := utf8.RuneCountInString(uploadDir)
+	lastChar  := uploadDir[length - 1:]
+	if lastChar != sep {
+		uploadDir = uploadDir + sep	+ timeDir	
+	} else {
+		uploadDir = uploadDir + timeDir	
+	}
+	fmt.Println(uploadDir)
+
 	mkErr := os.MkdirAll(uploadDir, 0777)
-	
+
 	if mkErr != nil {
 		fmt.Println(mkErr.Error());
 		SendErrJSON("error", ctx)

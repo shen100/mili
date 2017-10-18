@@ -40,6 +40,15 @@
             return {
                 list: [
                     {
+                        name: '话题置顶',
+                        date: {
+                            year: 2017,
+                            month: 10,
+                            date: 18
+                        },
+                        content: '增加话题置顶功能，话题列表支持分页'
+                    },
+                    {
                         name: 'iris升级',
                         date: {
                             year: 2017,

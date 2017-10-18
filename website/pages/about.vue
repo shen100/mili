@@ -60,21 +60,10 @@
         },
         head () {
             return {
-                title: '关于',
-                script: [
-                    { src: 'https://ab.testin.cn/sdk/testin-ab.js?allowvisualhttps=1&v=1' }
-                ]
+                title: '关于'
             }
         },
         mounted () {
-            let testinAB = window.testinAB
-            var appKey = 'TESTIN_h1df74977-03c2-459c-b157-da8f82af4f3b'
-            testinAB.init(appKey)
-
-            testinAB.loadMultiLink()
-            document.body.onclick = function () {
-                testinAB.track('myClick', 1)
-            }
         },
         middleware: 'userInfo',
         components: {
