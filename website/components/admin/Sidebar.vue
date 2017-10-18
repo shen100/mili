@@ -1,10 +1,10 @@
     <template>
     <Menu theme="dark" active-name="1">
         <Menu-group title="内容管理">
-            <router-link to="/admin/article">
+            <router-link to="/admin/article/list">
                 <Menu-item name="1">
                     <Icon type="/admin/document-text"></Icon>
-                    文章管理
+                    话题管理
                 </Menu-item>
             </router-link>
             <router-link to="/admin/category/list">

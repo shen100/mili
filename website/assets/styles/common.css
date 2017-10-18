@@ -570,6 +570,11 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     margin-right: 10px;
 }
 
+.common-title-h {
+    line-height: 30px;
+    font-size: 16px;
+}
+
 .user-info-text {
     color: #000;
     font-size: 14px;

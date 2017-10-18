@@ -25,10 +25,11 @@ const dateTool = {
             return `${parseInt(diff / 60)}分钟前`
         } else if (diff < 24 * 60 * 60) {
             return `${parseInt(diff / 60 / 60)}小时前`
-        } else if (diff < 365 * 24 * 60 * 60) {
+        } else if (diff < 7 * 24 * 60 * 60) {
             return `${parseInt(diff / 24 / 60 / 60)}天前`
         } else {
-            return `${parseInt(diff / 365 / 24 / 60 / 60)}年前`
+            return moment(time).format('YYYY-MM-DD')
+            // return `${parseInt(diff / 365 / 24 / 60 / 60)}年前`
         }
     }
 }
