@@ -286,6 +286,11 @@ const api = {
         method: 'POST',
         desc: '收藏文章或收藏投票'
     },
+    collectList: {
+        url: url + '/collects',
+        method: 'GET',
+        desc: '获取收藏夹下的话题'
+    },
     getAdminUserList: {
         url: url + '/admin/users',
         method: 'GET',

@@ -5,7 +5,7 @@
         </div>
         <template v-if="collects.length > 0">
             <div v-for="(collect, index) in collects" class="articles-item" :class="{'articles-item-no': index === 0}">
-                <h1 class="articles-title">{{collect.name}}</h1>
+                <a class="articles-title" :href="`/user/collect/${currentId}?collect=${collect.id}`">{{collect.name}}</a>
                 <p class="collect-line">
                     <span>{{collect.updatedAt | formatYMD}}&nbsp更新</span>
                 </p>
