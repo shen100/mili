@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "axios": "0.16.2",
-    "iview": "2.0.0",
+    "iview": "2.5.1",
+    "js-beautify": "1.6.14",
     "moment": "2.18.1",
-    "nuxt": "^1.0.0-rc11",
-    "js-beautify": "1.6.14"
+    "nuxt": "1.0.0-rc11"
   },
   "devDependencies": {
     "babel-eslint": "7.2.3",

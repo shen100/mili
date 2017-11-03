@@ -79,7 +79,7 @@ func queryList(isBackend bool, ctx iris.Context) {
 			return
 		}
 		var sql = `SELECT distinct(articles.id), articles.name, articles.browse_count, articles.status,  
-					articles.created_at, articles.updated_at, articles.user_id 
+					articles.created_at, articles.updated_at, articles.user_id, articles.last_user_id  
 				FROM articles, article_category  
 				WHERE articles.id = article_category.article_id   
 				{statusSQL}       
@@ -118,6 +118,7 @@ func queryList(isBackend bool, ctx iris.Context) {
 		countSQL = strings.Replace(countSQL, "{categoryID}", strconv.Itoa(categoryID), -1)
 		countSQL = strings.Replace(countSQL, "{topIDs}",     topIDs, -1)
 		if isBackend {
+			//管理员查询话题列表时，会返回审核未通过的话题
 			countSQL = strings.Replace(countSQL, "{statusSQL}", " ", -1)
 			if err := model.DB.Raw(countSQL).Scan(&totalCountResult).Error; err != nil {
 				SendErrJSON("error", ctx)
@@ -136,6 +137,7 @@ func queryList(isBackend bool, ctx iris.Context) {
 		excludeIDs = strings.Replace(excludeIDs, "{topIDs}", topIDs, -1)
 
 		if isBackend {
+			//管理员查询话题列表时，会返回审核未通过的话题
 			err = model.DB.Where(excludeIDs).Offset(offset).Limit(pageSize).
 				Order(orderStr).Find(&articles).Error
 		} else {

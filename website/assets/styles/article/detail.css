@@ -17,6 +17,10 @@ body, .golang-home-body-left {
 	vertical-align: middle;
 }
 
+.article-detail-title h1 {
+    display: inline-block;
+}
+
 .article-title-info {
 	font-size: 12px;
 	color: #838383;

@@ -14,6 +14,7 @@ type Article struct {
     CollectCount      uint               `json:"collectCount"`
     Status            int                `json:"status"`
     Content           string             `json:"content"`
+    HTMLContent       string             `json:"htmlContent"`
     Categories        []Category         `gorm:"many2many:article_category;ForeignKey:ID;AssociationForeignKey:ID" json:"categories"`
     Comments          []Comment          `gorm:"ForeignKey:SourceID" json:"comments"` 
     UserID            uint               `json:"userID"`

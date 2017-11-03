@@ -4,7 +4,7 @@
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div class="detail-title-box">
-                    <p class="article-detail-title"><span class="articles-categoties">{{article.categories[0].name}}</span><span v-html="article.name"></span></p>
+                    <div class="article-detail-title"><span class="articles-categoties">{{article.categories[0].name}}</span><h1>{{article.name}}</h1></div>
                     <p class="article-title-info">
                         <span class="article-title-info-item">
                             发布于{{article.createdAt | getReplyTime}}
@@ -348,7 +348,6 @@
                         id: id
                     }
                 }).then((res) => {
-                    console.log(res)
                 })
             },
             collect () {
@@ -380,7 +379,6 @@
                             }
                         }).then(res => {
                             this.loading = false
-                            console.log(res)
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.collectDirList.push(res.data)
                                 this.collect()
@@ -413,7 +411,6 @@
                                 item.hasCollect = true
                             }
                         })
-                        console.log(this.collectDirList)
                     } else {
                         this.$Message.error(res.msg)
                     }
@@ -424,8 +421,6 @@
             }
         },
         mounted () {
-            console.log(this.collectDirList)
-            console.log(this.article)
         },
         filters: {
             getReplyTime: dateTool.getReplyTime
