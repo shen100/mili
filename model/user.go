@@ -73,6 +73,10 @@ const (
 
     // UserRoleSuperAdmin 超级管理员
     UserRoleSuperAdmin  = 4
+
+    // UserRoleCrawler 爬虫，网站编辑或管理员登陆后台后，操作爬虫去抓取文章
+    // 这时，生成的文章，其作者是爬虫账号。没有直接使用爬虫账号去登陆的情况.
+    UserRoleCrawler     = 5
 )
 
 const (

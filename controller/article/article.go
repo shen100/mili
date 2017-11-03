@@ -554,7 +554,13 @@ func Info(ctx iris.Context) {
 	}
 
 	if ctx.FormValue("f") != "md" {
-		article.Content = utils.MarkdownToHTML(article.Content)
+		if article.ContentType == model.ContentTypeMarkdown {
+			article.Content = utils.MarkdownToHTML(article.Content)
+			article.HTMLContent = ""
+		} else if article.ContentType == model.ContentTypeHTML {
+			article.HTMLContent = utils.AvoidXSS(article.HTMLContent)
+			article.Content = ""
+		}
 	}
 
 	totalDur := fmt.Sprintf("%f", time.Now().Sub(reqStartTime).Seconds())

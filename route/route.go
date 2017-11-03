@@ -12,6 +12,7 @@ import (
 	"github.com/shen100/golang123/controller/vote"
 	"github.com/shen100/golang123/controller/user"
 	"github.com/shen100/golang123/controller/message"
+	"github.com/shen100/golang123/controller/crawler"
 )
 
 // Route 路由
@@ -125,6 +126,8 @@ func Route(app *iris.Application) {
 
 		adminRoutes.Get("/articles",                 article.AllList)
 		adminRoutes.Post("/article/status/update",   article.UpdateStatus)
+
+		adminRoutes.Post("/crawlers", crawler.Crawl)
 
 		adminRoutes.Get("/users", user.AllList)
     }

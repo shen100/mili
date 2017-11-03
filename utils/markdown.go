@@ -33,3 +33,8 @@ func MarkdownToHTML(md string) string {
 	theHTML := string(bytes)
 	return bluemonday.UGCPolicy().Sanitize(theHTML)
 }
+
+// AvoidXSS 避免XSS
+func AvoidXSS (theHTML string) string {
+	return bluemonday.UGCPolicy().Sanitize(theHTML)
+}

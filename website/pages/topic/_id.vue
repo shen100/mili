@@ -131,6 +131,7 @@
 </template>
 
 <script>
+    import { ArticleContentType } from '~/constant/Article'
     import ErrorCode from '~/constant/ErrorCode'
     import UserStatus from '~/constant/UserStatus'
     import Header from '~/components/Header'
@@ -180,6 +181,11 @@
                 if (!article) {
                     context.error({ statusCode: 404, message: 'Page not found' })
                     return
+                }
+                if (article.contentType === ArticleContentType.ContentTypeMarkdown) {
+                    article.content = article.content
+                } else if (article.contentType === ArticleContentType.ContentTypeHTML) {
+                    article.content = article.htmlContent
                 }
                 let reqArr = [
                     request.getMaxBrowse({

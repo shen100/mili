@@ -26,7 +26,7 @@
             type="flex"
             justify="end">
             <span v-if="totalVisible" class="ivu-page-total" style="margin-top: 10px;">共 {{totalCount}} 条</span>
-            <Page 
+            <Page
                 class="common-page"
                 :current="pageNo"
                 :page-size="pageSize"
@@ -40,7 +40,8 @@
     import Request from '~/net/request'
     import moment from 'moment'
     import ErrorCode from '~/constant/ErrorCode'
-    import ArticleStatus from '~/constant/ArticleStatus'
+    import { ArticleStatus } from '~/constant/Article'
+
     export default {
         data () {
             const self = this

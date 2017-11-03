@@ -15,6 +15,7 @@ type Article struct {
     Status            int                `json:"status"`
     Content           string             `json:"content"`
     HTMLContent       string             `json:"htmlContent"`
+    ContentType       int                `json:"contentType"`
     Categories        []Category         `gorm:"many2many:article_category;ForeignKey:ID;AssociationForeignKey:ID" json:"categories"`
     Comments          []Comment          `gorm:"ForeignKey:SourceID" json:"comments"` 
     UserID            uint               `json:"userID"`
@@ -39,6 +40,14 @@ const (
 
 // MaxTopArticleCount 最多能置顶的文章数
 const MaxTopArticleCount = 4
+
+const (
+    // ContentTypeMarkdown markdown
+    ContentTypeMarkdown = 1
+
+    // ContentTypeHTML html
+    ContentTypeHTML     = 2
+)
 
 // TopArticle 置顶的文章
 type TopArticle struct {
