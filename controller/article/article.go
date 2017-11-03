@@ -560,6 +560,9 @@ func Info(ctx iris.Context) {
 		} else if article.ContentType == model.ContentTypeHTML {
 			article.HTMLContent = utils.AvoidXSS(article.HTMLContent)
 			article.Content = ""
+		} else {
+			article.Content = utils.MarkdownToHTML(article.Content)
+			article.HTMLContent = ""	
 		}
 	}
 
