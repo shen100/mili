@@ -98,7 +98,7 @@
                 align="middle"
                 v-for="(item, index) in collectDirList" key="index">
                 <span class="collects-item-label">{{item.name}}</span>
-                <p class="collects-item-num">{{item.collects.length}}条内容</p>
+                <p class="collects-item-num">{{(item.collects && item.collects.length) || 0}}条内容</p>
                 <Button v-if="item.hasCollect" class="info-button" style="width: 80px" disabled="disabled">已收藏</Button>
                 <Button v-else class="info-button" style="width: 80px" @click="createCollect(item.id)">收藏</Button>
             </Row>
