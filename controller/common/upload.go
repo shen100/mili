@@ -5,24 +5,21 @@ import (
 	"io"
 	"os"
 	"strings"
-	"time"
-	"unicode/utf8"
 	"mime"
-	"strconv"
 	"github.com/kataras/iris"
-	"github.com/satori/go.uuid"
 	"github.com/shen100/golang123/model"
-	"github.com/shen100/golang123/utils"
-	"github.com/shen100/golang123/config"
 )
 
 // Upload 文件上传
 func Upload(ctx iris.Context) {
 	file, info, err := ctx.FormFile("upFile")
+
 	if err != nil {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
+
+	defer file.Close()
 
 	var filename = info.Filename
 	var index    = strings.LastIndex(filename, ".")
@@ -32,86 +29,53 @@ func Upload(ctx iris.Context) {
 		return
 	}
 
-	var ext      = filename[index:]
+	var ext = filename[index:]
+	if len(ext) == 1 {
+		SendErrJSON("无效的扩展名", ctx)
+		return
+	}
 	var mimeType = mime.TypeByExtension(ext)
 
 	if mimeType == "" {
 		SendErrJSON("无效的图片类型", ctx)
 		return
 	}
-	
-	defer file.Close()
 
-	now          := time.Now()
-	year         := now.Year()
-	month        := utils.StrToIntMonth(now.Month().String())
-	date         := now.Day()
+	imgUploadedInfo := model.GenerateImgUploadedInfo(ext)
 
-	var monthStr string
-	var dateStr string
-	if month < 9 {
-		monthStr = "0" + strconv.Itoa(month + 1)
-	} else {
-		monthStr = strconv.Itoa(month + 1)
-	}
-
-	if date < 10 {
-		dateStr = "0" + strconv.Itoa(date)
-	} else {
-		dateStr = strconv.Itoa(date)
-	}
-
-	sep := string(os.PathSeparator)
-
-	timeDir := strconv.Itoa(year) + sep + monthStr + sep + dateStr
-
-	title := uuid.NewV4().String() + ext
-
-	uploadDir := config.ServerConfig.UploadImgDir
-	length    := utf8.RuneCountInString(uploadDir)
-	lastChar  := uploadDir[length - 1:]
-	if lastChar != sep {
-		uploadDir = uploadDir + sep	+ timeDir	
-	} else {
-		uploadDir = uploadDir + timeDir	
-	}
-	fmt.Println(uploadDir)
-
-	mkErr := os.MkdirAll(uploadDir, 0777)
-
-	if mkErr != nil {
-		fmt.Println(mkErr.Error());
+	if err := os.MkdirAll(imgUploadedInfo.UploadDir, 0777); err != nil {
+		fmt.Println(err.Error());
 		SendErrJSON("error", ctx)
 		return	
 	}
 
-	uploadFilePath := uploadDir + sep + title
-
-	fmt.Println(uploadFilePath);
-
-	out, err := os.OpenFile(uploadFilePath, os.O_WRONLY|os.O_CREATE, 0666)
+	out, err := os.OpenFile(imgUploadedInfo.UploadFilePath, os.O_WRONLY|os.O_CREATE, 0666)
 
 	if err != nil {
+		fmt.Println(err.Error())
 		SendErrJSON("error.", ctx)
 		return
 	}
 
 	defer out.Close()
 
-	io.Copy(out, file)
+	if _, err := io.Copy(out, file); err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error!", ctx)
+		return
+	}
 
-	imgURL := config.ServerConfig.ImgPath + sep + timeDir + sep + title
-
-	image := &model.Image{
-		Title        : title,
+	image := model.Image{
+		Title        : imgUploadedInfo.Filename,
 		OrignalTitle : info.Filename,
-		URL          : imgURL,
+		URL          : imgUploadedInfo.ImgURL,
 		Width        : 0,
 		Height       : 0,
 		Mime         : mimeType,
 	}
 
-	if model.DB.Create(&image).Error != nil {
+	if err := model.DB.Create(&image).Error; err != nil {
+		fmt.Println(err.Error())
 		SendErrJSON("image error", ctx)
 		return	
 	}
@@ -121,11 +85,10 @@ func Upload(ctx iris.Context) {
 		"msg"   : "success",
 		"data"  : iris.Map{
 			"id"       : image.ID,
-			"url"      : imgURL,
-			"title"    : title,         //新文件名
+			"url"      : imgUploadedInfo.ImgURL,
+			"title"    : imgUploadedInfo.Filename, //新文件名
 			"original" : info.Filename, //原始文件名
 			"type"     : mimeType,      //文件类型
 		},
 	})
-	return
 }

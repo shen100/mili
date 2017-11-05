@@ -63,11 +63,11 @@
                         key: 'score'
                     },
                     {
-                        title: '主题数',
+                        title: '话题数',
                         key: 'articleCount'
                     },
                     {
-                        title: '评论数',
+                        title: '回复数',
                         key: 'commentCount'
                     }
                 ]

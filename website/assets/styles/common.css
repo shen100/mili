@@ -443,6 +443,9 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang123-editor hr {
 	margin-bottom: 20px;
+    border: none;
+    height: 1px;
+    background-color: #e3e3e3;
 }
 
 .golang123-editor p {
