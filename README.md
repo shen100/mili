@@ -11,11 +11,6 @@ golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**�
 ## 💎 社区首页
 <img src="https://user-images.githubusercontent.com/2443162/30106321-a234dc0c-932d-11e7-8f66-020975158dcd.jpeg" width="1000" alt=""/>
 
-## 🖥 Golang123线上机器配置
-| CPU | 1核     |  
-|:---------|:-------:|
-| **内存**     |  **512 MB** |
-| **带宽**  |  **1Mbps** |
 ## 🚀 安装
 
 ### 依赖的软件

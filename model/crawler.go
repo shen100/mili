@@ -12,6 +12,7 @@ type CrawlerArticle struct {
 	Title          string             `json:"title"`
 	Content        string             `json:"content"`
 	From           int                `json:"from"`
+	ArticleID      uint               `json:"articleID"`
 }
 
 const (

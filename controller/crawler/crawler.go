@@ -1,6 +1,7 @@
 package crawler
 
 import (
+	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/utils"
 	"io"
 	"os"
@@ -83,9 +84,6 @@ func jianShuCrawl(pageURL string, ch chan map[string]string) {
 							urlData, _ := url.Parse(imgURL)
 							index := strings.LastIndex(urlData.Path, ".")
 							ext   := urlData.Path[index:]
-							fmt.Println(imgURL)
-							fmt.Println(urlData.Path)
-							fmt.Println(ext)
 							resp, err := http.Get(imgURL)
 							
 							if err != nil {
@@ -115,9 +113,32 @@ func jianShuCrawl(pageURL string, ch chan map[string]string) {
 						}
 					})
 				}
+				contentDOM.Find("a").Each(func(j int, a *goquery.Selection) {
+					oldHref, exists := a.Attr("href")
+					if exists {
+						href, err := utils.RelativeURLToAbsoluteURL(oldHref, articleURLArr[i])
+						if err == nil {
+							a.SetAttr("href", href)
+						}
+					}
+				})
 				articleHTML, htmlErr := contentDOM.Html()
 				if htmlErr == nil {
-					articleHTML = "<div id=\"golang123-content-outter\">" + articleHTML + "</div>"
+					sourceHTML := strings.Join(
+						[]string{
+							"<div id=\"golang123-content-outter-footer\">",
+							"<blockquote>",
+							"<p>来源: <a href=\"https://www.jianshu.com/\" target=\"_blank\">简书</a><br>",
+							"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
+							"</blockquote>",
+							"</div>",
+						},
+						"",
+					)
+					sourceHTML   = strings.Replace(sourceHTML, "{title}", title, -1)
+					sourceHTML   = strings.Replace(sourceHTML, "{articleURL}", articleURLArr[i], -1)
+					articleHTML += sourceHTML
+					articleHTML  = "<div id=\"golang123-content-outter\">" + articleHTML + "</div>"
 					ch <- map[string]string{
 						"Title": title,
 						"Content": articleHTML,	
@@ -143,11 +164,14 @@ func Crawl(ctx iris.Context) {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
-	var user model.User
-	if err := model.DB.Where("name = 'golang123'").Find(&user).Error; err != nil {
-		SendErrJSON("error", ctx)
-		return	
-	}
+
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+
+	// var user model.User	
+	// if err := model.DB.Where("name = 'golang123'").Find(&user).Error; err != nil {
+	// 	SendErrJSON("error", ctx)
+	// 	return	
+	// }
 	var category model.Category
 	if err := model.DB.First(&category, jsonData.CategoryID).Error; err != nil {
 		fmt.Printf(err.Error())
@@ -183,14 +207,21 @@ func Crawl(ctx iris.Context) {
 			tx := model.DB.Begin()
 			if err := tx.Create(&article).Error; err != nil {
 				tx.Rollback()
+				continue
 			}
+			crawlerArticle.ArticleID = article.ID
 			if err := tx.Create(&crawlerArticle).Error; err != nil {
 				tx.Rollback()
+				continue
 			}
 			tx.Commit()
 		} else {
 			break
 		}
 	}
-	SendErrJSON("抓取完成", ctx)	
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "抓取完成",
+		"data"  : iris.Map{},
+	})	
 }
