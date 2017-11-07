@@ -1,6 +1,7 @@
 package model
 
 import (
+	"strings"
     "unicode/utf8"
     "os"
 	"github.com/shen100/golang123/config"
@@ -46,7 +47,11 @@ func GenerateImgUploadedInfo(ext string) ImageUploadedInfo {
     uuidName       := uuid.NewV4().String()
 	filename       := uuidName + ext
 	uploadFilePath := uploadDir + sep + filename
-	imgURL         := config.ServerConfig.ImgPath + sep + ymdStr + sep + filename
+    imgURL         := strings.Join([]string{
+        "https://" + config.ServerConfig.ImgHost + config.ServerConfig.ImgPath,
+        ymdStr,
+        filename,
+    }, "/")
 	return ImageUploadedInfo{
         ImgURL: imgURL,
         UUIDName: uuidName,

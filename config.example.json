@@ -18,6 +18,7 @@
 		"APIPoweredBy"        : "Golang123 API",/*后台go加的X-Powered-By*/
 		"SiteName"            : "Golang中文社区",      /*网站名称*/
 		"Host"                : "dev.golang123.com",  /*网站域名*/
+		"ImgHost"             : "dev.golang123.com",  /*图片服务器域名*/
 		"Env"                 : "development",        /*模式(开发，测试，产品)*/
 		"APIPrefix"           : "/api", /*api服务请求前缀*/
 		/*图片上传的目录, 默认是golang123/website/static/upload/img目录*/

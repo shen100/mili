@@ -75,6 +75,7 @@ type serverConfig struct {
 	APIPoweredBy        string
 	SiteName            string
 	Host                string
+	ImgHost             string
 	Env                 string
 	APIPrefix           string
 	UploadImgDir        string
