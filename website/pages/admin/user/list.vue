@@ -102,7 +102,6 @@
             }
         },
         mounted () {
-            console.log(this.userList)
         },
         layout: 'admin',
         middleware: 'adminRequired'
