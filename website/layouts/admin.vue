@@ -3,10 +3,10 @@
         <admin-header />
         <Row class="admin-body">
             <Col :span="5">
-                <admin-sidebar class="admin-sidebar-container" />
+                <admin-sidebar :activeName="activeName" class="admin-sidebar-container" />
             </Col>
             <Col class="admin-body-container" :span="18">
-                <nuxt/>
+                <nuxt ref="content"/>
             </Col>
         </Row>
     </div>
@@ -21,9 +21,17 @@
     Vue.use(iview)
 
     export default {
+        data () {
+            return {
+                activeName: ''
+            }
+        },
         components: {
             adminHeader: Header,
             adminSidebar: Sidebar
+        },
+        mounted () {
+            this.activeName = this.$refs.content.$route.fullPath
         }
     }
 </script>

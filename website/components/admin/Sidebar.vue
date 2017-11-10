@@ -1,34 +1,83 @@
-    <template>
-    <Menu theme="dark" active-name="1">
-        <Menu-group title="内容管理">
-            <router-link to="/admin/article/list">
-                <Menu-item name="1">
-                    <Icon type="/admin/document-text"></Icon>
-                    话题管理
-                </Menu-item>
+<template>
+    <Menu theme="dark" :active-name="activeName" :open-names="openNames">
+        <Submenu name="overview">
+            <template slot="title">
+                <Icon type="stats-bars"></Icon>
+                网站概览
+            </template>
+            <router-link to="/admin">
+                <Menu-item name="/admin">网站概览</Menu-item>
             </router-link>
+        </Submenu>
+        <Submenu name="category">
+            <template slot="title">
+                <Icon type="folder"></Icon>
+                分类管理
+            </template>
             <router-link to="/admin/category/list">
-                <Menu-item name="2">
-                    <Icon type="pricetags"></Icon>
-                     分类管理
-                </Menu-item>
+                <Menu-item name="/admin/category/list">分类列表</Menu-item>
             </router-link>
-            <Menu-item name="3">
-                <Icon type="chatbubbles"></Icon>
-                评论管理
-            </Menu-item>
-        </Menu-group>
-        <Menu-group title="统计分析">
+        </Submenu>
+        <Submenu name="topic">
+            <template slot="title">
+                <Icon type="ios-paper"></Icon>
+                话题管理
+            </template>
+            <router-link to="/admin/article/list">
+                <Menu-item name="/admin/article/list">话题列表</Menu-item>
+            </router-link>
+        </Submenu>
+        <Submenu name="reply">
+            <template slot="title">
+                <Icon type="chatboxes"></Icon>
+                回复管理
+            </template>
+            <router-link to="/admin/reply/list">
+                <Menu-item name="/admin/reply/list">回复列表</Menu-item>
+            </router-link>
+        </Submenu>
+        <Submenu name="user">
+            <template slot="title">
+                <Icon type="ios-people"></Icon>
+                用户管理
+            </template>
             <router-link to="/admin/user/list">
-                <Menu-item name="3">
-                    <Icon type="heart"></Icon>
-                    用户管理
-                </Menu-item>
+                <Menu-item name="/admin/user/list">用户列表</Menu-item>
             </router-link>
-            <Menu-item name="4">
-                <Icon type="heart-broken"></Icon>
-                流失用户
-            </Menu-item>
-        </Menu-group>
+        </Submenu>
+        <Submenu name="craler">
+            <template slot="title">
+                <Icon type="bug"></Icon>
+                爬虫管理
+            </template>
+            <MenuGroup title="账号">
+                <router-link to="/admin/craler/account">
+                    <Menu-item name="/admin/craler/account">爬虫账号</Menu-item>
+                </router-link>
+            </MenuGroup>
+            <MenuGroup title="网站">
+                <router-link to="/admin/craler/jianshu">
+                    <Menu-item name="/admin/craler/jianshu">简书</Menu-item>
+                </router-link>
+                <router-link to="/admin/craler/zhihu">
+                    <Menu-item name="/admin/craler/zhihu">知乎</Menu-item>
+                </router-link>
+                <router-link to="/admin/craler/weixin">
+                    <Menu-item name="/admin/craler/weixin">微信</Menu-item>
+                </router-link>
+            </MenuGroup>
+        </Submenu>
     </Menu>
 </template>
+
+<script>
+    export default {
+        props: ['activeName'],
+
+        data () {
+            return {
+                openNames: ['overview', 'category', 'topic', 'reply', 'user', 'craler']
+            }
+        }
+    }
+</script>

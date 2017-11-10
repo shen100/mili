@@ -103,6 +103,7 @@
                     pageSize += topList.length
                     articles = topList.concat(articles)
                 }
+
                 return {
                     totalVisible: process.env.NODE_ENV !== 'production',
                     categories: categories,
