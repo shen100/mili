@@ -24,7 +24,19 @@
                     <li><a href="https://github.com/shen100/golang123" target="_blank">golang123源码</a></li>
                     <li><a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a></li>
                     <template v-if="userData">
-                        <li @click="onSignout">退出</li>
+                        <Tooltip trigger="hover" title="提示标题" placement="bottom">
+                            <span>
+                                <span class="header-avatar">
+                                    <img :src="user.avatarURL" alt="">
+                                </span>
+                                <span class="header-user-name">{{user.name}}</span>
+                            </span>
+                            <ul slot="content" class="header-user-box">
+                                <li><a :href="`/user/${user.id}`">个人首页</a></li>
+                                <li><a href="/change/pwd">修改密码</a></li>
+                                <li @click="onSignout">退&nbsp&nbsp出</li>
+                            </ul>
+                        </Tooltip>
                     </template>
 					<template v-else>
 						<a @click="onSignin"><li>登录</li></a>
@@ -69,6 +81,36 @@
             }
         },
         mounted () {
+            console.log(this.user)
         }
     }
 </script>
+
+<style>
+    .header-avatar {
+        line-height: 32px;
+        display: inline-block;
+        text-align: center;
+        background: #ccc;
+        color: #fff;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+        vertical-align: middle;
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+    }
+    .header-avatar img {
+        width: 100%;
+    }
+    .header-user-name {
+        color: #ccc;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+    .header-user-box li {
+        display: block;
+        text-align: center;
+    }
+</style>
