@@ -4,7 +4,7 @@
             <Input v-model="formValidate.voteName" placeholder="请输入话题名称" style="width: 400px"></Input>
         </Form-item>
         <Form-item label="结束时间" prop="date">
-            <Date-picker type="date" v-model="formValidate.date" :options="dataOption" placeholder="选择日期" style="width: 400px" @on-change="onDateChange"/>
+            <Date-picker type="datetime" v-model="formValidate.date" placeholder="选择日期" style="width: 400px" @on-change="onDateChange"/>
         </Form-item>
         <Form-item class="vote-content" :label-width="0" prop="content">
             <md-editor :value="formValidate.content" @change="onContentChage"></md-editor>
@@ -41,7 +41,6 @@
 <script>
     import Editor from '~/components/Editor'
     import request from '~/net/request'
-    import dataTool from '~/utils/date'
     import ErrorCode from '~/constant/ErrorCode'
     import {trim} from '~/utils/tool'
     import UserStatus from '~/constant/UserStatus'
@@ -56,7 +55,7 @@
             return {
                 formValidate: {
                     voteName: (this.vote && this.vote.name) || '',
-                    date: (this.vote && this.vote.endAt) || '',
+                    date: (this.vote && this.vote.endAt && new Date(this.vote.endAt)) || null,
                     content: (this.vote && this.vote.content) || '',
                     items: (this.vote && this.vote.voteItems.map(item => {
                         return {
@@ -77,7 +76,7 @@
                         { required: true, message: '请输入投票名称', trigger: 'blur' }
                     ],
                     date: [
-                        { required: true, message: '请选择结束日期', trigger: 'blur' }
+                        { required: true, type: 'date', message: '请选择结束时间', trigger: 'blur' }
                     ],
                     content: [
                         { required: true, message: '请输入投票内容', trigger: 'blur' }
@@ -85,6 +84,7 @@
                 },
                 dataOption: {
                     disabledDate (date) {
+                        // 并未起作用，先保留吧
                         return date && date.valueOf() < Date.now() - 86400000
                     }
                 },
@@ -93,6 +93,7 @@
         },
         methods: {
             onSubmit () {
+                let self = this
                 if (this.user.status === UserStatus.STATUS_IN_ACTIVE) {
                     if (this.id) {
                         this.$Message.error('账号未激活，不能保存投票')
@@ -101,10 +102,9 @@
                     }
                     return
                 }
+
                 this.$refs['formValidate'].validate((valid) => {
-                    console.log(this.formValidate.date, valid)
                     if (valid) {
-                        let self = this
                         let postBody = {}
                         let func = this.id ? request.updateVote : request.createVote
                         if (this.id) {
@@ -112,14 +112,14 @@
                                 id: parseInt(this.id),
                                 name: trim(this.formValidate.voteName),
                                 content: this.formValidate.content,
-                                endAt: dataTool.parse(this.formValidate.date)
+                                endAt: this.formValidate.date
                             }
                         } else {
                             postBody = {
                                 vote: {
                                     name: trim(this.formValidate.voteName),
                                     content: this.formValidate.content,
-                                    endAt: dataTool.parse(this.formValidate.date)
+                                    endAt: this.formValidate.date
                                 },
                                 voteItems: this.formValidate.items.map(item => {
                                     return {

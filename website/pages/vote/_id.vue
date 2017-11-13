@@ -24,6 +24,7 @@
                             <Button type="primary" class="vote-item" @click="onVoteSubmit(item.id)">支持<span class="vote-item-label">{{item.name}}</span><span class="vote-item-label">{{item.count}}</span></Button>
                         </span>
                     </div>
+                    <div style="margin-top: 20px;font-size: 14px;font-weight: 700;">{{endAtStr}}&nbsp;&nbsp;前可投票</div>
                     <div class="vote-actions">
                         <div class="vote-share">
                             <div class="vote-share-btn" @click="collect">
@@ -53,7 +54,7 @@
                         <template v-if="vote.commentCount">
                             <div class="comment-item" v-for="(item, index) in vote.comments">
                                 <a class="reply-user-icon">
-                                    <img src="~assets/images/head.png" alt="">
+                                    <img :src="vote.user.avatarURL" alt="">
                                 </a>
                                 <a class="reply-user-name">{{item.user.name}}</a>
                                 <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
@@ -216,6 +217,7 @@
                 return {
                     isAuthor: isAuthor,
                     vote: vote,
+                    endAtStr: dateTool.formatYMDHM2(vote.endAt),
                     user: context.user,
                     votesMaxBrowse: votesMaxBrowse,
                     votesMaxComment: votesMaxComment,
@@ -268,7 +270,22 @@
                         id: id
                     }
                 }).then((res) => {
-                    console.log(res)
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        this.$Message.success('回复已删除')
+                        return request.getVote({
+                            params: {
+                                id: this.$route.params.id
+                            }
+                        })
+                    } else {
+                        return Promise.reject(new Error(res.msg))
+                    }
+                }).then(res => {
+                    if (res.errNo === ErrorCode.SUCCESS) {
+                        this.vote = res.data
+                    }
+                }).catch(err => {
+                    this.$Message.error(err.message)
                 })
             },
             onContentChage (content) {

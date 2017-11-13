@@ -466,6 +466,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     color: #08c;
 }
 
+.sidebar-user-signin, .sidebar-user-signup {
+    color: #08c;
+}
+
+.sidebar-user-signin:hover, .sidebar-user-signup:hover {
+    color: #08c;
+}
+
 .golang-sidebar-icon-box, .golang-sidebar-info-box {
 	display: inline-block;
 	vertical-align: middle;

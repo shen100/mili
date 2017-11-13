@@ -6,8 +6,8 @@
                     <a href="/">Golang123</a>
 				</div>
 				<div class="golang-header-search">
-					<form action="" class="golang-top-search">
-						<input type="text" class="golang-top-input" name="topSearch">
+					<form @submit.prevent="onSearch" action="" target="_blank" method="get" class="golang-top-search">
+						<input v-model="q" type="text" class="golang-top-input" name="topSearch">
 					</form>
 				</div>
 			</div>
@@ -47,10 +47,15 @@
         ],
         data () {
             return {
+                q: '',
                 userData: this.user
             }
         },
         methods: {
+            onSearch () {
+                let searchURL = 'http://zhannei.baidu.com/cse/search?s=2990237584871814305&entry=1&q=' + encodeURIComponent(this.q)
+                window.open(searchURL)
+            },
             onSignin () {
                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
             },

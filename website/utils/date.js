@@ -11,9 +11,22 @@ const dateTool = {
     format (moment) {
         return moment.format('YYYY-MM-DDTHH:mm:ssZ')
     },
-    formatYMD (date) {
-        let time = dateTool.parse(date)
+    formatYMD (dateStr) {
+        let time = dateTool.parse(dateStr)
         return moment(time).format('YYYY-MM-DD')
+    },
+    formatYMDHM (dateStr) {
+        let time = dateTool.parse(dateStr)
+        return moment(time).format('YYYY-MM-DD HH:mm')
+    },
+    formatYMDHM2 (dateStr) {
+        let time = dateTool.parse(dateStr)
+        console.log(time.year(), time.month(), time.date(), time.second())
+        return moment(time).format('YYYY年MM月DD日 HH点mm分ss秒')
+    },
+    formatYMDHMS (dateStr) {
+        let time = dateTool.parse(dateStr)
+        return moment(time).format('YYYY-MM-DD HH:mm:ss')
     },
     getReplyTime (date) {
         let time = dateTool.parse(date).valueOf()

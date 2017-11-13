@@ -338,7 +338,9 @@ func Info(ctx iris.Context) {
 		vote.Comments[i].Parents = parents
 	}
 
-	vote.Content = utils.MarkdownToHTML(vote.Content)
+	if ctx.FormValue("f") != "md" {
+		vote.Content = utils.MarkdownToHTML(vote.Content)
+	}
 
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,

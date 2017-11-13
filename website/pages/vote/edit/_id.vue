@@ -37,6 +37,9 @@
         asyncData (context) {
             return request.getVote({
                 client: context.req,
+                query: {
+                    f: 'md'
+                },
                 params: {
                     id: context.params.id
                 }
