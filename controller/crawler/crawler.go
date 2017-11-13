@@ -79,26 +79,10 @@ func createArticle(user model.User, category model.Category, from int, data map[
 }
 
 func isImgURLValid(imgURL string) bool {
-	//urlData, urlErr := url.Parse(imgURL)
 	_, urlErr := url.Parse(imgURL)
 	if urlErr != nil {
 		return false
 	}
-
-	// var index = strings.LastIndex(urlData.Path, ".")
-	// if index < 0 {
-	// 	return false
-	// }
-
-	// var ext = urlData.Path[index:]
-	// if len(ext) == 1 {
-	// 	return false
-	// }
-	// var mimeType = mime.TypeByExtension(ext)
-
-	// if mimeType == "" {
-	// 	return false
-	// }	
 	return true
 }
 
