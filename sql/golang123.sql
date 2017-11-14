@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.35)
 # Database: golang123
-# Generation Time: 2017-09-15 07:54:34 +0000
+# Generation Time: 2017-11-14 15:09:28 +0000
 # ************************************************************
 
 
@@ -46,7 +46,9 @@ CREATE TABLE `articles` (
   `comment_count` int(11) unsigned NOT NULL DEFAULT '0',
   `collect_count` int(11) unsigned NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL,
-  `content` longtext NOT NULL,
+  `content` longtext,
+  `html_content` longtext,
+  `content_type` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
@@ -129,6 +131,26 @@ CREATE TABLE `comments` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table crawler_articles
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `crawler_articles`;
+
+CREATE TABLE `crawler_articles` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(500) NOT NULL DEFAULT '',
+  `content` longtext NOT NULL,
+  `url` varchar(4000) NOT NULL,
+  `from` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  `article_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

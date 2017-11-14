@@ -24,6 +24,152 @@ html,body {
 	height: 100%;
 }
 
+
+.golang-top-header {
+    height: 50px;
+    background-color: #444;
+}
+
+.golang-top-box {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.golang-logo-container a {
+    font-size: 22px;
+    color: #fff;
+}
+
+.golang-logo-container a:hover {
+    text-decoration: none;
+}
+
+.golang-top-header-left {
+    float: left;
+    line-height: 50px;
+    width: 360px;
+}
+
+.golang-top-header-nav {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.golang-top-header-nav ul {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.golang-top-header-nav li {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.golang-top-header-nav a {
+    display: inline-block;
+    vertical-align: top;
+    color: #eee;
+    padding: 0 10px;
+    height: 50px;
+    line-height: 50px;
+    text-shadow: 0 1px 1px rgba(0,0,0,.12);
+    font-size: 14px;
+}
+
+.golang-top-header-nav a:hover {
+    text-decoration: none;
+    color: #fff;
+}
+
+.golang-top-header-right {
+    float: right;
+}
+
+input[name="topSearch"] {
+    background: url(~assets/images/search.png) 4px 1px no-repeat #888;
+    padding: 3px 5px 3px 22px;
+    color: #666;
+    border: 0;
+    margin-top: 2px;
+    transition: all .5s;
+    height: 20px;
+    width: 220px;
+    border-radius: 15px;
+}
+
+input[name="topSearch"]:hover, input[name="topSearch"]:focus {
+    background-color: #fff;
+}
+
+.golang-logo-container, .golang-header-search {
+    display: inline-block;
+    line-height: 50px;
+    height: 50px;
+    vertical-align: middle;
+}
+
+.golang-top-search {
+    margin-left: 10%;
+}
+
+.golang-top-header-right li {
+    display: inline-block;
+    line-height: 50px;
+    font-size: 14px;
+    color: #ccc;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.golang-top-header-right li:hover {
+    color: #fff;
+}
+
+.golang-top-header-right a {
+    color: #ccc;
+}
+
+.golang-top-header-right a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+.header-usre-box {
+    cursor: pointer;
+    padding: 0 10px;
+}
+.header-avatar {
+    line-height: 32px;
+    display: inline-block;
+    text-align: center;
+    background: #ccc;
+    color: #fff;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    border-radius: 16px;
+}
+
+.header-avatar img {
+    width: 100%;
+}
+
+.header-user-name {
+    color: #ccc;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.header-user-box li {
+    display: block;
+    text-align: center;
+}
+
 .golang-footer {
 	background: #444;
 	height: 120px;
@@ -76,117 +222,6 @@ html,body {
 
 .admin-common-line {
 	margin: 11px 0;
-}
-
-.golang-top-header {
-	height: 50px;
-	background-color: #444;
-}
-
-.golang-top-box {
-	width: 1200px;
-	margin: 0 auto;
-}
-
-.golang-logo-container a {
-    font-size: 22px;
-    color: #fff;
-}
-
-.golang-logo-container a:hover {
-    text-decoration: none;
-}
-
-.golang-top-header-left {
-	float: left;
-	line-height: 50px;
-    width: 360px;
-}
-
-.golang-top-header-nav {
-    display: inline-block;
-    vertical-align: top;
-}
-
-.golang-top-header-nav ul {
-    display: inline-block;
-    vertical-align: top;
-}
-
-.golang-top-header-nav li {
-    display: inline-block;
-    vertical-align: top;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.golang-top-header-nav a {
-    display: inline-block;
-    vertical-align: top;
-    color: #eee;
-    padding: 0 10px;
-    height: 50px;
-    line-height: 50px;
-    text-shadow: 0 1px 1px rgba(0,0,0,.12);
-    font-size: 14px;
-}
-
-.golang-top-header-nav a:hover {
-    text-decoration: none;
-    color: #fff;
-}
-
-.golang-top-header-right {
-	float: right;
-}
-
-input[name="topSearch"] {
-    background: url(~assets/images/search.png) 4px 1px no-repeat #888;
-    padding: 3px 5px 3px 22px;
-    color: #666;
-    border: 0;
-    margin-top: 2px;
-    transition: all .5s;
-    height: 20px;
-    width: 220px;
-    border-radius: 15px;
-}
-
-input[name="topSearch"]:hover, input[name="topSearch"]:focus {
-    background-color: #fff;
-}
-
-.golang-logo-container, .golang-header-search {
-	display: inline-block;
-	line-height: 50px;
-	height: 50px;
-    vertical-align: middle;
-}
-
-.golang-top-search {
-	margin-left: 10%;
-}
-
-.golang-top-header-right li {
-	display: inline-block;
-	line-height: 50px;
-	font-size: 14px;
-	color: #ccc;
-	padding: 0 10px;
-	cursor: pointer;
-}
-
-.golang-top-header-right li:hover {
-	color: #fff;
-}
-
-.golang-top-header-right a {
-    color: #ccc;
-}
-
-.golang-top-header-right a:hover {
-    color: #fff;
-    text-decoration: none;
 }
 
 .golang-home-body-right {

@@ -66,7 +66,7 @@
             onUploadCallback (res, file) {
                 if (res) {
                     if (res.errNo === ErrorCode.SUCCESS) {
-                        var url = 'https://' + this.host + res.data.url
+                        var url = res.data.url
                         this.simplemde.setImageURL(url)
                         this.SimpleMDE.drawImage(this.simplemde)
                     } else if (res.errNo === ErrorCode.IN_ACTIVE) {
