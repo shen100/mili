@@ -51,19 +51,19 @@
                 爬虫管理
             </template>
             <MenuGroup title="账号">
-                <router-link to="/admin/craler/account">
-                    <Menu-item name="/admin/craler/account">爬虫账号</Menu-item>
+                <router-link to="/admin/crawl/account">
+                    <Menu-item name="/admin/crawl/account">爬虫账号</Menu-item>
                 </router-link>
             </MenuGroup>
             <MenuGroup title="网站">
-                <router-link to="/admin/craler/jianshu">
-                    <Menu-item name="/admin/craler/jianshu">简书</Menu-item>
+                <router-link to="/admin/crawl/jianshu">
+                    <Menu-item name="/admin/crawl/jianshu">简书</Menu-item>
                 </router-link>
-                <router-link to="/admin/craler/zhihu">
-                    <Menu-item name="/admin/craler/zhihu">知乎</Menu-item>
+                <router-link to="/admin/crawl/zhihu">
+                    <Menu-item name="/admin/crawl/zhihu">知乎</Menu-item>
                 </router-link>
-                <router-link to="/admin/craler/weixin">
-                    <Menu-item name="/admin/craler/weixin">微信</Menu-item>
+                <router-link to="/admin/crawl/weixin">
+                    <Menu-item name="/admin/crawl/weixin">微信</Menu-item>
                 </router-link>
             </MenuGroup>
         </Submenu>

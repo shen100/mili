@@ -295,6 +295,11 @@ const api = {
         url: url + '/admin/users',
         method: 'GET',
         desc: '获取用户列表'
+    },
+    crawlWeixin: {
+        url: url + '/admin/crawl',
+        method: 'POST',
+        desc: '爬取微信文章'
     }
 }
 

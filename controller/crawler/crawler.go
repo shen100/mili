@@ -5,7 +5,7 @@ import (
 	"github.com/shen100/golang123/utils"
 	"io"
 	"os"
-	//"mime"
+	"sync"
 	"net/http"
 	"fmt"
 	"strings"
@@ -184,15 +184,15 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 	}
 }
 
-func crawlList(listURL string, from int, crawlExist bool, ch chan map[string]string) {
+func crawlList(listURL string, user model.User, category model.Category, from int, crawlExist bool, wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	if _, err := url.Parse(listURL); err != nil {
-		close(ch)
 		return
 	}
 
 	doc, docErr := goquery.NewDocument(listURL)
 	if docErr != nil {
-		close(ch)
 		return
 	}
 
@@ -211,21 +211,20 @@ func crawlList(listURL string, from int, crawlExist bool, ch chan map[string]str
 	for i := 0; i < len(articleURLArr); i++ {
 		articleMap := crawlContent(articleURLArr[i], from, crawlExist)
 		if articleMap != nil {
-			ch <- articleMap
+			createArticle(user, category, from, articleMap)	
 		}
 	}
-	close(ch)
 }
 
 // Crawl 抓取文章
 func Crawl(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type JSONData struct {
-		URL        string `json:"url"`
-		From       int    `json:"from"`
-		CategoryID int    `json:"categoryID"`
-		Scope      string `json:"scope"`
-		CrawlExist bool   `json:"crawlExist"`
+		URLS       []string `json:"urls"`
+		From       int      `json:"from"`
+		CategoryID int      `json:"categoryID"`
+		Scope      string   `json:"scope"`
+		CrawlExist bool     `json:"crawlExist"`
 	}
 	var jsonData JSONData
 	if err := ctx.ReadJSON(&jsonData); err != nil {
@@ -263,16 +262,17 @@ func Crawl(ctx iris.Context) {
 	}
 
 	if jsonData.Scope == model.CrawlerScopeList {
-		ch := make(chan map[string]string, 5)
-		
-		go crawlList(jsonData.URL, jsonData.From, jsonData.CrawlExist, ch)
-			
-		for {
-			data, ok := <- ch
-			if ok {
-				createArticle(user, category, jsonData.From, data)
-			} else {
-				break
+		var wg sync.WaitGroup
+		for i := 0; i < len(jsonData.URLS); i++ {
+			wg.Add(1)
+			go crawlList(jsonData.URLS[i], user, category, jsonData.From, jsonData.CrawlExist, &wg)
+		}
+		wg.Wait()
+	} else if jsonData.Scope == model.CrawlerScopePage {
+		for i := 0; i < len(jsonData.URLS); i++ {
+			data := crawlContent(jsonData.URLS[i], jsonData.From, jsonData.CrawlExist)
+			if data != nil {
+				createArticle(user, category, jsonData.From, data)	
 			}
 		}
 	}
