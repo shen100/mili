@@ -189,7 +189,7 @@ func ResetPasswordMail(ctx iris.Context) {
 		fmt.Println("redis set failed:", err)		
 	}
 	go func() {
-		sendMail("/reset", "修改密码", curTime, user, ctx)
+		sendMail("/ac", "修改密码", curTime, user, ctx)
 	}()
 
 	ctx.JSON(iris.Map{

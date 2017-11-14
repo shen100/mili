@@ -736,7 +736,7 @@ func Tops(ctx iris.Context) {
 // Delete 删除文章
 func Delete(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	// 删除文章，但其他用户对文章的评论保留
+	// 删除文章，其他用户对文章的评论保留
 	// 其他用户对文章的点赞也保留
 	var id int
 	var idErr error
@@ -755,14 +755,29 @@ func Delete(ctx iris.Context) {
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	if user.ID != article.UserID {
-		SendErrJSON("您无权限执行此操作", ctx)
+		SendErrJSON("没有权限执行此操作", ctx)
 		return
 	}
 
-	if err := model.DB.Delete(&article).Error; err != nil {
+	tx := model.DB.Begin()
+
+	if err := tx.Delete(&article).Error; err != nil {
 		SendErrJSON("error", ctx)
+		tx.Rollback()
 		return
 	}
+
+	if err := tx.Model(&user).Updates(map[string]interface{} {
+				"article_count" : user.ArticleCount - 1, 
+				"score"         : user.Score - model.ArticleScore, 
+			}).Error; err != nil {
+		fmt.Println(err.Error())
+		tx.Rollback()
+		SendErrJSON("error", ctx)
+		return	
+	}
+
+	tx.Commit()
 
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,

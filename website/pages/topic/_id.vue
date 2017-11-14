@@ -274,7 +274,7 @@
                 let self = this
                 this.$Modal.confirm({
                     title: '删除话题',
-                    content: '确认删除这个话题?',
+                    content: '确定要删除这个话题?',
                     onOk () {
                         request.deleteArticle({
                             params: {

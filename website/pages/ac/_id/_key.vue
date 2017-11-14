@@ -32,6 +32,7 @@
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import ErrorCode from '~/constant/ErrorCode'
+    import Account from '~/constant/Account'
     import request from '~/net/request'
 
     let id = ''
@@ -44,6 +45,8 @@
             const validatePass = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入密码'))
+                } else if (value.length < Account.MIN_PWD) {
+                    callback(new Error('密码长度不能少于' + Account.MIN_PWD + '位'))
                 } else {
                     if (this.formCustom.passwdCheck !== '') {
                         // 对第二个密码框单独验证
@@ -93,9 +96,11 @@
                     key: context.params.key
                 }
             }).then(res => {
+                console.log(res)
                 if (res.errNo === ErrorCode.SUCCESS) {
                     return {
-                        user: context.user
+                        user: context.user,
+                        error: ''
                     }
                 } else {
                     return {
@@ -134,6 +139,11 @@
                             this.loading = false
                             if (res.errNo === 0) {
                                 this.success = true
+                            } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
+                                this.$Message.error('登录超时')
+                                setTimeout(function () {
+                                    window.location.href = '/signin'
+                                }, 3000)
                             } else {
                                 this.$Message.error(res.msg)
                             }
