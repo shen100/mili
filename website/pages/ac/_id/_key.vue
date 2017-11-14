@@ -96,7 +96,6 @@
                     key: context.params.key
                 }
             }).then(res => {
-                console.log(res)
                 if (res.errNo === ErrorCode.SUCCESS) {
                     return {
                         user: context.user,
@@ -137,13 +136,9 @@
                             }
                         }).then(res => {
                             this.loading = false
+                            // 重置密码时是通过点击邮件中的链接，所以不用登录
                             if (res.errNo === 0) {
                                 this.success = true
-                            } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
-                                this.$Message.error('登录超时')
-                                setTimeout(function () {
-                                    window.location.href = '/signin'
-                                }, 3000)
                             } else {
                                 this.$Message.error(res.msg)
                             }

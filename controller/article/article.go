@@ -454,7 +454,10 @@ func save(isEdit bool, ctx iris.Context) {
 		saveErr = model.DB.Create(&article).Error
 		if saveErr == nil {
 			// 发表文章后，用户的积分、文章数会增加，如果保存失败了，不作处理
-			if userErr := model.DB.Model(&user).Update("score", user.Score).Error; userErr != nil {
+			if userErr := model.DB.Model(&user).Update(map[string]interface{} {
+						"article_count" : user.ArticleCount, 
+						"score"         : user.Score, 
+					}).Error; userErr != nil {
 				fmt.Println(userErr.Error())
 			}
 		}
@@ -776,6 +779,8 @@ func Delete(ctx iris.Context) {
 		SendErrJSON("error", ctx)
 		return	
 	}
+
+	manager.Sess.Start(ctx).Set("user", user)
 
 	tx.Commit()
 
