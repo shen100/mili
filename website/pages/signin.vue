@@ -16,7 +16,7 @@
                 </Form-item>
                 <p style="text-align: right;padding-right: 2px">
                     <a href="/signup" class="golang-common-link" style="margin-right: 12px;">立即注册</a>
-                    <a href="/ac/pwd_reset" class="golang-common-link">忘记密码</a>
+                    <a href="/ac/pwdReset" class="golang-common-link">忘记密码</a>
                 </p>
                 <Form-item style="margin-top: 10px">
                     <i-button size="large" type="primary" @click="handleSubmit('formCustom')" style="width: 100%">登&nbsp;&nbsp;录</i-button>

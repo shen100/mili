@@ -33,7 +33,7 @@
                             </a>
                             <ul slot="content" class="header-user-box">
                                 <li><a :href="`/user/${user.id}`">个人首页</a></li>
-                                <li><a href="/ac/pwd_modify">修改密码</a></li>
+                                <li><a href="/ac/pwdModify">修改密码</a></li>
                                 <li @click="onSignout">退&nbsp&nbsp出</li>
                             </ul>
                         </Tooltip>
@@ -86,7 +86,6 @@
             }
         },
         mounted () {
-            console.log(this.user)
         }
     }
 </script>
