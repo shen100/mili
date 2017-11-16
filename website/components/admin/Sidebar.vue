@@ -62,9 +62,6 @@
                 <router-link to="/admin/crawl/zhihu">
                     <Menu-item name="/admin/crawl/zhihu">知乎</Menu-item>
                 </router-link>
-                <router-link to="/admin/crawl/weixin">
-                    <Menu-item name="/admin/crawl/weixin">微信</Menu-item>
-                </router-link>
             </MenuGroup>
         </Submenu>
     </Menu>
