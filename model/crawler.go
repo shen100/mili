@@ -19,8 +19,8 @@ const (
 	// ArticleFromJianShu 简书
 	ArticleFromJianShu = 1
 
-	// ArticleFromWeixin 微信
-	ArticleFromWeixin = 2
+	// ArticleFromZhihu 知乎
+	ArticleFromZhihu = 2
 )
 
 const (

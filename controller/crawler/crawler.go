@@ -18,16 +18,16 @@ import (
 
 var selectorMap = map[int]map[string]string{
 	model.ArticleFromJianShu: map[string]string{
-		"PageURLSelector": ".note-list li",
-		"PageTitleSelector": ".title",
+		"ListItemSelector": ".note-list li",
+		"ItemTitleSelector": ".title",
 		"TitleSelector": ".article .title",
 		"ContentSelector": ".show-content",
 	},
-	model.ArticleFromWeixin: map[string]string{
-		"PageURLSelector": ".news-list li",
-		"PageTitleSelector": "h3 a",
-		"TitleSelector": "#page-content .rich_media_title",
-		"ContentSelector": ".rich_media_content",
+	model.ArticleFromZhihu: map[string]string{
+		"ListItemSelector": ".PostListItem",
+		"ItemTitleSelector": ".PostListItem-info a",
+		"TitleSelector": ".PostIndex-title",
+		"ContentSelector": ".PostIndex-content",
 	},
 }
 
@@ -40,10 +40,10 @@ var sourceHTMLMap = map[int][]string{
 		"</blockquote>",
 		"</div>",
 	},
-	model.ArticleFromWeixin: []string{
+	model.ArticleFromZhihu: []string{
 		"<div id=\"golang123-content-outter-footer\">",
 		"<blockquote>",
-		"<p>来源: <a href=\"https://mp.weixin.qq.com\" target=\"_blank\">微信</a><br>",
+		"<p>来源: <a href=\"https://www.zhihu.com\" target=\"_blank\">知乎</a><br>",
 		"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
 		"</blockquote>",
 		"</div>",
@@ -78,14 +78,6 @@ func createArticle(user model.User, category model.Category, from int, data map[
 	tx.Commit()
 }
 
-func isImgURLValid(imgURL string) bool {
-	_, urlErr := url.Parse(imgURL)
-	if urlErr != nil {
-		return false
-	}
-	return true
-}
-
 func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 	var crawlerArticle model.CrawlerArticle
 	if err := model.DB.Where("url = ?", pageURL).Find(&crawlerArticle).Error; err == nil {
@@ -106,56 +98,59 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 	imgs := contentDOM.Find("img")
 	if imgs.Length() > 0 {
 		imgs.Each(func(j int, img *goquery.Selection) {
-			var imgURL string
-			var exists bool
-			if from == model.ArticleFromWeixin {
-				imgURL, exists = img.Attr("data-src")	
-			} else if from == model.ArticleFromJianShu {
-				imgURL, exists = img.Attr("src")	
-			}
-			if exists && isImgURLValid(imgURL) {
-				imgURL, _ = utils.RelativeURLToAbsoluteURL(imgURL, pageURL)
-				var ext = ""
-				if from == model.ArticleFromWeixin {
-					imgExt, existsExt := img.Attr("data-type")	
-					if !existsExt {
-						return
-					}
-					ext = "." + imgExt
-				} else if from == model.ArticleFromJianShu {
-					urlData, _ := url.Parse(imgURL)
-					index := strings.LastIndex(urlData.Path, ".")
-					ext    = urlData.Path[index:]
-				}
-
-				resp, err := http.Get(imgURL)
-				
-				if err != nil {
-					return
-				}
-
-				defer resp.Body.Close()
-
-				imgUploadedInfo := model.GenerateImgUploadedInfo(ext)
-				if err := os.MkdirAll(imgUploadedInfo.UploadDir, 0777); err != nil {
-					fmt.Println(err.Error())
-					return
-				}
-				out, outErr := os.OpenFile(imgUploadedInfo.UploadFilePath, os.O_WRONLY|os.O_CREATE, 0666)						
-				if outErr != nil {
-					fmt.Println(outErr.Error())	
-					return
-				}
-
-				defer out.Close()
-
-				if _, err := io.Copy(out, resp.Body); err != nil {
-					fmt.Println(err.Error())
-					return	
-				}
-				img.SetAttr("src", imgUploadedInfo.ImgURL)
+			imgURL, exists := img.Attr("src")	
+			if !exists {
+				return
 			}
 
+			if (imgURL == "" || strings.Index(imgURL, "data:image/svg+xml;utf8,") == 0) && from == model.ArticleFromZhihu {
+				actualsrc, actualsrcExists := img.Attr("data-actualsrc")	
+				if actualsrcExists && actualsrc != "" {
+					imgURL = actualsrc
+				}
+			}
+			var imgURLErr error
+			imgURL, imgURLErr = utils.RelativeURLToAbsoluteURL(imgURL, pageURL)
+			if imgURLErr != nil || imgURL == "" {
+				return
+			}
+			urlData, urlErr := url.Parse(imgURL)
+			if urlErr != nil {
+				return
+			}
+			index := strings.LastIndex(urlData.Path, ".")
+
+			var ext string
+			if (index >= 0) {
+				ext = urlData.Path[index:]
+			}
+
+			resp, err := http.Get(imgURL)
+			
+			if err != nil {
+				return
+			}
+
+			defer resp.Body.Close()
+
+			imgUploadedInfo := model.GenerateImgUploadedInfo(ext)
+			if err := os.MkdirAll(imgUploadedInfo.UploadDir, 0777); err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			out, outErr := os.OpenFile(imgUploadedInfo.UploadFilePath, os.O_WRONLY|os.O_CREATE, 0666)						
+			if outErr != nil {
+				fmt.Println(outErr.Error())	
+				return
+			}
+
+			defer out.Close()
+
+			if _, err := io.Copy(out, resp.Body); err != nil {
+				fmt.Println(err.Error())
+				return	
+			}
+			img.SetAttr("src", imgUploadedInfo.ImgURL)
 		})
 	}
 	contentDOM.Find("a").Each(func(j int, a *goquery.Selection) {
@@ -197,8 +192,10 @@ func crawlList(listURL string, user model.User, category model.Category, from in
 	}
 
 	var articleURLArr []string
-	doc.Find(selectorMap[from]["PageURLSelector"]).Each(func(i int, s *goquery.Selection) {
-		articleLink := s.Find(selectorMap[from]["PageTitleSelector"])
+	doc.Find(selectorMap[from]["ListItemSelector"]).Each(func(i int, s *goquery.Selection) {
+		articleLink := s.Find(selectorMap[from]["ItemTitleSelector"])
+		fmt.Println(s.Html())
+		fmt.Println(articleLink.Html())
 		href, exists := articleLink.Attr("href")
 		if exists {
 			url, err := utils.RelativeURLToAbsoluteURL(href, listURL)
@@ -232,7 +229,7 @@ func Crawl(ctx iris.Context) {
 		return
 	}
 
-	if jsonData.From != model.ArticleFromJianShu && jsonData.From != model.ArticleFromWeixin {
+	if jsonData.From != model.ArticleFromJianShu && jsonData.From != model.ArticleFromZhihu {
 		SendErrJSON("无效的from", ctx)
 		return	
 	}

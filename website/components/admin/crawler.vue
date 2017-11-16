@@ -1,6 +1,5 @@
 <template>
     <Row>
-        <h1 class="weixin-title">微信爬虫</h1>
         <Form ref="urlsForm" :model="formData" :label-width="80">
             <FormItem label="网页类型" prop="scope">
                 <Row>
@@ -58,39 +57,24 @@
     import request from '~/net/request'
 
     export default {
-        layout: 'admin',
 
-        middleware: 'adminRequired',
+        props: ['from', 'defaultURL', 'cateId', 'categories'],
 
         data () {
             return {
                 formData: {
-                    scope: 'list',
-                    crawlExist: 0,
-                    articles: [
-                        {
-                            url: 'http://weixin.sogou.com/weixin?query=golang&type=2&ie=utf8&page=1'
-                        }
-                    ]
+                    scope: 'list', // 爬单篇文章，还是列表
+                    crawlExist: 0, // 已爬过的文章，是否再次爬
+                    articles: []
                 },
                 urlValidate: {
                     type: 'url', required: true, message: '无效的URL'
                 }
             }
         },
-        asyncData (context) {
-            return request.getCategories({
-                client: context.req
-            }).then((res) => {
-                console.log(res)
-                let categories = res.data.categories
-                return {
-                    cateId: (categories && categories[0].id + '') || '',
-                    categories: categories
-                }
-            }).catch(err => {
-                console.log(err)
-                context.error({ statusCode: 404, message: 'Page not found' })
+        mounted () {
+            this.formData.articles.push({
+                url: this.defaultURL
             })
         },
         methods: {
@@ -109,12 +93,12 @@
                         urls.push(this.formData.articles[i].url)
                     }
 
-                    request.crawlWeixin({
+                    request.crawl({
                         body: {
                             scope: this.formData.scope,
                             crawlExist: !!this.formData.crawlExist,
                             urls: urls,
-                            from: 1,
+                            from: this.from,
                             categoryID: parseInt(this.cateId)
                         }
                     }).then(() => {
@@ -127,10 +111,3 @@
         }
     }
 </script>
-
-<style>
-    .weixin-title {
-        font-size: 22px;
-        margin: 12px 0 12px 0;
-    }
-</style>
