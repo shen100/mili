@@ -9,10 +9,10 @@
                 </div>
                 <div class="home-articles-box">
                     <div v-for="article in articles" class="articles-cell">
-                        <a :href="'/user/' + article.user.id" class="user-icon-box"><img :src="article.user.avatarURL" alt=""/></a>
+                        <a :href="'/user/' + article.user.id" target="_blank" class="user-icon-box"><img :src="article.user.avatarURL" alt=""/></a>
                         <span class="home-tip-container">
                             <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
-                                <a :href="'/topic/' + article.id" class="no-underline">
+                                <a :href="'/topic/' + article.id" target="_blank" class="no-underline">
                                     <span class="articles-click-num">{{article.commentCount}}</span>
                                     <span class="articles-num-split">/</span>
                                     <span class="articles-res-num">{{article.browseCount}}</span>
@@ -20,9 +20,9 @@
                             </Tooltip>
                         </span>
                         <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
-                        <a :href="'/topic/' + article.id" class="home-articles-title">{{article.name}}</a>
+                        <a :href="'/topic/' + article.id" target="_blank" class="home-articles-title" :title="article.name">{{article.name}}</a>
                         <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
-                        <a class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""/></a>
+                        <a v-if="article.lastUser && article.lastUser.id" :href="'/user/' + article.lastUser.id" target="_blank" class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""/></a>
                     </div>
                     <Row
                         v-if="articles.length > 0"
@@ -33,7 +33,8 @@
                             :current="pageNo"
                             :page-size="pageSize"
                             :total="totalCount"
-                            @on-change="onPageChange"/>
+                            @on-change="onPageChange"
+                            :show-elevator="true"/>
                     </Row>
                 </div>
             </div>

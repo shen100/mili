@@ -188,6 +188,7 @@ func crawlList(listURL string, user model.User, category model.Category, from in
 
 	doc, docErr := goquery.NewDocument(listURL)
 	if docErr != nil {
+		fmt.Println(docErr.Error())
 		return
 	}
 

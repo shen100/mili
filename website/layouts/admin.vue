@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="admin-root">
         <admin-header />
         <Row class="admin-body">
             <Col :span="5">
@@ -37,7 +37,12 @@
 </script>
 
 <style>
+    .admin-root {
+        min-width: 1200px;
+    }
+
     .admin-sidebar-container, .admin-body-container {
         float: left;
     }
+
 </style>

@@ -13,11 +13,11 @@
             <div class="title">作者信息</div>
             <div class="golang-user-info" style="padding-top:16px;">
                 <div>
-                    <a :href="'/user/' + author.id" class="golang-sidebar-icon-box">
+                    <a :href="'/user/' + author.id" target="_blank" class="golang-sidebar-icon-box">
                         <img class="golang-user-info-icon" :src="author.avatarURL" alt="">
                     </a>
                     <span class="golang-sidebar-info-box">
-                        <a :href="'/user/' + author.id">{{author.name}}</a>
+                        <a :href="'/user/' + author.id" target="_blank">{{author.name}}</a>
                     </span>
                 </div>
                 <div class="golang-user-line author-info-text">
@@ -29,28 +29,28 @@
         <div v-if="recentArticles && recentArticles.length" class="golang-cell">
             <div class="title">作者近期话题</div>
             <ul>
-                <li v-for="topic in recentArticles" class="golang-cell-item"><a :href="`/topic/${topic.id}`" class="sidebar-articles-title">{{topic.name}}</a></li>
+                <li v-for="topic in recentArticles" class="golang-cell-item"><a :href="`/topic/${topic.id}`" target="_blank" class="sidebar-articles-title">{{topic.name}}</a></li>
             </ul>
         </div>
         <div v-if="score" class="golang-cell">
-			<div class="title">积分榜<a class="top100-link" href="/rank">TOP 100>></a></div>
+			<div class="title">积分榜<a class="top100-link" href="/rank" target="_blank">TOP 100>></a></div>
 			<ul>
 				<li v-for="item in score" class="golang-cell-item">
 					<span class="golang-score-item">{{item.score}}</span>
-					<span class="golang-score-item"><a class="user-page-link" :href="'/user/' + item.id">{{item.name}}</a></span>
+					<span class="golang-score-item"><a class="user-page-link" :href="'/user/' + item.id" target="_blank">{{item.name}}</a></span>
 				</li>
 			</ul>
         </div>
         <div v-if="maxBrowse" class="golang-cell">
 			<div class="title">热门话题</div>
 			<ul>
-				<li class="golang-cell-item" v-for="item in maxBrowse"><a :href="`/topic/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
+				<li class="golang-cell-item" v-for="item in maxBrowse"><a :href="`/topic/${item.id}`" target="_blank" class="sidebar-articles-title">{{item.name}}</a></li>
 			</ul>
         </div>
         <div v-if="maxComment" class="golang-cell">
             <div class="title">回复最多的话题</div>
             <ul>
-                <li class="golang-cell-item" v-for="item in maxComment"><a :href="`/topic/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
+                <li class="golang-cell-item" v-for="item in maxComment"><a :href="`/topic/${item.id}`" target="_blank" class="sidebar-articles-title">{{item.name}}</a></li>
             </ul>
         </div>
         <div v-if="votesMaxBrowse" class="golang-cell">

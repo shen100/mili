@@ -96,11 +96,15 @@ body {
 
 .home-articles-title {
 	margin-left: 10px;
-	font-size: 16px;
-	display: inline-block;
-	line-height: 30px;
-	text-align: center;
-	vertical-align: top;
+    font-size: 16px;
+    display: inline-block;
+    line-height: 30px;
+    vertical-align: top;
+    max-width: 650px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .home-articles-title:hover {

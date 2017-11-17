@@ -501,6 +501,10 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     color: #08c;
 }
 
+#golang123-content-outter {
+    line-height: 26px;
+}
+
 .sidebar-user-signin, .sidebar-user-signup {
     color: #08c;
 }
