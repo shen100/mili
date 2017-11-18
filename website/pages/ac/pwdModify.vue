@@ -1,13 +1,10 @@
 <template>
 	<div>
         <go-header :user="user"/>
-        <div class="common-body-box">
-            <div class="common-body-main">
-                <ul class="common-body-nav">
-                    <li><a href="/"><span>主页</span></a></li>
-                    <li class="common-body-nav-sep"><span>/</span></li>
-                    <li><span class="publish-label">修改密码</span></li>
-                </ul>
+        <div class="golang-forget-container">
+            <h1>账号安全中心</h1>
+            <p class="golang-forget-title">修改密码</p>
+            <div id="reset" class="golang-forget-form">
         		<i-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form">
                     <Form-item label="旧密码" prop="lastPasswd">
                         <i-input type="password" v-model="formCustom.lastPasswd" class="signup-input"></i-input>
@@ -19,8 +16,8 @@
         	            <i-input type="password" v-model="formCustom.passwdCheck" class="signup-input"></i-input>
         	        </Form-item>
         	        <Form-item>
-        	            <i-button type="primary" @click="handleSubmit('formCustom')">提交</i-button>
-        	            <a href="/"><i-button type="ghost" style="margin-left: 40px">返回</i-button></a>
+        	            <i-button type="primary" @click="handleSubmit('formCustom')">提&nbsp&nbsp交</i-button>
+        	            <a href="/"><i-button type="ghost" style="margin-left: 140px">返&nbsp&nbsp回</i-button></a>
         	        </Form-item>
         	    </i-form>
             </div>
@@ -137,11 +134,5 @@
 </script>
 
 <style>
-	.signup-form {
-		margin-top: 20px;
-		margin-left: 80px;
-	}
-	.signup-input {
-		width: 300px;
-	}
+	@import '../../assets/styles/ac/pwdModify.css'
 </style>

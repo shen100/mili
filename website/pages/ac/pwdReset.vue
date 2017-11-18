@@ -1,6 +1,6 @@
 <template>
     <div>
-        <go-header :userStatus="user"/>
+        <go-header :user="user"/>
         <div class="golang-forget-container">
             <h1>账号安全中心</h1>
             <p class="golang-forget-title">忘记密码</p>
@@ -13,6 +13,7 @@
                                     size="large"
                                     v-model="formCustom.email"
                                     @on-blur="blur('formCustom.email')"
+                                    @keydown.native="handleKeyUp"
                                     placeholder="请输入邮箱"></i-input>
                             </Form-item>
                         </Form>
@@ -65,6 +66,11 @@
         },
         middleware: 'userInfo',
         methods: {
+            handleKeyUp (e) {
+                if (e.keyCode === 13) {
+                    return this.handleSubmit('formCustom')
+                }
+            },
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {

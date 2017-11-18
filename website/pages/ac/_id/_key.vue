@@ -11,7 +11,12 @@
                             <i-input size="large" type="password" v-model="formCustom.passwd" class="signup-input"></i-input>
                         </Form-item>
                         <Form-item label="确认密码" prop="passwdCheck">
-                            <i-input size="large" type="password" v-model="formCustom.passwdCheck" class="signup-input"></i-input>
+                            <i-input 
+                                size="large" 
+                                type="password" 
+                                v-model="formCustom.passwdCheck" 
+                                @keydown.native="handleKeyUp"
+                                class="signup-input"></i-input>
                         </Form-item>
                         <i-button size="large" type="primary" class="reset-pwd-button" @click="handleSubmit('formCustom')">重置密码</i-button>
                     </Form>
@@ -116,6 +121,11 @@
         },
         middleware: 'userInfo',
         methods: {
+            handleKeyUp (e) {
+                if (e.keyCode === 13) {
+                    return this.handleSubmit('formCustom')
+                }
+            },
             handleSubmit (name) {
                 if (!id || !key) {
                     return this.$Message.error('访问页面有误')
