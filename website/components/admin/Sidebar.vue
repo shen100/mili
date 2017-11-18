@@ -62,6 +62,9 @@
                 <router-link to="/admin/crawl/zhihu">
                     <Menu-item name="/admin/crawl/zhihu">知乎</Menu-item>
                 </router-link>
+                <router-link to="/admin/crawl/huxiu">
+                    <Menu-item name="/admin/crawl/huxiu">虎嗅</Menu-item>
+                </router-link>
             </MenuGroup>
         </Submenu>
     </Menu>

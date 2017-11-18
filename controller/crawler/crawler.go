@@ -29,6 +29,12 @@ var selectorMap = map[int]map[string]string{
 		"TitleSelector": ".PostIndex-title",
 		"ContentSelector": ".PostIndex-content",
 	},
+	model.ArticleFromHuxiu: map[string]string{
+		"ListItemSelector": ".mod-art",
+		"ItemTitleSelector": ".mob-ctt h2 a",
+		"TitleSelector": ".t-h1",
+		"ContentSelector": ".article-content-wrap",
+	},
 }
 
 var sourceHTMLMap = map[int][]string{
@@ -44,6 +50,14 @@ var sourceHTMLMap = map[int][]string{
 		"<div id=\"golang123-content-outter-footer\">",
 		"<blockquote>",
 		"<p>来源: <a href=\"https://www.zhihu.com\" target=\"_blank\">知乎</a><br>",
+		"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
+		"</blockquote>",
+		"</div>",
+	},
+	model.ArticleFromHuxiu: []string{
+		"<div id=\"golang123-content-outter-footer\">",
+		"<blockquote>",
+		"<p>来源: <a href=\"https://www.huxiu.com\" target=\"_blank\">虎嗅</a><br>",
 		"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
 		"</blockquote>",
 		"</div>",
@@ -103,7 +117,7 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 				return
 			}
 
-			if (imgURL == "" || strings.Index(imgURL, "data:image/svg+xml;utf8,") == 0) && from == model.ArticleFromZhihu {
+			if (imgURL == "" || from == model.ArticleFromZhihu && strings.Index(imgURL, "data:image/svg+xml;utf8,") == 0) {
 				actualsrc, actualsrcExists := img.Attr("data-actualsrc")	
 				if actualsrcExists && actualsrc != "" {
 					imgURL = actualsrc
@@ -167,7 +181,7 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 		return nil
 	}
 
-	sourceHTML := strings.Join(sourceHTMLMap[from],"")
+	sourceHTML  := strings.Join(sourceHTMLMap[from],"")
 	sourceHTML   = strings.Replace(sourceHTML, "{title}", title, -1)
 	sourceHTML   = strings.Replace(sourceHTML, "{articleURL}", pageURL, -1)
 	articleHTML += sourceHTML
@@ -230,7 +244,8 @@ func Crawl(ctx iris.Context) {
 		return
 	}
 
-	if jsonData.From != model.ArticleFromJianShu && jsonData.From != model.ArticleFromZhihu {
+	if jsonData.From != model.ArticleFromJianShu && jsonData.From != model.ArticleFromZhihu && 
+			jsonData.From != model.ArticleFromHuxiu {
 		SendErrJSON("无效的from", ctx)
 		return	
 	}

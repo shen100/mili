@@ -38,7 +38,7 @@
         },
         head () {
             return {
-                title: '知乎'
+                title: '抓取知乎'
             }
         }
     }

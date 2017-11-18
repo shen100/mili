@@ -38,7 +38,7 @@
         },
         head () {
             return {
-                title: '简书'
+                title: '抓取简书'
             }
         }
     }

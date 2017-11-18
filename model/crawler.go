@@ -21,6 +21,9 @@ const (
 
 	// ArticleFromZhihu 知乎
 	ArticleFromZhihu = 2
+
+	// ArticleFromHuxiu 虎嗅
+	ArticleFromHuxiu = 3
 )
 
 const (
