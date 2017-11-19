@@ -64,7 +64,6 @@ body {
     left: 0;
     top: 0;
     text-align: center;
-    padding-top: 35px;
 }
 
 .mine-info-icon:hover .mine-info-upload {
@@ -77,21 +76,21 @@ body {
 }
 
 .mine-info-upload p {
-    text-align: center;
     font-size: 14px;
     color: #fff;
-    font-weight: bold;
-    letter-spacing: 0.1em;
+    font-weight: 700;
+    letter-spacing: .1em;
     margin-top: 10px;
 }
 
 .mine-info-upload-icon {
     font-size: 50px;
     color: #fff;
+    margin-top: 40px;
 }
 
 .mine-info-name {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: bold;
 }
 
@@ -376,3 +375,23 @@ body {
     color: #8590a6;
     font-size: 14px;
 }
+
+#uploader-pop-title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: normal;
+    height: 32px;
+    color: #262626;
+}
+
+#uploader-pop-subheading {
+    color: #8590a6;
+}
+
+#avatarUploader {
+    min-height: 294px;
+}
+
+
+
+

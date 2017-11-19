@@ -7,18 +7,29 @@
                 <div class="mine-info-container">
                     <div class="mine-info-icon">
                         <img :src="avatarURL" alt="" />
-                        <div @click="showImgUploader" class="mine-info-upload" v-if="isAuthor">
-                            <Icon class="mine-info-upload-icon" type="camera"></Icon>
-                            <p>修改我的头像</p>
+                        <div v-if="isAuthor" class="mine-info-upload">
+                            <Upload style="width:160px; height: 160px;"
+                                ref="upload"
+                                action=""
+                                accept="image/*"
+                                :show-upload-list="false"
+                                :format="['jpg','jpeg','png']"
+                                :on-format-error="onFormatError"
+                                :before-upload="beforeUpload">
+                                <Icon class="mine-info-upload-icon" type="camera"></Icon>
+                                <p>修改我的头像</p>
+                            </Upload>
                         </div>
-                        <img-uploader v-if="isMounted" field="upFile"
-                            @crop-upload-success="cropUploadSuccess"
-                            @crop-upload-fail="cropUploadFail"
-                            v-model="uploaderVisible"
-                            :width="200"
-                            :height="200"
-                            :url="uploadURL"
-                            img-format="png"></img-uploader>
+                        <Modal v-model="uploaderVisible" width="400">
+                            <div slot="header" style="color:#f60;text-align:center">
+                                <p id="uploader-pop-title">编辑头像</p>
+                                <p id="uploader-pop-subheading">调整头像尺寸和位置</p>
+                            </div>
+                            <div id="avatarUploader"></div>
+                            <div slot="footer">
+                                <Button type="primary" long @click="onUpload">保存</Button>
+                            </div>
+                        </Modal>
                     </div>
                     <p class="mine-info-line mine-info-name">{{currentUser.name}}</p>
                     <p class="mine-info-line mine-info-item">
@@ -61,21 +72,24 @@
 </template>
 
 <script>
+    import axios from 'axios'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import config from '~/config'
-    import uploader from 'vue-image-crop-upload'
 
     export default {
-        name: 'user',
+        name: 'userHome',
         data () {
             return {
                 activeMenu: 'index',
                 uploaderVisible: false,
-                isMounted: false,
-                uploadURL: config.apiURL + '/user/updateavatar'
+                uploadURL: config.apiURL + '/user/updateavatar',
+                croppie: null,
+                file: null,
+                sizeLimit: 3 * 1024 * 1024,
+                sizeLimitTip: '3M'
             }
         },
         validate ({ params }) {
@@ -109,7 +123,11 @@
             return {
                 title: this.currentUser.name,
                 link: [
-                    { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' }
+                    { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' },
+                    { rel: 'stylesheet', href: '/styles/croppie/croppie.min.css' }
+                ],
+                script: [
+                    { src: '/javascripts/croppie/croppie.min.js' }
                 ]
             }
         },
@@ -118,28 +136,68 @@
             if (route[3]) {
                 this.activeMenu = route[3]
             }
-            this.isMounted = true
         },
         methods: {
-            showImgUploader () {
-                this.uploaderVisible = !this.uploaderVisible
+            onFormatError () {
+                this.$Message.error('不是有效的图片格式')
             },
-            cropUploadSuccess (jsonData, field) {
-                if (jsonData.errNo === ErrorCode.SUCCESS) {
-                    this.avatarURL = jsonData.data.url
-                    this.currentUser.avatarURL = jsonData.data.url
-                    if (this.isAuthor) {
-                        this.user.avatarURL = jsonData.data.url
-                    }
+            beforeUpload (file) {
+                let self = this
+                this.file = file
+                if (file.size > this.sizeLimit) {
+                    this.$Message.error('图片大小要小于' + this.sizeLimitTip)
+                    return
                 }
+                this.uploaderVisible = !this.uploaderVisible
+                let avatarUploader = document.getElementById('avatarUploader')
+                avatarUploader.innerHTML = ''
+                this.croppie = null
+                var reader = new FileReader()
+                reader.addEventListener('load', function () {
+                    setTimeout(() => {
+                        let opts = {
+                            url: reader.result,
+                            boundary: {
+                                width: 240,
+                                height: 240
+                            },
+                            viewport: {
+                                width: 160,
+                                height: 160,
+                                type: 'square'
+                            }
+                        }
+                        self.croppie = new window.Croppie(avatarUploader, opts)
+                    }, 200)
+                })
+                reader.readAsDataURL(file)
             },
-            cropUploadFail (status, field) {
-                console.log('-------- upload fail --------')
-                console.log(status)
-                console.log('field: ' + field)
+            onUpload () {
+                let self = this
+                this.croppie && this.croppie.result('blob').then(function (blob) {
+                    let form = new FormData()
+                    form.append('upFile', blob, self.file.name)
+                    let config = {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                    axios.post(self.uploadURL, form, config).then(res => {
+                        let result = res.data
+                        if (result.errNo === ErrorCode.SUCCESS) {
+                            self.avatarURL = result.data.url
+                            self.currentUser.avatarURL = result.data.url
+                            if (self.isAuthor) {
+                                self.user.avatarURL = result.data.url
+                            }
+                            self.uploaderVisible = false
+                        } else {
+                            self.$Message.error(result.msg)
+                        }
+                    })
+                })
             },
             onMenuSelect (name) {
-                console.log(name)
                 if (name === 'index') {
                     window.location.href = `/user/${this.currentUser.id}`
                 } else {
@@ -150,8 +208,7 @@
         middleware: 'userInfo',
         components: {
             'app-header': Header,
-            'app-footer': Footer,
-            'img-uploader': uploader
+            'app-footer': Footer
         }
     }
 </script>
