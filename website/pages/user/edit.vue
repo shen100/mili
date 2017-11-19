@@ -6,11 +6,19 @@
                 <div class="mine-img-box" :style="{'background-image': 'url(' + userInfo.coverURL + ')'}"></div>
                 <div class="mine-edit-container">
                     <div class="mine-info-icon">
-                        <img :src="user.avatarURL" alt="" />
-                        <div class="mine-info-upload">
-                            <img src="~assets/images/camera_fill.png" alt="">
+                        <img :src="avatarURL" alt="" />
+                        <div @click="showImgUploader" class="mine-info-upload">
+                            <Icon class="mine-info-upload-icon" type="camera"></Icon>
                             <p>修改我的头像</p>
                         </div>
+                        <img-uploader v-if="isMounted" field="upFile"
+                            @crop-upload-success="cropUploadSuccess"
+                            @crop-upload-fail="cropUploadFail"
+                            v-model="uploaderVisible"
+                            :width="200"
+                            :height="200"
+                            :url="uploadURL"
+                            img-format="png"></img-uploader>
                     </div>
                     <p class="mine-info-line mine-info-name">
                         {{user.name}}
@@ -150,13 +158,18 @@
     import Footer from '~/components/Footer'
     import request from '~/net/request'
     import ErrorCode from '~/constant/ErrorCode'
+    import config from '~/config'
     import {trim} from '~/utils/tool'
+    import uploader from 'vue-image-crop-upload'
 
     export default {
         data () {
             return {
                 editIndex: [0, 0, 0, 0, 0, 0],
-                success: false
+                success: false,
+                uploaderVisible: false,
+                isMounted: false,
+                uploadURL: config.apiURL + '/user/updateavatar'
             }
         },
         asyncData (context) {
@@ -176,7 +189,8 @@
                     return {
                         userInfo: userInfo,
                         formCustom: formCustom,
-                        user: context.user
+                        user: context.user,
+                        avatarURL: context.user.avatarURL
                     }
                 } else {
                     context.error({ statusCode: 404, message: 'Page not found' })
@@ -187,6 +201,20 @@
             })
         },
         methods: {
+            showImgUploader () {
+                this.uploaderVisible = !this.uploaderVisible
+            },
+            cropUploadSuccess (jsonData, field) {
+                if (jsonData.errNo === ErrorCode.SUCCESS) {
+                    this.avatarURL = jsonData.data.url
+                    this.user.avatarURL = jsonData.data.url
+                }
+            },
+            cropUploadFail (status, field) {
+                console.log('-------- upload fail --------')
+                console.log(status)
+                console.log('field: ' + field)
+            },
             editItem (name, index) {
                 this.editIndex[index] = 1
                 this.editIndex = Array.from(this.editIndex)
@@ -303,7 +331,7 @@
         },
         middleware: 'userRequired',
         mounted () {
-            console.log(this.userInfo)
+            this.isMounted = true
         },
         head () {
             return {
@@ -312,7 +340,8 @@
         },
         components: {
             'app-header': Header,
-            'app-footer': Footer
+            'app-footer': Footer,
+            'img-uploader': uploader
         }
     }
 </script>

@@ -11,11 +11,11 @@
                             <i-input size="large" type="password" v-model="formCustom.passwd" class="signup-input"></i-input>
                         </Form-item>
                         <Form-item label="确认密码" prop="passwdCheck">
-                            <i-input 
-                                size="large" 
-                                type="password" 
-                                v-model="formCustom.passwdCheck" 
-                                @keydown.native="handleKeyUp"
+                            <i-input
+                                size="large"
+                                type="password"
+                                v-model="formCustom.passwdCheck"
+                                @keyup.native="handleKeyUp"
                                 class="signup-input"></i-input>
                         </Form-item>
                         <i-button size="large" type="primary" class="reset-pwd-button" @click="handleSubmit('formCustom')">重置密码</i-button>

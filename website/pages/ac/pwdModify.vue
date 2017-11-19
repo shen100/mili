@@ -13,11 +13,11 @@
         	            <i-input type="password" v-model="formCustom.passwd" class="signup-input"></i-input>
         	        </Form-item>
         	        <Form-item label="确认密码" prop="passwdCheck">
-        	            <i-input type="password" v-model="formCustom.passwdCheck" class="signup-input"></i-input>
+        	            <i-input @keyup.native="handleKeyUp" type="password" v-model="formCustom.passwdCheck" class="signup-input"></i-input>
         	        </Form-item>
         	        <Form-item>
-        	            <i-button type="primary" @click="handleSubmit('formCustom')">提&nbsp&nbsp交</i-button>
-        	            <a href="/"><i-button type="ghost" style="margin-left: 140px">返&nbsp&nbsp回</i-button></a>
+        	            <i-button type="primary" @click="handleSubmit('formCustom')" style="margin-right: 30px;">提&nbsp&nbsp交</i-button>
+        	            <a href="/"><i-button type="ghost">取&nbsp&nbsp消</i-button></a>
         	        </Form-item>
         	    </i-form>
             </div>
@@ -86,6 +86,11 @@
         },
         middleware: 'userRequired',
         methods: {
+            handleKeyUp (e) {
+                if (e.keyCode === 13) {
+                    return this.handleSubmit('formCustom')
+                }
+            },
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {

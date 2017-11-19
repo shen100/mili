@@ -49,9 +49,12 @@ func Route(app *iris.Application) {
 											   user.DeleteCareer)
 		routes.Post("/user/school/delete/:id", auth.ActiveRequired,
 											   user.DeleteSchool)
+		routes.Post("/user/updateavatar",      auth.ActiveRequired,
+											   user.UpdateAvatar)
+		
 
 		routes.Post("/upload",               auth.ActiveRequired,          
-											 common.Upload)
+											 common.UploadHandler)
 
 		routes.Get("/message/unread",        auth.SigninRequired,  
 											 message.Unread)

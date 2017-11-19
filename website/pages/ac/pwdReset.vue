@@ -7,13 +7,13 @@
             <div id="reset" class="golang-forget-form">
                 <Row class="golang-forget-form">
                     <div v-if="!success">
-                        <Form ref="formCustom" :model="formCustom" :rules="ruleCustom">
+                        <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" action="javascript:void(0)">
                             <Form-item prop="email">
                                 <i-input
                                     size="large"
                                     v-model="formCustom.email"
                                     @on-blur="blur('formCustom.email')"
-                                    @keydown.native="handleKeyUp"
+                                    @keyup.native="handleKeyUp"
                                     placeholder="请输入邮箱"></i-input>
                             </Form-item>
                         </Form>

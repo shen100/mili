@@ -678,6 +678,37 @@ func Top100(ctx iris.Context) {
 	topN(100, ctx)
 }
 
+// UpdateAvatar 修改用户头像
+func UpdateAvatar(ctx iris.Context) {
+	data, err := common.Upload(ctx)
+	if err != nil {
+		ctx.JSON(iris.Map{
+			"errNo" : model.ErrorCode.ERROR,
+			"msg"   : err.Error(),
+			"data"  : iris.Map{},
+		})
+		return
+	}
+
+	avatarURL := data["url"].(string)
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	if err := model.DB.Model(&user).Update("avatar_url", avatarURL).Error; err != nil {
+		ctx.JSON(iris.Map{
+			"errNo" : model.ErrorCode.ERROR,
+			"msg"   : err.Error(),
+			"data"  : iris.Map{},
+		})
+		return
+	}
+	user.AvatarURL = avatarURL
+	manager.Sess.Start(ctx).Set("user", user)
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : data,
+	})
+}
+
 // AddCareer 添加职业经历
 func AddCareer(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON

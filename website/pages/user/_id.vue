@@ -6,11 +6,19 @@
                 <div class="mine-img-box" :style="{'background-image': 'url(' + currentUser.coverURL + ')'}"></div>
                 <div class="mine-info-container">
                     <div class="mine-info-icon">
-                        <img :src="currentUser.avatarURL" alt="" />
-                        <div class="mine-info-upload" v-if="user && user.id === currentUser.id">
-                            <!-- <img src="~assets/images/camera_fill.png" alt=""> -->
+                        <img :src="avatarURL" alt="" />
+                        <div @click="showImgUploader" class="mine-info-upload" v-if="isAuthor">
+                            <Icon class="mine-info-upload-icon" type="camera"></Icon>
                             <p>修改我的头像</p>
                         </div>
+                        <img-uploader v-if="isMounted" field="upFile"
+                            @crop-upload-success="cropUploadSuccess"
+                            @crop-upload-fail="cropUploadFail"
+                            v-model="uploaderVisible"
+                            :width="200"
+                            :height="200"
+                            :url="uploadURL"
+                            img-format="png"></img-uploader>
                     </div>
                     <p class="mine-info-line mine-info-name">{{currentUser.name}}</p>
                     <p class="mine-info-line mine-info-item">
@@ -57,12 +65,17 @@
     import request from '~/net/request'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
+    import config from '~/config'
+    import uploader from 'vue-image-crop-upload'
 
     export default {
         name: 'user',
         data () {
             return {
-                activeMenu: 'index'
+                activeMenu: 'index',
+                uploaderVisible: false,
+                isMounted: false,
+                uploadURL: config.apiURL + '/user/updateavatar'
             }
         },
         validate ({ params }) {
@@ -79,8 +92,10 @@
                 if (res.errNo === ErrorCode.SUCCESS) {
                     let currentUser = res.data.user
                     return {
-                        user: context.user,
-                        currentUser: currentUser
+                        isAuthor: context.user && context.user.id === currentUser.id,
+                        user: context.user, // 当前登录用户
+                        currentUser: currentUser, // 作者
+                        avatarURL: currentUser.avatarURL
                     }
                 } else {
                     context.error({ statusCode: 404, message: 'Page not found' })
@@ -103,8 +118,26 @@
             if (route[3]) {
                 this.activeMenu = route[3]
             }
+            this.isMounted = true
         },
         methods: {
+            showImgUploader () {
+                this.uploaderVisible = !this.uploaderVisible
+            },
+            cropUploadSuccess (jsonData, field) {
+                if (jsonData.errNo === ErrorCode.SUCCESS) {
+                    this.avatarURL = jsonData.data.url
+                    this.currentUser.avatarURL = jsonData.data.url
+                    if (this.isAuthor) {
+                        this.user.avatarURL = jsonData.data.url
+                    }
+                }
+            },
+            cropUploadFail (status, field) {
+                console.log('-------- upload fail --------')
+                console.log(status)
+                console.log('field: ' + field)
+            },
             onMenuSelect (name) {
                 console.log(name)
                 if (name === 'index') {
@@ -117,7 +150,8 @@
         middleware: 'userInfo',
         components: {
             'app-header': Header,
-            'app-footer': Footer
+            'app-footer': Footer,
+            'img-uploader': uploader
         }
     }
 </script>

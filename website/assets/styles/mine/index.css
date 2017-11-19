@@ -51,6 +51,7 @@ body {
 }
 
 .mine-info-upload {
+    cursor: pointer;
     opacity: 0;
     transition: all .3s ease-in;
     width: 100%;
@@ -66,7 +67,7 @@ body {
     padding-top: 35px;
 }
 
-.mine-info-icon:hover .mine-info-upload{
+.mine-info-icon:hover .mine-info-upload {
     opacity: 1;
 }
 
@@ -82,6 +83,11 @@ body {
     font-weight: bold;
     letter-spacing: 0.1em;
     margin-top: 10px;
+}
+
+.mine-info-upload-icon {
+    font-size: 50px;
+    color: #fff;
 }
 
 .mine-info-name {
