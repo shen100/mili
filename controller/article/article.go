@@ -178,7 +178,7 @@ func queryList(isBackend bool, ctx iris.Context) {
 			return
 		}
 		if articles[i].LastUserID != 0 {
-			if err := model.DB.Model(&articles[i]).Related(&articles[i].LastUser, "users").Error; err != nil {
+			if err := model.DB.Model(&articles[i]).Related(&articles[i].LastUser, "users", "last_user_id").Error; err != nil {
 				fmt.Println(err.Error())
 				SendErrJSON("error", ctx)
 				return

@@ -47,10 +47,10 @@
                     <div class="comment-content">
                         <template v-if="article.commentCount > 0">
                             <div class="comment-item" v-for="(item, index) in article.comments">
-                                <a :href="'/user/' + item.user.id" class="reply-user-icon">
+                                <a :href="'/user/' + item.user.id" target="_blank" class="reply-user-icon">
                                     <img :src="item.user.avatarURL" alt="">
                                 </a>
-                                <a :href="'/user/' + item.user.id" class="reply-user-name">{{item.user.name}}</a>
+                                <a :href="'/user/' + item.user.id" target="_blank" class="reply-user-name">{{item.user.name}}</a>
                                 <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
                                 <div class="comment-actions">
                                     <div v-if="user && user.id === item.user.id" class="comment-delete" @click="onCommentDelete(item.id)">

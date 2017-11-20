@@ -21,7 +21,7 @@ type Article struct {
     UserID            uint               `json:"userID"`
     User              User               `json:"user"`
     LastUserID        uint               `json:"lastUserID"` //最后一个回复话题、收藏话题、赞同话题的人
-    LastUser          User               `gorm:"AssociationForeignKey:LastUserID" json:"lastUser"`
+    LastUser          User               `json:"lastUser"`
 }
 
 // MaxArticleCateCount 文章最多属于几个分类

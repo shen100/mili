@@ -149,9 +149,10 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     white-space: nowrap;
     position: relative;
     overflow: hidden;
-    vertical-align: middle;
-    width: 24px;
-    height: 24px;
+    vertical-align: top;
+    margin-top: 9px;
+    width: 32px;
+    height: 32px;
     border-radius: 16px;
 }
 
@@ -163,6 +164,8 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     color: #ccc;
     font-size: 14px;
     margin-left: 5px;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .header-user-box li {
