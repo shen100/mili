@@ -724,6 +724,12 @@ func Tops(ctx iris.Context) {
 			return
 		}
 
+		if err := model.DB.Model(&article).Related(&article.LastUser, "users", "last_user_id").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+
 		articles = append(articles, article)
 	}
 

@@ -101,7 +101,6 @@
                     topList.map(items => {
                         items.isTop = true
                     })
-                    pageSize += topList.length
                     articles = topList.concat(articles)
                 }
 

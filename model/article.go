@@ -20,7 +20,7 @@ type Article struct {
     Comments          []Comment          `gorm:"ForeignKey:SourceID" json:"comments"` 
     UserID            uint               `json:"userID"`
     User              User               `json:"user"`
-    LastUserID        uint               `json:"lastUserID"` //最后一个回复话题、收藏话题、赞同话题的人
+    LastUserID        uint               `json:"lastUserID"` //最后一个回复话题的人
     LastUser          User               `json:"lastUser"`
 }
 

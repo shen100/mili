@@ -72,7 +72,7 @@ func List(ctx iris.Context) {
 			return
 		}
 		if votes[i].LastUserID != 0 {
-			if err := model.DB.Model(&votes[i]).Related(&votes[i].LastUser, "users").Error; err != nil {
+			if err := model.DB.Model(&votes[i]).Related(&votes[i].LastUser, "users", "last_user_id").Error; err != nil {
 				fmt.Println(err.Error())
 				SendErrJSON("error", ctx)
 				return
