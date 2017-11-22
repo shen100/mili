@@ -121,7 +121,7 @@
                 <Form-item prop="title">
                     <i-input
                         v-model="collectData.title"
-                        placeholder="收藏标题"
+                        placeholder="收藏夹名称"
                         size="large"/>
                 </Form-item>
             </Form>

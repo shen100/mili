@@ -1,11 +1,11 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}的话题</h1>
+            <div>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}的话题</div>
         </div>
         <template v-if="articles.length > 0">
             <div v-for="(article, index) in articles" class="articles-item" :class="{'articles-item-no': index === 0}">
-                <h1 class="articles-title">{{article.name}}</h1>
+                <h2 class="articles-title"><a :href="`/topic/${article.id}`" target="_blank">{{article.name}}</a></h2>
                 <p class="articles-user-info">
                     <img :src="article.user.avatarURL" alt="">
                     <span>{{article.user.name}}</span>

@@ -56,12 +56,16 @@
                 <div class="mine-content-right">
                     <div class="mine-attention-box">
                         <div class="attention-item right-border">
-                            <p class="attention-item-label">话题数</p>
-                            <p class="attention-item-num">0</p>
+                            <a id="topicCountBox" :href="`/user/${user.id}`" style="display:block;">
+                                <p class="attention-item-label">话题数</p>
+                                <p class="attention-item-num" style="margin-bottom:0;">{{user.articleCount}}</p>
+                            </a>
                         </div>
                         <div class="attention-item">
-                            <p class="attention-item-label">回复数</p>
-                            <p class="attention-item-num">0</p>
+                            <a id="replyCountBox" :href="`/user/${user.id}/reply`" style="display:block;">
+                                <p class="attention-item-label">回复数</p>
+                                <p class="attention-item-num" style="margin-bottom:0;">{{user.commentCount}}</p>
+                            </a>
                         </div>
                     </div>
                 </div>

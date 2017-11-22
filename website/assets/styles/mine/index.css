@@ -173,13 +173,20 @@ body {
     border-bottom: 1px solid #e5e5e5;
 }
 
-.article-top h1 {
-    font-size: 18px;
+.article-top div {
+    font-size: 15px;
+    font-weight: 600;
+    font-family: -apple-system, system-ui, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif;
 }
 
 .articles-title {
-    font-size: 16px;
+    font-size: 18px;
     margin-top: 10px;
+}
+
+.articles-title a:hover {
+    color: #2d8cf0;
+    text-decoration: none;
 }
 
 .articles-user-info {
@@ -392,6 +399,30 @@ body {
     min-height: 294px;
 }
 
+#topicCountBox {
+    text-decoration: none;
+}
 
+#topicCountBox p {
+    cursor: pointer;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#replyCountBox {
+    text-decoration: none;
+}
+
+#replyCountBox p {
+    cursor: pointer;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
 

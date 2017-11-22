@@ -1,11 +1,11 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}的回复</h1>
+            <div>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}的回复</div>
         </div>
         <template v-if="comments.length > 0">
             <div v-for="(comment, index) in comments" class="articles-item" :class="{'articles-item-no': index === 0}">
-                <h1 class="articles-title">{{comment.voteName ? comment.voteName : comment.articleName}}</h1>
+                <h2 class="articles-title"><a :href="comment.voteID ? `/vote/${comment.voteID}#comment-${comment.id}` : `/topic/${comment.articleID}#comment-${comment.id}`" target="_blank">{{comment.voteName ? comment.voteName : comment.articleName}}</a></h2>
                 <div class="golang123-editor" :class="comment.show ? '' : 'articles-hidden'" v-html="comment.content"></div>
                 <p class="articles-button">
                     <a :href="`/${comment.voteID ? 'vote/' + comment.voteID : 'topic/' + comment.articleID}`" class="no-underline">阅读全文<Icon type="chevron-right"></Icon></a>

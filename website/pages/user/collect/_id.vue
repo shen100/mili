@@ -2,7 +2,7 @@
     <div>
         <app-header :user="user" />
         <div class="golang-home-body">
-            <div class="golang-home-body-left">
+            <div class="golang-home-body-left" style="padding-top: 20px;">
                 <p v-if="user && user.id == currentUser.id" class="back-container">
                     <a class="top100-link link-left" :href="`/user/${user.id}/collect`">« 去我的收藏</a>
                 </p>
@@ -10,14 +10,9 @@
                     <a class="top100-link link-left" :href="`/user/${currentUser.id}/collect`">«  {{currentUser.name}} 的收藏</a>
                     <a class="top100-link link-right" :href="`/user/${user.id}/collect`" v-if="user">去我的收藏 »</a>
                 </p>
-                <h1 class="collect-line title">{{collects.filter(item => parseInt(folderID) === item.id)[0].name}}</h1>
-                <p class="collect-line desc">
-                    <a href=""><Icon type="ios-chatbubble-outline"></Icon>添加评论</a>
-                    •
-                    <a href="">修改记录</a>
-                </p>
+                <h1 class="collect-line title" style="font-size: 22px;padding-bottom: 20px;">{{collects.filter(item => parseInt(folderID) === item.id)[0].name}}</h1>
                 <div v-for="(collect, index) in collectList" class="articles-item">
-                    <h1 class="articles-title">{{collect.voteName ? collect.voteName : collect.articleName}}</h1>
+                    <h1 class="articles-title"><a :href="collect.voteID ? `/vote/${collect.voteID}` : `/topic/${collect.articleID}`" target="_blank">{{collect.voteName ? collect.voteName : collect.articleName}}</a></h1>
                     <div class="golang123-editor articles-hidden" v-html="collect.voteID ? collect.voteContent : collect.articleContent"></div>
                     <p class="articles-button">
                         <a :href="`/${collect.voteID ? 'vote/' + collect.voteID : 'topic/' + collect.articleID}`" class="no-underline">阅读全文<Icon type="chevron-right"></Icon></a>

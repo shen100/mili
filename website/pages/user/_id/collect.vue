@@ -1,11 +1,11 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}的收藏夹</h1>
+            <div>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}的收藏夹</div>
         </div>
         <template v-if="collects.length > 0">
             <div v-for="(collect, index) in collects" class="articles-item" :class="{'articles-item-no': index === 0}">
-                <a class="articles-title" :href="`/user/collect/${currentId}?collect=${collect.id}`">{{collect.name}}</a>
+                <h2 class="articles-title"><a :href="`/user/collect/${currentId}?collect=${collect.id}`" target="_blank">{{collect.name}}</a></h2>
                 <p class="collect-line">
                     <span>{{collect.updatedAt | formatYMD}}&nbsp更新</span>
                 </p>

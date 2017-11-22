@@ -1,11 +1,11 @@
 <template>
     <div class="articles-container">
         <div class="article-top">
-            <h1>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}参与的投票</h1>
+            <div>{{user && user.id == this.currentId ? '我' : (sex ? '她' : '他')}}参与的投票</div>
         </div>
         <template v-if="votes.length > 0">
             <div v-for="(vote, index) in votes" class="articles-item" :class="{'articles-item-no': index === 0}">
-                <h1 class="articles-title">{{vote.name}}</h1>
+                <h2 class="articles-title"><a :href="`/vote/${vote.id}`" target="_blank">{{vote.name}}</a></h2>
                 <div class="golang123-editor" :class="vote.show ? '' : 'articles-hidden'" v-html="vote.content"></div>
                 <p class="articles-button">
                     <a :href="`/${'vote/' + vote.id}`" class="no-underline">阅读全文<Icon type="chevron-right"></Icon></a>
