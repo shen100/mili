@@ -35,13 +35,13 @@ func GenerateImgUploadedInfo(ext string) ImageUploadedInfo {
     uploadImgDir := config.ServerConfig.UploadImgDir
 	length       := utf8.RuneCountInString(uploadImgDir)
 	lastChar     := uploadImgDir[length - 1:]
-    ymdStr       := utils.GetCurrentYMD(sep)
+    ymStr        := utils.GetTodayYM(sep)
     
 	var uploadDir string
 	if lastChar != sep {
-		uploadDir = uploadImgDir + sep	+ ymdStr
+		uploadDir = uploadImgDir + sep	+ ymStr
 	} else {
-		uploadDir = uploadImgDir + ymdStr
+		uploadDir = uploadImgDir + ymStr
 	}
 
     uuidName       := uuid.NewV4().String()
@@ -49,7 +49,7 @@ func GenerateImgUploadedInfo(ext string) ImageUploadedInfo {
 	uploadFilePath := uploadDir + sep + filename
     imgURL         := strings.Join([]string{
         "https://" + config.ServerConfig.ImgHost + config.ServerConfig.ImgPath,
-        ymdStr,
+        ymStr,
         filename,
     }, "/")
 	return ImageUploadedInfo{

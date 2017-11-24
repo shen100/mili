@@ -194,12 +194,10 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang-footer-github {
-    width: 12px;
-    height: 12px;
     display: inline-block;
     vertical-align: top;
-    border-radius: 6px;
-    background: #eee;
+   /* background: #eee;
+    color: #444;*/
 }
 
 .golang-footer-page-link span {

@@ -33,7 +33,10 @@
                 回复管理
             </template>
             <router-link to="/admin/reply/list">
-                <Menu-item name="/admin/reply/list">回复列表</Menu-item>
+                <Menu-item name="/admin/reply/list">全部回复</Menu-item>
+            </router-link>
+            <router-link to="/admin/reply/yesterday">
+                <Menu-item name="/admin/reply/yesterday">昨日回复</Menu-item>
             </router-link>
         </Submenu>
         <Submenu name="user">

@@ -1,6 +1,6 @@
 <template>
     <Row>
-        <h1>回复列表</h1>
+        <h1>全部回复</h1>
     </Row>
 </template>
 

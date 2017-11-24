@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"strings"
     "strconv"
     "time"
 )
@@ -24,8 +25,8 @@ func StrToIntMonth(month string) int  {
     return data[month];
 }
 
-// GetCurrentYMD 得到以sep为分隔符的年、月、日字符串
-func GetCurrentYMD(sep string) string {
+// GetTodayYMD 得到以sep为分隔符的年、月、日字符串(今天)
+func GetTodayYMD(sep string) string {
 	now     := time.Now()
 	year    := now.Year()
 	month   := StrToIntMonth(now.Month().String())
@@ -46,3 +47,31 @@ func GetCurrentYMD(sep string) string {
 	}
 	return strconv.Itoa(year) + sep + monthStr + sep + dateStr
 }
+
+// GetTodayYM 得到以sep为分隔符的年、月字符串(今天所属于的月份)
+func GetTodayYM(sep string) string {
+	now     := time.Now()
+	year    := now.Year()
+	month   := StrToIntMonth(now.Month().String())
+
+	var monthStr string
+	if month < 9 {
+		monthStr = "0" + strconv.Itoa(month + 1)
+	} else {
+		monthStr = strconv.Itoa(month + 1)
+	}
+	return strconv.Itoa(year) + sep + monthStr
+}
+
+// GetYesterdayYMD 得到以sep为分隔符的年、月、日字符串(昨天)
+func GetYesterdayYMD(sep string) string {
+	now           := time.Now()
+	today         := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)
+	todaySec      := today.Unix() //秒
+	yesterdaySec  := todaySec - 24 * 60 * 60; //秒
+	yesterdayTime := time.Unix(yesterdaySec, 0)
+	yesterdayYMD  := yesterdayTime.Format("2006-01-02")
+	return strings.Replace(yesterdayYMD, "-", sep, -1)
+}
+
+

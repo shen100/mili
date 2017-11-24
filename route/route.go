@@ -130,6 +130,8 @@ func Route(app *iris.Application) {
 		adminRoutes.Get("/articles",                 article.AllList)
 		adminRoutes.Post("/article/status/update",   article.UpdateStatus)
 
+		adminRoutes.Get("/comments/yesterday",       comment.YesterdayComments)
+
 		adminRoutes.Post("/crawl", crawler.Crawl)
 
 		adminRoutes.Get("/users", user.AllList)

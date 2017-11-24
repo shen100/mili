@@ -136,6 +136,11 @@ const api = {
         method: 'GET',
         desc: '回复最多的话题'
     },
+    getYesterdayComments: {
+        url: url + '/admin/comments/yesterday',
+        method: 'GET',
+        desc: '昨天的评论'
+    },
     getMaxBrowse: {
         url: url + '/articles/maxbrowse',
         method: 'GET',

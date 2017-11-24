@@ -7,7 +7,13 @@
 <script>
     export default {
         layout: 'admin',
-        middleware: 'adminRequired'
+        middleware: 'adminRequired',
+
+        head () {
+            return {
+                title: '网站概览'
+            }
+        }
     }
 </script>
 

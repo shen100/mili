@@ -38,7 +38,7 @@
 
 <script>
     import Request from '~/net/request'
-    import moment from 'moment'
+    import DateUtil from '~/utils/date'
     import ErrorCode from '~/constant/ErrorCode'
     import { ArticleStatus } from '~/constant/Article'
 
@@ -54,14 +54,14 @@
                     title: '创建时间',
                     key: 'createdAt',
                     render: (h, obj) => {
-                        return moment(obj.row.createdAt).utc().format('YYYY-MM-DD HH:mm:ss')
+                        return DateUtil.formatYMDHMS(obj.row.createdAt)
                     }
                 },
                 {
-                    title: '最近更新',
+                    title: '更新时间',
                     key: 'updatedAt',
                     render: (h, obj) => {
-                        return moment(obj.row.updatedAt).utc().format('YYYY-MM-DD HH:mm:ss')
+                        return DateUtil.formatYMDHMS(obj.row.updatedAt)
                     }
                 },
                 {
@@ -165,14 +165,14 @@
                     title: '创建时间',
                     key: 'createdAt',
                     render: (h, obj) => {
-                        return moment(obj.row.createdAt).utc().format('YYYY-MM-DD HH:mm:ss')
+                        return DateUtil.formatYMDHMS(obj.row.createdAt)
                     }
                 },
                 {
-                    title: '最近更新',
+                    title: '更新时间',
                     key: 'updatedAt',
                     render: (h, obj) => {
-                        return moment(obj.row.updatedAt).utc().format('YYYY-MM-DD HH:mm:ss')
+                        return DateUtil.formatYMDHMS(obj.row.updatedAt)
                     }
                 },
                 {

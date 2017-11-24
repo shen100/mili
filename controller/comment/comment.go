@@ -2,6 +2,7 @@ package comment
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -438,6 +439,52 @@ func SourceComments(ctx iris.Context) {
 		"msg"   : "success",
 		"data"  : iris.Map{
 			"comments": comments,
+		},
+	})
+}
+
+// YesterdayComments 查询昨天的评论
+func YesterdayComments(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var comments []model.Comment
+	var pageNo int
+	var pageNoErr error
+	if pageNo, pageNoErr = strconv.Atoi(ctx.FormValue("pageNo")); pageNoErr != nil {
+		pageNo = 1
+	}
+	if pageNo < 1 {
+		pageNo = 1
+	}
+	pageSize := 40
+	offset   := (pageNo - 1) * pageSize
+
+	yesterday := utils.GetYesterdayYMD("-")
+	today     := utils.GetTodayYMD("-")
+
+	if err := model.DB.Where("created_at >= ? AND created_at < ?", yesterday, today).Find(&comments).Offset(offset).
+			Limit(pageSize).Order("created_at DESC").Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return	
+	}
+	var count int
+	if err := model.DB.Model(&model.Comment{}).Where("created_at >= ? AND created_at < ?", yesterday, today).Count(&count).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error.", ctx)
+		return	
+	}
+	for i := 0; i < len(comments); i++ {
+		comments[i].Content = utils.MarkdownToHTML(comments[i].Content)
+	}
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"comments": comments,
+			"pageNo": pageNo,
+			"pageSize": pageSize,
+			"totalPage": int(math.Ceil(float64(count) / float64(pageSize))),
+			"totalCount": count,
 		},
 	})
 }
