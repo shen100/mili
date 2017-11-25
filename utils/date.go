@@ -74,4 +74,15 @@ func GetYesterdayYMD(sep string) string {
 	return strings.Replace(yesterdayYMD, "-", sep, -1)
 }
 
+// GetTomorrowYMD 得到以sep为分隔符的年、月、日字符串(明天)
+func GetTomorrowYMD(sep string) string {
+	now           := time.Now()
+	today         := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)
+	todaySec      := today.Unix() //秒
+	tomorrowSec   := todaySec + 24 * 60 * 60; //秒
+	tomorrowTime  := time.Unix(tomorrowSec, 0)
+	tomorrowYMD   := tomorrowTime.Format("2006-01-02")
+	return strings.Replace(tomorrowYMD, "-", sep, -1)
+}
+
 

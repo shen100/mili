@@ -35,6 +35,9 @@
             <router-link to="/admin/reply/list">
                 <Menu-item name="/admin/reply/list">全部回复</Menu-item>
             </router-link>
+            <router-link to="/admin/reply/today">
+                <Menu-item name="/admin/reply/today">今日回复</Menu-item>
+            </router-link>
             <router-link to="/admin/reply/yesterday">
                 <Menu-item name="/admin/reply/yesterday">昨日回复</Menu-item>
             </router-link>

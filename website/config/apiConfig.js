@@ -136,6 +136,14 @@ const api = {
         method: 'GET',
         desc: '回复最多的话题'
     },
+    getComments: { // 全部回复
+        url: url + '/admin/comments',
+        method: 'GET'
+    },
+    getTodayComments: { // 今日回复
+        url: url + '/admin/comments/today',
+        method: 'GET'
+    },
     getYesterdayComments: {
         url: url + '/admin/comments/yesterday',
         method: 'GET',

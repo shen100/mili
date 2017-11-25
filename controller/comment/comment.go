@@ -14,7 +14,7 @@ import (
 )
 
 // Save 保存评论（创建或更新）
-func Save(isEdit bool, ctx iris.Context) {
+func Save(ctx iris.Context, isEdit bool) {
 	SendErrJSON := common.SendErrJSON
 	var comment model.Comment
 
@@ -185,12 +185,12 @@ func Save(isEdit bool, ctx iris.Context) {
 
 // Create 创建评论
 func Create(ctx iris.Context) {
-	Save(false, ctx)
+	Save(ctx, false)
 }
 
 // Update 更新评论
 func Update(ctx iris.Context) {
-	Save(true, ctx)	
+	Save(ctx, true)	
 }
 
 // Delete 删除评论
@@ -443,8 +443,8 @@ func SourceComments(ctx iris.Context) {
 	})
 }
 
-// YesterdayComments 查询昨天的评论
-func YesterdayComments(ctx iris.Context) {
+// 查询评论列表，时间是根据updated_at来查的
+func comments(ctx iris.Context, startTime string, endTime string) {
 	SendErrJSON := common.SendErrJSON
 	var comments []model.Comment
 	var pageNo int
@@ -455,20 +455,17 @@ func YesterdayComments(ctx iris.Context) {
 	if pageNo < 1 {
 		pageNo = 1
 	}
-	pageSize := 40
+	pageSize := 4
 	offset   := (pageNo - 1) * pageSize
 
-	yesterday := utils.GetYesterdayYMD("-")
-	today     := utils.GetTodayYMD("-")
-
-	if err := model.DB.Where("created_at >= ? AND created_at < ?", yesterday, today).Find(&comments).Offset(offset).
-			Limit(pageSize).Order("created_at DESC").Error; err != nil {
+	if err := model.DB.Where("updated_at >= ? AND updated_at < ?", startTime, endTime).Offset(offset).
+			Limit(pageSize).Order("updated_at DESC").Find(&comments).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return	
 	}
 	var count int
-	if err := model.DB.Model(&model.Comment{}).Where("created_at >= ? AND created_at < ?", yesterday, today).Count(&count).Error; err != nil {
+	if err := model.DB.Model(&model.Comment{}).Where("updated_at >= ? AND updated_at < ?", startTime, endTime).Count(&count).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error.", ctx)
 		return	
@@ -487,4 +484,24 @@ func YesterdayComments(ctx iris.Context) {
 			"totalCount": count,
 		},
 	})
+}
+
+// YesterdayComments 查询昨天的评论
+func YesterdayComments(ctx iris.Context) {
+	yesterday := utils.GetYesterdayYMD("-")
+	today     := utils.GetTodayYMD("-")
+	comments(ctx, yesterday, today)
+}
+
+// TodayComments 查询今天的评论
+func TodayComments(ctx iris.Context) {
+	today     := utils.GetTodayYMD("-")
+	tomorrow  := utils.GetTomorrowYMD("-")
+	comments(ctx, today, tomorrow)
+}
+
+// AllComments 查询全部的评论
+func AllComments(ctx iris.Context) {
+	tomorrow  := utils.GetTomorrowYMD("-")
+	comments(ctx, "1970-01-01", tomorrow)
 }
