@@ -31,7 +31,7 @@
             adminSidebar: Sidebar
         },
         mounted () {
-            this.activeName = this.$refs.content.$route.fullPath
+            this.activeName = this.$refs.content.$route.path
         }
     }
 </script>

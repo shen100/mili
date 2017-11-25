@@ -23,14 +23,14 @@
                 <Icon type="ios-paper"></Icon>
                 话题管理
             </template>
-            <router-link to="/admin/article/list">
-                <Menu-item name="/admin/article/list">全部话题</Menu-item>
+            <router-link to="/admin/topic/list">
+                <Menu-item name="/admin/topic/list">全部话题</Menu-item>
             </router-link>
-            <router-link to="/admin/article/today">
-                <Menu-item name="/admin/article/today">今日话题</Menu-item>
+            <router-link to="/admin/topic/today">
+                <Menu-item name="/admin/topic/today">今日话题</Menu-item>
             </router-link>
-            <router-link to="/admin/article/yesterday">
-                <Menu-item name="/admin/article/yesterday">昨日话题</Menu-item>
+            <router-link to="/admin/topic/yesterday">
+                <Menu-item name="/admin/topic/yesterday">昨日话题</Menu-item>
             </router-link>
         </Submenu>
         <Submenu name="reply">

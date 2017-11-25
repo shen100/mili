@@ -443,7 +443,7 @@ func SourceComments(ctx iris.Context) {
 	})
 }
 
-// 查询评论列表，时间是根据updated_at来查的
+// 查询评论列表
 func comments(ctx iris.Context, startTime string, endTime string) {
 	SendErrJSON := common.SendErrJSON
 	var comments []model.Comment
@@ -455,17 +455,17 @@ func comments(ctx iris.Context, startTime string, endTime string) {
 	if pageNo < 1 {
 		pageNo = 1
 	}
-	pageSize := 4
+	pageSize := 20
 	offset   := (pageNo - 1) * pageSize
 
-	if err := model.DB.Where("updated_at >= ? AND updated_at < ?", startTime, endTime).Offset(offset).
-			Limit(pageSize).Order("updated_at DESC").Find(&comments).Error; err != nil {
+	if err := model.DB.Where("created_at >= ? AND created_at < ?", startTime, endTime).Offset(offset).
+			Limit(pageSize).Order("created_at DESC").Find(&comments).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return	
 	}
 	var count int
-	if err := model.DB.Model(&model.Comment{}).Where("updated_at >= ? AND updated_at < ?", startTime, endTime).Count(&count).Error; err != nil {
+	if err := model.DB.Model(&model.Comment{}).Where("created_at >= ? AND created_at < ?", startTime, endTime).Count(&count).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error.", ctx)
 		return	

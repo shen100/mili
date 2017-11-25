@@ -37,7 +37,7 @@
     export default {
         props: [
             'categories', 'list', 'totalCount', 'pageNo',
-            'pageSize', 'cate', 'topList', 'siteTitle'
+            'pageSize', 'cate', 'topList', 'siteTitle', 'path'
         ],
         data () {
             const self = this
@@ -257,10 +257,10 @@
         },
         methods: {
             onSelectChange (value) {
-                window.location.href = `/admin/article/list?cateId=${value}`
+                window.location.href = `/admin/topic/${this.path}?cateId=${value}`
             },
             onPageChange (value) {
-                window.location.href = `/admin/article/list?cateId=${this.cate}&pageNo=${value}`
+                window.location.href = `/admin/topic/${this.path}?cateId=${this.cate}&pageNo=${value}`
             },
             onChangeStatusVisible (article) {
                 for (let i = 0; i < this.list.length; i++) {

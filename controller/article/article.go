@@ -21,6 +21,8 @@ func queryList(isBackend bool, ctx iris.Context) {
 	var categoryID int
 	var pageNo int
 	var err error
+	var startTime time.Time
+	var endTime time.Time
 
 	if pageNo, err = strconv.Atoi(ctx.FormValue("pageNo")); err != nil {
 		pageNo = 1
@@ -33,6 +35,18 @@ func queryList(isBackend bool, ctx iris.Context) {
 
 	pageSize := 40
 	offset   := (pageNo - 1) * pageSize
+
+	if startAt, err := strconv.Atoi(ctx.FormValue("startAt")); err != nil {
+		startTime = time.Unix(0, 0)
+	} else {
+		startTime = time.Unix(int64(startAt / 1000), 0)	
+	}
+
+	if endAt, err := strconv.Atoi(ctx.FormValue("endAt")); err != nil {
+		endTime = time.Now()
+	} else {
+		endTime = time.Unix(int64(endAt / 1000), 0)	
+	}
 
 	//默认按创建时间，降序来排序
 	var orderField = "created_at"
@@ -85,12 +99,14 @@ func queryList(isBackend bool, ctx iris.Context) {
 				{statusSQL}       
 				AND article_category.category_id = {categoryID} 
 				AND articles.deleted_at IS NULL 
-				AND articles.id NOT IN ({topIDs})
+				AND articles.id NOT IN ({topIDs})   
+				{timeSQL} 
 				ORDER BY {orderField} {orderASC}
 				LIMIT {offset}, {pageSize}`
 		sql = strings.Replace(sql, "{categoryID}", strconv.Itoa(categoryID), -1)
 		sql = strings.Replace(sql, "{orderField}", orderField, -1)
 		sql = strings.Replace(sql, "{topIDs}",     topIDs, -1)
+		sql = strings.Replace(sql, "{timeSQL}",    " AND created_at >= '" + startTime.Format("2006-01-02 15:04:05") + "' AND created_at < '" + endTime.Format("2006-01-02 15:04:05") + "'", -1)
 		sql = strings.Replace(sql, "{orderASC}",   orderASC, -1)
 		sql = strings.Replace(sql, "{offset}",     strconv.Itoa(offset), -1)
 		sql = strings.Replace(sql, "{pageSize}",   strconv.Itoa(pageSize), -1)
@@ -112,11 +128,14 @@ func queryList(isBackend bool, ctx iris.Context) {
 				WHERE articles.id = article_category.article_id   
 				{statusSQL}       
 				AND article_category.category_id = {categoryID}  
-				AND articles.id NOT IN ({topIDs})
+				AND articles.id NOT IN ({topIDs}) 
+				{timeSQL}  
 				AND articles.deleted_at IS NULL`
 
 		countSQL = strings.Replace(countSQL, "{categoryID}", strconv.Itoa(categoryID), -1)
 		countSQL = strings.Replace(countSQL, "{topIDs}",     topIDs, -1)
+		countSQL = strings.Replace(countSQL, "{timeSQL}",    " AND created_at >= '" + startTime.Format("2006-01-02 15:04:05") + "' AND created_at < '" + endTime.Format("2006-01-02 15:04:05") + "'", -1)
+		
 		if isBackend {
 			//管理员查询话题列表时，会返回审核未通过的话题
 			countSQL = strings.Replace(countSQL, "{statusSQL}", " ", -1)
@@ -138,10 +157,13 @@ func queryList(isBackend bool, ctx iris.Context) {
 
 		if isBackend {
 			//管理员查询话题列表时，会返回审核未通过的话题
-			err = model.DB.Where(excludeIDs).Offset(offset).Limit(pageSize).
-				Order(orderStr).Find(&articles).Error
+			err = model.DB.Where(excludeIDs). 
+					Where("created_at >= ? AND created_at < ? ", startTime.Format("2006-01-02 15:04:05"), endTime.Format("2006-01-02 15:04:05")).
+					Offset(offset).Limit(pageSize).
+					Order(orderStr).Find(&articles).Error
 		} else {
 			err = model.DB.Where(excludeIDs).Where("status = 1 OR status = 2").
+				Where("created_at >= ? AND created_at < ? ", startTime.Format("2006-01-02 15:04:05"), endTime.Format("2006-01-02 15:04:05")).
 				Offset(offset).Limit(pageSize).Order(orderStr).Find(&articles).Error
 		}
 		
@@ -158,13 +180,16 @@ func queryList(isBackend bool, ctx iris.Context) {
 		}
 
 		if isBackend {
-			if err := model.DB.Model(&model.Article{}).Where(excludeIDs).Count(&totalCountResult.TotalCount).Error; err != nil {
+			if err := model.DB.Model(&model.Article{}).Where(excludeIDs).
+					Where("created_at >= ? AND created_at < ? ", startTime.Format("2006-01-02 15:04:05"), endTime.Format("2006-01-02 15:04:05")).
+					Count(&totalCountResult.TotalCount).Error; err != nil {
 				SendErrJSON("error", ctx)
 				return
 			}
 		} else {
 			if err := model.DB.Model(&model.Article{}).Where(excludeIDs).Where("status = 1 OR status = 2").
-				Count(&totalCountResult.TotalCount).Error; err != nil {
+					Where("created_at >= ? AND created_at < ? ", startTime.Format("2006-01-02 15:04:05"), endTime.Format("2006-01-02 15:04:05")).
+					Count(&totalCountResult.TotalCount).Error; err != nil {
 				SendErrJSON("error", ctx)
 				return
 			}	

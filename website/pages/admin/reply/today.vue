@@ -2,7 +2,8 @@
     <Row>
         <h1 class="reply-title">今日回复</h1>
         <Table :columns="columns" :data="comments"></Table>
-        <Row style="text-align:right;">
+        <Row v-if="totalCount" type="flex" justify="end">
+            <span class="ivu-page-total" style="margin-top: 10px;">共 {{totalCount}} 条</span>
             <Page class="common-page"
                 :current="pageNo"
                 :page-size="pageSize"
