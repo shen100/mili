@@ -21,7 +21,7 @@ const api = {
         method: 'GET',
         desc: '获取文章列表'
     },
-    updateAdminArticles: {
+    updateArticleStatus: {
         url: url + '/admin/article/status/update',
         method: 'POST',
         desc: '更新文章状态'

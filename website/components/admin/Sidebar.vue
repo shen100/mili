@@ -24,7 +24,13 @@
                 话题管理
             </template>
             <router-link to="/admin/article/list">
-                <Menu-item name="/admin/article/list">话题列表</Menu-item>
+                <Menu-item name="/admin/article/list">全部话题</Menu-item>
+            </router-link>
+            <router-link to="/admin/article/today">
+                <Menu-item name="/admin/article/today">今日话题</Menu-item>
+            </router-link>
+            <router-link to="/admin/article/yesterday">
+                <Menu-item name="/admin/article/yesterday">昨日话题</Menu-item>
             </router-link>
         </Submenu>
         <Submenu name="reply">
