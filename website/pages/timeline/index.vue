@@ -40,6 +40,15 @@
             return {
                 list: [
                     {
+                        name: '升级后台管理',
+                        date: {
+                            year: 2017,
+                            month: 11,
+                            date: 26
+                        },
+                        content: '后台管理增加话题管理、回复管理'
+                    },
+                    {
                         name: '话题置顶',
                         date: {
                             year: 2017,

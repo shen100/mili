@@ -22,7 +22,7 @@ function send (key, options) {
             }
         }
 
-        if (theConfig.method === 'post') {
+        if (theConfig.method === 'post' || theConfig.method === 'put') {
             options.body = options.body || {}
         } else if (theConfig.method === 'get') {
             if (options.query) {
@@ -60,7 +60,7 @@ function send (key, options) {
             }
         }
 
-        if (theConfig.method === 'post') {
+        if (theConfig.method === 'post' || theConfig.method === 'put') {
             axiosConfig.data = options.body
         }
 

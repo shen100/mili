@@ -1,65 +1,31 @@
 <template>
     <Row>
-        <h1 class="reply-title">昨日回复</h1>
-        <Table :columns="columns" :data="comments"></Table>
-        <Row v-if="totalCount" type="flex" justify="end">
-            <span class="ivu-page-total" style="margin-top: 10px;">共 {{totalCount}} 条</span>
-            <Page class="common-page"
-                :current="pageNo"
-                :page-size="pageSize"
-                :total="totalCount"
-                @on-change="onPageChange"
-                :show-elevator="true"/>
-        </Row>
+        <reply-list :comments="comments" :pageNo="pageNo" :pageSize="pageSize" :totalCount="totalCount" path="yesterday" title="昨日回复"/>
     </Row>
 </template>
+
 <script>
     import Request from '~/net/request'
-    import ErrorCode from '~/constant/ErrorCode'
-    import DateUtil from '~/utils/date'
+    import ReplyList from '~/components/admin/ReplyList'
 
     export default {
-        data () {
-            return {
-                columns: [
-                    {
-                        title: '内容',
-                        key: 'content',
-                        render: (h, obj) => {
-                            return h('div', {
-                                domProps: {
-                                    innerHTML: obj.row.content
-                                }
-                            })
-                        }
-                    },
-                    {
-                        title: '创建时间',
-                        key: 'createdAt',
-                        render: (h, obj) => {
-                            return DateUtil.formatYMDHMS(obj.row.createdAt)
-                        }
-                    },
-                    {
-                        title: '更新时间',
-                        key: 'updatedAt',
-                        render: (h, obj) => {
-                            return DateUtil.formatYMDHMS(obj.row.updatedAt)
-                        }
-                    }
-                ]
-            }
-        },
         asyncData (context) {
-            return Request.getYesterdayComments({
+            const now = new Date()
+            const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+            return Request.getComments({
                 client: context.req,
                 query: {
-                    pageNo: 1
+                    pageNo: 1,
+                    startAt: new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate()).getTime(),
+                    endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
                 }
             }).then(res => {
-                console.log(res)
+                let comments = res.data.comments || []
+                for (let i = 0; i < comments.length; i++) {
+                    comments[i].statusVisible = false
+                }
                 return {
-                    comments: res.data.comments,
+                    comments: comments,
                     pageNo: res.data.pageNo,
                     pageSize: res.data.pageSize,
                     totalCount: res.data.totalCount
@@ -76,35 +42,8 @@
                 title: '昨日回复'
             }
         },
-        methods: {
-            onPageChange (pageNo) {
-                let self = this
-                Request.getYesterdayComments({
-                    query: {
-                        pageNo: pageNo
-                    }
-                }).then(res => {
-                    if (res.errNo === ErrorCode.ERROR) {
-                        self.$Message.error(res.msg)
-                    } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
-                        location.href = '/signin?ref=' + encodeURIComponent(location.href)
-                    } else if (res.errNo === ErrorCode.SUCCESS) {
-                        this.comments = res.data.comments
-                        this.pageNo = res.data.pageNo
-                        this.pageSize = res.data.pageSize
-                        this.totalCount = res.data.totalCount
-                    }
-                }).catch(err => {
-                    self.$Message.error(err.msg)
-                })
-            }
+        components: {
+            'reply-list': ReplyList
         }
     }
 </script>
-
-<style>
-    .reply-title {
-        font-size: 22px;
-        margin: 12px 0 12px 0;
-    }
-</style>

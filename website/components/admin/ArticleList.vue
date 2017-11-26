@@ -137,10 +137,6 @@
                         default:
                             status = ''
                         }
-                        // console.log(12333333333, obj, obj.row.statusVisible)
-                        if (obj.row.id === 39) {
-                            console.log(obj.row.statusVisible)
-                        }
                         if (obj.row.statusVisible) {
                             return h('div', {
                                 style: {
@@ -266,17 +262,14 @@
                 for (let i = 0; i < this.list.length; i++) {
                     if (this.list[i].statusVisible) {
                         this.list[i].statusVisible = false
-                        console.log(2222, this.list[i])
                     }
                     if (this.list[i].id === article.id) {
                         this.list[i].statusVisible = true
-                        console.log(2222, this.list[i])
                     }
                 }
                 this.tempStatus = article.status
             },
             onTableSelectChange (value) {
-                console.log(value)
                 this.tempStatus = value
             },
             onChangeStatus (article) {

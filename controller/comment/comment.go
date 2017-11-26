@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"time"
 	"fmt"
 	"math"
 	"strconv"
@@ -443,9 +444,24 @@ func SourceComments(ctx iris.Context) {
 	})
 }
 
-// 查询评论列表
-func comments(ctx iris.Context, startTime string, endTime string) {
+// Comments 查询评论列表
+func Comments(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
+	var startTime string
+	var endTime string
+
+	if startAt, err := strconv.Atoi(ctx.FormValue("startAt")); err != nil {
+		startTime = time.Unix(0, 0).Format("2006-01-02 15:04:05")
+	} else {
+		startTime = time.Unix(int64(startAt / 1000), 0).Format("2006-01-02 15:04:05")
+	}
+
+	if endAt, err := strconv.Atoi(ctx.FormValue("endAt")); err != nil {
+		endTime = time.Now().Format("2006-01-02 15:04:05")
+	} else {
+		endTime = time.Unix(int64(endAt / 1000), 0).Format("2006-01-02 15:04:05")
+	}
+
 	var comments []model.Comment
 	var pageNo int
 	var pageNoErr error
@@ -486,22 +502,49 @@ func comments(ctx iris.Context, startTime string, endTime string) {
 	})
 }
 
-// YesterdayComments 查询昨天的评论
-func YesterdayComments(ctx iris.Context) {
-	yesterday := utils.GetYesterdayYMD("-")
-	today     := utils.GetTodayYMD("-")
-	comments(ctx, yesterday, today)
-}
+// UpdateStatus 更新评论状态
+func UpdateStatus(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var reqData model.Comment
+	var commentID int
+	var idErr error
 
-// TodayComments 查询今天的评论
-func TodayComments(ctx iris.Context) {
-	today     := utils.GetTodayYMD("-")
-	tomorrow  := utils.GetTomorrowYMD("-")
-	comments(ctx, today, tomorrow)
-}
+	if commentID, idErr = ctx.Params().GetInt("id"); idErr != nil {
+		SendErrJSON("无效的id", ctx)
+		return
+	}
 
-// AllComments 查询全部的评论
-func AllComments(ctx iris.Context) {
-	tomorrow  := utils.GetTomorrowYMD("-")
-	comments(ctx, "1970-01-01", tomorrow)
+	if err := ctx.ReadJSON(&reqData); err != nil {
+		SendErrJSON("无效的status", ctx)
+		return
+	}
+	
+	status := reqData.Status
+
+	var comment model.Comment
+	if err := model.DB.First(&comment, commentID).Error; err != nil {
+		SendErrJSON("无效的id", ctx)
+		return
+	}
+	
+	if status != model.CommentVerifySuccess && status != model.CommentVerifying && status != model.CommentVerifyFail {
+		SendErrJSON("无效的状态", ctx)
+		return
+	}
+
+	comment.Status = status
+
+	if err := model.DB.Model(&comment).Update("status", status).Error; err != nil {
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : iris.Map{
+			"id"     : comment.ID,
+			"status" : comment.Status,
+		},
+	})
 }

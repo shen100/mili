@@ -131,6 +131,10 @@ const api = {
         method: 'POST',
         desc: '删除评论'
     },
+    updateCommentStatus: { // 更新评论状态
+        url: url + '/admin/comments/update/status/:id',
+        method: 'PUT'
+    },
     getMaxComment: {
         url: url + '/articles/maxcomment',
         method: 'GET',
@@ -139,15 +143,6 @@ const api = {
     getComments: { // 全部回复
         url: url + '/admin/comments',
         method: 'GET'
-    },
-    getTodayComments: { // 今日回复
-        url: url + '/admin/comments/today',
-        method: 'GET'
-    },
-    getYesterdayComments: {
-        url: url + '/admin/comments/yesterday',
-        method: 'GET',
-        desc: '昨天的评论'
     },
     getMaxBrowse: {
         url: url + '/articles/maxbrowse',
