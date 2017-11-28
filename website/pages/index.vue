@@ -41,6 +41,7 @@
             <app-sidebar :score="score" :user="user" :userLoginVisible="true" :maxComment="maxComment" :pubTopic="true" :maxBrowse="maxBrowse"/>
         </div>
         <app-footer />
+        <BackTop></BackTop>
     </div>
 </template>
 

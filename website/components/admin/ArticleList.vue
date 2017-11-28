@@ -51,6 +51,28 @@
                     key: 'name'
                 },
                 {
+                    title: '分类',
+                    key: 'categories',
+                    render: (h, obj) => {
+                        return obj.row.categories[0].name
+                    }
+                },
+                {
+                    title: '作者',
+                    key: 'user',
+                    render: (h, obj) => {
+                        return (
+                            h('a', {
+                                'class': 'article-item-user',
+                                attrs: {
+                                    href: '/user/' + obj.row.user.id,
+                                    target: '_blank'
+                                }
+                            }, obj.row.user.name)
+                        )
+                    }
+                },
+                {
                     title: '创建时间',
                     key: 'createdAt',
                     render: (h, obj) => {
@@ -62,13 +84,6 @@
                     key: 'updatedAt',
                     render: (h, obj) => {
                         return DateUtil.formatYMDHMS(obj.row.updatedAt)
-                    }
-                },
-                {
-                    title: '分类',
-                    key: 'categories',
-                    render: (h, obj) => {
-                        return obj.row.categories[0].name
                     }
                 },
                 {
@@ -98,6 +113,28 @@
                     key: 'name'
                 },
                 {
+                    title: '分类',
+                    key: 'categories',
+                    render: (h, obj) => {
+                        return obj.row.categories[0].name
+                    }
+                },
+                {
+                    title: '作者',
+                    key: 'user',
+                    render: (h, obj) => {
+                        return (
+                            h('a', {
+                                'class': 'article-item-user',
+                                attrs: {
+                                    href: '/user/' + obj.row.user.id,
+                                    target: '_blank'
+                                }
+                            }, obj.row.user.name)
+                        )
+                    }
+                },
+                {
                     title: '创建时间',
                     key: 'createdAt',
                     render: (h, obj) => {
@@ -109,13 +146,6 @@
                     key: 'updatedAt',
                     render: (h, obj) => {
                         return DateUtil.formatYMDHMS(obj.row.updatedAt)
-                    }
-                },
-                {
-                    title: '分类',
-                    key: 'categories',
-                    render: (h, obj) => {
-                        return obj.row.categories[0].name
                     }
                 },
                 {
@@ -331,6 +361,15 @@
 </script>
 
 <style>
+    .article-item-user {
+        cursor: pointer;
+        color: #348eed;
+    }
+
+    .article-item-user:hover {
+        color: #348eed;
+    }
+
     .status-edit-box {
         cursor: pointer;
         color: #348eed;

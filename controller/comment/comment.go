@@ -487,6 +487,10 @@ func Comments(ctx iris.Context) {
 		return	
 	}
 	for i := 0; i < len(comments); i++ {
+		if err := model.DB.Model(&comments[i]).Related(&comments[i].User, "users").Error; err != nil {
+			SendErrJSON("error!", ctx)
+			return	
+		}
 		comments[i].Content = utils.MarkdownToHTML(comments[i].Content)
 	}
 	ctx.JSON(iris.Map{

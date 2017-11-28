@@ -134,9 +134,7 @@ func CreateCollect(ctx iris.Context) {
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : iris.Map{
-			"id": collect.ID,
-		},
+		"data"  : collect,
 	})
 }
 
@@ -347,7 +345,11 @@ func CreateFolder(ctx iris.Context) {
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
-		"data"  : folder,
+		"data"  : iris.Map{
+			"id": folder.ID,
+			"name": folder.Name,
+			"collects": nil,
+		},
 	})
 }
 

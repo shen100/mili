@@ -48,6 +48,21 @@
                         }
                     },
                     {
+                        title: '作者',
+                        key: 'user',
+                        render: (h, obj) => {
+                            return (
+                                h('a', {
+                                    'class': 'reply-item-user',
+                                    attrs: {
+                                        href: '/user/' + obj.row.user.id,
+                                        target: '_blank'
+                                    }
+                                }, obj.row.user.name)
+                            )
+                        }
+                    },
+                    {
                         title: '创建时间',
                         key: 'createdAt',
                         render: (h, obj) => {
@@ -256,6 +271,15 @@
     .reply-title {
         font-size: 22px;
         margin: 12px 0 12px 0;
+    }
+
+    .reply-item-user {
+        cursor: pointer;
+        color: #348eed;
+    }
+
+    .reply-item-user:hover {
+        color: #348eed;
     }
 
     .status-edit-box {

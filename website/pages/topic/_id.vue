@@ -93,7 +93,7 @@
                 align="middle"
                 v-for="(item, index) in collectDirList" key="index">
                 <div>
-                    <span class="collects-item-label">{{item.name}}</span>
+                    <a :href="`/user/collect/${user.id}?collect=${item.id}`" target="_blank" class="collects-item-label">{{item.name}}</a>
                     <p class="collects-item-num">{{(item.collects && item.collects.length) || 0}}条内容</p>
                 </div>
                 <Button v-if="item.hasCollect" class="info-button" style="width: 80px" disabled="disabled">已收藏</Button>
@@ -387,7 +387,10 @@
                         }).then(res => {
                             this.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                this.collectDirList.push(res.data)
+                                let collectDir = res.data
+                                collectDir.hasCollect = false
+                                collectDir.collects = collectDir.collects || []
+                                this.collectDirList.unshift(collectDir)
                                 this.collect()
                             } else {
                                 this.$Message.error(res.msg)
@@ -413,11 +416,14 @@
                 }).then(res => {
                     this.loading = false
                     if (res.errNo === ErrorCode.SUCCESS) {
-                        this.collectDirList.map(item => {
-                            if (item.id === id) {
-                                item.hasCollect = true
+                        let collectDirList = this.collectDirList || []
+                        for (let i = 0; i < collectDirList.length; i++) {
+                            if (collectDirList[i].id === id) {
+                                collectDirList[i].hasCollect = true
+                                collectDirList[i].collects.push(res.data)
+                                break
                             }
-                        })
+                        }
                     } else {
                         this.$Message.error(res.msg)
                     }

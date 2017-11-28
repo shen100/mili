@@ -181,3 +181,11 @@ body, .golang-home-body-left {
 .CodeMirror, .CodeMirror-scroll {
     min-height: 200px;
 }
+
+.collects-item-label {
+    color: #0f88eb;
+}
+
+.collects-item-label:hover {
+    color: #0f88eb;
+}
