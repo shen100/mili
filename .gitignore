@@ -4,7 +4,6 @@
 
 golang123
 config.json
-dist
 node_modules
 npm-debug.log
 website/config/index.js
