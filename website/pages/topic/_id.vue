@@ -141,7 +141,7 @@
     import Editor from '~/components/Editor'
     import request from '~/net/request'
     import dateTool from '~/utils/date'
-    import {trim} from '~/utils/tool'
+    import { trim } from '~/utils/tool'
 
     export default {
         data () {
