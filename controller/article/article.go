@@ -15,7 +15,7 @@ import (
 	"github.com/shen100/golang123/controller/common"
 )
 
-func queryList(isBackend bool, ctx iris.Context) {
+func queryList(ctx iris.Context, isBackend bool) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
 	var categoryID int
@@ -225,12 +225,12 @@ func queryList(isBackend bool, ctx iris.Context) {
 
 // List 文章列表
 func List(ctx iris.Context) {
-	queryList(false, ctx)
+	queryList(ctx, false)
 }
 
 // AllList 文章列表，后台管理提供的接口
 func AllList(ctx iris.Context) {
-	queryList(true, ctx)
+	queryList(ctx, true)
 }
 
 // UserArticleList 查询用户的文章
@@ -385,7 +385,7 @@ func ListMaxBrowse(ctx iris.Context) {
 	})
 }
 
-func save(isEdit bool, ctx iris.Context) {
+func save(ctx iris.Context, isEdit bool) {
 	SendErrJSON := common.SendErrJSON
 	var article model.Article
 
@@ -410,7 +410,11 @@ func save(isEdit bool, ctx iris.Context) {
 		tempArticle       := article
 		article            = queryArticle
 		article.Name       = tempArticle.Name
-		article.Content    = tempArticle.Content
+		if article.ContentType == model.ContentTypeHTML {
+			article.HTMLContent = tempArticle.Content	
+		} else {
+			article.Content = tempArticle.Content
+		}
 		article.Categories = tempArticle.Categories
 	} else {
 		article.BrowseCount  = 0
@@ -423,7 +427,8 @@ func save(isEdit bool, ctx iris.Context) {
 	article.Name = bluemonday.UGCPolicy().Sanitize(article.Name)
 	article.Name = strings.TrimSpace(article.Name)
 
-	article.Content = strings.TrimSpace(article.Content)
+	article.Content     = strings.TrimSpace(article.Content)
+	article.HTMLContent = strings.TrimSpace(article.HTMLContent)
 
 	if (article.Name == "") {
 		SendErrJSON("文章名称不能为空", ctx)
@@ -435,13 +440,20 @@ func save(isEdit bool, ctx iris.Context) {
 		SendErrJSON(msg, ctx)
 		return
 	}
+
+	var theContent string
+	if article.ContentType == model.ContentTypeHTML {
+		theContent = article.HTMLContent
+	} else {
+		theContent = article.Content
+	}
 	
-	if article.Content == "" || utf8.RuneCountInString(article.Content) <= 0 {
+	if theContent == "" || utf8.RuneCountInString(theContent) <= 0 {
 		SendErrJSON("文章内容不能为空", ctx)
 		return
 	}
 	
-	if utf8.RuneCountInString(article.Content) > model.MaxContentLen {	
+	if utf8.RuneCountInString(theContent) > model.MaxContentLen {	
 		msg := "文章内容不能超过" + strconv.Itoa(model.MaxContentLen) + "个字符"	
 		SendErrJSON(msg, ctx)
 		return
@@ -503,12 +515,12 @@ func save(isEdit bool, ctx iris.Context) {
 
 // Create 创建文章
 func Create(ctx iris.Context) {
-	save(false, ctx);	
+	save(ctx, false);	
 }
 
 // Update 更新文章
 func Update(ctx iris.Context) {
-	save(true, ctx);	
+	save(ctx, true);	
 }
 
 // Info 获取文章信息

@@ -18,7 +18,8 @@
                             </Select>
                         </Form-item>
                         <Form-item class="topic-content" :label-width="0" prop="content">
-                            <md-editor :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChage"></md-editor>
+                            <html-editor v-if="article && article.contentType == 2" :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChage" />
+                            <md-editor v-else :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChage"></md-editor>
                         </Form-item>
                         <Form-item class="topic-submit" :label-width="0">
                             <Button size="large" v-if="isMounted" type="primary" @click="onSubmit">{{id ? '保存话题' : '发布话题'}}</Button>
@@ -55,6 +56,7 @@
 <script>
     import request from '~/net/request'
     import Editor from '~/components/Editor'
+    import HTMLEditor from '~/components/HTMLEditor'
     import ErrorCode from '~/constant/ErrorCode'
     import UserStatus from '~/constant/UserStatus'
 
@@ -74,7 +76,7 @@
                     topicName: (this.article && this.article.name) || '',
                     categories: this.categories,
                     selected: (this.article && this.article.categories[0].id + '') || '',
-                    content: (this.article && this.article.content) || ''
+                    content: (this.article && (this.article.content || this.article.htmlContent)) || ''
                 },
                 ruleInline: {
                     topicName: [
@@ -149,7 +151,8 @@
             }
         },
         components: {
-            'md-editor': Editor
+            'md-editor': Editor,
+            'html-editor': HTMLEditor
         }
     }
 </script>
