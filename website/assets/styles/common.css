@@ -460,6 +460,11 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	margin-bottom: 20px;
 }
 
+#golang123-content-outter table {
+    display: block;
+    overflow-x: auto;
+}
+
 .golang123-editor th {
     border: 1px solid #ddd;
     padding: 6px 13px!important;

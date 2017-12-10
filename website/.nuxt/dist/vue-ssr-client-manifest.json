@@ -48,8 +48,8 @@
     "pages/upload.e8f67d54fafa5cdcdf83.js",
     "layouts/signin.927a17c025d64d3e5ab7.js",
     "common.4eb7cce317ae2440840a.js",
-    "app.dc2dd0b1772604bd4578.js",
-    "manifest.738dfe699779ff166299.js",
+    "app.d5295ac1cce547824c6a.js",
+    "manifest.492929bbcb6e2d14b0ca.js",
     "img/logo.ca1f746.png",
     "pages/vote/_id.2334a846b80725866196.js.map",
     "pages/topic/_id.91cc2bb0ff21948f29cb.js.map",
@@ -95,15 +95,15 @@
     "pages/upload.e8f67d54fafa5cdcdf83.js.map",
     "layouts/signin.927a17c025d64d3e5ab7.js.map",
     "common.4eb7cce317ae2440840a.js.map",
-    "app.dc2dd0b1772604bd4578.js.map",
-    "manifest.738dfe699779ff166299.js.map",
+    "app.d5295ac1cce547824c6a.js.map",
+    "manifest.492929bbcb6e2d14b0ca.js.map",
     "index.spa.html",
     "index.ssr.html"
   ],
   "initial": [
-    "manifest.738dfe699779ff166299.js",
+    "manifest.492929bbcb6e2d14b0ca.js",
     "common.4eb7cce317ae2440840a.js",
-    "app.dc2dd0b1772604bd4578.js"
+    "app.d5295ac1cce547824c6a.js"
   ],
   "async": [
     "pages/vote/_id.2334a846b80725866196.js",
