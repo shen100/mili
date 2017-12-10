@@ -398,6 +398,8 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	padding-left: 0;
     line-height: 28px;
     margin-bottom: 15px;
+    font-weight: normal;
+    font-size: 16px;
 }
 
 .golang123-editor ol {
@@ -441,6 +443,8 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     border-radius: 0;
     background: #f6f8fa;
     border: none;
+    font-weight: normal;
+    font-size: 16px;
 }
 
 .golang123-editor code {
