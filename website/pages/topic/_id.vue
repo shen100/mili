@@ -46,7 +46,7 @@
                     <div class="title">{{article.commentCount > 0 ? article.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
                         <template v-if="article.commentCount > 0">
-                            <div class="comment-item" v-for="(item, index) in article.comments">
+                            <div :id="`reply-${item.id}`" class="comment-item" v-for="(item, index) in article.comments">
                                 <a :href="'/user/' + item.user.id" target="_blank" class="reply-user-icon">
                                     <img :src="item.user.avatarURL" alt="">
                                 </a>

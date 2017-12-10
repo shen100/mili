@@ -183,6 +183,25 @@
                                 )
                             ])
                         }
+                    },
+                    {
+                        title: '操作',
+                        key: 'id',
+                        render: (h, obj) => {
+                            let path = obj.row.sourceName
+                            if (path === 'article') {
+                                path = 'topic'
+                            }
+                            return (
+                                h('a', {
+                                    'class': 'reply-view',
+                                    attrs: {
+                                        href: `/${path}/${obj.row.sourceID}/#reply-${obj.row.id}`,
+                                        target: '_blank'
+                                    }
+                                }, '查看')
+                            )
+                        }
                     }
                 ]
             }
@@ -268,6 +287,14 @@
 </script>
 
 <style>
+    .reply-view {
+        color: #348eed;
+    }
+
+    .reply-view:hover {
+        color: #348eed;
+    }
+
     .reply-title {
         font-size: 22px;
         margin: 12px 0 12px 0;

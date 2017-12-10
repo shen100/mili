@@ -52,7 +52,7 @@
                     <div class="title">{{vote.commentCount > 0 ? vote.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
                         <template v-if="vote.commentCount">
-                            <div class="comment-item" v-for="(item, index) in vote.comments">
+                            <div :id="`reply-${item.id}`" class="comment-item" v-for="(item, index) in vote.comments">
                                 <a class="reply-user-icon" :href="`/user/${item.user.id}`" target="_blank">
                                     <img :src="item.user.avatarURL" alt="">
                                 </a>
