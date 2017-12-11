@@ -1,6 +1,8 @@
 <template>
     <Row>
-        <h1>Golang123后台管理</h1>
+        <Row class="admin-common-line">
+            <h2 class="common-title-h">Golang123后台管理</h2>
+        </Row>
     </Row>
 </template>
 

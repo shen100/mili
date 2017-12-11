@@ -13,6 +13,7 @@ import (
 	"github.com/shen100/golang123/controller/user"
 	"github.com/shen100/golang123/controller/message"
 	"github.com/shen100/golang123/controller/crawler"
+	"github.com/shen100/golang123/controller/baidu"
 )
 
 // Route 路由
@@ -134,6 +135,8 @@ func Route(app *iris.Application) {
 		adminRoutes.Put("/comments/update/status/:id", comment.UpdateStatus)
 
 		adminRoutes.Post("/crawl", crawler.Crawl)
+
+		adminRoutes.Post("/pushBaiduLink",  baidu.PushToBaidu)
 
 		adminRoutes.Get("/users", user.AllList)
     }

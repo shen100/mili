@@ -90,6 +90,7 @@ type serverConfig struct {
 	MailPort            int     //smtp邮箱端口
 	MailFrom            string  //邮件来源
 	Github              string
+	BaiduPushLink       string
 }
 
 // ServerConfig 服务器相关配置

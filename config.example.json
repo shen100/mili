@@ -34,6 +34,7 @@
 		"MailHost"            : "smtp.qq.com",        /*smtp邮箱域名*/
 		"MailPort"            : 465,                  /*smtp邮箱端口*/
 		"MailFrom"            : "",                   /*邮件来源*/
-		"Github"              : "https://github.com/shen100/golang123"/*golang123项目github地址*/
+		"Github"              : "https://github.com/shen100/golang123",/*golang123项目github地址*/
+		"BaiduPushLink"       : ""/*百度链接提交接口地址*/
 	}
 }

@@ -8,6 +8,7 @@ export default function (context, next) {
     return request.getUserInfo({client: context.req})
         .then(data => {
             if (data.errNo === ErrorCode.LOGIN_TIMEOUT) {
+                context.redirect('/signin?ref=' + encodeURIComponent(context.req.url))
                 context.redirect('/signin')
             } else {
                 let user = data.data.user

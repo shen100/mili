@@ -308,6 +308,10 @@ const api = {
         url: url + '/admin/crawl',
         method: 'POST',
         desc: '爬取微信文章'
+    },
+    pushToBaidu: {
+        url: url + '/admin/pushBaiduLink', // 链接提交到百度
+        method: 'POST'
     }
 }
 
