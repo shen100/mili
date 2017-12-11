@@ -4,7 +4,7 @@
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div class="detail-title-box">
-                    <div class="article-detail-title"><span class="articles-categoties">{{article.categories[0].name}}</span><h1>{{article.name}}</h1></div>
+                    <div class="article-detail-title"><span class="articles-categoties article-detail-categoty">{{article.categories[0].name}}</span><h1>{{article.name}}</h1></div>
                     <p class="article-title-info">
                         <span class="article-title-info-item">
                             发布于{{article.createdAt | getReplyTime}}

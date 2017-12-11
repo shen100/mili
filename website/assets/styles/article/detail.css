@@ -19,6 +19,8 @@ body, .golang-home-body-left {
 
 .article-detail-title h1 {
     display: inline-block;
+    vertical-align: top;
+    width: 806px;
 }
 
 .article-title-info {
@@ -188,4 +190,12 @@ body, .golang-home-body-left {
 
 .collects-item-label:hover {
     color: #0f88eb;
+}
+
+.article-detail-categoty {
+    width: 44px;
+    display: inline-block;
+    vertical-align: top;
+    padding: 2px 0;
+    text-align: center;
 }
