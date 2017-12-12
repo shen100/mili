@@ -89,12 +89,18 @@ func verifyLink(cacheKey string, ctx iris.Context) (model.User, error) {
 // ActiveSendMail 发送激活账号的邮件
 func ActiveSendMail(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
-	var user model.User
+	type ReqData struct {
+		Email string `json:"email"`
+	}
+	var reqData ReqData
 	// 只接收一个email参数
-	if err := ctx.ReadJSON(&user); err != nil {
+	if err := ctx.ReadJSON(&reqData); err != nil {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
+
+	var user model.User
+	user.Email = reqData.Email
 	
 	var decodeBytes []byte
 	var decodedErr error
