@@ -113,8 +113,35 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 	if imgs.Length() > 0 {
 		imgs.Each(func(j int, img *goquery.Selection) {
 			imgURL, exists := img.Attr("src")	
+			var ext string
 			if !exists {
-				return
+				if from != model.ArticleFromJianShu {
+					return	
+				}
+				originalSrc, originalExists := img.Attr("data-original-src")
+				if originalExists && originalSrc != "" {
+					tempImgURL, tempErr := utils.RelativeURLToAbsoluteURL(originalSrc, pageURL)
+					if tempErr != nil || tempImgURL == "" {
+						return
+					}
+					imgURL = tempImgURL
+					resp, err := http.Head(imgURL)
+					if err != nil {
+						fmt.Println(err.Error())
+						return
+					}
+
+					defer resp.Body.Close()	
+
+					contentType := resp.Header.Get("content-type")
+					if contentType == "image/jpeg" {
+						ext = ".jpg"
+					} else if contentType == "image/gif" {
+						ext = ".gif"
+					} else if contentType == "image/png" {
+						ext = ".png"
+					}
+				}
 			}
 
 			if (imgURL == "" || from == model.ArticleFromZhihu && strings.Index(imgURL, "data:image/svg+xml;utf8,") == 0) {
@@ -132,11 +159,12 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 			if urlErr != nil {
 				return
 			}
-			index := strings.LastIndex(urlData.Path, ".")
 
-			var ext string
-			if (index >= 0) {
-				ext = urlData.Path[index:]
+			if ext == "" {
+				index := strings.LastIndex(urlData.Path, ".")
+				if (index >= 0) {
+					ext = urlData.Path[index:]
+				}
 			}
 
 			resp, err := http.Get(imgURL)

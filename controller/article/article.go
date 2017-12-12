@@ -92,8 +92,8 @@ func queryList(ctx iris.Context, isBackend bool) {
 			SendErrJSON("分类ID不正确", ctx)
 			return
 		}
-		var sql = `SELECT distinct(articles.id), articles.name, articles.browse_count, articles.status,  
-					articles.created_at, articles.updated_at, articles.user_id, articles.last_user_id  
+		var sql = `SELECT distinct(articles.id), articles.name, articles.browse_count, articles.comment_count, articles.collect_count,  
+					articles.status, articles.created_at, articles.updated_at, articles.user_id, articles.last_user_id  
 				FROM articles, article_category  
 				WHERE articles.id = article_category.article_id   
 				{statusSQL}       

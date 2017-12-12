@@ -469,6 +469,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     overflow-x: auto;
 }
 
+#golang123-content-outter .image-container-fill {
+    padding-bottom: 0!important;
+}
+
+#golang123-content-outter blockquote {
+    margin-top: 20px;
+}
+
 .golang123-editor th {
     border: 1px solid #ddd;
     padding: 6px 13px!important;
