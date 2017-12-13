@@ -2,44 +2,46 @@
     <div>
         <app-header :user="user" />
         <div class="golang-home-body">
-            <div class="golang-home-body-left">
-                <div class="detail-title-box">
-                    <div class="article-detail-title"><span class="articles-categoties article-detail-categoty">{{article.categories[0].name}}</span><h1>{{article.name}}</h1></div>
-                    <p class="article-title-info">
-                        <span class="article-title-info-item">
-                            发布于{{article.createdAt | getReplyTime}}
-                        </span>
-                        <span class="article-title-info-item">
-                            作者{{article.user.name}}
-                        </span>
-                        <span class="article-title-info-item">
-                            {{article.browseCount}}次浏览
-                        </span>
-                    </p>
-                </div>
-                <div class="home-articles-box">
-                    <div class="golang123-editor" v-html="article.content"></div>
-                </div>
-                <div class="article-actions">
-                    <div class="article-share">
-                        <div class="article-share-btn" @click="collect">
-                            <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;"></Icon>
-                            <span>收藏</span>
-                        </div>
-                        <div class="article-share-btn">
-                            <Icon type="android-share-alt" style="font-size: 16px"></Icon>
-                            <span>分享</span>
-                        </div>
-                        <template v-if="isAuthor">
-                            <div class="article-share-btn">
-                                <Icon type="edit" style="font-size: 16px"></Icon>
-                                <a :href="'/topic/edit/' + article.id"><span>编辑</span></a>
+            <div class="golang-home-body-left topic-detail-left">
+                <div class="topic-detail-box">
+                    <div class="detail-title-box">
+                        <div class="article-detail-title"><span class="articles-categoties article-detail-categoty">{{article.categories[0].name}}</span><h1>{{article.name}}</h1></div>
+                        <p class="article-title-info">
+                            <span class="article-title-info-item">
+                                发布于{{article.createdAt | getReplyTime}}
+                            </span>
+                            <span class="article-title-info-item">
+                                作者{{article.user.name}}
+                            </span>
+                            <span class="article-title-info-item">
+                                {{article.browseCount}}次浏览
+                            </span>
+                        </p>
+                    </div>
+                    <div class="home-articles-box">
+                        <div class="golang123-editor" v-html="article.content"></div>
+                    </div>
+                    <div class="article-actions">
+                        <div class="article-share">
+                            <div class="article-share-btn" @click="collect">
+                                <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;"></Icon>
+                                <span>收藏</span>
                             </div>
                             <div class="article-share-btn">
-                                <Icon type="android-delete" style="font-size: 17px;"></Icon>
-                                <span @click="onDelete">删除</span>
+                                <Icon type="android-share-alt" style="font-size: 16px"></Icon>
+                                <span>分享</span>
                             </div>
-                        </template>
+                            <template v-if="isAuthor">
+                                <div class="article-share-btn">
+                                    <Icon type="edit" style="font-size: 16px"></Icon>
+                                    <a :href="'/topic/edit/' + article.id"><span>编辑</span></a>
+                                </div>
+                                <div class="article-share-btn">
+                                    <Icon type="android-delete" style="font-size: 17px;"></Icon>
+                                    <span @click="onDelete">删除</span>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
                 <div class="golang-cell comment-box">
@@ -323,9 +325,10 @@
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.formData.content = ''
                                 this.$Message.success('评论提交成功')
-                                return request.getArticle({
+                                return request.getSiteComments({
                                     params: {
-                                        id: this.$route.params.id
+                                        sourceID: this.$route.params.id,
+                                        sourceName: 'article'
                                     }
                                 })
                             } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
@@ -338,7 +341,8 @@
                             }
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                this.article = res.data.article
+                                this.article.comments = res.data.comments
+                                this.article.commentCount = res.data.comments.length
                             }
                         }).catch(err => {
                             this.loading = false
@@ -350,11 +354,37 @@
                 })
             },
             onCommentDelete (id) {
-                request.deleteComment({
-                    params: {
-                        id: id
+                let self = this
+                this.$Modal.confirm({
+                    title: '删除回复',
+                    content: '确定要删除这个回复?',
+                    onOk () {
+                        request.deleteComment({
+                            params: {
+                                id: id
+                            }
+                        }).then((res) => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                self.$Message.success('回复已删除')
+                                return request.getSiteComments({
+                                    params: {
+                                        sourceID: self.$route.params.id,
+                                        sourceName: 'article'
+                                    }
+                                })
+                            }
+                        }).then(res => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                self.article.comments = res.data.comments
+                                self.article.commentCount = res.data.comments.length
+                            }
+                        }).catch(err => {
+                            self.$Message.error(err.message)
+                        })
+                    },
+                    onCancel () {
+
                     }
-                }).then((res) => {
                 })
             },
             collect () {

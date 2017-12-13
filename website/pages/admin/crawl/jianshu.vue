@@ -30,7 +30,7 @@
 
         data () {
             return {
-                url: 'http://www.jianshu.com/c/c7634b78294d?order_by=added_at&page=2'
+                url: 'http://www.jianshu.com/c/c7634b78294d'
             }
         },
         components: {

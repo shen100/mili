@@ -22,7 +22,7 @@ func Save(ctx iris.Context, isEdit bool) {
 	// 编辑评论时，只传id, content
 	// 创建评论时传
 	// {
-	//   "sourceID": 1,
+	//   "sourceID": 1, (文章ID或投票ID)
 	//   "sourceName": "article",
 	//   "content": "这是一条评论",
 	//	 "parentID": 0
@@ -430,9 +430,13 @@ func SourceComments(ctx iris.Context) {
 	}
 
 	var comments []model.Comment
-	if err := model.DB.Where("source_id = ?", sourceID).Preload("User").Find(&comments).Error; err != nil {
+	if err := model.DB.Where("source_id = ? AND source_name = ?", sourceID, sourceName).Preload("User").Find(&comments).Error; err != nil {
 		SendErrJSON("error", ctx)
 		return	
+	}
+
+	for i := 0; i < len(comments); i++ {
+		comments[i].Content = utils.MarkdownToHTML(comments[i].Content)
 	}
 
 	ctx.JSON(iris.Map{

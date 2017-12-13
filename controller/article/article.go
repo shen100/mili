@@ -561,7 +561,7 @@ func Info(ctx iris.Context) {
 		return
 	}
 
-	if err := model.DB.Model(&article).Related(&article.Comments, "comments").Error; err != nil {
+	if err := model.DB.Model(&article).Where("source_name = ?", model.CommentSourceArticle).Related(&article.Comments, "comments").Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return

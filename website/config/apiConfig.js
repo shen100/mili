@@ -140,7 +140,11 @@ const api = {
         method: 'GET',
         desc: '回复最多的话题'
     },
-    getComments: { // 全部回复
+    getSiteComments: {
+        url: url + '/comments/:sourceName/:sourceID',
+        method: 'GET'
+    },
+    getComments: {
         url: url + '/admin/comments',
         method: 'GET'
     },

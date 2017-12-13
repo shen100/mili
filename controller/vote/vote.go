@@ -306,7 +306,7 @@ func Info(ctx iris.Context) {
 		return
 	}
 
-	if err := model.DB.Model(&vote).Related(&vote.Comments, "comments").Error; err != nil {
+	if err := model.DB.Model(&vote).Where("source_name = ?", model.CommentSourceVote).Related(&vote.Comments, "comments").Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return

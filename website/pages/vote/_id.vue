@@ -2,49 +2,51 @@
     <div>
         <app-header :user="user" />
         <div class="golang-home-body">
-            <div class="golang-home-body-left">
-                <div class="detail-title-box">
-                    <p class="vote-detail-title"><span class="vote-categoties" :class="status ? 'vote-categoties-running' : 'vote-categoties-end'">{{status ? '进行中' : '已结束'}}</span>{{vote.name}}</p>
-                    <p class="vote-title-info">
-                        <span class="vote-title-info-item">
-                            发布于{{vote.createdAt | getReplyTime}}
-                        </span>
-                        <span class="vote-title-info-item">
-                            作者{{vote.user.name}}
-                        </span>
-                        <span class="vote-title-info-item">
-                            {{vote.browseCount}}次浏览
-                        </span>
-                    </p>
-                </div>
-                <div class="home-vote-box">
-                    <div class="golang123-editor" v-html="vote.content"></div>
-                    <div class="">
-                        <span v-for="item in vote.voteItems">
-                            <Button type="primary" class="vote-item" @click="onVoteSubmit(item.id)">支持<span class="vote-item-label">{{item.name}}</span><span class="vote-item-label">{{item.count}}</span></Button>
-                        </span>
+            <div class="golang-home-body-left vote-detail-left">
+                <div class="vote-detail-box">
+                    <div class="detail-title-box">
+                        <p class="vote-detail-title"><span class="vote-categoties" :class="status ? 'vote-categoties-running' : 'vote-categoties-end'">{{status ? '进行中' : '已结束'}}</span>{{vote.name}}</p>
+                        <p class="vote-title-info">
+                            <span class="vote-title-info-item">
+                                发布于{{vote.createdAt | getReplyTime}}
+                            </span>
+                            <span class="vote-title-info-item">
+                                作者{{vote.user.name}}
+                            </span>
+                            <span class="vote-title-info-item">
+                                {{vote.browseCount}}次浏览
+                            </span>
+                        </p>
                     </div>
-                    <div style="margin-top: 20px;font-size: 14px;font-weight: 700;">{{endAtStr}}&nbsp;&nbsp;前可投票</div>
-                    <div class="vote-actions">
-                        <div class="vote-share">
-                            <div class="vote-share-btn" @click="collect">
-                                <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;"></Icon>
-                                <span>收藏</span>
-                            </div>
-                            <div class="vote-share-btn">
-                                <Icon type="android-share-alt" style="font-size: 16px"></Icon>
-                                <span>分享</span>
-                            </div>
-                            <template v-if="isAuthor">
-                                <div class="vote-share-btn">
-                                    <Icon type="edit" style="font-size: 16px"></Icon>
-                                    <a :href="'/vote/edit/' + vote.id"><span>编辑</span></a>
+                    <div class="home-vote-box">
+                        <div class="golang123-editor" v-html="vote.content"></div>
+                        <div class="">
+                            <span v-for="item in vote.voteItems">
+                                <Button type="primary" class="vote-item" @click="onVoteSubmit(item.id)">支持<span class="vote-item-label">{{item.name}}</span><span class="vote-item-label">{{item.count}}</span></Button>
+                            </span>
+                        </div>
+                        <div style="margin-top: 20px;font-size: 14px;font-weight: 700;">{{endAtStr}}&nbsp;&nbsp;前可投票</div>
+                        <div class="vote-actions">
+                            <div class="vote-share">
+                                <div class="vote-share-btn" @click="collect">
+                                    <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;"></Icon>
+                                    <span>收藏</span>
                                 </div>
                                 <div class="vote-share-btn">
-                                    <Icon type="android-delete" style="font-size: 17px;"></Icon>
-                                    <span @click="onDelete">删除</span>
+                                    <Icon type="android-share-alt" style="font-size: 16px"></Icon>
+                                    <span>分享</span>
                                 </div>
-                            </template>
+                                <template v-if="isAuthor">
+                                    <div class="vote-share-btn">
+                                        <Icon type="edit" style="font-size: 16px"></Icon>
+                                        <a :href="'/vote/edit/' + vote.id"><span>编辑</span></a>
+                                    </div>
+                                    <div class="vote-share-btn">
+                                        <Icon type="android-delete" style="font-size: 17px;"></Icon>
+                                        <span @click="onDelete">删除</span>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -266,27 +268,39 @@
                 })
             },
             onCommentDelete (id) {
-                request.deleteComment({
-                    params: {
-                        id: id
-                    }
-                }).then((res) => {
-                    if (res.errNo === ErrorCode.SUCCESS) {
-                        this.$Message.success('回复已删除')
-                        return request.getVote({
+                let self = this
+                this.$Modal.confirm({
+                    title: '删除回复',
+                    content: '确定要删除这个回复?',
+                    onOk () {
+                        request.deleteComment({
                             params: {
-                                id: this.$route.params.id
+                                id: id
                             }
+                        }).then((res) => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                self.$Message.success('回复已删除')
+                                return request.getSiteComments({
+                                    params: {
+                                        sourceID: self.$route.params.id,
+                                        sourceName: 'vote'
+                                    }
+                                })
+                            } else {
+                                return Promise.reject(new Error(res.msg))
+                            }
+                        }).then(res => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                self.vote.comments = res.data.comments
+                                self.vote.commentCount = res.data.comments.length
+                            }
+                        }).catch(err => {
+                            self.$Message.error(err.message)
                         })
-                    } else {
-                        return Promise.reject(new Error(res.msg))
+                    },
+                    onCancel () {
+
                     }
-                }).then(res => {
-                    if (res.errNo === ErrorCode.SUCCESS) {
-                        this.vote = res.data
-                    }
-                }).catch(err => {
-                    this.$Message.error(err.message)
                 })
             },
             onContentChage (content) {
@@ -307,9 +321,10 @@
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.formData.content = ''
                                 this.$Message.success('评论提交成功')
-                                return request.getVote({
+                                return request.getSiteComments({
                                     params: {
-                                        id: this.$route.params.id
+                                        sourceID: this.$route.params.id,
+                                        sourceName: 'vote'
                                     }
                                 })
                             } else {
@@ -317,7 +332,8 @@
                             }
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                this.vote = res.data
+                                this.vote.comments = res.data.comments
+                                this.vote.commentCount = res.data.comments.length
                             }
                             this.loading = false
                         }).catch(err => {

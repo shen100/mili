@@ -2,6 +2,16 @@ body, .golang-home-body-left {
 	background-color: #e1e1e1;
 }
 
+.topic-detail-left {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.topic-detail-box {
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
 .detail-title-box {
 	padding: 10px 20px;
 	border-radius: 3px 3px 0 0;
@@ -62,6 +72,8 @@ body, .golang-home-body-left {
 
 .comment-box {
 	margin-top: 20px;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
 }
 
 .comment-content {
