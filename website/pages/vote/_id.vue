@@ -100,8 +100,10 @@
                 justify="space-between"
                 align="middle"
                 v-for="(item, index) in collectDirList" key="index">
-                <span class="collects-item-label">{{item.name}}</span>
-                <p class="collects-item-num">{{(item.collects && item.collects.length) || 0}}条内容</p>
+                <div>
+                    <a :href="`/user/collect/${user.id}?collect=${item.id}`" target="_blank" class="collects-item-label">{{item.name}}</a>
+                    <p class="collects-item-num">{{(item.collects && item.collects.length) || 0}}条内容</p>
+                </div>
                 <Button v-if="item.hasCollect" class="info-button" style="width: 80px" disabled="disabled">已收藏</Button>
                 <Button v-else class="info-button" style="width: 80px" @click="createCollect(item.id)">收藏</Button>
             </Row>
@@ -400,9 +402,9 @@
                             }
                         }).then(res => {
                             this.loading = false
-                            console.log(res)
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                this.collectDirList.push(res.data)
+                                res.data.hasCollect = false
+                                this.collectDirList.unshift(res.data)
                                 this.collect()
                             } else {
                                 this.$Message.error(res.msg)

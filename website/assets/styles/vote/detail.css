@@ -180,3 +180,7 @@ body, .golang-home-body-left {
     color: #808080;
 }
 
+.collects-item-label, .collects-item-label:hover {
+    color: #0f88eb;
+}
+

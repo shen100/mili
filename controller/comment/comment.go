@@ -339,7 +339,7 @@ func UserCommentList(ctx iris.Context) {
 		return	
 	}
 
-	offset   := (pageNo - 1) * pageSize
+	offset := (pageNo - 1) * pageSize
 
 	if orderType == 1 {
 		orderStr = "created_at"
@@ -354,7 +354,14 @@ func UserCommentList(ctx iris.Context) {
 	}
 
 	var comments []model.Comment
-	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Offset(offset).Limit(pageSize).Find(&comments).Error; err != nil {
+	var totalCount int
+	if err := model.DB.Model(&model.Comment{}).Where("user_id = ? AND status != ?", user.ID, model.CommentVerifyFail).Count(&totalCount).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return	
+	}
+
+	if err := model.DB.Where("user_id = ? AND status != ?", user.ID, model.CommentVerifyFail).Order(orderStr).Offset(offset).Limit(pageSize).Find(&comments).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
@@ -391,7 +398,10 @@ func UserCommentList(ctx iris.Context) {
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
-			"comments": results,
+			"comments"   : results,
+			"pageNo"     : pageNo,
+			"pageSize"   : pageSize,
+			"totalCount" : totalCount,
 		},
 	})
 }

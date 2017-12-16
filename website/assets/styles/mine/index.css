@@ -113,7 +113,7 @@ body {
 .mine-content-left {
     width: 900px;
     display: inline-block;
-    min-height: 300px;
+    min-height: 450px;
     border-radius: 3px;
     padding: 0 20px 20px 20px;
     overflow: hidden;
@@ -162,10 +162,52 @@ body {
     cursor: default;
 }
 
+.mine-menu-list {
+    width: 860px;
+    display: inline-block;
+    vertical-align: top;
+    border-bottom: 1px solid #f0f2f7;
+}
+
 .mine-menu-item {
-    text-align: center;
-    margin-right: 40px;
-    padding: 0 !important;
+    display: inline-block;
+    vertical-align: top;
+    font-weight: 400;
+    font-size: 16px;
+    padding: 0 20px;
+}
+
+.mine-menu-item-active {
+    font-weight: 500;
+    color: #333!important;
+}
+
+.mine-menu-item-active:after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 3px;
+    background: #0f88eb;
+    content: "";
+}
+
+.mine-menu-item a {
+    display: inline-block;
+    text-decoration: none;
+    position: relative;
+    padding: 14px 0;
+    font-size: 16px;
+    line-height: 22px;
+    color: #2e2e2e;
+}
+
+.mine-menu-meta {
+    margin-left: 6px;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #a1aebf;
 }
 
 .article-top {

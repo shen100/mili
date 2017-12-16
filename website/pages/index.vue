@@ -24,18 +24,16 @@
                         <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
                         <a v-if="article.lastUser && article.lastUser.id" :href="'/user/' + article.lastUser.id" target="_blank" class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""/></a>
                     </div>
-                    <Row
-                        v-if="articles.length > 0"
-                        type="flex"
-                        justify="end">
-                        <span v-if="totalVisible" class="ivu-page-total" style="margin-top: 10px;">共 {{totalCount}} 条</span>
-                        <Page class="common-page"
+
+                    <div v-if="articles.length > 0" style="text-align: center;">
+                        <span v-if="totalVisible" class="ivu-page-total" style="margin-top: 10px;vertical-align: top;">共 {{totalCount}} 条</span>
+                        <Page class="common-page" :class="{'common-page-inline': totalVisible}"
                             :current="pageNo"
                             :page-size="pageSize"
                             :total="totalCount"
                             @on-change="onPageChange"
                             :show-elevator="true"/>
-                    </Row>
+                    </div>
                 </div>
             </div>
             <app-sidebar :score="score" :user="user" :userLoginVisible="true" :maxComment="maxComment" :pubTopic="true" :maxBrowse="maxBrowse"/>

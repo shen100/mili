@@ -45,12 +45,12 @@
             </div>
             <div class="golang-mine-content">
                 <div class="mine-content-left">
-                    <Menu mode="horizontal" theme="light" :active-name="activeMenu" @on-select="onMenuSelect">
-                        <Menu-item name="index" class="mine-menu-item">话题</Menu-item>
-                        <Menu-item name="reply" class="mine-menu-item">回复</Menu-item>
-                        <Menu-item name="vote" class="mine-menu-item">参与的投票</Menu-item>
-                        <Menu-item name="collect" class="mine-menu-item">收藏</Menu-item>
-                    </Menu>
+                    <ul class="mine-menu-list">
+                        <li class="mine-menu-item" style="padding-left: 0;"><a :class="{'mine-menu-item-active': isUserTopicMenu}" :href="`/user/${currentUser.id}`">话题<span class="mine-menu-meta">{{currentUser.articleCount}}</span></a></li>
+                        <li class="mine-menu-item"><a :class="{'mine-menu-item-active': isUserReplyMenu}" :href="`/user/${currentUser.id}/reply`">回复<span class="mine-menu-meta">{{currentUser.commentCount}}</span></a></li>
+                        <li class="mine-menu-item"><a :class="{'mine-menu-item-active': isUserVoteMenu}" :href="`/user/${currentUser.id}/vote`">参与的投票<span></span></a></li>
+                        <li class="mine-menu-item"><a :class="{'mine-menu-item-active': isUserCollectMenu}" :href="`/user/${currentUser.id}/collect`">收藏<span class="mine-menu-meta"></span></a></li>
+                    </ul>
                     <nuxt-child/>
                 </div>
                 <div class="mine-content-right">
@@ -77,6 +77,7 @@
 
 <script>
     import axios from 'axios'
+    import url from 'url'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
     import Header from '~/components/Header'
@@ -101,6 +102,21 @@
             return hasId
         },
         asyncData (context) {
+            let myURL = url.parse(context.req.url, true)
+            let pathname = myURL.pathname
+            let isUserTopicMenu = false
+            let isUserReplyMenu = false
+            let isUserVoteMenu = false
+            let isUserCollectMenu = false
+            if (pathname.match(/^\/user\/[0-9]+$/)) {
+                isUserTopicMenu = true
+            } else if (pathname.match(/^\/user\/[0-9]+\/reply$/)) {
+                isUserReplyMenu = true
+            } else if (pathname.match(/^\/user\/[0-9]+\/vote$/)) {
+                isUserVoteMenu = true
+            } else if (pathname.match(/^\/user\/[0-9]+\/collect$/)) {
+                isUserCollectMenu = true
+            }
             return request.getPublicUser({
                 client: context.req,
                 params: {
@@ -110,6 +126,10 @@
                 if (res.errNo === ErrorCode.SUCCESS) {
                     let currentUser = res.data.user
                     return {
+                        isUserTopicMenu: isUserTopicMenu,
+                        isUserReplyMenu: isUserReplyMenu,
+                        isUserVoteMenu: isUserVoteMenu,
+                        isUserCollectMenu: isUserCollectMenu,
                         isAuthor: context.user && context.user.id === currentUser.id,
                         user: context.user, // 当前登录用户
                         currentUser: currentUser, // 作者
@@ -200,13 +220,6 @@
                         }
                     })
                 })
-            },
-            onMenuSelect (name) {
-                if (name === 'index') {
-                    window.location.href = `/user/${this.currentUser.id}`
-                } else {
-                    window.location.href = `/user/${this.currentUser.id}/${name}`
-                }
             }
         },
         middleware: 'userInfo',

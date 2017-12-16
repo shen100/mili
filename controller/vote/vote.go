@@ -625,6 +625,16 @@ func UserVoteList(ctx iris.Context) {
 		return	
 	}
 
+	var pageNo int
+	var pageNoErr error
+	if pageNo, pageNoErr = strconv.Atoi(ctx.FormValue("pageNo")); pageNoErr != nil {
+		pageNo = 1
+	}
+	if pageNo < 1 {
+		pageNo = 1
+	}
+	offset := (pageNo - 1) * pageSize
+
 	if orderType == 1 {
 		orderStr = "created_at"
 	} else if orderType == 2 {
@@ -639,8 +649,15 @@ func UserVoteList(ctx iris.Context) {
 		orderStr += " ASC"
 	}
 
+	var totalCount int
+	if err := model.DB.Model(&model.Vote{}).Where("user_id = ?", user.ID).Count(&totalCount).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return	
+	}
+
 	var votes []model.Vote
-	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Limit(pageSize).Find(&votes).Error; err != nil {
+	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Offset(offset).Limit(pageSize).Find(&votes).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
@@ -649,7 +666,10 @@ func UserVoteList(ctx iris.Context) {
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
-			"votes": votes,
+			"votes"      : votes,
+			"pageNo"     : pageNo,
+			"pageSize"   : pageSize,
+			"totalCount" : totalCount,
 		},
 	})
 }
