@@ -380,6 +380,7 @@ func UserCommentList(ctx iris.Context) {
 				SendErrJSON("error", ctx)
 				return
 			}
+			data["sourceName"]  = model.CommentSourceArticle
 			data["articleID"]   = article.ID
 			data["articleName"] = article.Name
 		} else if (comments[i].SourceName == model.CommentSourceVote) {
@@ -388,9 +389,17 @@ func UserCommentList(ctx iris.Context) {
 				SendErrJSON("error", ctx)
 				return
 			}
-			data["voteID"]   = vote.ID
-			data["voteName"] = vote.Name
+			data["sourceName"] = model.CommentSourceVote
+			data["voteID"]     = vote.ID
+			data["voteName"]   = vote.Name
 		}
+
+		if err := model.DB.Model(&comments[i]).Related(&comments[i].User, "users").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		data["user"] = comments[i].User
 		results = append(results, data)
 	}
 

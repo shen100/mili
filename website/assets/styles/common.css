@@ -733,3 +733,57 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     color: #8590a6;
     margin-top: 4px;
 }
+
+.golang123-digest {
+    font-size: 15px;
+    line-height: 25px;
+    color: #262626;
+}
+
+.golang123-digest h1 {
+    font-weight: 400;
+}
+
+.golang123-digest h2 {
+    font-weight: 400;
+}
+
+.golang123-digest h3 {
+    font-weight: 400;
+}
+
+.golang123-digest h4 {
+    font-weight: 400;
+}
+
+.golang123-digest h5 {
+    font-weight: 400;
+}
+
+.golang123-digest h6 {
+    font-weight: 400;
+}
+
+.golang123-digest img {
+    max-width: 200px;
+}
+
+.golang123-digest pre {
+    overflow-x: auto;
+}
+
+.golang123-digest-continue {
+    color: #175199;
+    text-decoration: none;
+}
+
+.golang123-digest-continue:hover {
+    color: #175199;
+    text-decoration: none;
+}
+
+
+
+
+
+

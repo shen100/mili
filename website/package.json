@@ -17,7 +17,8 @@
     "iview": "2.5.1",
     "moment": "2.18.1",
     "mysql": "^2.15.0",
-    "nuxt": "1.0.0-rc11"
+    "nuxt": "1.0.0-rc11",
+    "trim-html": "^0.1.9"
   },
   "devDependencies": {
     "babel-eslint": "7.2.3",

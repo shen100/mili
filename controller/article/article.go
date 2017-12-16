@@ -332,6 +332,11 @@ func UserArticleList(ctx iris.Context) {
 
 	if f != "md" {
 		for i := 0; i < len(articles); i++ {
+			if err := model.DB.Model(&articles[i]).Related(&articles[i].User, "users").Error; err != nil {
+				fmt.Println(err.Error())
+				SendErrJSON("error", ctx)
+				return
+			}
 			articles[i].Content = utils.MarkdownToHTML(articles[i].Content)
 		}
 	}

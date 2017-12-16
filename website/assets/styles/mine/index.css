@@ -232,21 +232,25 @@ body {
 }
 
 .articles-user-info {
-    margin-top: 5px;
+    margin-top: 14px;
+    margin-bottom: 14px;
 }
 
-.articles-user-info img {
-    width: 30px;
-    height: 30px;
-}
-
-.articles-user-info span {
-    line-height: 30px;
+.articles-user-info-img {
+    width: 38px;
+    height: 38px;
     display: inline-block;
-    vertical-align: bottom;
-    color: #8590a6;
-    font-size: 14px;
-    margin-left: 5px;
+    vertical-align: top;
+}
+
+.articles-user-info-name {
+    margin-left: 14px;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 38px;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgb(85, 85, 85);
 }
 
 .golang123-editor {
@@ -261,10 +265,6 @@ body {
 
 .articles-item-no {
     border: 0;
-}
-
-.articles-hidden {
-    max-height: 100px;
 }
 
 .articles-button {
@@ -466,5 +466,4 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
-
 

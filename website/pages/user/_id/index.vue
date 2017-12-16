@@ -7,13 +7,10 @@
             <div v-for="(article, index) in articles" class="articles-item" :class="{'articles-item-no': index === 0}">
                 <h2 class="articles-title"><a :href="`/topic/${article.id}`" target="_blank">{{article.name}}</a></h2>
                 <p class="articles-user-info">
-                    <img :src="article.user.avatarURL" alt="">
-                    <span>{{article.user.name}}</span>
+                    <img class="articles-user-info-img" :src="article.user.avatarURL" alt="">
+                    <a class="articles-user-info-name">{{article.user.name}}</a>
                 </p>
-                <div class="golang123-editor" :class="article.show ? '' : 'articles-hidden'" v-html="article.content"></div>
-                <p class="articles-button">
-                    <a :href="`/topic/${article.id}`" class="no-underline">阅读全文<Icon type="chevron-right"></Icon></a>
-                </p>
+                <div class="golang123-digest" v-html="article.content"></div>
             </div>
             <div style="text-align: center;">
                 <Page class="common-page"
@@ -31,7 +28,9 @@
 </template>
 
 <script>
+    import trimHtml from 'trim-html'
     import request from '~/net/request'
+    import htmlUtil from '~/utils/html'
 
     export default {
         data () {
@@ -52,12 +51,32 @@
                     pageSize: 20
                 }
             }).then(res => {
+                let articles = res.data.articles || []
+                for (let i = 0; i < articles.length; i++) {
+                    let limit = 100
+                    let more = `...&nbsp;&nbsp;<a href="/topic/${articles[i].id}" target="_blank" class="golang123-digest-continue">继续阅读»</a>`
+                    let trimObj = trimHtml(articles[i].content, {
+                        limit: limit,
+                        suffix: more,
+                        moreLink: false
+                    })
+                    let content = trimObj.html
+                    content = htmlUtil.trimImg(content)
+                    if (!articles[i].hasMore) {
+                        let newTrimObj = trimHtml(articles[i].content, {
+                            limit: limit,
+                            preserveTags: false
+                        })
+                        content = newTrimObj.html + more
+                    }
+                    articles[i].content = content
+                }
                 return {
                     pageNo: res.data.pageNo,
                     pageSize: res.data.pageSize,
                     totalCount: res.data.totalCount,
                     totalPage: res.data.totalPage,
-                    articles: res.data.articles || [],
+                    articles: articles,
                     userId: context.params.id,
                     user: context.user,
                     currentId: context.params.id

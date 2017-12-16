@@ -5,11 +5,12 @@
         </div>
         <template v-if="comments.length > 0">
             <div v-for="(comment, index) in comments" class="articles-item" :class="{'articles-item-no': index === 0}">
-                <h2 class="articles-title"><a :href="comment.voteID ? `/vote/${comment.voteID}#comment-${comment.id}` : `/topic/${comment.articleID}#comment-${comment.id}`" target="_blank">{{comment.voteName ? comment.voteName : comment.articleName}}</a></h2>
-                <div class="golang123-editor" :class="comment.show ? '' : 'articles-hidden'" v-html="comment.content"></div>
-                <p class="articles-button">
-                    <a :href="`/${comment.voteID ? 'vote/' + comment.voteID : 'topic/' + comment.articleID}`" class="no-underline">阅读全文<Icon type="chevron-right"></Icon></a>
+                <h2 class="articles-title"><a :href="comment.voteID ? `/vote/${comment.voteID}#reply-${comment.id}` : `/topic/${comment.articleID}#reply-${comment.id}`" target="_blank">{{comment.voteName ? comment.voteName : comment.articleName}}</a></h2>
+                <p class="articles-user-info">
+                    <img class="articles-user-info-img" :src="comment.user.avatarURL" alt="">
+                    <a class="articles-user-info-name">{{comment.user.name}}</a>
                 </p>
+                <div class="golang123-digest" v-html="comment.content"></div>
             </div>
             <div style="text-align: center;">
                 <Page class="common-page"
@@ -27,7 +28,9 @@
 </template>
 
 <script>
+    import trimHtml from 'trim-html'
     import request from '~/net/request'
+    import htmlUtil from '~/utils/html'
 
     export default {
         data () {
@@ -48,12 +51,39 @@
                     pageSize: 20
                 }
             }).then(res => {
+                let comments = res.data.comments || []
+                for (let i = 0; i < comments.length; i++) {
+                    let sourceName = 'topic'
+                    let theID = comments[i].articleID
+                    if (comments[i].sourceName === 'vote') {
+                        sourceName = 'vote'
+                        theID = comments[i].voteID
+                    }
+                    let limit = 100
+                    let more = `...&nbsp;&nbsp;<a href="/${sourceName}/${theID}/#reply-${comments[i].id}" target="_blank"  class="golang123-digest-continue">继续阅读»</a>`
+
+                    let trimObj = trimHtml(comments[i].content, {
+                        limit: limit,
+                        suffix: more,
+                        moreLink: false
+                    })
+                    let content = trimObj.html
+                    content = htmlUtil.trimImg(content)
+                    if (!comments[i].hasMore) {
+                        let newTrimObj = trimHtml(comments[i].content, {
+                            limit: limit,
+                            preserveTags: false
+                        })
+                        content = newTrimObj.html + more
+                    }
+                    comments[i].content = content
+                }
                 return {
                     userId: context.params.id,
                     pageNo: res.data.pageNo,
                     pageSize: res.data.pageSize,
                     totalCount: res.data.totalCount,
-                    comments: res.data.comments || [],
+                    comments: comments,
                     user: context.user,
                     currentId: context.params.id
                 }
