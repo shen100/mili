@@ -4,13 +4,13 @@ import "time"
 
 // Folder 收藏夹
 type Folder struct {
-    ID        uint          `gorm:"primary_key" json:"id"`
-    CreatedAt time.Time     `json:"createdAt"`
-    UpdatedAt time.Time     `json:"updatedAt"`
-	DeletedAt *time.Time    `sql:"index" json:"deletedAt"`
-	Name      string        `json:"name"`
-	UserID    uint          `json:"userID"`
-	ParentID  uint          `json:"parentID"`
+    ID           uint          `gorm:"primary_key" json:"id"`
+    CreatedAt    time.Time     `json:"createdAt"`
+    UpdatedAt    time.Time     `json:"updatedAt"`
+	DeletedAt    *time.Time    `sql:"index" json:"deletedAt"`
+	Name         string        `json:"name"`
+	UserID       uint          `json:"userID"`
+    ParentID     uint          `json:"parentID"`
 }
 
 // Collect 收藏

@@ -6,10 +6,7 @@
         <template v-if="votes.length > 0">
             <div v-for="(vote, index) in votes" class="articles-item" :class="{'articles-item-no': index === 0}">
                 <h2 class="articles-title"><a :href="`/vote/${vote.id}`" target="_blank">{{vote.name}}</a></h2>
-                <div class="golang123-editor" :class="vote.show ? '' : 'articles-hidden'" v-html="vote.content"></div>
-                <p class="articles-button">
-                    <a :href="`/${'vote/' + vote.id}`" class="no-underline">阅读全文<Icon type="chevron-right"></Icon></a>
-                </p>
+                <div class="golang123-digest" v-html="vote.content"></div>
             </div>
             <div style="text-align: center;">
                 <Page class="common-page"
@@ -27,7 +24,9 @@
 </template>
 
 <script>
+    import trimHtml from 'trim-html'
     import request from '~/net/request'
+    import htmlUtil from '~/utils/html'
 
     export default {
         data () {
@@ -48,7 +47,26 @@
                     pageSize: 20
                 }
             }).then(res => {
-                console.log(res)
+                let votes = res.data.votes || []
+                for (let i = 0; i < votes.length; i++) {
+                    let limit = 100
+                    let more = `...&nbsp;&nbsp;<a href="/vote/${votes[i].id}" target="_blank" class="golang123-digest-continue">继续阅读»</a>`
+                    let trimObj = trimHtml(votes[i].content, {
+                        limit: limit,
+                        suffix: more,
+                        moreLink: false
+                    })
+                    let content = trimObj.html
+                    content = htmlUtil.trimImg(content)
+                    if (!trimObj.more) {
+                        let newTrimObj = trimHtml(votes[i].content, {
+                            limit: limit,
+                            preserveTags: false
+                        })
+                        content = newTrimObj.html + more
+                    }
+                    votes[i].content = content
+                }
                 return {
                     userId: context.params.id,
                     pageNo: res.data.pageNo,

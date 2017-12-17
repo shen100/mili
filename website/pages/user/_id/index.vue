@@ -62,7 +62,7 @@
                     })
                     let content = trimObj.html
                     content = htmlUtil.trimImg(content)
-                    if (!articles[i].hasMore) {
+                    if (!trimObj.more) {
                         let newTrimObj = trimHtml(articles[i].content, {
                             limit: limit,
                             preserveTags: false

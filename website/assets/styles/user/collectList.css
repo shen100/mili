@@ -39,5 +39,17 @@ body {
 }
 
 .desc a {
-   color: #999; 
+   color: #999;
+}
+
+.collect-article-title a {
+    font-weight: 700;
+    font-size: 18px;
+    outline: 0;
+    color: #259;
+    line-height: 26px;
+}
+
+.collect-article-title a:hover {
+    text-decoration: none;
 }

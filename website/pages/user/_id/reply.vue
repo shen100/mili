@@ -5,7 +5,10 @@
         </div>
         <template v-if="comments.length > 0">
             <div v-for="(comment, index) in comments" class="articles-item" :class="{'articles-item-no': index === 0}">
-                <h2 class="articles-title"><a :href="comment.voteID ? `/vote/${comment.voteID}#reply-${comment.id}` : `/topic/${comment.articleID}#reply-${comment.id}`" target="_blank">{{comment.voteName ? comment.voteName : comment.articleName}}</a></h2>
+                <h2 class="articles-title">
+                    <a v-if="!comment.noSource" :href="comment.voteID ? `/vote/${comment.voteID}#reply-${comment.id}` : `/topic/${comment.articleID}#reply-${comment.id}`" target="_blank">{{comment.voteName ? comment.voteName : comment.articleName}}</a>
+                    <span v-else class="reply-no-source">{{comment.sourceName === 'vote' ? '原投票已被作者删除' : '原话题已被作者删除'}}</span>
+                </h2>
                 <p class="articles-user-info">
                     <img class="articles-user-info-img" :src="comment.user.avatarURL" alt="">
                     <a class="articles-user-info-name">{{comment.user.name}}</a>
@@ -62,19 +65,22 @@
                     let limit = 100
                     let more = `...&nbsp;&nbsp;<a href="/${sourceName}/${theID}/#reply-${comments[i].id}" target="_blank"  class="golang123-digest-continue">继续阅读»</a>`
 
+                    // 即没有articleID, 又没有voteID，说明原话题或原投票被删除
+                    let noSource = !comments[i].articleID && !comments[i].voteID
+                    comments[i].noSource = noSource
                     let trimObj = trimHtml(comments[i].content, {
                         limit: limit,
-                        suffix: more,
+                        suffix: !noSource ? more : '',
                         moreLink: false
                     })
                     let content = trimObj.html
                     content = htmlUtil.trimImg(content)
-                    if (!comments[i].hasMore) {
+                    if (!trimObj.more) {
                         let newTrimObj = trimHtml(comments[i].content, {
                             limit: limit,
                             preserveTags: false
                         })
-                        content = newTrimObj.html + more
+                        content = newTrimObj.html + (!noSource ? more : '')
                     }
                     comments[i].content = content
                 }

@@ -10,13 +10,18 @@
                     <a class="top100-link link-left" :href="`/user/${currentUser.id}/collect`">«  {{currentUser.name}} 的收藏</a>
                     <a class="top100-link link-right" :href="`/user/${user.id}/collect`" v-if="user">去我的收藏 »</a>
                 </p>
-                <h1 class="collect-line title" style="font-size: 22px;padding-bottom: 20px;">{{collects.filter(item => parseInt(folderID) === item.id)[0].name}}</h1>
+                <h1 class="collect-line title" style="font-size: 22px;padding-bottom: 20px;">{{folderName}}</h1>
                 <div v-for="(collect, index) in collectList" class="articles-item">
-                    <h1 class="articles-title"><a :href="collect.voteID ? `/vote/${collect.voteID}` : `/topic/${collect.articleID}`" target="_blank">{{collect.voteName ? collect.voteName : collect.articleName}}</a></h1>
-                    <div class="golang123-editor articles-hidden" v-html="collect.voteID ? collect.voteContent : collect.articleContent"></div>
-                    <p class="articles-button">
-                        <a :href="`/${collect.voteID ? 'vote/' + collect.voteID : 'topic/' + collect.articleID}`" class="no-underline">阅读全文<Icon type="chevron-right"></Icon></a>
-                    </p>
+                    <h1 class="collect-article-title"><a :href="collect.voteID ? `/vote/${collect.voteID}` : `/topic/${collect.articleID}`" target="_blank">{{collect.voteName ? collect.voteName : collect.articleName}}</a></h1>
+                    <div class="golang123-digest" v-html="collect.content"></div>
+                </div>
+                <div style="text-align: center;">
+                    <Page class="common-page"
+                        :current="pageNo"
+                        :page-size="pageSize"
+                        :total="totalCount"
+                        @on-change="onPageChange"
+                        :show-elevator="true"/>
                 </div>
             </div>
         </div>
@@ -25,7 +30,9 @@
 </template>
 
 <script>
+    import trimHtml from 'trim-html'
     import request from '~/net/request'
+    import htmlUtil from '~/utils/html'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
 
@@ -39,16 +46,10 @@
         },
         asyncData (context) {
             const query = context.query || {}
-            if (!parseInt(query.collect)) {
+            if (!parseInt(query.folder)) {
                 return context.error({ statusCode: 404, message: 'Page not found' })
             }
             return Promise.all([
-                request.getCollectDirList({
-                    client: context.req,
-                    params: {
-                        userID: context.params.id
-                    }
-                }),
                 request.getPublicUser({
                     client: context.req,
                     params: {
@@ -58,22 +59,64 @@
                 request.collectList({
                     client: context.req,
                     query: {
-                        folderID: query.collect,
-                        userID: context.params.id
+                        folderID: query.folder,
+                        userID: context.params.id,
+                        pageNo: query.pageNo || 1,
+                        pageSize: 2
                     }
                 })
             ]).then(res => {
+                let collects = res[1].data.collects || []
+                for (let i = 0; i < collects.length; i++) {
+                    let sourceName = 'topic'
+                    let theID = collects[i].articleID
+                    if (collects[i].sourceName === 'collect_source_vote') {
+                        sourceName = 'vote'
+                        theID = collects[i].voteID
+                    }
+                    let limit = 100
+                    let more = `...&nbsp;&nbsp;<a href="/${sourceName}/${theID}" target="_blank"   class="golang123-digest-continue">继续阅读»</a>`
+
+                    // 即没有articleID, 又没有voteID，说明原话题或原投票被删除
+                    let noSource = !collects[i].articleID && !collects[i].voteID
+                    collects[i].noSource = noSource
+                    let trimObj = trimHtml(collects[i].content, {
+                        limit: limit,
+                        suffix: !noSource ? more : '',
+                        moreLink: false
+                    })
+                    let content = trimObj.html
+                    content = htmlUtil.trimImg(content)
+                    if (!trimObj.more) {
+                        let newTrimObj = trimHtml(collects[i].content, {
+                            limit: limit,
+                            preserveTags: false
+                        })
+                        content = newTrimObj.html + (!noSource ? more : '')
+                    }
+                    collects[i].content = content
+                }
                 return {
-                    user: context.user,
-                    currentUser: res[1].data.user,
-                    collects: res[0].data.folders || [],
-                    collectList: res[2].data.collects,
-                    folderID: query.collect
+                    user: context.user, // 登录用户
+                    currentUser: res[0].data.user, // 收藏对应的用户
+                    collectList: collects,
+                    folderID: res[1].data.folderID,
+                    folderName: res[1].data.folderName,
+                    pageNo: res[1].data.pageNo,
+                    pageSize: res[1].data.pageSize,
+                    totalCount: res[1].data.totalCount
                 }
             }).catch(err => {
                 console.log(err)
                 context.error({ statusCode: 404, message: 'Page not found' })
             })
+        },
+        methods: {
+            onPageChange (value) {
+                let userId = this.currentUser.id
+                let folderID = this.folderID
+                window.location.href = `/user/collect/${userId}?folder=${folderID}&pageNo=${value}`
+            }
         },
         head () {
             return {

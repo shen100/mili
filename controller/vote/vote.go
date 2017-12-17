@@ -662,6 +662,10 @@ func UserVoteList(ctx iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
+
+	for i := 0; i < len(votes); i++ {
+		votes[i].Content = utils.MarkdownToHTML(votes[i].Content)
+	}
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",

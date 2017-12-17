@@ -735,33 +735,23 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang123-digest {
-    font-size: 15px;
+    font-size: 0;
     line-height: 25px;
     color: #262626;
+    font-size: 15px;
 }
 
-.golang123-digest h1 {
-    font-weight: 400;
+.golang123-digest p, .golang123-digest div, .golang123-digest blockquote,
+.golang123-digest ol, .golang123-digest ul, .golang123-digest li {
+    padding-right: 6px;
+    display: inline;
 }
 
-.golang123-digest h2 {
-    font-weight: 400;
-}
-
-.golang123-digest h3 {
-    font-weight: 400;
-}
-
-.golang123-digest h4 {
-    font-weight: 400;
-}
-
-.golang123-digest h5 {
-    font-weight: 400;
-}
-
-.golang123-digest h6 {
-    font-weight: 400;
+.golang123-digest h1, .golang123-digest h2, .golang123-digest h3,
+.golang123-digest h4, .golang123-digest h5, .golang123-digest h6 {
+    padding-right: 6px;
+    font-weight: 700;
+    display: inline;
 }
 
 .golang123-digest img {
@@ -770,6 +760,11 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang123-digest pre {
     overflow-x: auto;
+}
+
+.golang123-digest code {
+
+    vertical-align: top;
 }
 
 .golang123-digest-continue {

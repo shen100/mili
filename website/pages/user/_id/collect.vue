@@ -5,9 +5,10 @@
         </div>
         <template v-if="collects.length > 0">
             <div v-for="(collect, index) in collects" class="articles-item" :class="{'articles-item-no': index === 0}">
-                <h2 class="articles-title"><a :href="`/user/collect/${currentId}?collect=${collect.id}`" target="_blank">{{collect.name}}</a></h2>
+                <h2 class="articles-title"><a :href="`/user/collect/${currentId}?folder=${collect.id}`" target="_blank">{{collect.name}}</a></h2>
                 <p class="collect-line">
                     <span>{{collect.updatedAt | formatYMD}}&nbsp更新</span>
+                    <span class="collect-content-count">{{collect.collectCount}}条内容</span>
                 </p>
             </div>
         </template>

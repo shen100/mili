@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"unicode/utf8"
+	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
@@ -376,18 +377,23 @@ func UserCommentList(ctx iris.Context) {
 		data["content"] = utils.MarkdownToHTML(comments[i].Content)
 		if (comments[i].SourceName == model.CommentSourceArticle) {
 			if err := model.DB.Model(&comments[i]).Related(&article, "articles", "source_id").Error; err != nil {
-				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
-				return
+				// 没有找到话题，即话题被删除了
+				if err != gorm.ErrRecordNotFound {
+					fmt.Println(err.Error())
+					SendErrJSON("error", ctx)
+					return
+				}
 			}
 			data["sourceName"]  = model.CommentSourceArticle
 			data["articleID"]   = article.ID
 			data["articleName"] = article.Name
 		} else if (comments[i].SourceName == model.CommentSourceVote) {
 			if err := model.DB.Model(&comments[i]).Related(&vote, "votes", "source_id").Error; err != nil {
-				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
-				return
+				if err != gorm.ErrRecordNotFound {
+					fmt.Println(err.Error())
+					SendErrJSON("error", ctx)
+					return
+				}
 			}
 			data["sourceName"] = model.CommentSourceVote
 			data["voteID"]     = vote.ID

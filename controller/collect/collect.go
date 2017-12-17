@@ -243,11 +243,30 @@ func Collects(ctx iris.Context) {
 		return
 	}
 
-	offset   := (pageNo - 1) * model.PageSize
-	pageSize := model.PageSize
+	var pageSize int
+	var pageSizeErr error
+	if pageSize, pageSizeErr = strconv.Atoi(ctx.FormValue("pageSize")); pageSizeErr != nil {
+		SendErrJSON("无效的pageSize", ctx)
+		return	
+	}
+
+	if pageSize < 1 || pageSize > model.MaxPageSize {
+		SendErrJSON("无效的pageSize", ctx)
+		return	
+	}
+
+	offset := (pageNo - 1) * pageSize
 
 	if err := model.DB.Where("folder_id=? AND user_id=?", folderID, userID).Offset(offset).
 			Limit(pageSize).Order("created_at DESC").Find(&collects).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	var totalCount int
+	if err := model.DB.Model(&model.Collect{}).Where("folder_id=? AND user_id=?", folderID, userID).
+			Count(&totalCount).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
@@ -265,18 +284,20 @@ func Collects(ctx iris.Context) {
 				SendErrJSON("error", ctx)
 				return
 			}
+			data["sourceName"]     = model.CollectSourceArticle
 			data["articleID"]      = article.ID
 			data["articleName"]    = article.Name
-			data["articleContent"] = utils.MarkdownToHTML(article.Content)
+			data["content"] = utils.MarkdownToHTML(article.Content)
 		} else if (collects[i].SourceName == model.CollectSourceVote) {
 			if err := model.DB.Model(&collects[i]).Related(&vote, "votes", "source_id").Error; err != nil {
 				fmt.Println(err.Error())
 				SendErrJSON("error", ctx)
 				return
 			}
+			data["sourceName"]  = model.CollectSourceVote
 			data["voteID"]      = vote.ID
 			data["voteName"]    = vote.Name
-			data["voteContent"] = utils.MarkdownToHTML(vote.Content)
+			data["content"] = utils.MarkdownToHTML(vote.Content)
 		}
 		results = append(results, data)
 	}
@@ -285,7 +306,12 @@ func Collects(ctx iris.Context) {
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
-			"collects": results,
+			"folderID"   : folder.ID,
+			"folderName" : folder.Name,
+			"collects"   : results,
+			"pageNo"     : pageNo,
+			"pageSize"   : pageSize,
+			"totalCount" : totalCount,
 		},
 	})
 }
@@ -381,11 +407,30 @@ func Folders(ctx iris.Context) {
 		SendErrJSON("error", ctx)
 		return	
 	}
+	var results []map[string]interface{}
+	for i := 0; i < len(folders); i++ {
+		var data = map[string]interface{} {
+			"id"        : folders[i].ID,
+			"createdAt" : folders[i].CreatedAt,
+			"updatedAt" : folders[i].UpdatedAt,
+			"deletedAt" : folders[i].DeletedAt,
+			"name"      : folders[i].Name,
+			"userID"    : folders[i].UserID,
+			"parentID"  : folders[i].ParentID,
+		}
+    	var collectCount uint  
+		if err := model.DB.Model(&model.Collect{}).Where("folder_id = ?", folders[i].ID).Count(&collectCount).Error; err != nil {
+			SendErrJSON("error", ctx)
+			return
+		}
+		data["collectCount"] = collectCount
+		results = append(results, data)
+	}
 	ctx.JSON(iris.Map{
 		"errNo" : model.ErrorCode.SUCCESS,
 		"msg"   : "success",
 		"data"  : iris.Map{
-			"folders": folders,
+			"folders": results,
 		},
 	})
 }

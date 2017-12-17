@@ -5,16 +5,19 @@
             <div class="golang-home-body-left topic-detail-left">
                 <div class="topic-detail-box">
                     <div class="detail-title-box">
-                        <div class="article-detail-title"><span class="articles-categoties article-detail-categoty">{{article.categories[0].name}}</span><h1>{{article.name}}</h1></div>
+                        <div class="article-detail-title"><h1>{{article.name}}</h1></div>
                         <p class="article-title-info">
                             <span class="article-title-info-item">
-                                发布于{{article.createdAt | getReplyTime}}
+                                发布于&nbsp;{{article.createdAt | getReplyTime}}
                             </span>
                             <span class="article-title-info-item">
-                                作者{{article.user.name}}
+                                作者&nbsp;{{article.user.name}}
                             </span>
                             <span class="article-title-info-item">
-                                {{article.browseCount}}次浏览
+                                {{article.browseCount}}次&nbsp;浏览
+                            </span>
+                            <span class="article-title-info-item">
+                                版块&nbsp;{{article.categories[0].name}}
                             </span>
                         </p>
                     </div>

@@ -226,6 +226,10 @@ body {
     margin-top: 10px;
 }
 
+.articles-title a {
+    line-height: 26px;
+}
+
 .articles-title a:hover {
     color: #2d8cf0;
     text-decoration: none;
@@ -467,3 +471,18 @@ body {
     user-select: none;
 }
 
+.reply-no-source {
+    display: inline-block;
+    vertical-align: top;
+    background: #ededed;
+    color: #7e7e7e;
+    text-decoration: line-through;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.collect-content-count:before {
+    margin: 0 5px;
+    content: "\B7";
+}
