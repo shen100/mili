@@ -56,6 +56,23 @@ go get -u github.com/microcosm-cc/bluemonday
 
 //markdown解析器
 go get github.com/russross/blackfriday
+
+//goquery
+go get github.com/PuerkitoBio/goquery
+
+//govalidator
+go get github.com/asaskevich/govalidator
+
+//mysql数据库驱动
+go get github.com/go-sql-driver/mysql
+
+//如何获取golang.org/x/...下的包 举例golang.org/x/net
+//golang 在 github 上建立了一个镜像库，如 https://github.com/golang/net 
+//即是 https://golang.org/x/net 的镜像库,然后执行下面命令
+mkdir -p $GOPATH/src/golang.org/x
+cd $GOPATH/src/golang.org/x
+git clone https://github.com/golang/net.git
+
 ```
 
 ## ⚙️ 配置
@@ -107,6 +124,7 @@ server {
 2. 修改mysql的用户名及密码
 3. 修改redis的连接地址及端口
 4. 修改域名邮箱的用户名及密码(golang123使用的是QQ域名邮箱)
+5. 将`golang123/sql/golang123.sql`导入到你自己的数据库中
 
 ## 🚕 运行
 ### 运行前端项目
