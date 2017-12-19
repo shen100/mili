@@ -101,7 +101,7 @@
                 align="middle"
                 v-for="(item, index) in collectDirList" key="index">
                 <div>
-                    <a :href="`/user/collect/${user.id}?collect=${item.id}`" target="_blank" class="collects-item-label">{{item.name}}</a>
+                    <a :href="`/user/collect/${user.id}?folder=${item.id}`" target="_blank" class="collects-item-label">{{item.name}}</a>
                     <p class="collects-item-num">{{(item.collects && item.collects.length) || 0}}条内容</p>
                 </div>
                 <Button v-if="item.hasCollect" class="info-button" style="width: 80px" disabled="disabled">已收藏</Button>
@@ -141,6 +141,7 @@
 
 <script>
     import ErrorCode from '~/constant/ErrorCode'
+    import config from '~/config'
     import VoteStatus from '~/constant/VoteStatus'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
@@ -281,7 +282,11 @@
                             }
                         }).then((res) => {
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                self.$Message.success('回复已删除')
+                                self.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '回复已删除'
+                                })
                                 return request.getSiteComments({
                                     params: {
                                         sourceID: self.$route.params.id,
@@ -322,7 +327,11 @@
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.formData.content = ''
-                                this.$Message.success('评论提交成功')
+                                this.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '回复提交成功'
+                                })
                                 return request.getSiteComments({
                                     params: {
                                         sourceID: this.$route.params.id,
@@ -366,11 +375,19 @@
                     }).then(res => {
                         if (res.errNo === ErrorCode.SUCCESS) {
                             this.vote = res.data
-                            this.$Message.success('投票成功')
+                            this.$Message.success({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: '投票成功'
+                            })
                         }
                     }).catch(err => {
                         this.loading = false
-                        this.$Message.error(err.message)
+                        this.$Message.warning({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: err.message
+                        })
                     })
                 }
             },

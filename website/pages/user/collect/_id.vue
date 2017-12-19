@@ -2,7 +2,7 @@
     <div>
         <app-header :user="user" />
         <div class="golang-home-body">
-            <div class="golang-home-body-left" style="padding-top: 20px;">
+            <div class="golang-home-body-left" style="padding-top: 20px;min-height: 500px;">
                 <p v-if="user && user.id == currentUser.id" class="back-container">
                     <a class="top100-link link-left" :href="`/user/${user.id}/collect`">« 去我的收藏</a>
                 </p>
@@ -12,7 +12,10 @@
                 </p>
                 <h1 class="collect-line title" style="font-size: 22px;padding-bottom: 20px;">{{folderName}}</h1>
                 <div v-for="(collect, index) in collectList" class="articles-item">
-                    <h1 class="collect-article-title"><a :href="collect.voteID ? `/vote/${collect.voteID}` : `/topic/${collect.articleID}`" target="_blank">{{collect.voteName ? collect.voteName : collect.articleName}}</a></h1>
+                    <h1 class="collect-article-title">
+                        <a v-if="!collect.noSource" :href="collect.voteID ? `/vote/${collect.voteID}` : `/topic/${collect.articleID}`" target="_blank">{{collect.voteName ? collect.voteName : collect.articleName}}</a>
+                        <span v-else class="collect-no-source">{{collect.sourceName === 'collect_source_vote' ? '原投票已被作者删除' : '原话题已被作者删除'}}</span>
+                    </h1>
                     <div class="golang123-digest" v-html="collect.content"></div>
                 </div>
                 <div style="text-align: center;">

@@ -134,7 +134,6 @@
                             } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
                                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
                             } else if (res.errNo === ErrorCode.SUCCESS) {
-                                self.$Message.success('提交成功!')
                                 setTimeout(function () {
                                     location.href = '/topic/' + res.data.id
                                 }, 500)

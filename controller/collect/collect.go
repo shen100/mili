@@ -280,9 +280,11 @@ func Collects(ctx iris.Context) {
 		data["id"] = collects[i].ID
 		if (collects[i].SourceName == model.CollectSourceArticle) {
 			if err := model.DB.Model(&collects[i]).Related(&article, "articles", "source_id").Error; err != nil {
-				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
-				return
+				if err != gorm.ErrRecordNotFound {
+					fmt.Println(err.Error())
+					SendErrJSON("error", ctx)
+					return
+				}
 			}
 			data["sourceName"]     = model.CollectSourceArticle
 			data["articleID"]      = article.ID
@@ -290,9 +292,11 @@ func Collects(ctx iris.Context) {
 			data["content"] = utils.MarkdownToHTML(article.Content)
 		} else if (collects[i].SourceName == model.CollectSourceVote) {
 			if err := model.DB.Model(&collects[i]).Related(&vote, "votes", "source_id").Error; err != nil {
-				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
-				return
+				if err != gorm.ErrRecordNotFound {
+					fmt.Println(err.Error())
+					SendErrJSON("error", ctx)
+					return
+				}
 			}
 			data["sourceName"]  = model.CollectSourceVote
 			data["voteID"]      = vote.ID

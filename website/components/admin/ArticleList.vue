@@ -31,6 +31,7 @@
 <script>
     import Request from '~/net/request'
     import DateUtil from '~/utils/date'
+    import config from '~/config'
     import ErrorCode from '~/constant/ErrorCode'
     import { ArticleStatus } from '~/constant/Article'
 
@@ -317,12 +318,24 @@
                                 this.list[i].statusVisible = false
                             }
                         }
-                        this.$Message.success('操作成功')
+                        this.$Message.success({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '操作成功'
+                        })
                     } else {
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     }
                 }).catch(err => {
-                    this.$Message.error(err.message)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message
+                    })
                 })
             },
             onCancelChangeStatus (article) {
@@ -345,10 +358,18 @@
                             } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
                                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
                             } else {
-                                this.$Message.error(res.msg)
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message
+                            })
                         })
                     },
                     onCancel () {

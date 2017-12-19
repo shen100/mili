@@ -39,6 +39,7 @@
 </template>
 
 <script>
+    import config from '~/config'
     import Editor from '~/components/Editor'
     import request from '~/net/request'
     import ErrorCode from '~/constant/ErrorCode'
@@ -132,13 +133,16 @@
                             body: postBody
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                this.$Message.success('创建话题成功')
                                 setTimeout(function () {
                                     location.href = '/vote/' + res.data.id
                                 }, 500)
                             } else if (res.errNo === ErrorCode.IN_ACTIVE) {
                                 if (self.id) {
-                                    self.$Message.error('账号未激活，不能保存投票')
+                                    self.$Message.error({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: '账号未激活，不能保存投票'
+                                    })
                                 } else {
                                     self.$Message.error('账号未激活，不能发布投票')
                                 }
