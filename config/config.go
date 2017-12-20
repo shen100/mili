@@ -84,6 +84,7 @@ type serverConfig struct {
 	SessionID           string
 	SessionTimeout      int
 	PassSalt            string
+	CrawlerName         string
 	MailUser            string  //域名邮箱账号
 	MailPass            string  //域名邮箱密码
 	MailHost            string  //smtp邮箱域名

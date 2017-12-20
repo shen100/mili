@@ -54,7 +54,9 @@
 </template>
 
 <script>
+    import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
+    import config from '~/config'
 
     export default {
 
@@ -101,7 +103,15 @@
                             from: this.from,
                             categoryID: parseInt(this.cateId)
                         }
-                    }).then(() => {
+                    }).then((data) => {
+                        if (data.errNo === ErrorCode.ERROR) {
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: data.msg
+                            })
+                            return
+                        }
                         this.$Message.success('抓取成功!')
                     }).catch((err) => {
                         this.$Message.error(err.msg)

@@ -6,6 +6,14 @@ if (typeof window === 'undefined') {
 }
 
 const api = {
+    getCrawlAccount: {
+        url: url + '/admin/crawl/account', // 获取爬虫账号
+        method: 'GET'
+    },
+    createCrawlAccount: {
+        url: url + '/admin/crawl/account', // 获取爬虫账号
+        method: 'POST'
+    },
     getCategories: {
         url: url + '/categories',
         method: 'GET',

@@ -12,7 +12,12 @@ export default function (context, next) {
                 context.redirect('/signin')
             } else {
                 let user = data.data.user
-                if (user.role === UserRole.USER_ROLE_ADMIN || user.role === UserRole.USER_ROLE_SUPER_ADMIN) {
+                let admins = [
+                    UserRole.USER_ROLE_ADMIN,
+                    UserRole.USER_ROLE_SUPER_ADMIN,
+                    UserRole.USER_ROLE_CRAWLER_ADMIN
+                ]
+                if (admins.indexOf(user.role) >= 0) {
                     next()
                 } else {
                     context.error({ statusCode: 403, message: 'forbidden' })

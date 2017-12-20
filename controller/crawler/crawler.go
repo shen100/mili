@@ -1,19 +1,20 @@
 package crawler
 
 import (
-	"github.com/shen100/golang123/manager"
-	"github.com/shen100/golang123/utils"
 	"io"
 	"os"
 	"sync"
 	"net/http"
+	"net/url"
 	"fmt"
 	"strings"
 	"github.com/PuerkitoBio/goquery"
-	"net/url"
-	"github.com/shen100/golang123/controller/common"
 	"github.com/kataras/iris"
+	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/manager"
+	"github.com/shen100/golang123/utils"
+	"github.com/shen100/golang123/config"
 )
 
 var selectorMap = map[int]map[string]string{
@@ -284,14 +285,8 @@ func Crawl(ctx iris.Context) {
 
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
-	// var user model.User	
-	// if err := model.DB.Where("name = 'golang123'").Find(&user).Error; err != nil {
-	// 	SendErrJSON("error", ctx)
-	// 	return	
-	// }
-
-	if user.Name != "超级爬虫" {
-		SendErrJSON("您没有权限执行此操作", ctx)
+	if user.Name != config.ServerConfig.CrawlerName {
+		SendErrJSON("您没有权限执行此操作, 请使用爬虫账号", ctx)
 		return
 	}
 
@@ -323,4 +318,49 @@ func Crawl(ctx iris.Context) {
 		"msg"   : "抓取完成",
 		"data"  : iris.Map{},
 	})
+}
+
+// CrawlAccount 获取爬虫账号
+func CrawlAccount(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var users []model.User
+	if err := model.DB.Where("name = ?", config.ServerConfig.CrawlerName).Find(&users).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+	ctx.JSON(iris.Map{
+		"errNo" : model.ErrorCode.SUCCESS,
+		"msg"   : "success",
+		"data"  : users,
+	})
+}
+
+// CreateAccount 创建爬虫账号
+func CreateAccount(ctx iris.Context) {
+	SendErrJSON := common.SendErrJSON
+	var users []model.User
+	if err := model.DB.Where("name = ?", config.ServerConfig.CrawlerName).Find(&users).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+	if len(users) <= 0 {
+		var user model.User
+		user.Name   = config.ServerConfig.CrawlerName
+		user.Role   = model.UserRoleCrawler
+		user.Status = model.UserStatusActived
+		if err := model.DB.Save(&user).Error; err != nil {
+			fmt.Print(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		ctx.JSON(iris.Map{
+			"errNo" : model.ErrorCode.SUCCESS,
+			"msg"   : "success",
+			"data"  : []model.User{user},
+		})
+		return
+	}
+	SendErrJSON("爬虫账号已存在", ctx)	
 }

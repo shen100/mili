@@ -134,7 +134,9 @@ func Route(app *iris.Application) {
 		adminRoutes.Get("/comments",                   comment.Comments)
 		adminRoutes.Put("/comments/update/status/:id", comment.UpdateStatus)
 
-		adminRoutes.Post("/crawl", crawler.Crawl)
+		adminRoutes.Post("/crawl",         crawler.Crawl)
+		adminRoutes.Post("/crawl/account", crawler.CreateAccount)
+		adminRoutes.Get("/crawl/account",  crawler.CrawlAccount)
 
 		adminRoutes.Post("/pushBaiduLink",  baidu.PushToBaidu)
 
