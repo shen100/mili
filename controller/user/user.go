@@ -5,20 +5,22 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
-	"math/rand"
 	"time"
 	"unicode/utf8"
+
+	"github.com/asaskevich/govalidator"
 	"github.com/garyburd/redigo/redis"
 	"github.com/kataras/iris"
-	"github.com/asaskevich/govalidator"
 	"github.com/microcosm-cc/bluemonday"
-	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/config"
-	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/controller/mail"
+	"github.com/shen100/golang123/manager"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/utils"
 )
 
 const (
@@ -27,32 +29,32 @@ const (
 )
 
 func sendMail(action string, title string, curTime int64, user model.User, ctx iris.Context) {
-	siteName  := config.ServerConfig.SiteName
-	siteURL   := "https://" + config.ServerConfig.Host
+	siteName := config.ServerConfig.SiteName
+	siteURL := "https://" + config.ServerConfig.Host
 	secretStr := fmt.Sprintf("%d%s%s", curTime, user.Email, user.Pass)
-	secretStr  = fmt.Sprintf("%x", md5.Sum([]byte(secretStr)))
+	secretStr = fmt.Sprintf("%x", md5.Sum([]byte(secretStr)))
 	actionURL := siteURL + action + "/%d/%s"
 
-	actionURL  = fmt.Sprintf(actionURL, user.ID, secretStr)
+	actionURL = fmt.Sprintf(actionURL, user.ID, secretStr)
 
 	fmt.Println(actionURL)
 
 	content := "<p><b>亲爱的" + user.Name + ":</b></p>" +
-        "<p>我们收到您在 " + siteName + " 的注册信息, 请点击下面的链接, 或粘贴到浏览器地址栏来激活帐号.</p>" +
-        "<a href=\"" + actionURL + "\">" + actionURL + "</a>" +
-        "<p>如果您没有在 " + siteName + " 填写过注册信息, 说明有人滥用了您的邮箱, 请删除此邮件, 我们对给您造成的打扰感到抱歉.</p>" +
-		"<p>" + siteName + " 谨上.</p>";
-		
+		"<p>我们收到您在 " + siteName + " 的注册信息, 请点击下面的链接, 或粘贴到浏览器地址栏来激活帐号.</p>" +
+		"<a href=\"" + actionURL + "\">" + actionURL + "</a>" +
+		"<p>如果您没有在 " + siteName + " 填写过注册信息, 说明有人滥用了您的邮箱, 请删除此邮件, 我们对给您造成的打扰感到抱歉.</p>" +
+		"<p>" + siteName + " 谨上.</p>"
+
 	if action == "/reset" {
 		content = "<p><b>亲爱的" + user.Name + ":</b></p>" +
-        "<p>你的密码重设要求已经得到验证。请点击以下链接, 或粘贴到浏览器地址栏来设置新的密码: </p>" +
-        "<a href=\"" + actionURL + "\">" + actionURL + "</a>" +
-		"<p>感谢你对" + siteName + "的支持，希望你在" + siteName + "的体验有益且愉快。</p>" +
-		"<p>(这是一封自动产生的email，请勿回复。)</p>"
+			"<p>你的密码重设要求已经得到验证。请点击以下链接, 或粘贴到浏览器地址栏来设置新的密码: </p>" +
+			"<a href=\"" + actionURL + "\">" + actionURL + "</a>" +
+			"<p>感谢你对" + siteName + "的支持，希望你在" + siteName + "的体验有益且愉快。</p>" +
+			"<p>(这是一封自动产生的email，请勿回复。)</p>"
 	}
 	content += "<p><img src=\"http://ab.testin.cn/images/go.jpg\" style=\"width: 120px;\"/></p>"
 	//fmt.Println(content)
-	
+
 	mail.SendMail(user.Email, title, content)
 }
 
@@ -66,24 +68,24 @@ func verifyLink(cacheKey string, ctx iris.Context) (model.User, error) {
 	if secret == "" {
 		return user, errors.New("无效的链接")
 	}
-	
-	emailTime, redisErr := redis.Int64(manager.C.Do("GET", cacheKey + fmt.Sprintf("%d", userID)))
+
+	emailTime, redisErr := redis.Int64(manager.C.Do("GET", cacheKey+fmt.Sprintf("%d", userID)))
 	if redisErr != nil {
 		return user, errors.New("无效的链接")
 	}
 
 	if err := model.DB.First(&user, userID).Error; err != nil {
-		return user, errors.New("无效的链接")		
+		return user, errors.New("无效的链接")
 	}
 
 	secretStr := fmt.Sprintf("%d%s%s", emailTime, user.Email, user.Pass)
-	secretStr  = fmt.Sprintf("%x", md5.Sum([]byte(secretStr)))
+	secretStr = fmt.Sprintf("%x", md5.Sum([]byte(secretStr)))
 
 	if secret != secretStr {
 		fmt.Println(secret, secretStr)
 		return user, errors.New("无效的链接")
 	}
-	return user, nil	
+	return user, nil
 }
 
 // ActiveSendMail 发送激活账号的邮件
@@ -101,12 +103,12 @@ func ActiveSendMail(ctx iris.Context) {
 
 	var user model.User
 	user.Email = reqData.Email
-	
+
 	var decodeBytes []byte
 	var decodedErr error
 	if decodeBytes, decodedErr = base64.StdEncoding.DecodeString(user.Email); decodedErr != nil {
 		SendErrJSON("参数无效", ctx)
-		return	
+		return
 	}
 	user.Email = string(decodeBytes)
 
@@ -115,7 +117,7 @@ func ActiveSendMail(ctx iris.Context) {
 		return
 	}
 
-	curTime    := time.Now().Unix()
+	curTime := time.Now().Unix()
 	activeUser := fmt.Sprintf("%s%d", model.ActiveTime, user.ID)
 	if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
 		fmt.Println("redis set failed:", err)
@@ -125,9 +127,9 @@ func ActiveSendMail(ctx iris.Context) {
 	}()
 
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": iris.Map{
 			"email": user.Email,
 		},
 	})
@@ -145,7 +147,7 @@ func ActiveAccount(ctx iris.Context) {
 
 	if user.ID <= 0 {
 		SendErrJSON("激活链接已失效", ctx)
-		return	
+		return
 	}
 
 	if err := model.DB.Model(&user).Update("status", model.UserStatusActived).Error; err != nil {
@@ -154,13 +156,13 @@ func ActiveAccount(ctx iris.Context) {
 	}
 
 	if _, err := manager.C.Do("DEL", fmt.Sprintf("%s%d", model.ActiveTime, user.ID)); err != nil {
-        fmt.Println("redis delelte failed:", err)
-    }
+		fmt.Println("redis delelte failed:", err)
+	}
 
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": iris.Map{
 			"email": user.Email,
 		},
 	})
@@ -170,7 +172,8 @@ func ActiveAccount(ctx iris.Context) {
 func ResetPasswordMail(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type UserReqData struct {
-		Email     string  `json:"email" valid:"email,runelength(5|50)"`
+		Email       string `json:"email" valid:"email,runelength(5|50)"`
+		LuosimaoRes string `json:"luosimaoRes" valid:"-"`
 	}
 	var userData UserReqData
 	if err := ctx.ReadJSON(&userData); err != nil {
@@ -183,25 +186,32 @@ func ResetPasswordMail(ctx iris.Context) {
 		return
 	}
 
-	var user model.User
-	if err := model.DB.Where("email = ?", userData.Email).Find(&user).Error; err != nil {
-		SendErrJSON("没有邮箱为 " + userData.Email + " 的用户", ctx)
+	verifyErr := utils.LuosimaoVerify(config.ServerConfig.LuosimaoVerifyURL, config.ServerConfig.LuosimaoAPIKey, userData.LuosimaoRes)
+
+	if verifyErr != nil {
+		SendErrJSON(verifyErr.Error(), ctx)
 		return
 	}
 
-	curTime   := time.Now().Unix()
+	var user model.User
+	if err := model.DB.Where("email = ?", userData.Email).Find(&user).Error; err != nil {
+		SendErrJSON("没有邮箱为 "+userData.Email+" 的用户", ctx)
+		return
+	}
+
+	curTime := time.Now().Unix()
 	resetUser := fmt.Sprintf("%s%d", model.ResetTime, user.ID)
 	if _, err := manager.C.Do("SET", resetUser, curTime, "EX", resetDuration); err != nil {
-		fmt.Println("redis set failed:", err)		
+		fmt.Println("redis set failed:", err)
 	}
 	go func() {
 		sendMail("/ac", "修改密码", curTime, user, ctx)
 	}()
 
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{},
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  iris.Map{},
 	})
 }
 
@@ -211,12 +221,12 @@ func VerifyResetPasswordLink(ctx iris.Context) {
 	if _, err := verifyLink(model.ResetTime, ctx); err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("重置链接已失效", ctx)
-		return	
+		return
 	}
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{},
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  iris.Map{},
 	})
 }
 
@@ -224,7 +234,7 @@ func VerifyResetPasswordLink(ctx iris.Context) {
 func ResetPassword(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type UserReqData struct {
-		Password  string  `json:"password" valid:"runelength(6|20)"`
+		Password string `json:"password" valid:"runelength(6|20)"`
 	}
 	var userData UserReqData
 
@@ -239,31 +249,31 @@ func ResetPassword(ctx iris.Context) {
 	}
 
 	var verifErr error
-	var user model.User 
+	var user model.User
 	if user, verifErr = verifyLink(model.ResetTime, ctx); verifErr != nil {
 		SendErrJSON("重置链接已失效", ctx)
-		return	
+		return
 	}
 
 	user.Pass = user.EncryptPassword(userData.Password, user.Salt())
 
 	if user.ID <= 0 {
 		SendErrJSON("重置链接已失效", ctx)
-		return	
+		return
 	}
 	if err := model.DB.Model(&user).Update("pass", user.Pass).Error; err != nil {
 		SendErrJSON("error", ctx)
 		return
 	}
 
-    if _, err := manager.C.Do("DEL", fmt.Sprintf("%s%d", model.ResetTime, user.ID)); err != nil {
-        fmt.Println("redis delelte failed:", err)
-    }
+	if _, err := manager.C.Do("DEL", fmt.Sprintf("%s%d", model.ResetTime, user.ID)); err != nil {
+		fmt.Println("redis delelte failed:", err)
+	}
 
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{},
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  iris.Map{},
 	})
 }
 
@@ -271,8 +281,9 @@ func ResetPassword(ctx iris.Context) {
 func Signin(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type UserData struct {
-		SigninInput string  `json:"signinInput" valid:"-"`
-    	Password    string  `json:"password" valid:"runelength(6|20)"`
+		SigninInput string `json:"signinInput" valid:"-"`
+		Password    string `json:"password" valid:"runelength(6|20)"`
+		LuosimaoRes string `json:"luosimaoRes" valid:"-"`
 	}
 	var userData UserData
 	if err := ctx.ReadJSON(&userData); err != nil {
@@ -281,32 +292,39 @@ func Signin(ctx iris.Context) {
 	}
 
 	if _, err := govalidator.ValidateStruct(userData); err != nil {
-		SendErrJSON("参数无效.", ctx)
+		SendErrJSON("用户名或密码错误", ctx)
 		return
 	}
 
 	if userData.SigninInput == "" {
 		SendErrJSON("用户名或邮箱不能为空", ctx)
-		return	
+		return
 	}
 
 	var sql, msg string
 	var queryUser model.User
 	if strings.Index(userData.SigninInput, "@") != -1 {
 		if !govalidator.IsEmail(userData.SigninInput) || len(userData.SigninInput) < 5 ||
-				len(userData.SigninInput) > 50 {
+			len(userData.SigninInput) > 50 {
 			SendErrJSON("不是有效的邮箱", ctx)
-			return	
+			return
 		}
 		sql = "email = ?"
 		msg = "邮箱或密码错误"
 	} else {
 		if len(userData.SigninInput) < 4 || len(userData.SigninInput) > 20 {
 			SendErrJSON("用户名或密码错误", ctx)
-			return	
+			return
 		}
 		sql = "name = ?"
 		msg = "用户名或密码错误"
+	}
+
+	verifyErr := utils.LuosimaoVerify(config.ServerConfig.LuosimaoVerifyURL, config.ServerConfig.LuosimaoAPIKey, userData.LuosimaoRes)
+
+	if verifyErr != nil {
+		SendErrJSON(verifyErr.Error(), ctx)
+		return
 	}
 
 	if err := model.DB.Where(sql, userData.SigninInput).First(&queryUser).Error; err != nil {
@@ -318,33 +336,33 @@ func Signin(ctx iris.Context) {
 		if queryUser.Status == model.UserStatusInActive {
 			encodedEmail := base64.StdEncoding.EncodeToString([]byte(queryUser.Email))
 			ctx.JSON(iris.Map{
-				"errNo" : model.ErrorCode.InActive,
-				"msg"   : "账号未激活",
-				"data"  : iris.Map{
+				"errNo": model.ErrorCode.InActive,
+				"msg":   "账号未激活",
+				"data": iris.Map{
 					"email": encodedEmail,
 				},
 			})
-			return	
+			return
 		}
 		manager.Sess.Start(ctx).Set("user", queryUser)
 		ctx.JSON(iris.Map{
-			"errNo" : model.ErrorCode.SUCCESS,
-			"msg"   : "success",
-			"data"  : queryUser,
+			"errNo": model.ErrorCode.SUCCESS,
+			"msg":   "success",
+			"data":  queryUser,
 		})
 	} else {
 		SendErrJSON(msg, ctx)
-		return	
+		return
 	}
 }
 
 // Signup 用户注册
 func Signup(ctx iris.Context) {
-	SendErrJSON  := common.SendErrJSON
+	SendErrJSON := common.SendErrJSON
 	type UserReqData struct {
-		Name      string  `json:"name" valid:"runelength(4|20)"`
-		Email     string  `json:"email" valid:"email,runelength(5|50)"`
-		Password  string  `json:"password" valid:"runelength(6|20)"`
+		Name     string `json:"name" valid:"runelength(4|20)"`
+		Email    string `json:"email" valid:"email,runelength(5|50)"`
+		Password string `json:"password" valid:"runelength(6|20)"`
 	}
 
 	var userData UserReqData
@@ -353,8 +371,8 @@ func Signup(ctx iris.Context) {
 		return
 	}
 
-	userData.Name      = strings.TrimSpace(userData.Name)
-	userData.Email     = strings.TrimSpace(userData.Email)
+	userData.Name = strings.TrimSpace(userData.Name)
+	userData.Email = strings.TrimSpace(userData.Email)
 
 	if _, err := govalidator.ValidateStruct(userData); err != nil {
 		SendErrJSON("参数无效.", ctx)
@@ -363,27 +381,27 @@ func Signup(ctx iris.Context) {
 
 	if strings.Index(userData.Name, "@") != -1 {
 		SendErrJSON("用户名中不能含有@字符", ctx)
-		return	
+		return
 	}
 
 	var user model.User
-	if err := model.DB.Where("email = ? OR name = ?", userData.Email, userData.Name).Find(&user).Error; err == nil {	
+	if err := model.DB.Where("email = ? OR name = ?", userData.Email, userData.Name).Find(&user).Error; err == nil {
 		if user.Name == userData.Name {
-			SendErrJSON("用户名 " + user.Name + " 已被注册", ctx)
+			SendErrJSON("用户名 "+user.Name+" 已被注册", ctx)
 			return
 		} else if user.Email == userData.Email {
-			SendErrJSON("邮箱 " + user.Email + " 已存在", ctx)
-			return	
-		}	
+			SendErrJSON("邮箱 "+user.Email+" 已存在", ctx)
+			return
+		}
 	}
 
 	var newUser model.User
-	newUser.Name      = userData.Name
-	newUser.Email     = userData.Email
-	newUser.Pass      = newUser.EncryptPassword(userData.Password, newUser.Salt())
-	newUser.Role      = model.UserRoleNormal
-	newUser.Status    = model.UserStatusInActive
-	newUser.Sex       = model.UserSexMale
+	newUser.Name = userData.Name
+	newUser.Email = userData.Email
+	newUser.Pass = newUser.EncryptPassword(userData.Password, newUser.Salt())
+	newUser.Role = model.UserRoleNormal
+	newUser.Status = model.UserStatusInActive
+	newUser.Sex = model.UserSexMale
 	newUser.AvatarURL = "/images/avatar/" + strconv.Itoa(rand.Intn(2)) + ".png"
 
 	if err := model.DB.Create(&newUser).Error; err != nil {
@@ -391,20 +409,20 @@ func Signup(ctx iris.Context) {
 		return
 	}
 
-	curTime    := time.Now().Unix()
+	curTime := time.Now().Unix()
 	activeUser := fmt.Sprintf("%s%d", model.ActiveTime, newUser.ID)
-    if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
-        fmt.Println("redis set failed:", err)
+	if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
+		fmt.Println("redis set failed:", err)
 	}
-	
+
 	go func() {
 		sendMail("/active", "账号激活", curTime, newUser, ctx)
 	}()
 
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : newUser,
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  newUser,
 	})
 }
 
@@ -412,9 +430,9 @@ func Signup(ctx iris.Context) {
 func Signout(ctx iris.Context) {
 	manager.Sess.Destroy(ctx)
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{},
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  iris.Map{},
 	})
 }
 
@@ -428,72 +446,72 @@ func UpdateInfo(ctx iris.Context) {
 	}
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
-	field        := ctx.Params().Get("field")
-	resData      := make(map[string]interface{})
+	field := ctx.Params().Get("field")
+	resData := make(map[string]interface{})
 	resData["id"] = user.ID
 
 	switch field {
-		case "sex":
-			if userReqData.Sex != model.UserSexMale && userReqData.Sex != model.UserSexFemale {
-				SendErrJSON("无效的性别", ctx)
-				return	
-			}
-			if err := model.DB.Model(&user).Update("sex", userReqData.Sex).Error; err != nil {
-				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
-				return
-			}
-			resData[field] = userReqData.Sex
-		case "signature":
-			userReqData.Signature = strings.TrimSpace(userReqData.Signature)
-			userReqData.Signature = bluemonday.UGCPolicy().Sanitize(userReqData.Signature)
-			// 个性签名可以为空
-			if utf8.RuneCountInString(userReqData.Signature) > model.MaxSignatureLen {
-				SendErrJSON("个性签名不能超过" + fmt.Sprintf("%d", model.MaxSignatureLen) + "个字符", ctx)
-				return
-			}
-			if err := model.DB.Model(&user).Update("signature", userReqData.Signature).Error; err != nil {
-				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
-				return
-			}
-			resData[field] = userReqData.Signature
-		case "location":
-			userReqData.Location = strings.TrimSpace(userReqData.Location)
-			userReqData.Location = bluemonday.UGCPolicy().Sanitize(userReqData.Location)
-			// 居住地可以为空
-			if utf8.RuneCountInString(userReqData.Location) > model.MaxLocationLen {
-				SendErrJSON("居住地不能超过" + fmt.Sprintf("%d", model.MaxLocationLen) + "个字符", ctx)
-				return
-			}
-			if err := model.DB.Model(&user).Update("location", userReqData.Location).Error; err != nil {
-				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
-				return
-			}
-			resData[field] = userReqData.Location	
-		case "introduce":
-			userReqData.Introduce = strings.TrimSpace(userReqData.Introduce)
-			userReqData.Introduce = bluemonday.UGCPolicy().Sanitize(userReqData.Introduce)
-			// 个人简介可以为空
-			if utf8.RuneCountInString(userReqData.Introduce) > model.MaxIntroduceLen {
-				SendErrJSON("个人简介不能超过" + fmt.Sprintf("%d", model.MaxIntroduceLen) + "个字符", ctx)
-				return
-			}
-			if err := model.DB.Model(&user).Update("introduce", userReqData.Introduce).Error; err != nil {
-				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
-				return
-			}
-			resData[field] = userReqData.Introduce
-		default:
-			SendErrJSON("参数无效", ctx)	
+	case "sex":
+		if userReqData.Sex != model.UserSexMale && userReqData.Sex != model.UserSexFemale {
+			SendErrJSON("无效的性别", ctx)
 			return
+		}
+		if err := model.DB.Model(&user).Update("sex", userReqData.Sex).Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		resData[field] = userReqData.Sex
+	case "signature":
+		userReqData.Signature = strings.TrimSpace(userReqData.Signature)
+		userReqData.Signature = bluemonday.UGCPolicy().Sanitize(userReqData.Signature)
+		// 个性签名可以为空
+		if utf8.RuneCountInString(userReqData.Signature) > model.MaxSignatureLen {
+			SendErrJSON("个性签名不能超过"+fmt.Sprintf("%d", model.MaxSignatureLen)+"个字符", ctx)
+			return
+		}
+		if err := model.DB.Model(&user).Update("signature", userReqData.Signature).Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		resData[field] = userReqData.Signature
+	case "location":
+		userReqData.Location = strings.TrimSpace(userReqData.Location)
+		userReqData.Location = bluemonday.UGCPolicy().Sanitize(userReqData.Location)
+		// 居住地可以为空
+		if utf8.RuneCountInString(userReqData.Location) > model.MaxLocationLen {
+			SendErrJSON("居住地不能超过"+fmt.Sprintf("%d", model.MaxLocationLen)+"个字符", ctx)
+			return
+		}
+		if err := model.DB.Model(&user).Update("location", userReqData.Location).Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		resData[field] = userReqData.Location
+	case "introduce":
+		userReqData.Introduce = strings.TrimSpace(userReqData.Introduce)
+		userReqData.Introduce = bluemonday.UGCPolicy().Sanitize(userReqData.Introduce)
+		// 个人简介可以为空
+		if utf8.RuneCountInString(userReqData.Introduce) > model.MaxIntroduceLen {
+			SendErrJSON("个人简介不能超过"+fmt.Sprintf("%d", model.MaxIntroduceLen)+"个字符", ctx)
+			return
+		}
+		if err := model.DB.Model(&user).Update("introduce", userReqData.Introduce).Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		resData[field] = userReqData.Introduce
+	default:
+		SendErrJSON("参数无效", ctx)
+		return
 	}
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : resData,
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  resData,
 	})
 }
 
@@ -501,8 +519,8 @@ func UpdateInfo(ctx iris.Context) {
 func UpdatePassword(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
 	type userReqData struct {
-		Password  string  `json:"password" valid:"runelength(6|20)"`
-		NewPwd    string  `json:"newPwd" valid:"runelength(6|20)"`
+		Password string `json:"password" valid:"runelength(6|20)"`
+		NewPwd   string `json:"newPwd" valid:"runelength(6|20)"`
 	}
 	var userData userReqData
 	if err := ctx.ReadJSON(&userData); err != nil {
@@ -520,23 +538,23 @@ func UpdatePassword(ctx iris.Context) {
 
 	if err := model.DB.First(&user, user.ID).Error; err != nil {
 		SendErrJSON("error", ctx)
-		return	
+		return
 	}
 
 	if user.CheckPassword(userData.Password) {
-		user.Pass = user.EncryptPassword(userData.NewPwd, user.Salt())	
+		user.Pass = user.EncryptPassword(userData.NewPwd, user.Salt())
 		if err := model.DB.Save(&user).Error; err != nil {
 			SendErrJSON("原密码不正确", ctx)
 			return
 		}
 		ctx.JSON(iris.Map{
-			"errNo" : model.ErrorCode.SUCCESS,
-			"msg"   : "success",
-			"data"  : iris.Map{},
+			"errNo": model.ErrorCode.SUCCESS,
+			"msg":   "success",
+			"data":  iris.Map{},
 		})
 	} else {
 		SendErrJSON("原密码错误", ctx)
-		return	
+		return
 	}
 }
 
@@ -560,12 +578,12 @@ func PublicInfo(ctx iris.Context) {
 	if user.Sex == model.UserSexFemale {
 		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/d20f62c6-bd11-4739-b79b-48c9fcbce392.jpg"
 	} else {
-		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/e672995e-7a39-4a05-9673-8802b1865c46.jpg"	
+		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/e672995e-7a39-4a05-9673-8802b1865c46.jpg"
 	}
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": iris.Map{
 			"user": user,
 		},
 	})
@@ -575,9 +593,9 @@ func PublicInfo(ctx iris.Context) {
 func SecretInfo(ctx iris.Context) {
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": iris.Map{
 			"user": user,
 		},
 	})
@@ -595,24 +613,24 @@ func InfoDetail(ctx iris.Context) {
 
 	if err := model.DB.Model(&user).Related(&user.Schools).Error; err != nil {
 		SendErrJSON("error", ctx)
-		return	
+		return
 	}
 
 	if err := model.DB.Model(&user).Related(&user.Careers).Error; err != nil {
 		SendErrJSON("error", ctx)
-		return	
+		return
 	}
 
 	if user.Sex == model.UserSexFemale {
 		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/d20f62c6-bd11-4739-b79b-48c9fcbce392.jpg"
 	} else {
-		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/e672995e-7a39-4a05-9673-8802b1865c46.jpg"	
+		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/e672995e-7a39-4a05-9673-8802b1865c46.jpg"
 	}
 
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": iris.Map{
 			"user": user,
 		},
 	})
@@ -629,7 +647,7 @@ func AllList(ctx iris.Context) {
 		pageNo = 1
 	}
 
-	offset   := (pageNo - 1) * model.PageSize
+	offset := (pageNo - 1) * model.PageSize
 	pageSize := model.PageSize
 
 	var users []model.User
@@ -637,24 +655,24 @@ func AllList(ctx iris.Context) {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 	} else {
-		var results []interface{}	
+		var results []interface{}
 		for i := 0; i < len(users); i++ {
 			results = append(results, iris.Map{
-				"id"     : users[i].ID,
-				"name"   : users[i].Name,
-				"email"  : users[i].Email,
-				"role"   : users[i].Role,
-				"status" : users[i].Status,
+				"id":     users[i].ID,
+				"name":   users[i].Name,
+				"email":  users[i].Email,
+				"role":   users[i].Role,
+				"status": users[i].Status,
 			})
 		}
 		ctx.JSON(iris.Map{
-			"errNo" : model.ErrorCode.SUCCESS,
-			"msg"   : "success",
-			"data"  : iris.Map{
+			"errNo": model.ErrorCode.SUCCESS,
+			"msg":   "success",
+			"data": iris.Map{
 				"users": results,
 			},
 		})
-	}	
+	}
 }
 
 func topN(n int, ctx iris.Context) {
@@ -663,11 +681,11 @@ func topN(n int, ctx iris.Context) {
 	if err := model.DB.Order("score DESC").Limit(n).Find(&users).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
-	} else {	
+	} else {
 		ctx.JSON(iris.Map{
-			"errNo" : model.ErrorCode.SUCCESS,
-			"msg"   : "success",
-			"data"  : iris.Map{
+			"errNo": model.ErrorCode.SUCCESS,
+			"msg":   "success",
+			"data": iris.Map{
 				"users": users,
 			},
 		})
@@ -689,9 +707,9 @@ func UpdateAvatar(ctx iris.Context) {
 	data, err := common.Upload(ctx)
 	if err != nil {
 		ctx.JSON(iris.Map{
-			"errNo" : model.ErrorCode.ERROR,
-			"msg"   : err.Error(),
-			"data"  : iris.Map{},
+			"errNo": model.ErrorCode.ERROR,
+			"msg":   err.Error(),
+			"data":  iris.Map{},
 		})
 		return
 	}
@@ -700,18 +718,18 @@ func UpdateAvatar(ctx iris.Context) {
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 	if err := model.DB.Model(&user).Update("avatar_url", avatarURL).Error; err != nil {
 		ctx.JSON(iris.Map{
-			"errNo" : model.ErrorCode.ERROR,
-			"msg"   : err.Error(),
-			"data"  : iris.Map{},
+			"errNo": model.ErrorCode.ERROR,
+			"msg":   err.Error(),
+			"data":  iris.Map{},
 		})
 		return
 	}
 	user.AvatarURL = avatarURL
 	manager.Sess.Start(ctx).Set("user", user)
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : data,
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  data,
 	})
 }
 
@@ -726,8 +744,8 @@ func AddCareer(ctx iris.Context) {
 
 	career.Company = strings.TrimSpace(career.Company)
 	career.Company = bluemonday.UGCPolicy().Sanitize(career.Company)
-	career.Title   = strings.TrimSpace(career.Title)
-	career.Title   = bluemonday.UGCPolicy().Sanitize(career.Title)
+	career.Title = strings.TrimSpace(career.Title)
+	career.Title = bluemonday.UGCPolicy().Sanitize(career.Title)
 
 	if career.Company == "" {
 		SendErrJSON("公司或组织名称不能为空", ctx)
@@ -735,8 +753,8 @@ func AddCareer(ctx iris.Context) {
 	}
 
 	if utf8.RuneCountInString(career.Company) > model.MaxCareerCompanyLen {
-		SendErrJSON("公司或组织名称不能超过" + fmt.Sprintf("%d", model.MaxCareerCompanyLen) + "个字符", ctx)
-		return	
+		SendErrJSON("公司或组织名称不能超过"+fmt.Sprintf("%d", model.MaxCareerCompanyLen)+"个字符", ctx)
+		return
 	}
 
 	if career.Title == "" {
@@ -745,12 +763,12 @@ func AddCareer(ctx iris.Context) {
 	}
 
 	if utf8.RuneCountInString(career.Title) > model.MaxCareerTitleLen {
-		SendErrJSON("职位不能超过" + fmt.Sprintf("%d", model.MaxCareerTitleLen) + "个字符", ctx)
-		return	
+		SendErrJSON("职位不能超过"+fmt.Sprintf("%d", model.MaxCareerTitleLen)+"个字符", ctx)
+		return
 	}
 
 	session := manager.Sess.Start(ctx)
-	user    := session.Get("user").(model.User)
+	user := session.Get("user").(model.User)
 	career.UserID = user.ID
 
 	if err := model.DB.Create(&career).Error; err != nil {
@@ -759,9 +777,9 @@ func AddCareer(ctx iris.Context) {
 	}
 
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : career,
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  career,
 	})
 }
 
@@ -774,8 +792,8 @@ func AddSchool(ctx iris.Context) {
 		return
 	}
 
-	school.Name       = strings.TrimSpace(school.Name)
-	school.Name       = bluemonday.UGCPolicy().Sanitize(school.Name)
+	school.Name = strings.TrimSpace(school.Name)
+	school.Name = bluemonday.UGCPolicy().Sanitize(school.Name)
 	school.Speciality = strings.TrimSpace(school.Speciality)
 	school.Speciality = bluemonday.UGCPolicy().Sanitize(school.Speciality)
 
@@ -785,8 +803,8 @@ func AddSchool(ctx iris.Context) {
 	}
 
 	if utf8.RuneCountInString(school.Name) > model.MaxSchoolNameLen {
-		SendErrJSON("学校或教育机构名不能超过" + fmt.Sprintf("%d", model.MaxSchoolNameLen) + "个字符", ctx)
-		return	
+		SendErrJSON("学校或教育机构名不能超过"+fmt.Sprintf("%d", model.MaxSchoolNameLen)+"个字符", ctx)
+		return
 	}
 
 	if school.Speciality == "" {
@@ -795,12 +813,12 @@ func AddSchool(ctx iris.Context) {
 	}
 
 	if utf8.RuneCountInString(school.Speciality) > model.MaxSchoolSpecialityLen {
-		SendErrJSON("专业方向不能超过" + fmt.Sprintf("%d", model.MaxSchoolSpecialityLen) + "个字符", ctx)
-		return	
+		SendErrJSON("专业方向不能超过"+fmt.Sprintf("%d", model.MaxSchoolSpecialityLen)+"个字符", ctx)
+		return
 	}
 
 	session := manager.Sess.Start(ctx)
-	user    := session.Get("user").(model.User)
+	user := session.Get("user").(model.User)
 	school.UserID = user.ID
 
 	if err := model.DB.Create(&school).Error; err != nil {
@@ -809,9 +827,9 @@ func AddSchool(ctx iris.Context) {
 	}
 
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : school,
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  school,
 	})
 }
 
@@ -822,7 +840,7 @@ func DeleteCareer(ctx iris.Context) {
 	var idErr error
 	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
 		SendErrJSON("无效的id", ctx)
-		return	
+		return
 	}
 	var career model.Career
 	if err := model.DB.First(&career, id).Error; err != nil {
@@ -832,12 +850,12 @@ func DeleteCareer(ctx iris.Context) {
 
 	if err := model.DB.Delete(&career).Error; err != nil {
 		SendErrJSON("error", ctx)
-		return	
+		return
 	}
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": iris.Map{
 			"id": career.ID,
 		},
 	})
@@ -850,7 +868,7 @@ func DeleteSchool(ctx iris.Context) {
 	var idErr error
 	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
 		SendErrJSON("无效的id", ctx)
-		return	
+		return
 	}
 	var school model.School
 	if err := model.DB.First(&school, id).Error; err != nil {
@@ -860,12 +878,12 @@ func DeleteSchool(ctx iris.Context) {
 
 	if err := model.DB.Delete(&school).Error; err != nil {
 		SendErrJSON("error", ctx)
-		return	
+		return
 	}
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": iris.Map{
 			"id": school.ID,
 		},
 	})

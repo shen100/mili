@@ -6,6 +6,8 @@ var config = {
     sessionTimeout: 30, // session超时时间，单位分钟
     bdStatEnable: false,
     bdStatSI: '',
+    messageDuration: 5,
+    luosimaoSiteKey: '',
     proxy: {
         host: '127.0.0.1',
         port: 8881

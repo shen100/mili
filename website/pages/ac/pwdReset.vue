@@ -17,6 +17,9 @@
                                     placeholder="请输入邮箱"></i-input>
                             </Form-item>
                         </Form>
+                        <div style="min-height: 44px;margin-bottom:22px;">
+                            <div class="l-captcha" data-width="400" :data-site-key="luosimaoSiteKey" data-callback="luosimaoCallback"></div>
+                        </div>
                         <i-button type="primary" class="forget-button" size="large" @click="handleSubmit('formCustom')">发送邮件</i-button>
                     </div>
                     <div v-if="success">
@@ -35,11 +38,14 @@
     import Footer from '~/components/Footer'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
+    import config from '~/config'
     import {trim, trimBlur} from '~/utils/tool'
 
     export default {
         data () {
             return {
+                luosimaoRes: '',
+                luosimaoSiteKey: config.luosimaoSiteKey,
                 loading: false,
                 formCustom: {
                     email: ''
@@ -61,7 +67,10 @@
         },
         head () {
             return {
-                title: '忘记密码'
+                title: '忘记密码',
+                script: [
+                    { src: '//captcha.luosimao.com/static/js/api.js' }
+                ]
             }
         },
         middleware: 'userInfo',
@@ -80,7 +89,8 @@
                         this.loading = true
                         request.sendEmailPwd({
                             body: {
-                                email: trim(this.formCustom.email)
+                                email: trim(this.formCustom.email),
+                                luosimaoRes: this.luosimaoRes
                             }
                         }).then(res => {
                             this.loading = false
@@ -128,6 +138,9 @@
                     this.times--
                 }
             }, 1000)
+            window.luosimaoCallback = (response) => {
+                this.luosimaoRes = response
+            }
         },
         destroyed () {
             clearInterval(this.count)

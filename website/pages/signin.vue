@@ -14,7 +14,10 @@
                 <Form-item prop="passwd">
                     <i-input size="large" type="password" v-model="formCustom.passwd" placeholder="密码" @keydown.native="handleKeyUp"></i-input>
                 </Form-item>
-                <p style="text-align: right;padding-right: 2px">
+                <div style="min-height: 44px;">
+                    <div class="l-captcha" data-width="319" :data-site-key="luosimaoSiteKey" data-callback="luosimaoCallback"></div>
+                </div>
+                <p style="text-align: right;padding-right: 2px;margin-top:10px;">
                     <a href="/signup" class="golang-common-link" style="margin-right: 12px;">立即注册</a>
                     <a href="/ac/pwdReset" class="golang-common-link">忘记密码</a>
                 </p>
@@ -30,6 +33,7 @@
 <script>
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
+    import config from '~/config'
     import url from 'url'
     import {trim, trimBlur} from '~/utils/tool'
     import '~/utils/bd'
@@ -37,6 +41,8 @@
     export default {
         data () {
             return {
+                luosimaoRes: '',
+                luosimaoSiteKey: config.luosimaoSiteKey,
                 loading: false,
                 formCustom: {
                     passwd: '',
@@ -83,7 +89,10 @@
         middleware: 'userInfo',
         head () {
             return {
-                title: '登录'
+                title: '登录',
+                script: [
+                    { src: '//captcha.luosimao.com/static/js/api.js' }
+                ]
             }
         },
         methods: {
@@ -97,7 +106,8 @@
                         request.signin({
                             body: {
                                 signinInput: trim(this.formCustom.username),
-                                password: trim(this.formCustom.passwd)
+                                password: trim(this.formCustom.passwd),
+                                luosimaoRes: this.luosimaoRes
                             }
                         }).then(res => {
                             this.loading = false
@@ -106,6 +116,7 @@
                             } else if (res.errNo === ErrorCode.IN_ACTIVE) {
                                 window.location.href = '/verify/mail?e=' + encodeURIComponent(res.data.email)
                             } else {
+                                window.LUOCAPTCHA.reset()
                                 this.$Message.error(res.msg)
                             }
                         }).catch(err => {
@@ -122,6 +133,11 @@
             },
             blur (name) {
                 trimBlur(name, this)
+            }
+        },
+        mounted () {
+            window.luosimaoCallback = (response) => {
+                this.luosimaoRes = response
             }
         }
     }
