@@ -85,6 +85,21 @@ body, .golang-home-body-left {
     float: right;
 }
 
+.comment-reply {
+    color: rgb(128, 128, 128);
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.comment-reply-txt {
+    line-height: 17px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 2px;
+}
+
 .comment-delete {
     color: rgb(128, 128, 128);
     display: inline-block;
@@ -100,6 +115,13 @@ body, .golang-home-body-left {
     margin-left: 2px;
 }
 
+.reply-user-icon-box {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    vertical-align: top;
+}
+
 .reply-user-icon {
 	float: left;
 }
@@ -109,9 +131,17 @@ body, .golang-home-body-left {
 	height: 30px;
 }
 
+.reply-user-box {
+    display: inline-block;
+    vertical-align: top;
+    width: 850px;
+    padding-left: 5px;
+}
+
 .reply-user-name {
     color: #08c;
     margin: 0 5px;
+    margin-left: 0;
 }
 
 .reply-user-name:hover {
@@ -138,7 +168,6 @@ body, .golang-home-body-left {
 
 .comment-item .golang123-editor {
 	margin-top: 10px;
-	margin-left: 40px;
 }
 
 .author-info-text {

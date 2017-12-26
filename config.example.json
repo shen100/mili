@@ -30,6 +30,8 @@
 		"SessionTimeout"      : 30,                   /*session超时时间，单位分钟*/
 		"PassSalt"            : "passsalt",           /*用户密码加盐*/
 		"CrawlerName"         : "超级爬虫",            /*爬虫账号名*/
+		"LuosimaoVerifyURL"   : "", /*螺丝帽验证地址*/
+		"LuosimaoAPIKey"      : "", /*螺丝帽api_key*/
 		"MailUser"            : "",                   /*域名邮箱账号*/
 		"MailPass"            : "",                   /*域名邮箱密码*/
 		"MailHost"            : "smtp.qq.com",        /*smtp邮箱域名*/

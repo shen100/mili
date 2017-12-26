@@ -79,7 +79,7 @@
                     <div class="comment-content">
                         <Form ref="formData" :model="formData" :rules="formRule">
                             <Form-item prop="content">
-                                <md-editor :value="formData.content" @change="onContentChage" />
+                                <md-editor :user="user" :value="formData.content" @change="onContentChage" />
                             </Form-item>
                         </Form>
                         <Button type="primary" @click="onSubmitReply">发表回复</Button>
