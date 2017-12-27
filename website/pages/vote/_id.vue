@@ -55,18 +55,50 @@
                     <div class="comment-content">
                         <template v-if="vote.commentCount">
                             <div :id="`reply-${item.id}`" class="comment-item" v-for="(item, index) in vote.comments">
-                                <a class="reply-user-icon" :href="`/user/${item.user.id}`" target="_blank">
-                                    <img :src="item.user.avatarURL" alt="">
-                                </a>
-                                <a class="reply-user-name" :href="`/user/${item.user.id}`" target="_blank">{{item.user.name}}</a>
-                                <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
-                                <div class="comment-actions">
-                                    <div v-if="user && user.id === item.user.id" class="comment-delete" @click="onCommentDelete(item.id)">
-                                        <Icon type="android-delete" style="font-size: 17px;"></Icon>
-                                        <span class="comment-delete-txt">删除</span>
+                                <div class="reply-user-icon-box">
+                                    <a class="reply-user-icon" :href="`/user/${item.user.id}`" target="_blank">
+                                        <img :src="item.user.avatarURL" alt="">
+                                    </a>
+                                </div>
+                                <div class="reply-user-box">
+                                    <div>
+                                        <a class="reply-user-name" :href="`/user/${item.user.id}`" target="_blank">{{item.user.name}}</a>
+                                        <span class="reply-time">{{index + 1}}楼•{{item.createdAt | getReplyTime}}</span>
+                                        <div class="comment-actions">
+                                            <div v-if="user && user.id !== item.user.id" class="comment-reply" @click="onReplyUser(item)">
+                                                <Icon type="reply" style="font-size: 17px;"></Icon>
+                                                <span class="comment-reply-txt">回复</span>
+                                            </div>
+                                            <div v-if="user && user.id === item.user.id" class="comment-delete" @click="onCommentDelete(item.id)">
+                                                <Icon type="android-delete" style="font-size: 17px;"></Icon>
+                                                <span class="comment-delete-txt">删除</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="item.parentID" class="parent-comment">
+                                        <template v-if="item.parents && item.parents.length">
+                                            <span>对</span>
+                                            <span><a :href="`/user/${item.parents[0].user.id}`" target="_blank"><img :src="item.parents[0].user.avatarURL"></a></span>
+                                            <span><a :href="`/user/${item.parents[0].user.id}`" target="_blank" class="parent-comment-user">{{item.parents[0].user.name}}</a></span>
+                                            <span><a :href="`/vote/${vote.id}#reply-${item.parents[0].id}`">{{floorMap[item.parents[0].id]}}楼</a></span>
+                                            <span>回复</span>
+                                        </template>
+                                        <template v-else>
+                                            <span style="text-decoration: line-through;">此回复已被作者删除</span>
+                                        </template>
+                                    </div>
+
+                                    <div class="golang123-editor" v-html="item.content"></div>
+                                    <div v-if="item.replyVisible">
+                                        <div>
+                                            <md-editor :user="user" :value="formData.content" @change="onContentChage" />
+                                        </div>
+                                        <Row>
+                                            <Button @click="onSubmitReply" type="primary">保存</Button>
+                                            <Button @click="cancelReplyUser" style="margin-left: 10px;" type="ghost">取消</Button>
+                                        </Row>
                                     </div>
                                 </div>
-                                <div class="golang123-editor" v-html="item.content"></div>
                             </div>
                         </template>
                         <p class="not-signin" v-if="!vote.commentCount && user">暂时还没有人回复过这个投票</p>
@@ -74,7 +106,7 @@
                         <p class="not-signin not-signin-border" v-if="vote.commentCount && !user">要回复投票, 请先&nbsp;<a @click="onSignin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
                     </div>
                 </div>
-                <div class="golang-cell comment-box" v-if="user">
+                <div class="golang-cell comment-box" v-if="user && replyVote">
                     <div class="title">添加回复</div>
                     <div class="comment-content">
                         <Form ref="formData" :model="formData" :rules="formRule">
@@ -220,11 +252,20 @@
                         })
                     })
                 }
+                vote.comments = vote.comments || []
+                let floorMap = {}
+                for (let i = 0; i < vote.comments.length; i++) {
+                    vote.comments[i].replyVisible = false
+                    floorMap[vote.comments[i].id] = i + 1
+                }
                 return {
                     isAuthor: isAuthor,
                     vote: vote,
+                    floorMap: floorMap,
                     endAtStr: dateTool.formatYMDHM2(vote.endAt),
                     user: context.user,
+                    replyVote: true, // 直接回复投票的编辑器是否显示(即parentCommentID为0)
+                    parentCommentID: 0,
                     votesMaxBrowse: votesMaxBrowse,
                     votesMaxComment: votesMaxComment,
                     score: score,
@@ -298,8 +339,16 @@
                             }
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                self.vote.comments = res.data.comments
-                                self.vote.commentCount = res.data.comments.length
+                                let comments = res.data.comments || []
+                                let floorMap = {}
+                                for (let i = 0; i < comments.length; i++) {
+                                    comments[i].replyVisible = false
+                                    floorMap[comments[i].id] = i + 1
+                                }
+                                self.vote.comments = comments
+                                self.vote.commentCount = comments.length
+                                self.replyVote = true
+                                self.floorMap = floorMap
                             }
                         }).catch(err => {
                             self.$Message.error(err.message)
@@ -313,46 +362,84 @@
             onContentChage (content) {
                 this.formData.content = content
             },
-            onSubmitReply () {
-                this.$refs['formData'].validate((valid) => {
-                    if (!this.loading && valid) {
-                        this.loading = true
-                        request.commentCreate({
-                            body: {
-                                sourceID: parseInt(this.$route.params.id),
-                                parentID: 0,
-                                content: this.formData.content,
-                                sourceName: 'vote'
-                            }
-                        }).then(res => {
-                            if (res.errNo === ErrorCode.SUCCESS) {
-                                this.formData.content = ''
-                                this.$Message.success({
-                                    duration: config.messageDuration,
-                                    closable: true,
-                                    content: '回复提交成功'
-                                })
-                                return request.getSiteComments({
-                                    params: {
-                                        sourceID: this.$route.params.id,
-                                        sourceName: 'vote'
-                                    }
-                                })
-                            } else {
-                                return Promise.reject(new Error(res.msg))
-                            }
-                        }).then(res => {
-                            if (res.errNo === ErrorCode.SUCCESS) {
-                                this.vote.comments = res.data.comments
-                                this.vote.commentCount = res.data.comments.length
-                            }
-                            this.loading = false
-                        }).catch(err => {
-                            this.loading = false
-                            this.$Message.error(err.message)
-                        })
+            onReplyUser (comment) {
+                // 对回复进行回复
+                let commentID = comment.id
+                for (let i = 0; i < this.vote.comments.length; i++) {
+                    this.vote.comments[i].replyVisible = false
+                    if (this.vote.comments[i].id === commentID) {
+                        this.vote.comments[i].replyVisible = true
                     }
-                })
+                }
+                this.parentCommentID = commentID
+                this.replyVote = false
+            },
+            cancelReplyUser () {
+                for (let i = 0; i < this.vote.comments.length; i++) {
+                    this.vote.comments[i].replyVisible = false
+                }
+                this.parentCommentID = 0
+                this.replyVote = true
+            },
+            onSubmitReply () {
+                // 验证交给后台
+                let commentID
+                if (!this.loading) {
+                    this.loading = true
+                    request.commentCreate({
+                        body: {
+                            sourceID: parseInt(this.$route.params.id),
+                            parentID: this.parentCommentID,
+                            content: this.formData.content,
+                            sourceName: 'vote'
+                        }
+                    }).then(res => {
+                        if (res.errNo === ErrorCode.SUCCESS) {
+                            commentID = res.data.comment.id
+                            this.formData.content = ''
+                            this.$Message.success({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: '回复提交成功'
+                            })
+                            return request.getSiteComments({
+                                params: {
+                                    sourceID: this.$route.params.id,
+                                    sourceName: 'vote'
+                                }
+                            })
+                        } else {
+                            return Promise.reject(new Error(res.msg))
+                        }
+                    }).then(res => {
+                        if (res.errNo === ErrorCode.SUCCESS) {
+                            let comments = res.data.comments || []
+                            let floorMap = {}
+                            for (let i = 0; i < comments.length; i++) {
+                                comments[i].replyVisible = false
+                                floorMap[comments[i].id] = i + 1
+                            }
+                            this.vote.comments = comments
+                            this.vote.commentCount = comments.length
+                            this.replyVote = true
+                            this.parentCommentID = 0
+                            this.floorMap = floorMap
+                            location.href = `/vote/${this.vote.id}#reply-${commentID}`
+                            setTimeout(() => {
+                                let replyDOM = document.getElementById(`reply-${commentID}`)
+                                replyDOM.scrollIntoView && replyDOM.scrollIntoView()
+                            }, 100)
+                        }
+                        this.loading = false
+                    }).catch(err => {
+                        this.loading = false
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: err.message
+                        })
+                    })
+                }
             },
             onVoteSubmit (id) {
                 if (!this.loading) {

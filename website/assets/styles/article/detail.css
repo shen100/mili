@@ -167,7 +167,7 @@ body, .golang-home-body-left {
 }
 
 .comment-item .golang123-editor {
-	margin-top: 10px;
+	margin-top: 6px;
 }
 
 .author-info-text {
@@ -232,6 +232,37 @@ body, .golang-home-body-left {
 .collects-item-label:hover {
     color: #0f88eb;
 }
+
+.parent-comment {
+    margin-top: 6px;
+    padding: 6px 12px;
+    background-color: #f2f2f2;
+}
+
+.parent-comment span {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 8px;
+    line-height: 24px;
+    height: 24px;
+    color: #777;
+}
+
+.parent-comment img {
+    width: 24px;
+    height: 24px;
+}
+
+.parent-comment-user {
+    color: #000;
+}
+
+
+
+
+
+
+
 
 
 

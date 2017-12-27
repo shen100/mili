@@ -1,16 +1,17 @@
 package baidu
 
 import (
-	"strconv"
 	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
+
 	"github.com/kataras/iris"
 	"github.com/shen100/golang123/config"
-	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/controller/common"
+	"github.com/shen100/golang123/model"
 )
 
 func postToBaidu(url string, data []byte) ([]byte, error) {
@@ -47,14 +48,15 @@ func PushToBaidu(ctx iris.Context) {
 	}
 	limit := 40
 	go func() {
-		for i := 0; i < count; i += limit {
+		for i := 0; i < 1; i += limit {
 			var articles []model.Article
 			if err := model.DB.Where("status <> ?", model.ArticleVerifyFail).Offset(i).
-					Limit(limit).Find(&articles).Error; err == nil {
+				Limit(limit).Find(&articles).Error; err == nil {
 				var urlArr []string
 				for j := 0; j < len(articles); j++ {
-					urlArr = append(urlArr, "https://" + config.ServerConfig.Host + "/topic/" + strconv.Itoa(int(articles[j].ID)))
+					urlArr = append(urlArr, "https://"+config.ServerConfig.Host+"/topic/"+strconv.Itoa(int(articles[j].ID)))
 				}
+				urlArr = []string{"https://www.golang123.com/topic/1"}
 				urlStr := strings.Join(urlArr, "\n")
 				result, err := postToBaidu(config.ServerConfig.BaiduPushLink, []byte(urlStr))
 				fmt.Println(urlStr)
@@ -66,8 +68,8 @@ func PushToBaidu(ctx iris.Context) {
 		}
 	}()
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{},
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  iris.Map{},
 	})
 }

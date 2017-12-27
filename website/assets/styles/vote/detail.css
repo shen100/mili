@@ -77,8 +77,7 @@ body, .golang-home-body-left {
 }
 
 .comment-item .golang123-editor {
-    margin-top: 10px;
-    margin-left: 40px;
+    margin-top: 6px;
 }
 
 .comment-actions {
@@ -100,6 +99,13 @@ body, .golang-home-body-left {
     margin-left: 2px;
 }
 
+.reply-user-icon-box {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    vertical-align: top;
+}
+
 .reply-user-icon {
     float: left;
 }
@@ -109,9 +115,17 @@ body, .golang-home-body-left {
     height: 30px;
 }
 
+.reply-user-box {
+    display: inline-block;
+    vertical-align: top;
+    width: 850px;
+    padding-left: 5px;
+}
+
 .reply-user-name {
     color: #08c;
     margin: 0 5px;
+    margin-left: 0;
 }
 
 .reply-user-name:hover {
@@ -121,6 +135,22 @@ body, .golang-home-body-left {
 .reply-time {
     color: gray;
     cursor: default;
+}
+
+.comment-reply {
+    color: gray;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.comment-reply, .comment-reply-txt {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.comment-reply-txt {
+    line-height: 17px;
+    margin-left: 2px;
 }
 
 .author-info-text {
@@ -182,5 +212,30 @@ body, .golang-home-body-left {
 
 .collects-item-label, .collects-item-label:hover {
     color: #0f88eb;
+}
+
+
+.parent-comment {
+    margin-top: 6px;
+    padding: 6px 12px;
+    background-color: #f2f2f2;
+}
+
+.parent-comment span {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 8px;
+    line-height: 24px;
+    height: 24px;
+    color: #777;
+}
+
+.parent-comment img {
+    width: 24px;
+    height: 24px;
+}
+
+.parent-comment-user {
+    color: #000;
 }
 

@@ -72,12 +72,23 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div v-if="item.parentID" class="parent-comment">
+                                        <template v-if="item.parents && item.parents.length">
+                                            <span>对</span>
+                                            <span><a :href="`/user/${item.parents[0].user.id}`" target="_blank"><img :src="item.parents[0].user.avatarURL"></a></span>
+                                            <span><a :href="`/user/${item.parents[0].user.id}`" target="_blank" class="parent-comment-user">{{item.parents[0].user.name}}</a></span>
+                                            <span><a :href="`/topic/${article.id}#reply-${item.parents[0].id}`">{{floorMap[item.parents[0].id]}}楼</a></span>
+                                            <span>回复</span>
+                                        </template>
+                                        <template v-else>
+                                            <span style="text-decoration: line-through;">此回复已被作者删除</span>
+                                        </template>
+                                    </div>
                                     <div class="golang123-editor" v-html="item.content"></div>
                                     <div v-if="item.replyVisible">
                                         <div>
                                             <md-editor :user="user" :value="formData.content" @change="onContentChage" />
                                         </div>
-                                        <div class="ivu-form-item-error-tip" style="position: static;padding-bottom: 6px;">请输入回复内容</div>
                                         <Row>
                                             <Button @click="onSubmitReply" type="primary">保存</Button>
                                             <Button @click="cancelReplyUser" style="margin-left: 10px;" type="ghost">取消</Button>
@@ -260,14 +271,17 @@
                     }
                     let isAuthor = context.user && context.user.id === article.user.id
                     article.comments = article.comments || []
+                    let floorMap = {}
                     for (let i = 0; i < article.comments.length; i++) {
                         article.comments[i].replyVisible = false
+                        floorMap[article.comments[i].id] = i + 1
                     }
                     return {
                         isAuthor: isAuthor,
                         user: context.user,
                         replyArticle: true, // 直接回复话题的编辑器是否显示(即parentCommentID为0)
                         parentCommentID: 0,
+                        floorMap: floorMap,
                         article: article,
                         maxBrowse: maxBrowse,
                         score: score,
@@ -350,6 +364,7 @@
                     this.$Message.error('账号未激活，不能回复话题')
                     return
                 }
+                let commentID
                 // 验证交给后台
                 if (!this.loading) {
                     this.loading = true
@@ -363,6 +378,7 @@
                     }).then(res => {
                         this.loading = false
                         if (res.errNo === ErrorCode.SUCCESS) {
+                            commentID = res.data.comment.id
                             this.formData.content = ''
                             this.$Message.success({
                                 duration: config.messageDuration,
@@ -386,17 +402,30 @@
                     }).then(res => {
                         if (res.errNo === ErrorCode.SUCCESS) {
                             let comments = res.data.comments || []
+                            let floorMap = {}
                             for (let i = 0; i < comments.length; i++) {
                                 comments[i].replyVisible = false
+                                floorMap[comments[i].id] = i + 1
                             }
                             this.article.comments = comments
                             this.article.commentCount = comments.length
                             this.replyArticle = true
+                            this.parentCommentID = 0
+                            this.floorMap = floorMap
+                            location.href = `/topic/${this.article.id}#reply-${commentID}`
+                            setTimeout(() => {
+                                let replyDOM = document.getElementById(`reply-${commentID}`)
+                                replyDOM.scrollIntoView && replyDOM.scrollIntoView()
+                            }, 100)
                         }
                     }).catch(err => {
                         this.loading = false
                         if (err.message) {
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message
+                            })
                         }
                     })
                 }
@@ -428,12 +457,15 @@
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 let comments = res.data.comments || []
+                                let floorMap = {}
                                 for (let i = 0; i < comments.length; i++) {
                                     comments[i].replyVisible = false
+                                    floorMap[comments[i].id] = i + 1
                                 }
                                 self.article.comments = comments
                                 self.article.commentCount = comments.length
                                 self.replyArticle = true
+                                self.floorMap = floorMap
                             }
                         }).catch(err => {
                             self.$Message.error(err.message)
