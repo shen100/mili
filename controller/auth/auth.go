@@ -2,9 +2,9 @@ package auth
 
 import (
 	"github.com/kataras/iris"
-	"github.com/shen100/golang123/model"
-	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/controller/common"
+	"github.com/shen100/golang123/manager"
+	"github.com/shen100/golang123/model"
 )
 
 // SigninRequired 必须是登录用户
@@ -33,10 +33,12 @@ func ActiveRequired(ctx iris.Context) {
 	} else {
 		var msg = ""
 		switch user.Role {
-			case model.UserStatusInActive: {
+		case model.UserStatusInActive:
+			{
 				msg = "账号未激活"
 			}
-			case model.UserStatusFrozen: {
+		case model.UserStatusFrozen:
+			{
 				msg = "账号已被冻结"
 			}
 		}
@@ -70,11 +72,10 @@ func AdminRequired(ctx iris.Context) {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
 		return
 	}
-	if user.Role == model.UserRoleAdmin || user.Role == model.UserRoleSuperAdmin {
+	if user.Role == model.UserRoleAdmin || user.Role == model.UserRoleCrawler || user.Role == model.UserRoleSuperAdmin {
 		ctx.Next()
 	} else {
 		SendErrJSON("没有权限", ctx)
 		return
 	}
 }
-
