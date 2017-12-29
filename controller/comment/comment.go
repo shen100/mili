@@ -114,8 +114,9 @@ func Save(ctx iris.Context, isEdit bool) {
 		if comment.SourceName == model.CommentSourceArticle {
 			author.ID = article.UserID
 			articleMap := map[string]interface{}{
-				"comment_count": article.CommentCount + 1,
-				"last_user_id":  user.ID,
+				"comment_count":   article.CommentCount + 1,
+				"last_user_id":    user.ID,
+				"last_comment_at": time.Now(),
 			}
 			if err := tx.Model(&article).Updates(articleMap).Error; err != nil {
 				tx.Rollback()
@@ -125,8 +126,9 @@ func Save(ctx iris.Context, isEdit bool) {
 		} else if comment.SourceName == model.CommentSourceVote {
 			author.ID = vote.UserID
 			voteMap := map[string]interface{}{
-				"comment_count": vote.CommentCount + 1,
-				"last_user_id":  user.ID,
+				"comment_count":   vote.CommentCount + 1,
+				"last_user_id":    user.ID,
+				"last_comment_at": time.Now(),
 			}
 			if err := tx.Model(&vote).Updates(voteMap).Error; err != nil {
 				tx.Rollback()

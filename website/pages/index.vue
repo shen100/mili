@@ -21,7 +21,7 @@
                         </span>
                         <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
                         <a :href="'/topic/' + article.id" target="_blank" class="home-articles-title" :title="article.name">{{article.name}}</a>
-                        <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
+                        <p class="articles-res-time">{{article.lastCommentAt || article.createdAt | getReplyTime}}</p>
                         <a v-if="article.lastUser && article.lastUser.id" :href="'/user/' + article.lastUser.id" target="_blank" class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""/></a>
                     </div>
 

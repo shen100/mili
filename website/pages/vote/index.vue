@@ -21,7 +21,7 @@
                             </Tooltip>
                         </span>
                         <a :href="'/vote/' + vote.id" class="home-articles-title">{{vote.name}}</a>
-                        <p class="articles-res-time">{{vote.createdAt | getReplyTime}}</p>
+                        <p class="articles-res-time">{{vote.lastCommentAt || vote.createdAt | getReplyTime}}</p>
                         <a :href="`/user/${vote.lastUser.id}`" target="_blank" class="user-small-icon-box"><img :src="vote.lastUser.avatarURL" alt=""></a>
                     </div>
                 </div>

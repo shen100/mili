@@ -496,7 +496,6 @@ func UserVoteVoteItem(ctx iris.Context) {
 		SendErrJSON("error", ctx)
 		return
 	}
-	vote.LastUserID = user.ID
 	if err := model.DB.Save(&vote).Error; err != nil {
 		SendErrJSON("error", ctx)
 		return

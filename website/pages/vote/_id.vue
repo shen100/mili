@@ -5,7 +5,7 @@
             <div class="golang-home-body-left vote-detail-left">
                 <div class="vote-detail-box">
                     <div class="detail-title-box">
-                        <p class="vote-detail-title"><span class="vote-categoties" :class="status ? 'vote-categoties-running' : 'vote-categoties-end'">{{status ? '进行中' : '已结束'}}</span>{{vote.name}}</p>
+                        <p class="vote-detail-title">{{vote.name}}</p>
                         <p class="vote-title-info">
                             <span class="vote-title-info-item">
                                 发布于{{vote.createdAt | getReplyTime}}
@@ -16,6 +16,7 @@
                             <span class="vote-title-info-item">
                                 {{vote.browseCount}}次浏览
                             </span>
+                            <span class="vote-categoties">    {{!isEnd ? '进行中' : '已结束'}}</span>
                         </p>
                     </div>
                     <div class="home-vote-box">
@@ -25,7 +26,7 @@
                                 <Button type="primary" class="vote-item" @click="onVoteSubmit(item.id)">支持<span class="vote-item-label">{{item.name}}</span><span class="vote-item-label">{{item.count}}</span></Button>
                             </span>
                         </div>
-                        <div style="margin-top: 20px;font-size: 14px;font-weight: 700;">{{endAtStr}}&nbsp;&nbsp;前可投票</div>
+                        <div v-if="!isEnd" style="margin-top: 20px;font-size: 14px;font-weight: 700;">{{endAtStr}}&nbsp;&nbsp;前可投票</div>
                         <div class="vote-actions">
                             <div class="vote-share">
                                 <div class="vote-share-btn" @click="collect">
@@ -269,7 +270,7 @@
                     votesMaxBrowse: votesMaxBrowse,
                     votesMaxComment: votesMaxComment,
                     score: score,
-                    status: vote.status === VoteStatus.VOTE_UNDERWAY,
+                    isEnd: vote.status !== VoteStatus.VOTE_UNDERWAY,
                     collectDirList: collectDirList
                 }
             }).catch(err => {
