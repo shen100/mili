@@ -1,40 +1,41 @@
 package crawler
 
 import (
+	"fmt"
 	"io"
-	"os"
-	"sync"
 	"net/http"
 	"net/url"
-	"fmt"
+	"os"
 	"strings"
+	"sync"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/kataras/iris"
-	"github.com/shen100/golang123/controller/common"
-	"github.com/shen100/golang123/model"
-	"github.com/shen100/golang123/manager"
-	"github.com/shen100/golang123/utils"
 	"github.com/shen100/golang123/config"
+	"github.com/shen100/golang123/controller/common"
+	"github.com/shen100/golang123/manager"
+	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/utils"
 )
 
 var selectorMap = map[int]map[string]string{
 	model.ArticleFromJianShu: map[string]string{
-		"ListItemSelector": ".note-list li",
+		"ListItemSelector":  ".note-list li",
 		"ItemTitleSelector": ".title",
-		"TitleSelector": ".article .title",
-		"ContentSelector": ".show-content",
+		"TitleSelector":     ".article .title",
+		"ContentSelector":   ".show-content",
 	},
 	model.ArticleFromZhihu: map[string]string{
-		"ListItemSelector": ".PostListItem",
+		"ListItemSelector":  ".PostListItem",
 		"ItemTitleSelector": ".PostListItem-info a",
-		"TitleSelector": ".PostIndex-title",
-		"ContentSelector": ".PostIndex-content",
+		"TitleSelector":     ".PostIndex-title",
+		"ContentSelector":   ".PostIndex-content",
 	},
 	model.ArticleFromHuxiu: map[string]string{
-		"ListItemSelector": ".mod-art",
+		"ListItemSelector":  ".mod-art",
 		"ItemTitleSelector": ".mob-ctt h2 a",
-		"TitleSelector": ".t-h1",
-		"ContentSelector": ".article-content-wrap",
+		"TitleSelector":     ".t-h1",
+		"ContentSelector":   ".article-content-wrap",
 	},
 }
 
@@ -67,19 +68,19 @@ var sourceHTMLMap = map[int][]string{
 
 func createArticle(user model.User, category model.Category, from int, data map[string]string) {
 	var article model.Article
-	article.Name        = data["Title"]
+	article.Name = data["Title"]
 	article.HTMLContent = data["Content"]
 	article.ContentType = model.ContentTypeHTML
-	article.UserID      = user.ID
-	article.Status      = model.ArticleVerifying
-	article.Categories  = append(article.Categories, category)
+	article.UserID = user.ID
+	article.Status = model.ArticleVerifying
+	article.Categories = append(article.Categories, category)
 
 	var crawlerArticle model.CrawlerArticle
-	crawlerArticle.URL     = data["URL"]
-	crawlerArticle.Title   = article.Name
+	crawlerArticle.URL = data["URL"]
+	crawlerArticle.Title = article.Name
 	crawlerArticle.Content = article.HTMLContent
-	crawlerArticle.From    = from
-	
+	crawlerArticle.From = from
+
 	tx := model.DB.Begin()
 	if err := tx.Create(&article).Error; err != nil {
 		tx.Rollback()
@@ -98,7 +99,7 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 	if err := model.DB.Where("url = ?", pageURL).Find(&crawlerArticle).Error; err == nil {
 		if !crawlExist {
 			// 当crawlExist为false时，已抓取过的文章就不再抓取
-			return nil	
+			return nil
 		}
 	}
 	articleDOC, err := goquery.NewDocument(pageURL)
@@ -113,11 +114,11 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 	imgs := contentDOM.Find("img")
 	if imgs.Length() > 0 {
 		imgs.Each(func(j int, img *goquery.Selection) {
-			imgURL, exists := img.Attr("src")	
+			imgURL, exists := img.Attr("src")
 			var ext string
 			if !exists {
 				if from != model.ArticleFromJianShu {
-					return	
+					return
 				}
 				originalSrc, originalExists := img.Attr("data-original-src")
 				if originalExists && originalSrc != "" {
@@ -132,7 +133,7 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 						return
 					}
 
-					defer resp.Body.Close()	
+					defer resp.Body.Close()
 
 					contentType := resp.Header.Get("content-type")
 					if contentType == "image/jpeg" {
@@ -145,8 +146,8 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 				}
 			}
 
-			if (imgURL == "" || from == model.ArticleFromZhihu && strings.Index(imgURL, "data:image/svg+xml;utf8,") == 0) {
-				actualsrc, actualsrcExists := img.Attr("data-actualsrc")	
+			if imgURL == "" || from == model.ArticleFromZhihu && strings.Index(imgURL, "data:image/svg+xml;utf8,") == 0 {
+				actualsrc, actualsrcExists := img.Attr("data-actualsrc")
 				if actualsrcExists && actualsrc != "" {
 					imgURL = actualsrc
 				}
@@ -163,13 +164,13 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 
 			if ext == "" {
 				index := strings.LastIndex(urlData.Path, ".")
-				if (index >= 0) {
+				if index >= 0 {
 					ext = urlData.Path[index:]
 				}
 			}
 
 			resp, err := http.Get(imgURL)
-			
+
 			if err != nil {
 				return
 			}
@@ -181,9 +182,9 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 				fmt.Println(err.Error())
 				return
 			}
-			out, outErr := os.OpenFile(imgUploadedInfo.UploadFilePath, os.O_WRONLY|os.O_CREATE, 0666)						
+			out, outErr := os.OpenFile(imgUploadedInfo.UploadFilePath, os.O_WRONLY|os.O_CREATE, 0666)
 			if outErr != nil {
-				fmt.Println(outErr.Error())	
+				fmt.Println(outErr.Error())
 				return
 			}
 
@@ -191,7 +192,7 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 
 			if _, err := io.Copy(out, resp.Body); err != nil {
 				fmt.Println(err.Error())
-				return	
+				return
 			}
 			img.SetAttr("src", imgUploadedInfo.ImgURL)
 		})
@@ -210,15 +211,15 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 		return nil
 	}
 
-	sourceHTML  := strings.Join(sourceHTMLMap[from],"")
-	sourceHTML   = strings.Replace(sourceHTML, "{title}", title, -1)
-	sourceHTML   = strings.Replace(sourceHTML, "{articleURL}", pageURL, -1)
+	sourceHTML := strings.Join(sourceHTMLMap[from], "")
+	sourceHTML = strings.Replace(sourceHTML, "{title}", title, -1)
+	sourceHTML = strings.Replace(sourceHTML, "{articleURL}", pageURL, -1)
 	articleHTML += sourceHTML
-	articleHTML  = "<div id=\"golang123-content-outter\">" + articleHTML + "</div>"
+	articleHTML = "<div id=\"golang123-content-outter\">" + articleHTML + "</div>"
 	return map[string]string{
-		"Title": title,
-		"Content": articleHTML,	
-		"URL": pageURL,
+		"Title":   title,
+		"Content": articleHTML,
+		"URL":     pageURL,
 	}
 }
 
@@ -252,7 +253,7 @@ func crawlList(listURL string, user model.User, category model.Category, from in
 	for i := 0; i < len(articleURLArr); i++ {
 		articleMap := crawlContent(articleURLArr[i], from, crawlExist)
 		if articleMap != nil {
-			createArticle(user, category, from, articleMap)	
+			createArticle(user, category, from, articleMap)
 		}
 	}
 }
@@ -273,14 +274,14 @@ func Crawl(ctx iris.Context) {
 		return
 	}
 
-	if jsonData.From != model.ArticleFromJianShu && jsonData.From != model.ArticleFromZhihu && 
-			jsonData.From != model.ArticleFromHuxiu {
+	if jsonData.From != model.ArticleFromJianShu && jsonData.From != model.ArticleFromZhihu &&
+		jsonData.From != model.ArticleFromHuxiu {
 		SendErrJSON("无效的from", ctx)
-		return	
+		return
 	}
 	if jsonData.Scope != model.CrawlerScopePage && jsonData.Scope != model.CrawlerScopeList {
 		SendErrJSON("无效的scope", ctx)
-		return	
+		return
 	}
 
 	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
@@ -308,15 +309,15 @@ func Crawl(ctx iris.Context) {
 		for i := 0; i < len(jsonData.URLS); i++ {
 			data := crawlContent(jsonData.URLS[i], jsonData.From, jsonData.CrawlExist)
 			if data != nil {
-				createArticle(user, category, jsonData.From, data)	
+				createArticle(user, category, jsonData.From, data)
 			}
 		}
 	}
 
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "抓取完成",
-		"data"  : iris.Map{},
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "抓取完成",
+		"data":  iris.Map{},
 	})
 }
 
@@ -330,9 +331,9 @@ func CrawlAccount(ctx iris.Context) {
 		return
 	}
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : users,
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  users,
 	})
 }
 
@@ -347,8 +348,9 @@ func CreateAccount(ctx iris.Context) {
 	}
 	if len(users) <= 0 {
 		var user model.User
-		user.Name   = config.ServerConfig.CrawlerName
-		user.Role   = model.UserRoleCrawler
+		user.Name = config.ServerConfig.CrawlerName
+		user.Role = model.UserRoleCrawler
+		user.AvatarURL = "/images/avatar/spider.png"
 		user.Status = model.UserStatusActived
 		if err := model.DB.Save(&user).Error; err != nil {
 			fmt.Print(err.Error())
@@ -356,11 +358,11 @@ func CreateAccount(ctx iris.Context) {
 			return
 		}
 		ctx.JSON(iris.Map{
-			"errNo" : model.ErrorCode.SUCCESS,
-			"msg"   : "success",
-			"data"  : []model.User{user},
+			"errNo": model.ErrorCode.SUCCESS,
+			"msg":   "success",
+			"data":  []model.User{user},
 		})
 		return
 	}
-	SendErrJSON("爬虫账号已存在", ctx)	
+	SendErrJSON("爬虫账号已存在", ctx)
 }

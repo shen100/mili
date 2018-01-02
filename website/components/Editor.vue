@@ -51,7 +51,11 @@
             },
             showUpload () {
                 if (this.user.status === UserStatus.STATUS_IN_ACTIVE) {
-                    this.$Message.error('账号未激活，不能上传图片')
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '账号未激活，不能上传图片'
+                    })
                     return
                 }
                 this.modalVisible = true
@@ -71,10 +75,18 @@
                         this.SimpleMDE.drawImage(this.simplemde)
                     } else if (res.errNo === ErrorCode.IN_ACTIVE) {
                         this.modalVisible = false
-                        this.$Message.error('账号未激活，不能上传图片')
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '账号未激活，不能上传图片'
+                        })
                     } else if (res.errNo === ErrorCode.ERROR) {
                         this.modalVisible = false
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
                         location.href = '/signin'
                     }

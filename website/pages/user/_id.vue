@@ -163,13 +163,21 @@
         },
         methods: {
             onFormatError () {
-                this.$Message.error('不是有效的图片格式')
+                this.$Message.error({
+                    duration: config.messageDuration,
+                    closable: true,
+                    content: '不是有效的图片格式'
+                })
             },
             beforeUpload (file) {
                 let self = this
                 this.file = file
                 if (file.size > this.sizeLimit) {
-                    this.$Message.error('图片大小要小于' + this.sizeLimitTip)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '图片大小要小于' + this.sizeLimitTip
+                    })
                     return
                 }
                 this.uploaderVisible = !this.uploaderVisible
@@ -216,7 +224,11 @@
                             }
                             self.uploaderVisible = false
                         } else {
-                            self.$Message.error(result.msg)
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: result.msg
+                            })
                         }
                     })
                 })

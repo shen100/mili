@@ -14,7 +14,6 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/garyburd/redigo/redis"
 	"github.com/kataras/iris"
-	"github.com/microcosm-cc/bluemonday"
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/controller/mail"
@@ -371,6 +370,7 @@ func Signup(ctx iris.Context) {
 		return
 	}
 
+	userData.Name = utils.AvoidXSS(userData.Name)
 	userData.Name = strings.TrimSpace(userData.Name)
 	userData.Email = strings.TrimSpace(userData.Email)
 
@@ -463,8 +463,8 @@ func UpdateInfo(ctx iris.Context) {
 		}
 		resData[field] = userReqData.Sex
 	case "signature":
+		userReqData.Signature = utils.AvoidXSS(userReqData.Signature)
 		userReqData.Signature = strings.TrimSpace(userReqData.Signature)
-		userReqData.Signature = bluemonday.UGCPolicy().Sanitize(userReqData.Signature)
 		// 个性签名可以为空
 		if utf8.RuneCountInString(userReqData.Signature) > model.MaxSignatureLen {
 			SendErrJSON("个性签名不能超过"+fmt.Sprintf("%d", model.MaxSignatureLen)+"个字符", ctx)
@@ -477,8 +477,8 @@ func UpdateInfo(ctx iris.Context) {
 		}
 		resData[field] = userReqData.Signature
 	case "location":
+		userReqData.Location = utils.AvoidXSS(userReqData.Location)
 		userReqData.Location = strings.TrimSpace(userReqData.Location)
-		userReqData.Location = bluemonday.UGCPolicy().Sanitize(userReqData.Location)
 		// 居住地可以为空
 		if utf8.RuneCountInString(userReqData.Location) > model.MaxLocationLen {
 			SendErrJSON("居住地不能超过"+fmt.Sprintf("%d", model.MaxLocationLen)+"个字符", ctx)
@@ -491,8 +491,8 @@ func UpdateInfo(ctx iris.Context) {
 		}
 		resData[field] = userReqData.Location
 	case "introduce":
+		userReqData.Introduce = utils.AvoidXSS(userReqData.Introduce)
 		userReqData.Introduce = strings.TrimSpace(userReqData.Introduce)
-		userReqData.Introduce = bluemonday.UGCPolicy().Sanitize(userReqData.Introduce)
 		// 个人简介可以为空
 		if utf8.RuneCountInString(userReqData.Introduce) > model.MaxIntroduceLen {
 			SendErrJSON("个人简介不能超过"+fmt.Sprintf("%d", model.MaxIntroduceLen)+"个字符", ctx)
@@ -742,10 +742,10 @@ func AddCareer(ctx iris.Context) {
 		return
 	}
 
+	career.Company = utils.AvoidXSS(career.Company)
 	career.Company = strings.TrimSpace(career.Company)
-	career.Company = bluemonday.UGCPolicy().Sanitize(career.Company)
+	career.Title = utils.AvoidXSS(career.Title)
 	career.Title = strings.TrimSpace(career.Title)
-	career.Title = bluemonday.UGCPolicy().Sanitize(career.Title)
 
 	if career.Company == "" {
 		SendErrJSON("公司或组织名称不能为空", ctx)
@@ -792,10 +792,10 @@ func AddSchool(ctx iris.Context) {
 		return
 	}
 
+	school.Name = utils.AvoidXSS(school.Name)
 	school.Name = strings.TrimSpace(school.Name)
-	school.Name = bluemonday.UGCPolicy().Sanitize(school.Name)
+	school.Speciality = utils.AvoidXSS(school.Speciality)
 	school.Speciality = strings.TrimSpace(school.Speciality)
-	school.Speciality = bluemonday.UGCPolicy().Sanitize(school.Speciality)
 
 	if school.Name == "" {
 		SendErrJSON("学校或教育机构名不能为空", ctx)

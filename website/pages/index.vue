@@ -20,7 +20,7 @@
                             </Tooltip>
                         </span>
                         <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
-                        <a :href="'/topic/' + article.id" target="_blank" class="home-articles-title" :title="article.name">{{article.name}}</a>
+                        <a :href="'/topic/' + article.id" target="_blank" class="home-articles-title" :title="article.name">{{article.name | entity2HTML}}</a>
                         <p class="articles-res-time">{{article.lastCommentAt || article.createdAt | getReplyTime}}</p>
                         <a v-if="article.lastUser && article.lastUser.id" :href="'/user/' + article.lastUser.id" target="_blank" class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""/></a>
                     </div>
@@ -49,6 +49,7 @@
     import Sidebar from '~/components/Sidebar'
     import request from '~/net/request'
     import dateTool from '~/utils/date'
+    import htmlUtil from '~/utils/html'
 
     export default {
         data () {
@@ -128,7 +129,8 @@
         },
         middleware: 'userInfo',
         filters: {
-            getReplyTime: dateTool.getReplyTime
+            getReplyTime: dateTool.getReplyTime,
+            entity2HTML: htmlUtil.entity2HTML
         },
         methods: {
             onPageChange (value) {

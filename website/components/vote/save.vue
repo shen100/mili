@@ -97,9 +97,17 @@
                 let self = this
                 if (this.user.status === UserStatus.STATUS_IN_ACTIVE) {
                     if (this.id) {
-                        this.$Message.error('账号未激活，不能保存投票')
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '账号未激活，不能保存投票'
+                        })
                     } else {
-                        this.$Message.error('账号未激活，不能发布投票')
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '账号未激活，不能发布投票'
+                        })
                     }
                     return
                 }
@@ -144,15 +152,27 @@
                                         content: '账号未激活，不能保存投票'
                                     })
                                 } else {
-                                    self.$Message.error('账号未激活，不能发布投票')
+                                    self.$Message.error({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: '账号未激活，不能发布投票'
+                                    })
                                 }
                             } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
                                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
                             } else {
-                                self.$Message.error(res.msg)
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message
+                            })
                         })
                     }
                 })
@@ -162,7 +182,11 @@
             },
             handleAdd () {
                 if (!(this.formValidate.items.length < 20)) {
-                    return this.$Message.error('投票项最多只能创建20个')
+                    return this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '投票项最多只能创建20个'
+                    })
                 }
                 this.formValidate.items.push({
                     value: ''
@@ -170,7 +194,11 @@
             },
             handleRemove (index) {
                 if (this.formValidate.items.length === 2) {
-                    return this.$Message.error('至少保存两个投票项')
+                    return this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '至少保存两个投票项'
+                    })
                 }
 
                 if (this.id) {
@@ -184,10 +212,18 @@
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.formValidate.items.splice(index, 1)
                             } else {
-                                this.$Message.error(res.msg)
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message
+                            })
                         })
                     } else {
                         this.formValidate.items.splice(index, 1)
@@ -218,12 +254,24 @@
                 }).then(res => {
                     if (res.errNo === ErrorCode.SUCCESS) {
                         console.log(res)
-                        this.$Message.success('操作投票项成果')
+                        this.$Message.success({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '操作投票项成果'
+                        })
                     } else {
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     }
                 }).catch(err => {
-                    this.$Message.error(err.message)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
                 })
             }
         },

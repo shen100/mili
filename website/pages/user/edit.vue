@@ -217,13 +217,21 @@
         },
         methods: {
             onFormatError () {
-                this.$Message.error('不是有效的图片格式')
+                this.$Message.error({
+                    duration: config.messageDuration,
+                    closable: true,
+                    content: '不是有效的图片格式'
+                })
             },
             beforeUpload (file) {
                 let self = this
                 this.file = file
                 if (file.size > this.sizeLimit) {
-                    this.$Message.error('图片大小要小于' + this.sizeLimitTip)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '图片大小要小于' + this.sizeLimitTip
+                    })
                     return
                 }
                 this.uploaderVisible = !this.uploaderVisible
@@ -267,7 +275,11 @@
                             self.user.avatarURL = result.data.url
                             self.uploaderVisible = false
                         } else {
-                            self.$Message.error(result.msg)
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: result.msg
+                            })
                         }
                     })
                 })
@@ -283,7 +295,11 @@
             submit (name, index) {
                 if (this.formCustom[name] === '') {
                     this.close(name, index)
-                    return this.$Message.error('信息不能为空')
+                    return this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '职位不能为空'
+                    })
                 }
                 let body = {}
                 body[name] = trim(this.formCustom[name])
@@ -297,19 +313,35 @@
                     body: body
                 }).then(res => {
                     if (res.errNo === ErrorCode.SUCCESS) {
-                        this.$Message.success('更新信息成功')
+                        this.$Message.success({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '更新信息成功'
+                        })
                         this.userInfo[name] = res.data[name]
                         this.close(name, index)
                     } else {
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     }
                 }).catch(err => {
-                    this.$Message.error(err.message)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
                 })
             },
             addSchool () {
                 if (!this.formCustom.school.name) {
-                    return this.$Message.error('教育机构不能为空')
+                    return this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '学校或教育机构名不能为空'
+                    })
                 }
                 request.schoolAdd({
                     body: {
@@ -323,32 +355,73 @@
                         this.userInfo.schools.push(res.data)
                         this.close('school', 4)
                     } else {
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     }
                 }).catch(err => {
-                    this.$Message.error(err.message)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
                 })
             },
             deleteSchool (id) {
-                request.schoolDelete({
-                    params: {
-                        id: id
+                let self = this
+                this.$Modal.confirm({
+                    title: '删除教育经历',
+                    content: '确定要删除这个教育经历?',
+                    onOk () {
+                        request.schoolDelete({
+                            params: {
+                                id: id
+                            }
+                        }).then(res => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                let id = res.data.id
+                                self.userInfo.schools = self.userInfo.schools.filter(item => item.id !== id)
+                                self.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '操作成功'
+                                })
+                            } else {
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
+                            }
+                        }).catch(err => {
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message || err.msg
+                            })
+                        })
+                    },
+                    onCancel () {
+
                     }
-                }).then(res => {
-                    if (res.errNo === ErrorCode.SUCCESS) {
-                        let id = res.data.id
-                        this.userInfo.schools = this.userInfo.schools.filter(item => item.id !== id)
-                        this.$Message.success('操作成功')
-                    } else {
-                        this.$Message.error(res.msg)
-                    }
-                }).catch(err => {
-                    this.$Message.error(err.message)
                 })
             },
             addCareer () {
-                if (!this.formCustom.career.company || !this.formCustom.career.title) {
-                    return this.$Message.error('信息不完整')
+                if (!this.formCustom.career.company) {
+                    return this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '公司或组织名称不能为空'
+                    })
+                }
+                if (!this.formCustom.career.title) {
+                    return this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '职位不能为空'
+                    })
                 }
                 request.careerAdd({
                     body: {
@@ -362,27 +435,57 @@
                         this.userInfo.careers.push(res.data)
                         this.close('career', 5)
                     } else {
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     }
                 }).catch(err => {
-                    this.$Message.error(err.message)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
                 })
             },
             deleteCareer (id) {
-                request.careerDelete({
-                    params: {
-                        id: id
+                let self = this
+                this.$Modal.confirm({
+                    title: '删除职业经历',
+                    content: '确定要删除这个职业经历?',
+                    onOk () {
+                        request.careerDelete({
+                            params: {
+                                id: id
+                            }
+                        }).then(res => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                let id = res.data.id
+                                self.userInfo.careers = self.userInfo.careers.filter(item => item.id !== id)
+                                self.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '操作成功'
+                                })
+                            } else {
+                                self.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
+                            }
+                        }).catch(err => {
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message
+                            })
+                        })
+                    },
+                    onCancel () {
+
                     }
-                }).then(res => {
-                    if (res.errNo === ErrorCode.SUCCESS) {
-                        let id = res.data.id
-                        this.userInfo.careers = this.userInfo.careers.filter(item => item.id !== id)
-                        this.$Message.success('操作成功')
-                    } else {
-                        this.$Message.error(res.msg)
-                    }
-                }).catch(err => {
-                    this.$Message.error(err.message)
                 })
             }
         },

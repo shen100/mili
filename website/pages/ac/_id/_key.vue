@@ -39,6 +39,7 @@
     import ErrorCode from '~/constant/ErrorCode'
     import Account from '~/constant/Account'
     import request from '~/net/request'
+    import config from '~/config'
 
     let id = ''
     let key = ''
@@ -128,7 +129,11 @@
             },
             handleSubmit (name) {
                 if (!id || !key) {
-                    return this.$Message.error('访问页面有误')
+                    return this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '访问页面有误'
+                    })
                 }
                 this.$refs[name].validate((valid) => {
                     if (valid) {
@@ -150,11 +155,19 @@
                             if (res.errNo === 0) {
                                 this.success = true
                             } else {
-                                this.$Message.error(res.msg)
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message
+                            })
                         })
                     }
                 })

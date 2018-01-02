@@ -770,11 +770,13 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .golang123-digest-continue {
     color: #175199;
     text-decoration: none;
+    font-weight: 400;
 }
 
 .golang123-digest-continue:hover {
     color: #175199;
     text-decoration: none;
+    font-weight: 400;
 }
 
 

@@ -100,7 +100,7 @@
                     if (res.errNo === ErrorCode.SUCCESS) {
                         self.userList = res.data
                         self.hasUser = res.data && res.data.length > 0
-                        self.$Message.error({
+                        self.$Message.success({
                             duration: config.messageDuration,
                             closable: true,
                             content: '爬虫账号创建成功'

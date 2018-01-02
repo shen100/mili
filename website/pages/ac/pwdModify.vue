@@ -32,6 +32,7 @@
     import Footer from '~/components/Footer'
     import request from '~/net/request'
     import {trim} from '~/utils/tool'
+    import config from '~/config'
 
     export default {
         data () {
@@ -106,21 +107,37 @@
                         }).then(res => {
                             this.loading = false
                             if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
-                                this.$Message.error('登录超时')
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '登录超时'
+                                })
                                 setTimeout(function () {
                                     window.location.href = '/signin'
                                 }, 3000)
                             } else if (res.errNo === ErrorCode.SUCCESS) {
-                                this.$Message.success('提交成功!')
+                                this.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '提交成功!'
+                                })
                                 setTimeout(function () {
                                     window.location.href = '/'
                                 }, 3000)
                             } else {
-                                this.$Message.error(res.msg)
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message
+                            })
                         })
                     }
                 })

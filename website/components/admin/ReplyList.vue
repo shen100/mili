@@ -18,6 +18,7 @@
     import ErrorCode from '~/constant/ErrorCode'
     import Request from '~/net/request'
     import DateUtil from '~/utils/date'
+    import config from '~/config'
     import { CommentStatus } from '~/constant/Comment'
 
     export default {
@@ -238,12 +239,24 @@
                                 this.theComments[i].statusVisible = false
                             }
                         }
-                        this.$Message.success('操作成功')
+                        this.$Message.success({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '操作成功'
+                        })
                     } else {
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     }
                 }).catch(err => {
-                    this.$Message.error(err.message || err.msg)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
                 })
             },
             onCancelChangeStatus (comment) {

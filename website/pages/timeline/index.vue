@@ -40,6 +40,24 @@
             return {
                 list: [
                     {
+                        name: '回复功能',
+                        date: {
+                            year: 2017,
+                            month: 12,
+                            date: 30
+                        },
+                        content: '回复话题或回复投票，同时支持对回复进行回复'
+                    },
+                    {
+                        name: '个人中心',
+                        date: {
+                            year: 2017,
+                            month: 12,
+                            date: 18
+                        },
+                        content: '个人主页、发表的话题、参与的回复、参与的投票、收藏'
+                    },
+                    {
                         name: '升级后台管理',
                         date: {
                             year: 2017,

@@ -98,11 +98,19 @@
                                 this.success = true
                                 this.times = 60
                             } else {
-                                this.$Message.error(res.msg)
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message
+                            })
                         })
                     }
                 })
@@ -121,11 +129,19 @@
                         this.success = true
                         this.times = 60
                     } else {
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     }
                 }).catch(err => {
                     this.loading = false
-                    this.$Message.error(err.msg)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
                 })
             },
             blur (name) {

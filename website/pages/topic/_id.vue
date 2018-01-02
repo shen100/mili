@@ -5,7 +5,7 @@
             <div class="golang-home-body-left topic-detail-left">
                 <div class="topic-detail-box">
                     <div class="detail-title-box">
-                        <div class="article-detail-title"><h1>{{article.name}}</h1></div>
+                        <div class="article-detail-title"><h1>{{article.name | entity2HTML}}</h1></div>
                         <p class="article-title-info">
                             <span class="article-title-info-item">
                                 发布于&nbsp;{{article.createdAt | getReplyTime}}
@@ -170,6 +170,7 @@
 <script>
     import { ArticleContentType } from '~/constant/Article'
     import config from '~/config'
+    import htmlUtil from '~/utils/html'
     import ErrorCode from '~/constant/ErrorCode'
     import UserStatus from '~/constant/UserStatus'
     import Header from '~/components/Header'
@@ -320,16 +321,28 @@
                             }
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                self.$Message.success('已删除!')
+                                self.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '已删除!'
+                                })
                                 setTimeout(function () {
                                     location.href = '/'
                                 }, 500)
                             } else {
-                                self.$Message.error(res.msg)
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
                             err = '内部错误'
-                            self.$Message.error(err)
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err
+                            })
                         })
                     },
                     onCancel () {
@@ -361,7 +374,11 @@
             },
             onSubmitReply () {
                 if (this.user && this.user.status === UserStatus.STATUS_IN_ACTIVE) {
-                    this.$Message.error('账号未激活，不能回复话题')
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '账号未激活，不能回复话题'
+                    })
                     return
                 }
                 let commentID
@@ -468,7 +485,11 @@
                                 self.floorMap = floorMap
                             }
                         }).catch(err => {
-                            self.$Message.error(err.message)
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message || err.msg
+                            })
                         })
                     },
                     onCancel () {
@@ -512,11 +533,19 @@
                                 this.collectDirList.unshift(collectDir)
                                 this.collect()
                             } else {
-                                this.$Message.error(res.msg)
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message || err.msg
+                            })
                         })
                     }
                 })
@@ -544,11 +573,19 @@
                             }
                         }
                     } else {
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     }
                 }).catch(err => {
                     this.loading = false
-                    this.$Message.error(err.message)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
                 })
             }
         },
@@ -566,7 +603,8 @@
             }
         },
         filters: {
-            getReplyTime: dateTool.getReplyTime
+            getReplyTime: dateTool.getReplyTime,
+            entity2HTML: htmlUtil.entity2HTML
         },
         components: {
             'app-header': Header,

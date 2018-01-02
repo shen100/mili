@@ -112,9 +112,17 @@
                             })
                             return
                         }
-                        this.$Message.success('抓取成功!')
+                        this.$Message.success({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '抓取成功!'
+                        })
                     }).catch((err) => {
-                        this.$Message.error(err.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: err.msg
+                        })
                     })
                 })
             }

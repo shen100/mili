@@ -10,7 +10,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/kataras/iris"
-	"github.com/microcosm-cc/bluemonday"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/model"
@@ -431,11 +430,15 @@ func save(ctx iris.Context, isEdit bool) {
 		manager.Sess.Start(ctx).Set("user", user)
 	}
 
-	article.Name = bluemonday.UGCPolicy().Sanitize(article.Name)
+	article.Name = utils.AvoidXSS(article.Name)
 	article.Name = strings.TrimSpace(article.Name)
 
 	article.Content = strings.TrimSpace(article.Content)
 	article.HTMLContent = strings.TrimSpace(article.HTMLContent)
+
+	if article.HTMLContent != "" {
+		article.HTMLContent = utils.AvoidXSS(article.HTMLContent)
+	}
 
 	if article.Name == "" {
 		SendErrJSON("文章名称不能为空", ctx)

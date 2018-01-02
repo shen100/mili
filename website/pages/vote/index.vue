@@ -20,7 +20,7 @@
                                 </a>
                             </Tooltip>
                         </span>
-                        <a :href="'/vote/' + vote.id" class="home-articles-title">{{vote.name}}</a>
+                        <a :href="'/vote/' + vote.id" class="home-articles-title">{{vote.name | entity2HTML}}</a>
                         <p class="articles-res-time">{{vote.lastCommentAt || vote.createdAt | getReplyTime}}</p>
                         <a :href="`/user/${vote.lastUser.id}`" target="_blank" class="user-small-icon-box"><img :src="vote.lastUser.avatarURL" alt=""></a>
                     </div>
@@ -39,6 +39,7 @@
     import Sidebar from '~/components/Sidebar'
     import dateTool from '~/utils/date'
     import VoteStatus from '~/constant/VoteStatus'
+    import htmlUtil from '~/utils/html'
 
     export default {
         data () {
@@ -89,7 +90,8 @@
         mounted () {
         },
         filters: {
-            getReplyTime: dateTool.getReplyTime
+            getReplyTime: dateTool.getReplyTime,
+            entity2HTML: htmlUtil.entity2HTML
         },
         components: {
             'app-header': Header,

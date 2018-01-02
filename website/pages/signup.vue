@@ -63,6 +63,7 @@
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
     import ErrorCode from '~/constant/ErrorCode'
+    import config from '~/config'
     import request from '~/net/request'
     import {trim, trimBlur} from '~/utils/tool'
     import '~/utils/bd'
@@ -163,13 +164,25 @@
                             this.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 this.success = true
-                                this.$Message.success('提交成功!')
+                                this.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '提交成功!'
+                                })
                             } else {
-                                this.$Message.error(res.msg)
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message
+                            })
                         })
                     }
                 })

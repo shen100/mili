@@ -5,7 +5,7 @@
             <div class="golang-home-body-left vote-detail-left">
                 <div class="vote-detail-box">
                     <div class="detail-title-box">
-                        <p class="vote-detail-title">{{vote.name}}</p>
+                        <p class="vote-detail-title">{{vote.name | entity2HTML}}</p>
                         <p class="vote-title-info">
                             <span class="vote-title-info-item">
                                 发布于{{vote.createdAt | getReplyTime}}
@@ -175,6 +175,7 @@
 <script>
     import ErrorCode from '~/constant/ErrorCode'
     import config from '~/config'
+    import htmlUtil from '~/utils/html'
     import VoteStatus from '~/constant/VoteStatus'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
@@ -295,16 +296,28 @@
                             }
                         }).then(res => {
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                self.$Message.success('已删除!')
+                                self.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '已删除!'
+                                })
                                 setTimeout(function () {
                                     location.href = '/vote'
                                 }, 500)
                             } else {
-                                self.$Message.error(res.msg)
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
                             err = '内部错误'
-                            self.$Message.error(err)
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err
+                            })
                         })
                     },
                     onCancel () {
@@ -352,7 +365,11 @@
                                 self.floorMap = floorMap
                             }
                         }).catch(err => {
-                            self.$Message.error(err.message)
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message || err.msg
+                            })
                         })
                     },
                     onCancel () {
@@ -512,11 +529,19 @@
                                 this.collectDirList.unshift(res.data)
                                 this.collect()
                             } else {
-                                this.$Message.error(res.msg)
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message || err.msg
+                            })
                         })
                     }
                 })
@@ -542,11 +567,19 @@
                         })
                         console.log(this.collectDirList)
                     } else {
-                        this.$Message.error(res.msg)
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
                     }
                 }).catch(err => {
                     this.loading = false
-                    this.$Message.error(err.message)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message
+                    })
                 })
             }
         },
@@ -572,7 +605,8 @@
             }
         },
         filters: {
-            getReplyTime: dateTool.getReplyTime
+            getReplyTime: dateTool.getReplyTime,
+            entity2HTML: htmlUtil.entity2HTML
         },
         components: {
             'app-header': Header,

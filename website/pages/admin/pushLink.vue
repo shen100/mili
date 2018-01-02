@@ -13,6 +13,7 @@
 
 <script>
     import request from '~/net/request'
+    import config from '~/config'
 
     export default {
         layout: 'admin',
@@ -31,9 +32,17 @@
                         type: 'article'
                     }
                 }).then(() => {
-                    this.$Message.success('提交成功')
+                    this.$Message.success({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '提交成功'
+                    })
                 }).catch((err) => {
-                    this.$Message.error(err.msg)
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.msg
+                    })
                 })
             }
         }

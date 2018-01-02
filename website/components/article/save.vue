@@ -59,6 +59,7 @@
     import HTMLEditor from '~/components/HTMLEditor'
     import ErrorCode from '~/constant/ErrorCode'
     import UserStatus from '~/constant/UserStatus'
+    import config from '~/config'
 
     export default {
         props: [
@@ -101,9 +102,17 @@
             onSubmit () {
                 if (this.user.status === UserStatus.STATUS_IN_ACTIVE) {
                     if (this.id) {
-                        this.$Message.error('账号未激活，不能保存话题')
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '账号未激活，不能保存话题'
+                        })
                     } else {
-                        this.$Message.error('账号未激活，不能发布话题')
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '账号未激活，不能发布话题'
+                        })
                     }
                     return
                 }

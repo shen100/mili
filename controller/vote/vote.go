@@ -157,6 +157,8 @@ func save(isEdit bool, vote model.Vote, user model.User, tx *gorm.DB) (model.Vot
 	vote.Name = strings.TrimSpace(vote.Name)
 	vote.Content = strings.TrimSpace(vote.Content)
 
+	vote.Name = utils.AvoidXSS(vote.Name)
+
 	if vote.Name == "" {
 		return vote, errors.New("名称不能为空")
 	}
@@ -396,6 +398,7 @@ func Delete(ctx iris.Context) {
 }
 
 func saveVoteItem(voteItem model.VoteItem, tx *gorm.DB) (model.VoteItem, error) {
+	voteItem.Name = utils.AvoidXSS(voteItem.Name)
 	voteItem.Name = strings.TrimSpace(voteItem.Name)
 
 	if voteItem.Name == "" {
@@ -516,6 +519,7 @@ func EditVoteItem(ctx iris.Context) {
 		SendErrJSON("参数无效", ctx)
 		return
 	}
+	voteItem.Name = utils.AvoidXSS(voteItem.Name)
 	voteItem.Name = strings.TrimSpace(voteItem.Name)
 
 	if voteItem.Name == "" {

@@ -117,11 +117,19 @@
                                 window.location.href = '/verify/mail?e=' + encodeURIComponent(res.data.email)
                             } else {
                                 window.LUOCAPTCHA.reset()
-                                this.$Message.error(res.msg)
+                                this.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             }
                         }).catch(err => {
                             this.loading = false
-                            this.$Message.error(err.message)
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message || err.msg
+                            })
                         })
                     }
                 })
