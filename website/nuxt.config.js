@@ -22,6 +22,9 @@ module.exports = {
   ** Customize the progress-bar color
   */
   loading: { color: '#80bd01' },
+  performance: {
+    prefetch: false
+  },
   render: {
     resourceHints: false
   },
