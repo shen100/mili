@@ -144,7 +144,6 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     line-height: 32px;
     display: inline-block;
     text-align: center;
-    background: #ccc;
     color: #fff;
     white-space: nowrap;
     position: relative;
