@@ -300,7 +300,11 @@
             return {
                 title: this.article.name,
                 link: [
-                    { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' }
+                    { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' },
+                    { rel: 'stylesheet', href: '/styles/highlight/googlecode.css' }
+                ],
+                script: [
+                    { src: '/javascripts/highlight/highlight.min.js' }
                 ]
             }
         },
@@ -601,6 +605,7 @@
                 var s = document.getElementsByTagName('script')[0]
                 s.parentNode.insertBefore(bp, s)
             }
+            window.hljs.initHighlightingOnLoad()
         },
         filters: {
             getReplyTime: dateTool.getReplyTime,
