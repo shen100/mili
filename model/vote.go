@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 // Vote 投票
 type Vote struct {
@@ -44,6 +46,7 @@ type UserVote struct {
 	UserID     uint       `json:"userID"`
 	User       User       `json:"user"`
 	VoteID     uint       `json:"voteID"`
+	Vote       Vote       `json:"vote"`
 	VoteItemID uint       `json:"voteItemID"`
 }
 

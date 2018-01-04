@@ -661,21 +661,28 @@ func UserVoteList(ctx iris.Context) {
 	}
 
 	var totalCount int
-	if err := model.DB.Model(&model.Vote{}).Where("user_id = ?", user.ID).Count(&totalCount).Error; err != nil {
+	var userVotes []model.UserVote
+	if err := model.DB.Model(&model.UserVote{}).Where("user_id = ?", user.ID).Count(&totalCount).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", ctx)
+		return
+	}
+
+	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Offset(offset).Limit(pageSize).Find(&userVotes).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", ctx)
 		return
 	}
 
 	var votes []model.Vote
-	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Offset(offset).Limit(pageSize).Find(&votes).Error; err != nil {
-		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
-		return
-	}
-
-	for i := 0; i < len(votes); i++ {
-		votes[i].Content = utils.MarkdownToHTML(votes[i].Content)
+	for i := 0; i < len(userVotes); i++ {
+		if err := model.DB.Model(&userVotes[i]).Related(&userVotes[i].Vote, "votes").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", ctx)
+			return
+		}
+		userVotes[i].Vote.Content = utils.MarkdownToHTML(userVotes[i].Vote.Content)
+		votes = append(votes, userVotes[i].Vote)
 	}
 	ctx.JSON(iris.Map{
 		"errNo": model.ErrorCode.SUCCESS,
