@@ -11,6 +11,10 @@ import (
 
 // LuosimaoVerify 对前端的验证码进行验证
 func LuosimaoVerify(reqURL, apiKey, response string) error {
+	if apiKey == "" {
+		// 没有配置LuosimaoAPIKey的话，就没有验证码功能
+		return nil
+	}
 	if response == "" {
 		return errors.New("人机识别验证失败")
 	}

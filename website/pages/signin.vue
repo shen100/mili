@@ -14,7 +14,7 @@
                 <Form-item prop="passwd">
                     <i-input size="large" type="password" v-model="formCustom.passwd" placeholder="密码" @keydown.native="handleKeyUp"></i-input>
                 </Form-item>
-                <div style="min-height: 44px;">
+                <div v-if="luosimaoSiteKey" style="min-height: 44px;">
                     <div class="l-captcha" data-width="319" :data-site-key="luosimaoSiteKey" data-callback="luosimaoCallback"></div>
                 </div>
                 <p style="text-align: right;padding-right: 2px;margin-top:10px;">
@@ -116,7 +116,8 @@
                             } else if (res.errNo === ErrorCode.IN_ACTIVE) {
                                 window.location.href = '/verify/mail?e=' + encodeURIComponent(res.data.email)
                             } else {
-                                window.LUOCAPTCHA.reset()
+                                // 没有配置luosimaoSiteKey的话，就没有验证码功能
+                                this.luosimaoSiteKey && window.LUOCAPTCHA.reset()
                                 this.$Message.error({
                                     duration: config.messageDuration,
                                     closable: true,

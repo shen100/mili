@@ -21,6 +21,13 @@ func Save(ctx iris.Context, isEdit bool) {
 	SendErrJSON := common.SendErrJSON
 	var comment model.Comment
 
+	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+
+	if user.Role == model.UserRoleCrawler {
+		SendErrJSON("爬虫管理员不能回复", ctx)
+		return
+	}
+
 	// 编辑评论时，只传id, content
 	// 创建评论时传
 	// {
@@ -82,8 +89,6 @@ func Save(ctx iris.Context, isEdit bool) {
 		SendErrJSON(msg, ctx)
 		return
 	}
-
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
 
 	comment.Status = model.CommentVerifying
 	comment.UserID = user.ID

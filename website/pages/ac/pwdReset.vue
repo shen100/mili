@@ -17,7 +17,7 @@
                                     placeholder="请输入邮箱"></i-input>
                             </Form-item>
                         </Form>
-                        <div style="min-height: 44px;margin-bottom:22px;">
+                        <div v-if="luosimaoSiteKey" style="min-height: 44px;margin-bottom:22px;">
                             <div class="l-captcha" data-width="400" :data-site-key="luosimaoSiteKey" data-callback="luosimaoCallback"></div>
                         </div>
                         <i-button type="primary" class="forget-button" size="large" @click="handleSubmit('formCustom')">发送邮件</i-button>

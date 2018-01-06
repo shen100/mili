@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"mime"
 	"os"
 	"strings"
-	"mime"
+
 	"github.com/kataras/iris"
 	"github.com/shen100/golang123/model"
 )
@@ -22,7 +23,7 @@ func Upload(ctx iris.Context) (map[string]interface{}, error) {
 	defer file.Close()
 
 	var filename = info.Filename
-	var index    = strings.LastIndex(filename, ".")
+	var index = strings.LastIndex(filename, ".")
 
 	if index < 0 {
 		return nil, errors.New("无效的文件名")
@@ -40,8 +41,10 @@ func Upload(ctx iris.Context) (map[string]interface{}, error) {
 
 	imgUploadedInfo := model.GenerateImgUploadedInfo(ext)
 
+	fmt.Println(imgUploadedInfo.UploadDir)
+
 	if err := os.MkdirAll(imgUploadedInfo.UploadDir, 0777); err != nil {
-		fmt.Println(err.Error());
+		fmt.Println(err.Error())
 		return nil, errors.New("error")
 	}
 
@@ -49,7 +52,7 @@ func Upload(ctx iris.Context) (map[string]interface{}, error) {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return nil,  errors.New("error1")
+		return nil, errors.New("error1")
 	}
 
 	defer out.Close()
@@ -60,12 +63,12 @@ func Upload(ctx iris.Context) (map[string]interface{}, error) {
 	}
 
 	image := model.Image{
-		Title        : imgUploadedInfo.Filename,
-		OrignalTitle : info.Filename,
-		URL          : imgUploadedInfo.ImgURL,
-		Width        : 0,
-		Height       : 0,
-		Mime         : mimeType,
+		Title:        imgUploadedInfo.Filename,
+		OrignalTitle: info.Filename,
+		URL:          imgUploadedInfo.ImgURL,
+		Width:        0,
+		Height:       0,
+		Mime:         mimeType,
 	}
 
 	if err := model.DB.Create(&image).Error; err != nil {
@@ -74,11 +77,11 @@ func Upload(ctx iris.Context) (map[string]interface{}, error) {
 	}
 
 	return map[string]interface{}{
-		"id"       : image.ID,
-		"url"      : imgUploadedInfo.ImgURL,
-		"title"    : imgUploadedInfo.Filename, //新文件名
-		"original" : info.Filename, //原始文件名
-		"type"     : mimeType,      //文件类型
+		"id":       image.ID,
+		"url":      imgUploadedInfo.ImgURL,
+		"title":    imgUploadedInfo.Filename, //新文件名
+		"original": info.Filename,            //原始文件名
+		"type":     mimeType,                 //文件类型
 	}, nil
 }
 
@@ -87,15 +90,15 @@ func UploadHandler(ctx iris.Context) {
 	data, err := Upload(ctx)
 	if err != nil {
 		ctx.JSON(iris.Map{
-			"errNo" : model.ErrorCode.ERROR,
-			"msg"   : err.Error(),
-			"data"  : iris.Map{},
+			"errNo": model.ErrorCode.ERROR,
+			"msg":   err.Error(),
+			"data":  iris.Map{},
 		})
 		return
 	}
 	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : data,
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data":  data,
 	})
 }
