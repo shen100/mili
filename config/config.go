@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -105,7 +104,7 @@ func initServer() {
 
 	if ServerConfig.UploadImgDir == "" {
 		sep := string(os.PathSeparator)
-		execPath := filepath.Dir(os.Args[0])
+		execPath, _ := os.Getwd()
 		pathArr := []string{"website", "static", "upload", "img"}
 		length := utf8.RuneCountInString(execPath)
 		lastChar := execPath[length-1:]
