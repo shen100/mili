@@ -10,9 +10,6 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/logger"
-	"github.com/kataras/iris/sessions"
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/model"
@@ -49,36 +46,34 @@ func init() {
 }
 
 func main() {
-	app := iris.New()
-
-	app.Configure(iris.WithConfiguration(iris.Configuration{
-		Charset: "UTF-8",
-	}))
-
-	app.Use(logger.New())
-
-	route.Route(app)
-
-	app.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
-		ctx.JSON(iris.Map{
-			"errNo": model.ErrorCode.NotFound,
-			"msg":   "Not Found",
-			"data":  iris.Map{},
-		})
-	})
-
-	app.OnErrorCode(iris.StatusInternalServerError, func(ctx iris.Context) {
-		ctx.JSON(iris.Map{
-			"errNo": model.ErrorCode.ERROR,
-			"msg":   "error",
-			"data":  iris.Map{},
-		})
-	})
-
-	addr := iris.Addr(":" + strconv.Itoa(config.ServerConfig.Port))
-	if config.ServerConfig.Env == model.DevelopmentMode {
-		app.Run(addr)
-	} else {
-		app.Run(addr, iris.WithoutVersionChecker)
+	if config.ServerConfig.Env != model.DevelopmentMode {
+		// Disable Console Color, you don't need console color when writing the logs to file.
+	    gin.DisableConsoleColor()
+	   	// Logging to a file.
+	    f, _ := os.Create("gin.log")
+	    gin.DefaultWriter = io.MultiWriter(f)
 	}
+
+	// Creates a router without any middleware by default
+	router := gin.New()
+
+	// Global middleware
+	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
+	// By default gin.DefaultWriter = os.Stdout
+	router.Use(gin.Logger())
+
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+	router.Use(gin.Recovery())
+
+	route.Route(router)
+
+	// app.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
+	// 	ctx.JSON(iris.Map{
+	// 		"errNo": model.ErrorCode.NotFound,
+	// 		"msg":   "Not Found",
+	// 		"data":  iris.Map{},
+	// 	})
+	// })
+
+	router.Run(":" + fmt.Sprintf("%d", config.ServerConfig.Port))
 }
