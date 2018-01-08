@@ -10,9 +10,9 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/shen100/golang123/config"
-	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/route"
+	"github.com/shen100/golang123/utils"
 )
 
 func init() {
@@ -33,7 +33,7 @@ func init() {
 		fmt.Println("Connect to redis error", err.Error())
 		os.Exit(-1)
 	}
-	manager.RedisConn = r
+	utils.RedisConn = r
 }
 
 func main() {

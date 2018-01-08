@@ -85,6 +85,7 @@ type serverConfig struct {
 	Port              int
 	SessionID         string
 	TokenSecret       string
+	TokenMaxAge       int
 	SessionTimeout    int
 	PassSalt          string
 	LuosimaoVerifyURL string

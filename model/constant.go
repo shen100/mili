@@ -12,8 +12,8 @@ const (
 	MinOrder = 0
 
 	// PageSize 默认每页的条数
-	PageSize = 20 
-	
+	PageSize = 20
+
 	// MaxPageSize 每页最大的条数
 	MaxPageSize = 100
 
@@ -30,7 +30,7 @@ const (
 // 积分相关常量
 const (
 	// ArticleScore 创建话题时增加的积分
-	ArticleScore = 5	
+	ArticleScore = 5
 
 	// ByCommentScore 话题或投票被评论时增加的积分
 	ByCommentScore = 2
@@ -40,7 +40,7 @@ const (
 
 	// CommentScore 评论话题或投票时增加的积分
 	CommentScore = 1
-	
+
 	// CollectScore 收藏话题或投票时增加的积分
 	CollectScore = 1
 )
@@ -52,5 +52,7 @@ const (
 
 	// ResetTime 生成重置密码的链接
 	ResetTime = "resetTime"
-)
 
+	// LoginUser 用户信息
+	LoginUser = "loginUser"
+)

@@ -104,6 +104,9 @@
                         }
                         this.loading = true
                         request.signin({
+                            query: {
+                                loginType: this.formCustom.username.indexOf('@') > 0 ? 'email' : 'username'
+                            },
                             body: {
                                 signinInput: trim(this.formCustom.username),
                                 password: trim(this.formCustom.passwd),
