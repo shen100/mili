@@ -77,11 +77,14 @@ type serverConfig struct {
 	Host              string
 	ImgHost           string
 	Env               string
+	LogDir            string
+	LogFile           string
 	APIPrefix         string
 	UploadImgDir      string
 	ImgPath           string
 	Port              int
 	SessionID         string
+	TokenSecret       string
 	SessionTimeout    int
 	PassSalt          string
 	LuosimaoVerifyURL string
@@ -101,20 +104,25 @@ var ServerConfig serverConfig
 
 func initServer() {
 	utils.SetStructByJSON(&ServerConfig, jsonData["go"].(map[string]interface{}))
-
-	if ServerConfig.UploadImgDir == "" {
-		sep := string(os.PathSeparator)
-		execPath, _ := os.Getwd()
-		pathArr := []string{"website", "static", "upload", "img"}
-		length := utf8.RuneCountInString(execPath)
-		lastChar := execPath[length-1:]
-		if lastChar != sep {
-			execPath = execPath + sep
-		}
-		execPath = execPath + strings.Join(pathArr, sep)
-		fmt.Println(execPath)
-		ServerConfig.UploadImgDir = execPath
+	sep := string(os.PathSeparator)
+	execPath, _ := os.Getwd()
+	length := utf8.RuneCountInString(execPath)
+	lastChar := execPath[length-1:]
+	if lastChar != sep {
+		execPath = execPath + sep
 	}
+	if ServerConfig.UploadImgDir == "" {
+		pathArr := []string{"website", "static", "upload", "img"}
+		uploadImgDir := execPath + strings.Join(pathArr, sep)
+		ServerConfig.UploadImgDir = uploadImgDir
+	}
+
+	ymdStr := utils.GetTodayYMD("-")
+
+	if ServerConfig.LogDir == "" {
+		ServerConfig.LogDir = execPath
+	}
+	ServerConfig.LogFile = execPath + ymdStr + ".log"
 }
 
 func init() {

@@ -2,7 +2,6 @@ package message
 
 import (
 	"strconv"
-	"github.com/kataras/iris"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/controller/common"
 )

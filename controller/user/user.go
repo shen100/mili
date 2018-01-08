@@ -1,23 +1,14 @@
 package user
 
 import (
-	"crypto/md5"
 	"encoding/base64"
-	"errors"
-	"fmt"
-	"math/rand"
-	"strconv"
 	"strings"
-	"time"
-	"unicode/utf8"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/garyburd/redigo/redis"
-	"github.com/kataras/iris"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/controller/common"
-	"github.com/shen100/golang123/controller/mail"
-	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/utils"
 )
@@ -27,6 +18,7 @@ const (
 	resetDuration  = 24 * 60 * 60
 )
 
+/*
 func sendMail(action string, title string, curTime int64, user model.User, ctx iris.Context) {
 	siteName := config.ServerConfig.SiteName
 	siteURL := "https://" + config.ServerConfig.Host
@@ -56,6 +48,7 @@ func sendMail(action string, title string, curTime int64, user model.User, ctx i
 
 	mail.SendMail(user.Email, title, content)
 }
+
 
 func verifyLink(cacheKey string, ctx iris.Context) (model.User, error) {
 	var user model.User
@@ -275,86 +268,92 @@ func ResetPassword(ctx iris.Context) {
 		"data":  iris.Map{},
 	})
 }
-
+*/
 // Signin 用户登录
-func Signin(ctx iris.Context) {
+func Signin(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	type UserData struct {
-		SigninInput string `json:"signinInput" valid:"-"`
-		Password    string `json:"password" valid:"runelength(6|20)"`
+	type Login struct {
+		SigninInput string `json:"signinInput" binding:"required"`
+		Password    string `json:"password" binding:"required,max=6,min=20"`
 		LuosimaoRes string `json:"luosimaoRes" valid:"-"`
 	}
-	var userData UserData
-	if err := ctx.ReadJSON(&userData); err != nil {
-		SendErrJSON("参数无效", ctx)
+	var login Login
+	if err := c.BindJSON(&login); err != nil {
+		SendErrJSON("用户名或密码错误", c)
 		return
 	}
 
-	if _, err := govalidator.ValidateStruct(userData); err != nil {
-		SendErrJSON("用户名或密码错误", ctx)
-		return
-	}
-
-	if userData.SigninInput == "" {
-		SendErrJSON("用户名或邮箱不能为空", ctx)
+	if login.SigninInput == "" {
+		SendErrJSON("用户名或邮箱不能为空", c)
 		return
 	}
 
 	var sql, msg string
 	var queryUser model.User
-	if strings.Index(userData.SigninInput, "@") != -1 {
-		if !govalidator.IsEmail(userData.SigninInput) || len(userData.SigninInput) < 5 ||
-			len(userData.SigninInput) > 50 {
-			SendErrJSON("不是有效的邮箱", ctx)
+	if strings.Index(login.SigninInput, "@") != -1 {
+		if !govalidator.IsEmail(login.SigninInput) || len(login.SigninInput) < 5 ||
+			len(login.SigninInput) > 50 {
+			SendErrJSON("不是有效的邮箱", c)
 			return
 		}
 		sql = "email = ?"
 		msg = "邮箱或密码错误"
 	} else {
-		if len(userData.SigninInput) < 4 || len(userData.SigninInput) > 20 {
-			SendErrJSON("用户名或密码错误", ctx)
+		if len(login.SigninInput) < 4 || len(login.SigninInput) > 20 {
+			SendErrJSON("用户名或密码错误", c)
 			return
 		}
 		sql = "name = ?"
 		msg = "用户名或密码错误"
 	}
 
-	verifyErr := utils.LuosimaoVerify(config.ServerConfig.LuosimaoVerifyURL, config.ServerConfig.LuosimaoAPIKey, userData.LuosimaoRes)
+	verifyErr := utils.LuosimaoVerify(config.ServerConfig.LuosimaoVerifyURL, config.ServerConfig.LuosimaoAPIKey, login.LuosimaoRes)
 
 	if verifyErr != nil {
-		SendErrJSON(verifyErr.Error(), ctx)
+		SendErrJSON(verifyErr.Error(), c)
 		return
 	}
 
-	if err := model.DB.Where(sql, userData.SigninInput).First(&queryUser).Error; err != nil {
-		SendErrJSON(msg, ctx)
+	if err := model.DB.Where(sql, login.SigninInput).First(&queryUser).Error; err != nil {
+		SendErrJSON(msg, c)
 		return
 	}
 
-	if queryUser.CheckPassword(userData.Password) {
+	if queryUser.CheckPassword(login.Password) {
 		if queryUser.Status == model.UserStatusInActive {
 			encodedEmail := base64.StdEncoding.EncodeToString([]byte(queryUser.Email))
-			ctx.JSON(iris.Map{
+			c.JSON(200, gin.H{
 				"errNo": model.ErrorCode.InActive,
 				"msg":   "账号未激活",
-				"data": iris.Map{
+				"data": gin.H{
 					"email": encodedEmail,
 				},
 			})
 			return
 		}
-		manager.Sess.Start(ctx).Set("user", queryUser)
-		ctx.JSON(iris.Map{
+		//manager.Sess.Start(ctx).Set("user", queryUser)
+
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"id": queryUser.ID,
+		})
+		tokenString, err := token.SignedString([]byte(config.ServerConfig.TokenSecret))
+		if err != nil {
+			SendErrJSON("error", c)
+			return
+		}
+		c.JSON(200, gin.H{
 			"errNo": model.ErrorCode.SUCCESS,
 			"msg":   "success",
+			"token": tokenString,
 			"data":  queryUser,
 		})
 	} else {
-		SendErrJSON(msg, ctx)
+		SendErrJSON(msg, c)
 		return
 	}
 }
 
+/*
 // Signup 用户注册
 func Signup(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -888,3 +887,4 @@ func DeleteSchool(ctx iris.Context) {
 		},
 	})
 }
+*/

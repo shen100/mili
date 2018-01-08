@@ -4,5 +4,5 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
-// C redis连接
-var C redis.Conn
+// RedisConn redis连接
+var RedisConn redis.Conn

@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
-	"strconv"
-	"time"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/garyburd/redigo/redis"
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/shen100/golang123/config"
@@ -29,51 +28,39 @@ func init() {
 	db.DB().SetMaxOpenConns(config.DBConfig.MaxOpenConns)
 	model.DB = db
 
-	c, err := redis.Dial("tcp", config.RedisConfig.URL)
+	r, err := redis.Dial("tcp", config.RedisConfig.URL)
 	if err != nil {
-		fmt.Println("Connect to redis error", err)
+		fmt.Println("Connect to redis error", err.Error())
 		os.Exit(-1)
 	}
-	manager.C = c
-
-	sess := sessions.New(sessions.Config{
-		Cookie:  config.ServerConfig.SessionID,
-		Expires: time.Minute * time.Duration(config.ServerConfig.SessionTimeout),
-	})
-	manager.Sess = sess
-
-	govalidator.SetFieldsRequiredByDefault(true)
+	manager.RedisConn = r
 }
 
 func main() {
 	if config.ServerConfig.Env != model.DevelopmentMode {
 		// Disable Console Color, you don't need console color when writing the logs to file.
-	    gin.DisableConsoleColor()
-	   	// Logging to a file.
-	    f, _ := os.Create("gin.log")
-	    gin.DefaultWriter = io.MultiWriter(f)
+		gin.DisableConsoleColor()
+		// Logging to a file.
+		logFile, err := os.OpenFile(config.ServerConfig.LogFile, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+		if err != nil {
+			fmt.Printf(err.Error())
+			os.Exit(-1)
+		}
+		gin.DefaultWriter = io.MultiWriter(logFile)
 	}
 
 	// Creates a router without any middleware by default
-	router := gin.New()
+	app := gin.New()
 
 	// Global middleware
 	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
 	// By default gin.DefaultWriter = os.Stdout
-	router.Use(gin.Logger())
+	app.Use(gin.Logger())
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
-	router.Use(gin.Recovery())
+	app.Use(gin.Recovery())
 
-	route.Route(router)
+	route.Route(app)
 
-	// app.OnErrorCode(iris.StatusNotFound, func(ctx iris.Context) {
-	// 	ctx.JSON(iris.Map{
-	// 		"errNo": model.ErrorCode.NotFound,
-	// 		"msg":   "Not Found",
-	// 		"data":  iris.Map{},
-	// 	})
-	// })
-
-	router.Run(":" + fmt.Sprintf("%d", config.ServerConfig.Port))
+	app.Run(":" + fmt.Sprintf("%d", config.ServerConfig.Port))
 }

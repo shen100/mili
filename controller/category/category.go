@@ -5,7 +5,6 @@ import (
 	"unicode/utf8"
 	"strings"
 	"strconv"
-	"github.com/kataras/iris"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/controller/common"

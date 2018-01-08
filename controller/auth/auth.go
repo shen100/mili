@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"github.com/kataras/iris"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/model"

@@ -6,7 +6,6 @@ import (
 	"strings"
 	"strconv"
 	"unicode/utf8"
-	"github.com/kataras/iris"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/utils"
