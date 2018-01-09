@@ -3,19 +3,17 @@ package article
 import (
 	"fmt"
 	"math"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
-	"unicode/utf8"
 
-	"github.com/jinzhu/gorm"
+	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/controller/common"
-	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/model"
-	"github.com/shen100/golang123/utils"
 )
 
-func queryList(ctx iris.Context, isBackend bool) {
+func queryList(c *gin.Context, isBackend bool) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
 	var categoryID int
@@ -24,7 +22,7 @@ func queryList(ctx iris.Context, isBackend bool) {
 	var startTime string
 	var endTime string
 
-	if pageNo, err = strconv.Atoi(ctx.FormValue("pageNo")); err != nil {
+	if pageNo, err = strconv.Atoi(c.Query("pageNo")); err != nil {
 		pageNo = 1
 		err = nil
 	}
@@ -36,13 +34,13 @@ func queryList(ctx iris.Context, isBackend bool) {
 	pageSize := 40
 	offset := (pageNo - 1) * pageSize
 
-	if startAt, err := strconv.Atoi(ctx.FormValue("startAt")); err != nil {
+	if startAt, err := strconv.Atoi(c.Query("startAt")); err != nil {
 		startTime = time.Unix(0, 0).Format("2006-01-02 15:04:05")
 	} else {
 		startTime = time.Unix(int64(startAt/1000), 0).Format("2006-01-02 15:04:05")
 	}
 
-	if endAt, err := strconv.Atoi(ctx.FormValue("endAt")); err != nil {
+	if endAt, err := strconv.Atoi(c.Query("endAt")); err != nil {
 		endTime = time.Now().Format("2006-01-02 15:04:05")
 	} else {
 		endTime = time.Unix(int64(endAt/1000), 0).Format("2006-01-02 15:04:05")
@@ -51,24 +49,24 @@ func queryList(ctx iris.Context, isBackend bool) {
 	//默认按创建时间，降序来排序
 	var orderField = "created_at"
 	var orderASC = "DESC"
-	if ctx.FormValue("asc") == "1" {
+	if c.Query("asc") == "1" {
 		orderASC = "ASC"
 	} else {
 		orderASC = "DESC"
 	}
 
-	cateIDStr := ctx.FormValue("cateId")
+	cateIDStr := c.Query("cateId")
 	if cateIDStr == "" {
 		categoryID = 0
 	} else if categoryID, err = strconv.Atoi(cateIDStr); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("分类ID不正确", ctx)
+		SendErrJSON("分类ID不正确", c)
 		return
 	}
 
 	var topArticles []model.TopArticle
 	if err := model.DB.Find(&topArticles).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 	var topArr []string
@@ -89,7 +87,7 @@ func queryList(ctx iris.Context, isBackend bool) {
 	if categoryID != 0 {
 		var category model.Category
 		if model.DB.First(&category, categoryID).Error != nil {
-			SendErrJSON("分类ID不正确", ctx)
+			SendErrJSON("分类ID不正确", c)
 			return
 		}
 		var sql = `SELECT distinct(articles.id), articles.name, articles.browse_count, articles.comment_count, articles.collect_count,  
@@ -116,7 +114,7 @@ func queryList(ctx iris.Context, isBackend bool) {
 			sql = strings.Replace(sql, "{statusSQL}", " AND (status = 1 OR status = 2)", -1)
 		}
 		if err := model.DB.Raw(sql).Scan(&articles).Error; err != nil {
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		for i := 0; i < len(articles); i++ {
@@ -140,13 +138,13 @@ func queryList(ctx iris.Context, isBackend bool) {
 			//管理员查询话题列表时，会返回审核未通过的话题
 			countSQL = strings.Replace(countSQL, "{statusSQL}", " ", -1)
 			if err := model.DB.Raw(countSQL).Scan(&totalCountResult).Error; err != nil {
-				SendErrJSON("error", ctx)
+				SendErrJSON("error", c)
 				return
 			}
 		} else {
 			countSQL = strings.Replace(countSQL, "{statusSQL}", " AND (status = 1 OR status = 2)", -1)
 			if err := model.DB.Raw(countSQL).Scan(&totalCountResult).Error; err != nil {
-				SendErrJSON("error", ctx)
+				SendErrJSON("error", c)
 				return
 			}
 		}
@@ -168,13 +166,13 @@ func queryList(ctx iris.Context, isBackend bool) {
 		}
 
 		if err != nil {
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		for i := 0; i < len(articles); i++ {
 			if err = model.DB.Model(&articles[i]).Related(&articles[i].Categories, "categories").Error; err != nil {
 				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
+				SendErrJSON("error", c)
 				return
 			}
 		}
@@ -183,14 +181,14 @@ func queryList(ctx iris.Context, isBackend bool) {
 			if err := model.DB.Model(&model.Article{}).Where(excludeIDs).
 				Where("created_at >= ? AND created_at < ? ", startTime, endTime).
 				Count(&totalCountResult.TotalCount).Error; err != nil {
-				SendErrJSON("error", ctx)
+				SendErrJSON("error", c)
 				return
 			}
 		} else {
 			if err := model.DB.Model(&model.Article{}).Where(excludeIDs).Where("status = 1 OR status = 2").
 				Where("created_at >= ? AND created_at < ? ", startTime, endTime).
 				Count(&totalCountResult.TotalCount).Error; err != nil {
-				SendErrJSON("error", ctx)
+				SendErrJSON("error", c)
 				return
 			}
 		}
@@ -199,21 +197,21 @@ func queryList(ctx iris.Context, isBackend bool) {
 	for i := 0; i < len(articles); i++ {
 		if err := model.DB.Model(&articles[i]).Related(&articles[i].User, "users").Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		if articles[i].LastUserID != 0 {
 			if err := model.DB.Model(&articles[i]).Related(&articles[i].LastUser, "users", "last_user_id").Error; err != nil {
 				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
+				SendErrJSON("error", c)
 				return
 			}
 		}
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"articles":   articles,
 			"pageNo":     pageNo,
 			"pageSize":   pageSize,
@@ -224,10 +222,11 @@ func queryList(ctx iris.Context, isBackend bool) {
 }
 
 // List 文章列表
-func List(ctx iris.Context) {
-	queryList(ctx, false)
+func List(c *gin.Context) {
+	queryList(c, false)
 }
 
+/*
 // AllList 文章列表，后台管理提供的接口
 func AllList(ctx iris.Context) {
 	queryList(ctx, true)
@@ -859,3 +858,4 @@ func Delete(ctx iris.Context) {
 		},
 	})
 }
+*/

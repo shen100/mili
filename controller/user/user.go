@@ -271,6 +271,7 @@ func ResetPassword(ctx iris.Context) {
 	})
 }
 */
+
 // Signin 用户登录
 func Signin(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -286,9 +287,9 @@ func Signin(c *gin.Context) {
 	}
 	var emailLogin EmailLogin
 	var usernameLogin UsernameLogin
-	var luosimaoRes string
 	var signinInput string
 	var password string
+	var luosimaoRes string
 	var sql string
 
 	if c.Query("loginType") == "email" {
@@ -297,9 +298,9 @@ func Signin(c *gin.Context) {
 			SendErrJSON("邮箱或密码错误", c)
 			return
 		}
-		luosimaoRes = emailLogin.LuosimaoRes
 		signinInput = emailLogin.SigninInput
 		password = emailLogin.Password
+		luosimaoRes = emailLogin.LuosimaoRes
 		sql = "email = ?"
 	} else if c.Query("loginType") == "username" {
 		if err := c.ShouldBindWith(&usernameLogin, binding.JSON); err != nil {
@@ -307,9 +308,9 @@ func Signin(c *gin.Context) {
 			SendErrJSON("用户名或密码错误", c)
 			return
 		}
-		luosimaoRes = usernameLogin.LuosimaoRes
 		signinInput = usernameLogin.SigninInput
 		password = usernameLogin.Password
+		luosimaoRes = usernameLogin.LuosimaoRes
 		sql = "name = ?"
 	}
 
@@ -357,7 +358,6 @@ func Signin(c *gin.Context) {
 			return
 		}
 
-		fmt.Println(loginUser)
 		if _, err := utils.RedisConn.Do("SET", loginUser, userBytes, "EX", config.ServerConfig.TokenMaxAge); err != nil {
 			fmt.Println("redis set failed: ", err.Error())
 			SendErrJSON("内部错误.", c)
@@ -369,13 +369,14 @@ func Signin(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"errNo": model.ErrorCode.SUCCESS,
 			"msg":   "success",
-			"token": tokenString,
-			"data":  user,
+			"data": gin.H{
+				"token": tokenString,
+				"user":  user,
+			},
 		})
-	} else {
-		SendErrJSON("账号或密码错误", c)
 		return
 	}
+	SendErrJSON("账号或密码错误", c)
 }
 
 /*
@@ -613,6 +614,7 @@ func PublicInfo(ctx iris.Context) {
 	})
 }
 */
+
 // SecretInfo 返回用户信息，包含一些私密字段
 func SecretInfo(c *gin.Context) {
 	if user, exists := c.Get("user"); exists {

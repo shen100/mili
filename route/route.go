@@ -3,6 +3,7 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/config"
+	"github.com/shen100/golang123/controller/article"
 	"github.com/shen100/golang123/controller/user"
 	"github.com/shen100/golang123/middleware"
 )
@@ -54,7 +55,7 @@ func Route(router *gin.Engine) {
 
 	// api.Get("/categories", category.List)
 
-	// api.Get("/articles", article.List)
+	api.GET("/articles", article.List)
 	// api.Get("/articles/user/:userID", article.UserArticleList)
 	// api.Get("/articles/maxcomment", article.ListMaxComment)
 	// api.Get("/articles/maxbrowse", article.ListMaxBrowse)
