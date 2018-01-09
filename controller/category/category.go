@@ -1,15 +1,14 @@
 package category
 
 import (
-	"fmt"
-	"unicode/utf8"
-	"strings"
-	"strconv"
-	"github.com/microcosm-cc/bluemonday"
-	"github.com/shen100/golang123/model"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/controller/common"
+	"github.com/shen100/golang123/model"
 )
 
+/*
 // Save 保存分类（创建或更新）
 func Save(isEdit bool, ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -29,14 +28,14 @@ func Save(isEdit bool, ctx iris.Context) {
 	if (category.Name == "") {
 		SendErrJSON("分类名称不能为空", ctx)
 		return
-	} 
-	
+	}
+
 	if utf8.RuneCountInString(category.Name) > model.MaxNameLen {
 		msg := "分类名称不能超过" + strconv.Itoa(model.MaxNameLen) + "个字符"
 		SendErrJSON(msg, ctx)
 		return
 	}
-	
+
 	if category.Sequence < minOrder || category.Sequence > maxOrder {
 		msg := "分类的排序要在" + strconv.Itoa(minOrder) + "到" + strconv.Itoa(maxOrder) + "之间"
 		SendErrJSON(msg, ctx)
@@ -56,7 +55,7 @@ func Save(isEdit bool, ctx iris.Context) {
 		//创建分类
 		if err := model.DB.Create(&category).Error; err != nil {
 			SendErrJSON("error", ctx)
-			return	
+			return
 		}
 	} else {
 		//更新分类
@@ -80,7 +79,7 @@ func Save(isEdit bool, ctx iris.Context) {
 	if isEdit {
 		categoryJSON = updatedCategory
 	} else {
-		categoryJSON = category	
+		categoryJSON = category
 	}
 
 	ctx.JSON(iris.Map{
@@ -99,7 +98,7 @@ func Create(ctx iris.Context) {
 
 // Update 更新分类
 func Update(ctx iris.Context) {
-	Save(true, ctx)	
+	Save(true, ctx)
 }
 
 // Info 获取分类信息
@@ -125,21 +124,22 @@ func Info(ctx iris.Context) {
 		},
 	})
 }
+*/
 
 // List 分类列表
-func List(ctx iris.Context) {
+func List(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var categories []model.Category
 
 	if model.DB.Order("sequence asc").Find(&categories).Error != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	ctx.JSON(iris.Map{
-		"errNo" : model.ErrorCode.SUCCESS,
-		"msg"   : "success",
-		"data"  : iris.Map{
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
 			"categories": categories,
 		},
 	})

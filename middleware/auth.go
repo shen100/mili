@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -13,14 +14,12 @@ import (
 	"github.com/shen100/golang123/utils"
 )
 
-// SigninRequired 必须是登录用户
-func SigninRequired(c *gin.Context) {
-	SendErrJSON := common.SendErrJSON
+func getUser(c *gin.Context) (model.User, error) {
+	var user model.User
 	tokenString, cookieErr := c.Cookie("token")
 
 	if cookieErr != nil {
-		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
-		return
+		return user, errors.New("未登录")
 	}
 
 	token, tokenErr := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -31,8 +30,7 @@ func SigninRequired(c *gin.Context) {
 	})
 
 	if tokenErr != nil {
-		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
-		return
+		return user, errors.New("未登录")
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -41,48 +39,59 @@ func SigninRequired(c *gin.Context) {
 		fmt.Println(loginUser)
 		userBytes, err := redis.Bytes(utils.RedisConn.Do("GET", loginUser))
 		if err != nil {
-			SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
-			return
+			return user, errors.New("未登录")
 		}
-		var user model.User
 		bytesErr := json.Unmarshal(userBytes, &user)
 		if bytesErr != nil {
 			fmt.Println(bytesErr)
-			SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
-		} else {
-			c.Set("user", user)
-			c.Next()
+			return user, errors.New("未登录")
 		}
+		return user, nil
 	}
+	return user, errors.New("未登录")
+}
+
+// SigninRequired 必须是登录用户
+func SigninRequired(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	var user model.User
+	var err error
+	if user, err = getUser(c); err != nil {
+		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
+		return
+	}
+	c.Set("user", user)
+	c.Next()
 }
 
 // ActiveRequired 用户必须是激活状态
-// func ActiveRequired(ctx iris.Context) {
-// 	SendErrJSON := common.SendErrJSON
-// 	user, ok := manager.Sess.Start(ctx).Get("user").(model.User)
+func ActiveRequired(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	var user model.User
+	var err error
+	if user, err = getUser(c); err != nil {
+		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
+		return
+	}
 
-// 	if !ok {
-// 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
-// 		return
-// 	}
-
-// 	if user.Status == model.UserStatusActived {
-// 		ctx.Next()
-// 	} else {
-// 		var msg = ""
-// 		switch user.Role {
-// 		case model.UserStatusInActive:
-// 			{
-// 				msg = "账号未激活"
-// 			}
-// 		case model.UserStatusFrozen:
-// 			{
-// 				msg = "账号已被冻结"
-// 			}
-// 		}
-// 		SendErrJSON(msg, model.ErrorCode.InActive, ctx)
-// 	}
-// }
+	if user.Status == model.UserStatusActived {
+		c.Set("user", user)
+		c.Next()
+	} else {
+		var msg = ""
+		switch user.Status {
+		case model.UserStatusInActive:
+			{
+				msg = "账号未激活"
+			}
+		case model.UserStatusFrozen:
+			{
+				msg = "账号已被冻结"
+			}
+		}
+		SendErrJSON(msg, model.ErrorCode.InActive, c)
+	}
+}
 
 // // EditorRequired 必须是网站编辑
 // func EditorRequired(ctx iris.Context) {

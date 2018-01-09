@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/controller/article"
+	"github.com/shen100/golang123/controller/category"
+	"github.com/shen100/golang123/controller/collect"
 	"github.com/shen100/golang123/controller/user"
 	"github.com/shen100/golang123/middleware"
 )
@@ -32,8 +34,8 @@ func Route(router *gin.Engine) {
 	// 	user.UpdateInfo)
 	// api.Post("/user/password/update", auth.ActiveRequired,
 	// 	user.UpdatePassword)
-	// api.Get("/user/score/top10", user.Top10)
-	// api.Get("/user/score/top100", user.Top100)
+	api.GET("/user/score/top10", user.Top10)
+	api.GET("/user/score/top100", user.Top100)
 	// api.Post("/user/career/add", auth.ActiveRequired,
 	// 	user.AddCareer)
 	// api.Post("/user/school/add", auth.ActiveRequired,
@@ -53,20 +55,20 @@ func Route(router *gin.Engine) {
 	// api.Get("/message/unread/count", auth.SigninRequired,
 	// 	message.UnreadCount)
 
-	// api.Get("/categories", category.List)
+	api.GET("/categories", category.List)
 
 	api.GET("/articles", article.List)
-	// api.Get("/articles/user/:userID", article.UserArticleList)
-	// api.Get("/articles/maxcomment", article.ListMaxComment)
-	// api.Get("/articles/maxbrowse", article.ListMaxBrowse)
-	// api.Get("/article/{id:int min(1)}", article.Info)
+	api.GET("/articles/maxcomment", article.ListMaxComment)
+	api.GET("/articles/maxbrowse", article.ListMaxBrowse)
+	api.GET("/articles/top", article.Tops)
+	api.GET("/article/:id", article.Info)
+	api.GET("/articles/user/:userID", article.UserArticleList)
 	// api.Post("/article/create", auth.ActiveRequired,
 	// 	article.Create)
 	// api.Post("/article/update", auth.ActiveRequired,
 	// 	article.Update)
 	// api.Post("/article/delete/:id", auth.ActiveRequired,
 	// 	article.Delete)
-	// api.Get("/articles/top", article.Tops)
 	// api.Post("/article/top/:id", auth.EditorRequired,
 	// 	article.Top)
 	// api.Post("/article/deltop/:id", auth.EditorRequired,
@@ -79,8 +81,8 @@ func Route(router *gin.Engine) {
 	// api.Post("/collect/delete/:id", auth.ActiveRequired,
 	// 	collect.DeleteCollect)
 	// api.Get("/collect/folders/:userID", collect.Folders)
-	// api.Get("/collect/folders/source", auth.ActiveRequired,
-	// 	collect.FoldersWithSource)
+	api.GET("/collect/folders/source", middleware.ActiveRequired,
+		collect.FoldersWithSource)
 	// api.Get("/collects", collect.Collects)
 
 	// api.Post("/comment/create", auth.ActiveRequired,

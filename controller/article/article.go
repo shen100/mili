@@ -9,8 +9,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/utils"
 )
 
 func queryList(c *gin.Context, isBackend bool) {
@@ -231,9 +233,10 @@ func List(c *gin.Context) {
 func AllList(ctx iris.Context) {
 	queryList(ctx, true)
 }
+*/
 
 // UserArticleList 查询用户的文章
-func UserArticleList(ctx iris.Context) {
+func UserArticleList(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userID int
 	var userIDErr error
@@ -247,9 +250,9 @@ func UserArticleList(ctx iris.Context) {
 	var pageSizeErr error
 	var f string
 
-	f = ctx.FormValue("f")
+	f = c.Query("f")
 
-	if pn, err := strconv.Atoi(ctx.FormValue("pageNo")); err != nil {
+	if pn, err := strconv.Atoi(c.Query("pageNo")); err != nil {
 		pageNo = 1
 	} else {
 		pageNo = pn
@@ -259,44 +262,44 @@ func UserArticleList(ctx iris.Context) {
 		pageNo = 1
 	}
 
-	if userID, userIDErr = ctx.Params().GetInt("userID"); userIDErr != nil {
-		SendErrJSON("无效的userID", ctx)
+	if userID, userIDErr = strconv.Atoi(c.Param("userID")); userIDErr != nil {
+		SendErrJSON("无效的userID", c)
 		return
 	}
 	var user model.User
 	if err := model.DB.First(&user, userID).Error; err != nil {
-		SendErrJSON("无效的userID", ctx)
+		SendErrJSON("无效的userID", c)
 		return
 	}
 
-	if orderType, orderTypeErr = strconv.Atoi(ctx.FormValue("orderType")); orderTypeErr != nil {
-		SendErrJSON("无效的orderType", ctx)
+	if orderType, orderTypeErr = strconv.Atoi(c.Query("orderType")); orderTypeErr != nil {
+		SendErrJSON("无效的orderType", c)
 		return
 	}
 
 	// 1: 按日期排序 2: 按点赞数排序 3: 按评论数排序
 	if orderType != 1 && orderType != 2 && orderType != 3 {
-		SendErrJSON("无效的orderType", ctx)
+		SendErrJSON("无效的orderType", c)
 		return
 	}
 
-	if isDESC, descErr = strconv.Atoi(ctx.FormValue("desc")); descErr != nil {
-		SendErrJSON("无效的desc", ctx)
+	if isDESC, descErr = strconv.Atoi(c.Query("desc")); descErr != nil {
+		SendErrJSON("无效的desc", c)
 		return
 	}
 
 	if isDESC != 0 && isDESC != 1 {
-		SendErrJSON("无效的desc", ctx)
+		SendErrJSON("无效的desc", c)
 		return
 	}
 
-	if pageSize, pageSizeErr = strconv.Atoi(ctx.FormValue("pageSize")); pageSizeErr != nil {
-		SendErrJSON("无效的pageSize", ctx)
+	if pageSize, pageSizeErr = strconv.Atoi(c.Query("pageSize")); pageSizeErr != nil {
+		SendErrJSON("无效的pageSize", c)
 		return
 	}
 
 	if pageSize < 1 || pageSize > model.MaxPageSize {
-		SendErrJSON("无效的pageSize", ctx)
+		SendErrJSON("无效的pageSize", c)
 		return
 	}
 
@@ -318,14 +321,14 @@ func UserArticleList(ctx iris.Context) {
 	if err := model.DB.Where("user_id = ? AND (status = 1 OR status = 2)", user.ID).
 		Order(orderStr).Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	totalCount := 0
 	if err := model.DB.Model(&model.Article{}).Where("user_id = ? AND (status = 1 OR status = 2)", user.ID).Count(&totalCount).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
@@ -333,17 +336,17 @@ func UserArticleList(ctx iris.Context) {
 		for i := 0; i < len(articles); i++ {
 			if err := model.DB.Model(&articles[i]).Related(&articles[i].User, "users").Error; err != nil {
 				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
+				SendErrJSON("error", c)
 				return
 			}
 			articles[i].Content = utils.MarkdownToHTML(articles[i].Content)
 		}
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"articles":   articles,
 			"pageNo":     pageNo,
 			"pageSize":   pageSize,
@@ -354,41 +357,42 @@ func UserArticleList(ctx iris.Context) {
 }
 
 // ListMaxComment 评论最多的文章，返回5条
-func ListMaxComment(ctx iris.Context) {
+func ListMaxComment(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
 	if err := model.DB.Where("status = 1 OR status = 2").Order("comment_count DESC").Limit(5).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"articles": articles,
 		},
 	})
 }
 
 // ListMaxBrowse 访问量最多的文章，返回5条
-func ListMaxBrowse(ctx iris.Context) {
+func ListMaxBrowse(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
 	if err := model.DB.Where("status = 1 OR status = 2").Order("browse_count DESC").Limit(5).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"articles": articles,
 		},
 	})
 }
 
+/*
 func save(ctx iris.Context, isEdit bool) {
 	SendErrJSON := common.SendErrJSON
 	var article model.Article
@@ -530,16 +534,15 @@ func Create(ctx iris.Context) {
 func Update(ctx iris.Context) {
 	save(ctx, true)
 }
+*/
 
 // Info 获取文章信息
-func Info(ctx iris.Context) {
+func Info(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	reqStartTime := time.Now()
-	var articleID int
-	var paramsErr error
+	articleID, paramsErr := strconv.Atoi(c.Param("id"))
 
-	if articleID, paramsErr = ctx.Params().GetInt("id"); paramsErr != nil {
-		SendErrJSON("错误的文章id", ctx)
+	if paramsErr != nil {
+		SendErrJSON("错误的文章id", c)
 		return
 	}
 
@@ -547,38 +550,38 @@ func Info(ctx iris.Context) {
 
 	if err := model.DB.First(&article, articleID).Error; err != nil {
 		fmt.Printf(err.Error())
-		SendErrJSON("错误的文章id", ctx)
+		SendErrJSON("错误的文章id", c)
 		return
 	}
 
 	article.BrowseCount++
 	if err := model.DB.Save(&article).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Model(&article).Related(&article.User, "users").Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Model(&article).Related(&article.Categories, "categories").Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Model(&article).Where("source_name = ?", model.CommentSourceArticle).Related(&article.Comments, "comments").Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	for i := 0; i < len(article.Comments); i++ {
 		if err := model.DB.Model(&article.Comments[i]).Related(&article.Comments[i].User, "users").Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		article.Comments[i].Content = utils.MarkdownToHTML(article.Comments[i].Content)
@@ -592,14 +595,14 @@ func Info(ctx iris.Context) {
 				parentExist = false
 				if err != gorm.ErrRecordNotFound {
 					fmt.Printf(err.Error())
-					SendErrJSON("error", ctx)
+					SendErrJSON("error", c)
 					return
 				}
 			}
 			if parentExist {
 				if err := model.DB.Model(&parent).Related(&parent.User, "users").Error; err != nil {
 					fmt.Println(err.Error())
-					SendErrJSON("error", ctx)
+					SendErrJSON("error", c)
 					return
 				}
 				parents = append(parents, parent)
@@ -608,7 +611,7 @@ func Info(ctx iris.Context) {
 		}
 	}
 
-	if ctx.FormValue("f") != "md" {
+	if c.Query("f") != "md" {
 		if article.ContentType == model.ContentTypeMarkdown {
 			article.Content = utils.MarkdownToHTML(article.Content)
 			article.HTMLContent = ""
@@ -621,18 +624,16 @@ func Info(ctx iris.Context) {
 		}
 	}
 
-	totalDur := fmt.Sprintf("%f", time.Now().Sub(reqStartTime).Seconds())
-	ctx.Application().Logger().Infof("duration: " + totalDur)
-
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"article": article,
 		},
 	})
 }
 
+/*
 // UpdateStatus 更新文章状态
 func UpdateStatus(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -750,15 +751,16 @@ func DeleteTop(ctx iris.Context) {
 		},
 	})
 }
+*/
 
 // Tops 所有置顶文章
-func Tops(ctx iris.Context) {
+func Tops(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var topArticles []model.TopArticle
 	var articles []model.Article
 
 	if err := model.DB.Order("created_at DESC").Find(&topArticles).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
@@ -766,26 +768,26 @@ func Tops(ctx iris.Context) {
 		var article model.Article
 		if err := model.DB.Model(&topArticles[i]).Related(&article, "articles").Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 
 		if err := model.DB.Model(&article).Related(&article.Categories, "categories").Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 
 		if err := model.DB.Model(&article).Related(&article.User, "users").Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 
 		if article.LastUserID != 0 {
 			if err := model.DB.Model(&article).Related(&article.LastUser, "users", "last_user_id").Error; err != nil {
 				fmt.Println(err.Error(), "articleID: ", article.ID, "lastUserID", article.LastUserID)
-				SendErrJSON("error", ctx)
+				SendErrJSON("error", c)
 				return
 			}
 		}
@@ -793,15 +795,16 @@ func Tops(ctx iris.Context) {
 		articles = append(articles, article)
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"articles": articles,
 		},
 	})
 }
 
+/*
 // Delete 删除文章
 func Delete(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON

@@ -702,18 +702,19 @@ func AllList(ctx iris.Context) {
 		})
 	}
 }
+*/
 
-func topN(n int, ctx iris.Context) {
+func topN(c *gin.Context, n int) {
 	SendErrJSON := common.SendErrJSON
 	var users []model.User
 	if err := model.DB.Order("score DESC").Limit(n).Find(&users).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 	} else {
-		ctx.JSON(iris.Map{
+		c.JSON(http.StatusOK, gin.H{
 			"errNo": model.ErrorCode.SUCCESS,
 			"msg":   "success",
-			"data": iris.Map{
+			"data": gin.H{
 				"users": users,
 			},
 		})
@@ -721,15 +722,16 @@ func topN(n int, ctx iris.Context) {
 }
 
 // Top10 返回积分排名前10的用户
-func Top10(ctx iris.Context) {
-	topN(10, ctx)
+func Top10(c *gin.Context) {
+	topN(c, 10)
 }
 
 // Top100 返回积分排名前100的用户
-func Top100(ctx iris.Context) {
-	topN(100, ctx)
+func Top100(c *gin.Context) {
+	topN(c, 100)
 }
 
+/*
 // UpdateAvatar 修改用户头像
 func UpdateAvatar(ctx iris.Context) {
 	data, err := common.Upload(ctx)
