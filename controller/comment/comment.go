@@ -2,19 +2,17 @@ package comment
 
 import (
 	"fmt"
-	"math"
+	"net/http"
 	"strconv"
-	"strings"
-	"time"
-	"unicode/utf8"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/shen100/golang123/controller/common"
-	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/utils"
 )
 
+/*
 // Save 保存评论（创建或更新）
 func Save(ctx iris.Context, isEdit bool) {
 	SendErrJSON := common.SendErrJSON
@@ -282,9 +280,10 @@ func Delete(ctx iris.Context) {
 		},
 	})
 }
+*/
 
 // UserCommentList 查询用户的评论
-func UserCommentList(ctx iris.Context) {
+func UserCommentList(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userID int
 	var userIDErr error
@@ -298,38 +297,38 @@ func UserCommentList(ctx iris.Context) {
 	var pageSize int
 	var pageSizeErr error
 
-	if userID, userIDErr = ctx.Params().GetInt("userID"); userIDErr != nil {
-		SendErrJSON("无效的userID", ctx)
+	if userID, userIDErr = strconv.Atoi(c.Param("userID")); userIDErr != nil {
+		SendErrJSON("无效的userID", c)
 		return
 	}
 	var user model.User
 	if err := model.DB.First(&user, userID).Error; err != nil {
-		SendErrJSON("无效的userID", ctx)
+		SendErrJSON("无效的userID", c)
 		return
 	}
 
-	if orderType, orderTypeErr = strconv.Atoi(ctx.FormValue("orderType")); orderTypeErr != nil {
-		SendErrJSON("无效的orderType", ctx)
+	if orderType, orderTypeErr = strconv.Atoi(c.Query("orderType")); orderTypeErr != nil {
+		SendErrJSON("无效的orderType", c)
 		return
 	}
 
 	// 1: 按日期排序 2: 按赞同数排序(即评论被点赞)
 	if orderType != 1 && orderType != 2 {
-		SendErrJSON("无效的orderType", ctx)
+		SendErrJSON("无效的orderType", c)
 		return
 	}
 
-	if isDESC, descErr = strconv.Atoi(ctx.FormValue("desc")); descErr != nil {
-		SendErrJSON("无效的desc", ctx)
+	if isDESC, descErr = strconv.Atoi(c.Query("desc")); descErr != nil {
+		SendErrJSON("无效的desc", c)
 		return
 	}
 
 	if isDESC != 0 && isDESC != 1 {
-		SendErrJSON("无效的desc", ctx)
+		SendErrJSON("无效的desc", c)
 		return
 	}
 
-	if pageNo, pageNoErr = strconv.Atoi(ctx.FormValue("pageNo")); pageNoErr != nil {
+	if pageNo, pageNoErr = strconv.Atoi(c.Query("pageNo")); pageNoErr != nil {
 		pageNo = 1
 		pageNoErr = nil
 	}
@@ -337,13 +336,13 @@ func UserCommentList(ctx iris.Context) {
 		pageNo = 1
 	}
 
-	if pageSize, pageSizeErr = strconv.Atoi(ctx.FormValue("pageSize")); pageSizeErr != nil {
-		SendErrJSON("无效的pageSize", ctx)
+	if pageSize, pageSizeErr = strconv.Atoi(c.Query("pageSize")); pageSizeErr != nil {
+		SendErrJSON("无效的pageSize", c)
 		return
 	}
 
 	if pageSize < 1 || pageSize > model.MaxPageSize {
-		SendErrJSON("无效的pageSize", ctx)
+		SendErrJSON("无效��pageSize", c)
 		return
 	}
 
@@ -365,13 +364,13 @@ func UserCommentList(ctx iris.Context) {
 	var totalCount int
 	if err := model.DB.Model(&model.Comment{}).Where("user_id = ? AND status != ?", user.ID, model.CommentVerifyFail).Count(&totalCount).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Where("user_id = ? AND status != ?", user.ID, model.CommentVerifyFail).Order(orderStr).Offset(offset).Limit(pageSize).Find(&comments).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
@@ -387,7 +386,7 @@ func UserCommentList(ctx iris.Context) {
 				// 没有找到话题，即话题被删除了
 				if err != gorm.ErrRecordNotFound {
 					fmt.Println(err.Error())
-					SendErrJSON("error", ctx)
+					SendErrJSON("error", c)
 					return
 				}
 			}
@@ -398,7 +397,7 @@ func UserCommentList(ctx iris.Context) {
 			if err := model.DB.Model(&comments[i]).Related(&vote, "votes", "source_id").Error; err != nil {
 				if err != gorm.ErrRecordNotFound {
 					fmt.Println(err.Error())
-					SendErrJSON("error", ctx)
+					SendErrJSON("error", c)
 					return
 				}
 			}
@@ -409,17 +408,17 @@ func UserCommentList(ctx iris.Context) {
 
 		if err := model.DB.Model(&comments[i]).Related(&comments[i].User, "users").Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		data["user"] = comments[i].User
 		results = append(results, data)
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"comments":   results,
 			"pageNo":     pageNo,
 			"pageSize":   pageSize,
@@ -428,6 +427,7 @@ func UserCommentList(ctx iris.Context) {
 	})
 }
 
+/*
 // SourceComments 查询话题或投票的评论
 func SourceComments(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -612,3 +612,4 @@ func UpdateStatus(ctx iris.Context) {
 		},
 	})
 }
+*/

@@ -3,6 +3,7 @@ package collect
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -394,20 +395,19 @@ func queryFolders(userID int) ([]model.Folder, error) {
 	return folders, nil
 }
 
-/*
 // Folders 查询用户的收藏夹列表
-func Folders(ctx iris.Context) {
+func Folders(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	userID, userIDErr := ctx.Params().GetInt("userID")
+	userID, userIDErr := strconv.Atoi(c.Param("userID"))
 	if userIDErr != nil {
-		SendErrJSON("无效的userID", ctx)
+		SendErrJSON("无效的userID", c)
 		return
 	}
 
 	var folders []model.Folder
 	var err error
 	if folders, err = queryFolders(userID); err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 	var results []map[string]interface{}
@@ -423,21 +423,20 @@ func Folders(ctx iris.Context) {
 		}
 		var collectCount uint
 		if err := model.DB.Model(&model.Collect{}).Where("folder_id = ?", folders[i].ID).Count(&collectCount).Error; err != nil {
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		data["collectCount"] = collectCount
 		results = append(results, data)
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"folders": results,
 		},
 	})
 }
-*/
 
 // FoldersWithSource 查询用户的收藏夹列表，并且返回每个收藏夹中收藏了哪些话题或投票
 func FoldersWithSource(c *gin.Context) {

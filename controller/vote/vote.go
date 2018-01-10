@@ -1,20 +1,17 @@
 package vote
 
 import (
-	"errors"
 	"fmt"
+	"net/http"
 	"strconv"
-	"strings"
-	"time"
-	"unicode/utf8"
 
-	"github.com/jinzhu/gorm"
+	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/controller/common"
-	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/utils"
 )
 
+/*
 // List 查询投票列表
 func List(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -580,9 +577,10 @@ func DeleteItem(ctx iris.Context) {
 		},
 	})
 }
+*/
 
 // UserVoteList 用户参与的投票
-func UserVoteList(ctx iris.Context) {
+func UserVoteList(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userID int
 	var userIDErr error
@@ -594,50 +592,50 @@ func UserVoteList(ctx iris.Context) {
 	var pageSize int
 	var pageSizeErr error
 
-	if userID, userIDErr = ctx.Params().GetInt("userID"); userIDErr != nil {
-		SendErrJSON("无效的userID", ctx)
+	if userID, userIDErr = strconv.Atoi(c.Param("userID")); userIDErr != nil {
+		SendErrJSON("无效的userID", c)
 		return
 	}
 	var user model.User
 	if err := model.DB.First(&user, userID).Error; err != nil {
-		SendErrJSON("无效的userID", ctx)
+		SendErrJSON("无效的userID", c)
 		return
 	}
 
-	if orderType, orderTypeErr = strconv.Atoi(ctx.FormValue("orderType")); orderTypeErr != nil {
-		SendErrJSON("无效的orderType", ctx)
+	if orderType, orderTypeErr = strconv.Atoi(c.Query("orderType")); orderTypeErr != nil {
+		SendErrJSON("无效的orderType", c)
 		return
 	}
 
 	// 1: 按日期排序 2: 按点赞数排序 3: 按评论数排序
 	if orderType != 1 && orderType != 2 && orderType != 3 {
-		SendErrJSON("无效的orderType", ctx)
+		SendErrJSON("无效的orderType", c)
 		return
 	}
 
-	if isDESC, descErr = strconv.Atoi(ctx.FormValue("desc")); descErr != nil {
-		SendErrJSON("无效的desc", ctx)
+	if isDESC, descErr = strconv.Atoi(c.Query("desc")); descErr != nil {
+		SendErrJSON("无效的desc", c)
 		return
 	}
 
 	if isDESC != 0 && isDESC != 1 {
-		SendErrJSON("无效的desc", ctx)
+		SendErrJSON("无效的desc", c)
 		return
 	}
 
-	if pageSize, pageSizeErr = strconv.Atoi(ctx.FormValue("pageSize")); pageSizeErr != nil {
-		SendErrJSON("无效的pageSize", ctx)
+	if pageSize, pageSizeErr = strconv.Atoi(c.Query("pageSize")); pageSizeErr != nil {
+		SendErrJSON("无效的pageSize", c)
 		return
 	}
 
 	if pageSize < 1 || pageSize > model.MaxPageSize {
-		SendErrJSON("无效的pageSize", ctx)
+		SendErrJSON("无效的pageSize", c)
 		return
 	}
 
 	var pageNo int
 	var pageNoErr error
-	if pageNo, pageNoErr = strconv.Atoi(ctx.FormValue("pageNo")); pageNoErr != nil {
+	if pageNo, pageNoErr = strconv.Atoi(c.Query("pageNo")); pageNoErr != nil {
 		pageNo = 1
 	}
 	if pageNo < 1 {
@@ -663,13 +661,13 @@ func UserVoteList(ctx iris.Context) {
 	var userVotes []model.UserVote
 	if err := model.DB.Model(&model.UserVote{}).Where("user_id = ?", user.ID).Count(&totalCount).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Where("user_id = ?", user.ID).Order(orderStr).Offset(offset).Limit(pageSize).Find(&userVotes).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
@@ -677,16 +675,16 @@ func UserVoteList(ctx iris.Context) {
 	for i := 0; i < len(userVotes); i++ {
 		if err := model.DB.Model(&userVotes[i]).Related(&userVotes[i].Vote, "votes").Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		userVotes[i].Vote.Content = utils.MarkdownToHTML(userVotes[i].Vote.Content)
 		votes = append(votes, userVotes[i].Vote)
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"votes":      votes,
 			"pageNo":     pageNo,
 			"pageSize":   pageSize,

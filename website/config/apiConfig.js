@@ -55,7 +55,7 @@ const api = {
         desc: '获取文章列表'
     },
     getArticle: {
-        url: url + '/article/:id',
+        url: url + '/articles/info/:id',
         method: 'GET',
         desc: '获取文章信息'
     },
@@ -144,7 +144,7 @@ const api = {
         method: 'PUT'
     },
     getMaxComment: {
-        url: url + '/articles/maxcomment',
+        url: url + '/articles/max/bycomment',
         method: 'GET',
         desc: '回复最多的话题'
     },
@@ -157,7 +157,7 @@ const api = {
         method: 'GET'
     },
     getMaxBrowse: {
-        url: url + '/articles/maxbrowse',
+        url: url + '/articles/max/bybrowse',
         method: 'GET',
         desc: '浏览最多的话题'
     },
@@ -222,7 +222,7 @@ const api = {
         desc: '回复最多的投票'
     },
     getTopList: {
-        url: url + '/articles/top',
+        url: url + '/articles/top/global',
         method: 'GET',
         desc: '获取置顶文章列表'
     },
@@ -287,14 +287,13 @@ const api = {
         desc: '删除工作经历'
     },
     getCollectDirList: {
-        url: url + '/collect/folders/:userID',
+        url: url + '/collect/user/:userID/folders',
         method: 'GET',
         desc: '查询用户的收藏夹列表'
     },
     getFoldersSource: {
-        url: url + '/collect/folders/source',
-        method: 'GET',
-        desc: '获取用户收藏列表'
+        url: url + '/collect/folders/withsource', //查询用户的收藏夹列表，并且返回每个收藏夹中收藏了哪些话题或投票
+        method: 'GET'
     },
     createCollectDir: {
         url: url + '/collect/folder/create',

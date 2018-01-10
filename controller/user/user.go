@@ -1,16 +1,25 @@
 package user
 
 import (
+	"crypto/md5"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"math/rand"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/controller/common"
+	"github.com/shen100/golang123/controller/mail"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/utils"
 )
@@ -20,8 +29,7 @@ const (
 	resetDuration  = 24 * 60 * 60
 )
 
-/*
-func sendMail(action string, title string, curTime int64, user model.User, ctx iris.Context) {
+func sendMail(action string, title string, curTime int64, user model.User, c *gin.Context) {
 	siteName := config.ServerConfig.SiteName
 	siteURL := "https://" + config.ServerConfig.Host
 	secretStr := fmt.Sprintf("%d%s%s", curTime, user.Email, user.Pass)
@@ -51,19 +59,18 @@ func sendMail(action string, title string, curTime int64, user model.User, ctx i
 	mail.SendMail(user.Email, title, content)
 }
 
-
-func verifyLink(cacheKey string, ctx iris.Context) (model.User, error) {
+func verifyLink(cacheKey string, c *gin.Context) (model.User, error) {
 	var user model.User
-	userID, err := ctx.Params().GetInt("id")
+	userID, err := strconv.Atoi(c.Param("id"))
 	if err != nil || userID <= 0 {
 		return user, errors.New("无效的链接")
 	}
-	secret := ctx.Params().Get("secret")
+	secret := c.Param("secret")
 	if secret == "" {
 		return user, errors.New("无效的链接")
 	}
 
-	emailTime, redisErr := redis.Int64(manager.C.Do("GET", cacheKey+fmt.Sprintf("%d", userID)))
+	emailTime, redisErr := redis.Int64(utils.RedisConn.Do("GET", cacheKey+fmt.Sprintf("%d", userID)))
 	if redisErr != nil {
 		return user, errors.New("无效的链接")
 	}
@@ -83,15 +90,16 @@ func verifyLink(cacheKey string, ctx iris.Context) (model.User, error) {
 }
 
 // ActiveSendMail 发送激活账号的邮件
-func ActiveSendMail(ctx iris.Context) {
+func ActiveSendMail(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	type ReqData struct {
-		Email string `json:"email"`
+		Email string `json:"email" binding:"required,email"`
 	}
+
 	var reqData ReqData
 	// 只接收一个email参数
-	if err := ctx.ReadJSON(&reqData); err != nil {
-		SendErrJSON("参数无效", ctx)
+	if err := c.ShouldBindWith(&reqData, binding.JSON); err != nil {
+		SendErrJSON("参数无效", c)
 		return
 	}
 
@@ -101,67 +109,68 @@ func ActiveSendMail(ctx iris.Context) {
 	var decodeBytes []byte
 	var decodedErr error
 	if decodeBytes, decodedErr = base64.StdEncoding.DecodeString(user.Email); decodedErr != nil {
-		SendErrJSON("参数无效", ctx)
+		SendErrJSON("参数无效", c)
 		return
 	}
 	user.Email = string(decodeBytes)
 
 	if err := model.DB.Where("email = ?", user.Email).First(&user).Error; err != nil {
-		SendErrJSON("无效的邮箱", ctx)
+		SendErrJSON("无效的邮箱", c)
 		return
 	}
 
 	curTime := time.Now().Unix()
 	activeUser := fmt.Sprintf("%s%d", model.ActiveTime, user.ID)
-	if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
+	if _, err := utils.RedisConn.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
 		fmt.Println("redis set failed:", err)
 	}
 	go func() {
-		sendMail("/active", "账号激活", curTime, user, ctx)
+		sendMail("/active", "账号激活", curTime, user, c)
 	}()
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"email": user.Email,
 		},
 	})
 }
 
 // ActiveAccount 激活账号
-func ActiveAccount(ctx iris.Context) {
+func ActiveAccount(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var err error
 	var user model.User
-	if user, err = verifyLink(model.ActiveTime, ctx); err != nil {
-		SendErrJSON("激活链接已失效", ctx)
+	if user, err = verifyLink(model.ActiveTime, c); err != nil {
+		SendErrJSON("激活链接已失效", c)
 		return
 	}
 
 	if user.ID <= 0 {
-		SendErrJSON("激活链接已失效", ctx)
+		SendErrJSON("激活链接已失效", c)
 		return
 	}
 
 	if err := model.DB.Model(&user).Update("status", model.UserStatusActived).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	if _, err := manager.C.Do("DEL", fmt.Sprintf("%s%d", model.ActiveTime, user.ID)); err != nil {
+	if _, err := utils.RedisConn.Do("DEL", fmt.Sprintf("%s%d", model.ActiveTime, user.ID)); err != nil {
 		fmt.Println("redis delelte failed:", err)
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"email": user.Email,
 		},
 	})
 }
 
+/*
 // ResetPasswordMail 发送重置密码的邮件
 func ResetPasswordMail(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -379,19 +388,18 @@ func Signin(c *gin.Context) {
 	SendErrJSON("账号或密码错误", c)
 }
 
-/*
 // Signup 用户注册
-func Signup(ctx iris.Context) {
+func Signup(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	type UserReqData struct {
-		Name     string `json:"name" valid:"runelength(4|20)"`
-		Email    string `json:"email" valid:"email,runelength(5|50)"`
-		Password string `json:"password" valid:"runelength(6|20)"`
+		Name     string `json:"name" binding:"required,min=4,max=20"`
+		Email    string `json:"email" binding:"required,email"`
+		Password string `json:"password" binding:"required,min=6,max=20"`
 	}
 
 	var userData UserReqData
-	if err := ctx.ReadJSON(&userData); err != nil {
-		SendErrJSON("参数无效", ctx)
+	if err := c.ShouldBindWith(&userData, binding.JSON); err != nil {
+		SendErrJSON("参数无效", c)
 		return
 	}
 
@@ -400,22 +408,22 @@ func Signup(ctx iris.Context) {
 	userData.Email = strings.TrimSpace(userData.Email)
 
 	if _, err := govalidator.ValidateStruct(userData); err != nil {
-		SendErrJSON("参数无效.", ctx)
+		SendErrJSON("参数无效.", c)
 		return
 	}
 
 	if strings.Index(userData.Name, "@") != -1 {
-		SendErrJSON("用户名中不能含有@字符", ctx)
+		SendErrJSON("用户名中不能含有@字符", c)
 		return
 	}
 
 	var user model.User
 	if err := model.DB.Where("email = ? OR name = ?", userData.Email, userData.Name).Find(&user).Error; err == nil {
 		if user.Name == userData.Name {
-			SendErrJSON("用户名 "+user.Name+" 已被注册", ctx)
+			SendErrJSON("用户名 "+user.Name+" 已被注册", c)
 			return
 		} else if user.Email == userData.Email {
-			SendErrJSON("邮箱 "+user.Email+" 已存在", ctx)
+			SendErrJSON("邮箱 "+user.Email+" 已存在", c)
 			return
 		}
 	}
@@ -430,21 +438,21 @@ func Signup(ctx iris.Context) {
 	newUser.AvatarURL = "/images/avatar/" + strconv.Itoa(rand.Intn(2)) + ".png"
 
 	if err := model.DB.Create(&newUser).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	curTime := time.Now().Unix()
 	activeUser := fmt.Sprintf("%s%d", model.ActiveTime, newUser.ID)
-	if _, err := manager.C.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
+	if _, err := utils.RedisConn.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
 		fmt.Println("redis set failed:", err)
 	}
 
 	go func() {
-		sendMail("/active", "账号激活", curTime, newUser, ctx)
+		sendMail("/active", "账号激活", curTime, newUser, c)
 	}()
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  newUser,
@@ -452,15 +460,23 @@ func Signup(ctx iris.Context) {
 }
 
 // Signout 退出登录
-func Signout(ctx iris.Context) {
-	manager.Sess.Destroy(ctx)
-	ctx.JSON(iris.Map{
+func Signout(c *gin.Context) {
+	userInter, exists := c.Get("user")
+	var user model.User
+	if exists {
+		user = userInter.(model.User)
+		if _, err := utils.RedisConn.Do("DEL", fmt.Sprintf("%s%d", model.LoginUser, user.ID)); err != nil {
+			fmt.Println("redis delelte failed:", err)
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data":  iris.Map{},
+		"data":  gin.H{},
 	})
 }
 
+/*
 // UpdateInfo 更新用户信息
 func UpdateInfo(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -582,22 +598,23 @@ func UpdatePassword(ctx iris.Context) {
 		return
 	}
 }
+*/
 
 // PublicInfo 用户公开的信息
-func PublicInfo(ctx iris.Context) {
+func PublicInfo(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userID int
 	var idErr error
 
-	if userID, idErr = ctx.Params().GetInt("id"); idErr != nil {
+	if userID, idErr = strconv.Atoi(c.Param("id")); idErr != nil {
 		fmt.Println(idErr.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	var user model.User
 	if err := model.DB.First(&user, userID).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	if user.Sex == model.UserSexFemale {
@@ -605,15 +622,14 @@ func PublicInfo(ctx iris.Context) {
 	} else {
 		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/e672995e-7a39-4a05-9673-8802b1865c46.jpg"
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"user": user,
 		},
 	})
 }
-*/
 
 // SecretInfo 返回用户信息，包含一些私密字段
 func SecretInfo(c *gin.Context) {

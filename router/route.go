@@ -1,4 +1,4 @@
-package route
+package router
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,7 +6,9 @@ import (
 	"github.com/shen100/golang123/controller/article"
 	"github.com/shen100/golang123/controller/category"
 	"github.com/shen100/golang123/controller/collect"
+	"github.com/shen100/golang123/controller/comment"
 	"github.com/shen100/golang123/controller/user"
+	"github.com/shen100/golang123/controller/vote"
 	"github.com/shen100/golang123/middleware"
 )
 
@@ -17,15 +19,15 @@ func Route(router *gin.Engine) {
 	api := router.Group(apiPrefix)
 
 	api.POST("/signin", user.Signin)
-	// api.Post("/signup", user.Signup)
-	// api.Post("/signout", user.Signout)
-	// api.Post("/active/sendmail", user.ActiveSendMail)
-	// api.Post("/active/:id/:secret", user.ActiveAccount)
+	api.POST("/signup", user.Signup)
+	api.POST("/signout", middleware.SigninRequired,
+		user.Signout)
+	api.POST("/active/sendmail", user.ActiveSendMail)
+	api.POST("/active/:id/:secret", user.ActiveAccount)
 	// api.Post("/reset", user.ResetPasswordMail)
 	// api.Get("/reset/verify/:id/:secret", user.VerifyResetPasswordLink)
 	// api.Post("/reset/:id/:secret", user.ResetPassword)
 
-	// api.Get("/user/info/public/:id", user.PublicInfo)
 	api.GET("/user/info", middleware.SigninRequired,
 		user.SecretInfo)
 	// api.Get("/user/info/detail", auth.SigninRequired,
@@ -36,6 +38,7 @@ func Route(router *gin.Engine) {
 	// 	user.UpdatePassword)
 	api.GET("/user/score/top10", user.Top10)
 	api.GET("/user/score/top100", user.Top100)
+	api.GET("/user/info/public/:id", user.PublicInfo)
 	// api.Post("/user/career/add", auth.ActiveRequired,
 	// 	user.AddCareer)
 	// api.Post("/user/school/add", auth.ActiveRequired,
@@ -58,10 +61,10 @@ func Route(router *gin.Engine) {
 	api.GET("/categories", category.List)
 
 	api.GET("/articles", article.List)
-	api.GET("/articles/maxcomment", article.ListMaxComment)
-	api.GET("/articles/maxbrowse", article.ListMaxBrowse)
-	api.GET("/articles/top", article.Tops)
-	api.GET("/article/:id", article.Info)
+	api.GET("/articles/info/:id", article.Info)
+	api.GET("/articles/max/bycomment", article.ListMaxComment)
+	api.GET("/articles/max/bybrowse", article.ListMaxBrowse)
+	api.GET("/articles/top/global", article.Tops)
 	api.GET("/articles/user/:userID", article.UserArticleList)
 	// api.Post("/article/create", auth.ActiveRequired,
 	// 	article.Create)
@@ -80,9 +83,9 @@ func Route(router *gin.Engine) {
 	// 	collect.CreateCollect)
 	// api.Post("/collect/delete/:id", auth.ActiveRequired,
 	// 	collect.DeleteCollect)
-	// api.Get("/collect/folders/:userID", collect.Folders)
-	api.GET("/collect/folders/source", middleware.ActiveRequired,
+	api.GET("/collect/folders/withsource", middleware.SigninRequired,
 		collect.FoldersWithSource)
+	api.GET("/collect/user/:userID/folders", collect.Folders)
 	// api.Get("/collects", collect.Collects)
 
 	// api.Post("/comment/create", auth.ActiveRequired,
@@ -91,13 +94,13 @@ func Route(router *gin.Engine) {
 	// 	comment.Delete)
 	// api.Post("/comment/update", auth.ActiveRequired,
 	// 	comment.Update)
-	// api.Get("/comments/user/:userID", comment.UserCommentList)
+	api.GET("/comments/user/:userID", comment.UserCommentList)
 	// api.Get("/comments/:sourceName/:sourceID", comment.SourceComments)
 
 	// api.Get("/votes", vote.List)
 	// api.Get("/votes/maxbrowse", vote.ListMaxBrowse)
 	// api.Get("/votes/maxcomment", vote.ListMaxComment)
-	// api.Get("/votes/user/:userID", vote.UserVoteList)
+	api.GET("/votes/user/:userID", vote.UserVoteList)
 	// api.Post("/vote/create", auth.EditorRequired,
 	// 	vote.Create)
 	// api.Post("/vote/update", auth.EditorRequired,
