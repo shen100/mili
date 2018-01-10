@@ -30,8 +30,8 @@ func Route(router *gin.Engine) {
 
 	api.GET("/user/info", middleware.SigninRequired,
 		user.SecretInfo)
-	// api.Get("/user/info/detail", auth.SigninRequired,
-	// 	user.InfoDetail)
+	api.GET("/user/info/detail", middleware.SigninRequired,
+		user.InfoDetail)
 	// api.Post("/user/update/:field", auth.ActiveRequired,
 	// 	user.UpdateInfo)
 	// api.Post("/user/password/update", auth.ActiveRequired,

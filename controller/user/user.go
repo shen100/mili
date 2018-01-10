@@ -638,24 +638,24 @@ func SecretInfo(c *gin.Context) {
 	}
 }
 
-/*
 // InfoDetail 返回用户详情信息，包含一些私密字段
-func InfoDetail(ctx iris.Context) {
+func InfoDetail(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
 
 	if err := model.DB.First(&user, user.ID).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Model(&user).Related(&user.Schools).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Model(&user).Related(&user.Careers).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
@@ -665,15 +665,16 @@ func InfoDetail(ctx iris.Context) {
 		user.CoverURL = "https://www.golang123.com/upload/img/2017/09/13/e672995e-7a39-4a05-9673-8802b1865c46.jpg"
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"user": user,
 		},
 	})
 }
 
+/*
 // AllList 查询用户列表，只有管理员才能调此接口
 func AllList(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -909,7 +910,7 @@ func DeleteSchool(ctx iris.Context) {
 	var id int
 	var idErr error
 	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
-		SendErrJSON("无效的id", ctx)
+		SendErrJSON("无��的id", ctx)
 		return
 	}
 	var school model.School

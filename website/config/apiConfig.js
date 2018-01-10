@@ -292,7 +292,7 @@ const api = {
         desc: '查询用户的收藏夹列表'
     },
     getFoldersSource: {
-        url: url + '/collect/folders/withsource', //查询用户的收藏夹列表，并且返回每个收藏夹中收藏了哪些话题或投票
+        url: url + '/collect/folders/withsource', // 查询用户的收藏夹列表，并且返回每个收藏夹中收藏了哪些话题或投票
         method: 'GET'
     },
     createCollectDir: {
