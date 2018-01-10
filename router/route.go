@@ -23,10 +23,10 @@ func Route(router *gin.Engine) {
 	api.POST("/signout", middleware.SigninRequired,
 		user.Signout)
 	api.POST("/active/sendmail", user.ActiveSendMail)
-	api.POST("/active/:id/:secret", user.ActiveAccount)
-	// api.Post("/reset", user.ResetPasswordMail)
-	// api.Get("/reset/verify/:id/:secret", user.VerifyResetPasswordLink)
-	// api.Post("/reset/:id/:secret", user.ResetPassword)
+	api.POST("/active/user/:id/:secret", user.ActiveAccount)
+	api.POST("/reset", user.ResetPasswordMail)
+	api.POST("/reset/verify/:id/:secret", user.VerifyResetPasswordLink)
+	api.POST("/reset/password/:id/:secret", user.ResetPassword)
 
 	api.GET("/user/info", middleware.SigninRequired,
 		user.SecretInfo)
@@ -39,8 +39,8 @@ func Route(router *gin.Engine) {
 	api.GET("/user/score/top10", user.Top10)
 	api.GET("/user/score/top100", user.Top100)
 	api.GET("/user/info/public/:id", user.PublicInfo)
-	// api.Post("/user/career/add", auth.ActiveRequired,
-	// 	user.AddCareer)
+	api.POST("/user/career/add", middleware.ActiveRequired,
+		user.AddCareer)
 	// api.Post("/user/school/add", auth.ActiveRequired,
 	// 	user.AddSchool)
 	// api.Post("/user/career/delete/:id", auth.ActiveRequired,

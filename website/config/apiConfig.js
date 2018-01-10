@@ -115,12 +115,12 @@ const api = {
         desc: '忘记密码邮箱确认'
     },
     resetPwd: {
-        url: url + '/reset/:id/:key',
+        url: url + '/reset/password/:id/:key',
         method: 'POST',
         desc: '重置密码'
     },
     activeUser: {
-        url: url + '/active/:id/:key',
+        url: url + '/active/user/:id/:key',
         method: 'POST',
         desc: '账号激活'
     },

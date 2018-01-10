@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/dgrijalva/jwt-go"
@@ -170,116 +171,109 @@ func ActiveAccount(c *gin.Context) {
 	})
 }
 
-/*
 // ResetPasswordMail 发送重置密码的邮件
-func ResetPasswordMail(ctx iris.Context) {
+func ResetPasswordMail(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	type UserReqData struct {
-		Email       string `json:"email" valid:"email,runelength(5|50)"`
-		LuosimaoRes string `json:"luosimaoRes" valid:"-"`
+		Email       string `json:"email" binding:"required,email"`
+		LuosimaoRes string `json:"luosimaoRes"`
 	}
 	var userData UserReqData
-	if err := ctx.ReadJSON(&userData); err != nil {
-		SendErrJSON("无效的邮箱", ctx)
-		return
-	}
-
-	if _, err := govalidator.ValidateStruct(userData); err != nil {
-		SendErrJSON("无效的邮箱.", ctx)
+	if err := c.ShouldBindWith(&userData, binding.JSON); err != nil {
+		SendErrJSON("无效的邮箱", c)
 		return
 	}
 
 	verifyErr := utils.LuosimaoVerify(config.ServerConfig.LuosimaoVerifyURL, config.ServerConfig.LuosimaoAPIKey, userData.LuosimaoRes)
 
 	if verifyErr != nil {
-		SendErrJSON(verifyErr.Error(), ctx)
+		SendErrJSON(verifyErr.Error(), c)
 		return
 	}
 
 	var user model.User
 	if err := model.DB.Where("email = ?", userData.Email).Find(&user).Error; err != nil {
-		SendErrJSON("没有邮箱为 "+userData.Email+" 的用户", ctx)
+		SendErrJSON("没有邮箱为 "+userData.Email+" 的用户", c)
 		return
 	}
 
 	curTime := time.Now().Unix()
 	resetUser := fmt.Sprintf("%s%d", model.ResetTime, user.ID)
-	if _, err := manager.C.Do("SET", resetUser, curTime, "EX", resetDuration); err != nil {
+	if _, err := utils.RedisConn.Do("SET", resetUser, curTime, "EX", resetDuration); err != nil {
 		fmt.Println("redis set failed:", err)
 	}
 	go func() {
-		sendMail("/ac", "修改密码", curTime, user, ctx)
+		sendMail("/ac", "修改密码", curTime, user, c)
 	}()
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data":  iris.Map{},
+		"data":  gin.H{},
 	})
 }
 
 // VerifyResetPasswordLink 验证重置密码的链接是否失效
-func VerifyResetPasswordLink(ctx iris.Context) {
+func VerifyResetPasswordLink(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	if _, err := verifyLink(model.ResetTime, ctx); err != nil {
+	if _, err := verifyLink(model.ResetTime, c); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("重置链接已失效", ctx)
+		SendErrJSON("重置链接已失效", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data":  iris.Map{},
+		"data":  gin.H{},
 	})
 }
 
 // ResetPassword 重置密码
-func ResetPassword(ctx iris.Context) {
+func ResetPassword(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	type UserReqData struct {
-		Password string `json:"password" valid:"runelength(6|20)"`
+		Password string `json:"password" binding:"required,min=6,max=20"`
 	}
 	var userData UserReqData
 
-	if err := ctx.ReadJSON(&userData); err != nil {
-		SendErrJSON("参数无效", ctx)
+	if err := c.ShouldBindWith(&userData, binding.JSON); err != nil {
+		SendErrJSON("参数无效", c)
 		return
 	}
 
 	if _, err := govalidator.ValidateStruct(userData); err != nil {
-		SendErrJSON("参数无效.", ctx)
+		SendErrJSON("参数无效.", c)
 		return
 	}
 
 	var verifErr error
 	var user model.User
-	if user, verifErr = verifyLink(model.ResetTime, ctx); verifErr != nil {
-		SendErrJSON("重置链接已失效", ctx)
+	if user, verifErr = verifyLink(model.ResetTime, c); verifErr != nil {
+		SendErrJSON("重置链接已失效", c)
 		return
 	}
 
 	user.Pass = user.EncryptPassword(userData.Password, user.Salt())
 
 	if user.ID <= 0 {
-		SendErrJSON("重置链接已失效", ctx)
+		SendErrJSON("重置链接已失效", c)
 		return
 	}
 	if err := model.DB.Model(&user).Update("pass", user.Pass).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	if _, err := manager.C.Do("DEL", fmt.Sprintf("%s%d", model.ResetTime, user.ID)); err != nil {
+	if _, err := utils.RedisConn.Do("DEL", fmt.Sprintf("%s%d", model.ResetTime, user.ID)); err != nil {
 		fmt.Println("redis delelte failed:", err)
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data":  iris.Map{},
+		"data":  gin.H{},
 	})
 }
-*/
 
 // Signin 用户登录
 func Signin(c *gin.Context) {
@@ -778,13 +772,14 @@ func UpdateAvatar(ctx iris.Context) {
 		"data":  data,
 	})
 }
+*/
 
 // AddCareer 添加职业经历
-func AddCareer(ctx iris.Context) {
+func AddCareer(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var career model.Career
-	if err := ctx.ReadJSON(&career); err != nil {
-		SendErrJSON("参数无效", ctx)
+	if err := c.ShouldBindWith(&career, binding.JSON); err != nil {
+		SendErrJSON("参数无效", c)
 		return
 	}
 
@@ -794,41 +789,42 @@ func AddCareer(ctx iris.Context) {
 	career.Title = strings.TrimSpace(career.Title)
 
 	if career.Company == "" {
-		SendErrJSON("公司或组织名称不能为空", ctx)
+		SendErrJSON("公司或组织名称不能为空", c)
 		return
 	}
 
 	if utf8.RuneCountInString(career.Company) > model.MaxCareerCompanyLen {
-		SendErrJSON("公司或组织名称不能超过"+fmt.Sprintf("%d", model.MaxCareerCompanyLen)+"个字符", ctx)
+		SendErrJSON("公司或组织名称不能超过"+fmt.Sprintf("%d", model.MaxCareerCompanyLen)+"个字符", c)
 		return
 	}
 
 	if career.Title == "" {
-		SendErrJSON("职位不能为空", ctx)
+		SendErrJSON("职位不能为空", c)
 		return
 	}
 
 	if utf8.RuneCountInString(career.Title) > model.MaxCareerTitleLen {
-		SendErrJSON("职位不能超过"+fmt.Sprintf("%d", model.MaxCareerTitleLen)+"个字符", ctx)
+		SendErrJSON("职位不能超过"+fmt.Sprintf("%d", model.MaxCareerTitleLen)+"个字符", c)
 		return
 	}
 
-	session := manager.Sess.Start(ctx)
-	user := session.Get("user").(model.User)
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
 	career.UserID = user.ID
 
 	if err := model.DB.Create(&career).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  career,
 	})
 }
 
+/*
 // AddSchool 添加教育经历
 func AddSchool(ctx iris.Context) {
 	SendErrJSON := common.SendErrJSON

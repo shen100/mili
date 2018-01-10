@@ -1,17 +1,14 @@
 package middleware
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
-	"github.com/shen100/golang123/utils"
 )
 
 func getUser(c *gin.Context) (model.User, error) {
@@ -35,15 +32,9 @@ func getUser(c *gin.Context) (model.User, error) {
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		userID := int(claims["id"].(float64))
-		loginUser := fmt.Sprintf("%s%d", model.LoginUser, userID)
-		fmt.Println(loginUser)
-		userBytes, err := redis.Bytes(utils.RedisConn.Do("GET", loginUser))
+		var err error
+		user, err = model.UserFromRedis(userID)
 		if err != nil {
-			return user, errors.New("未登录")
-		}
-		bytesErr := json.Unmarshal(userBytes, &user)
-		if bytesErr != nil {
-			fmt.Println(bytesErr)
 			return user, errors.New("未登录")
 		}
 		return user, nil
