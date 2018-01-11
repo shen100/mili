@@ -4,8 +4,8 @@
 [[projects]]
   name = "github.com/PuerkitoBio/goquery"
   packages = ["."]
-  revision = "e1271ee34c6a305e38566ecd27ae374944907ee9"
-  version = "v1.1.0"
+  revision = "a41cf096e64e3752d7683898d5746bc0b98ee213"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -18,24 +18,6 @@
   packages = ["."]
   revision = "521b25f4b05fd26bec69d9dedeb8f9c9a83939a8"
   version = "v8"
-
-[[projects]]
-  name = "github.com/boj/redistore"
-  packages = ["."]
-  revision = "fc113767cd6b051980f260d6dbe84b2740c46ab0"
-  version = "v1.2"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/bradfitz/gomemcache"
-  packages = ["memcache"]
-  revision = "1952afaa557dc08e8e0d89eafab110fb501c1a2b"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/bradleypeabody/gorilla-sessions-memcache"
-  packages = ["."]
-  revision = "75ee37df8664a47cd5d9eb84d41e1f2b08086893"
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
@@ -54,25 +36,20 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/gin-contrib/sessions"
-  packages = ["."]
-  revision = "cccdeef56346e7037ca92de250c2b55ef5e7ffe3"
-
-[[projects]]
-  branch = "master"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
   revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
 
 [[projects]]
+  branch = "master"
   name = "github.com/gin-gonic/gin"
   packages = [
     ".",
     "binding",
+    "json",
     "render"
   ]
-  revision = "d459835d2b077e44f7c9b453505ee29881d5d12d"
-  version = "v1.2"
+  revision = "a712f77d7aaec7eb4766a663924aaa4e54d3fe70"
 
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
@@ -85,24 +62,6 @@
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "1e59b77b52bf8e4b449a57e6f79f21226d571845"
-
-[[projects]]
-  name = "github.com/gorilla/context"
-  packages = ["."]
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/gorilla/securecookie"
-  packages = ["."]
-  revision = "667fe4e3466a040b780561fe9b51a83a3753eefc"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/gorilla/sessions"
-  packages = ["."]
-  revision = "ca9ada44574153444b00d3fd9c8559e4cc95f896"
-  version = "v1.1"
 
 [[projects]]
   name = "github.com/jinzhu/gorm"
@@ -120,10 +79,10 @@
   revision = "1c35d901db3da928c72a72d8458480cc9ade058f"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/kidstuff/mongostore"
+  name = "github.com/json-iterator/go"
   packages = ["."]
-  revision = "256d65ac5b0e35e7c5ebb3f175c0bed1e5c2b253"
+  revision = "f7279a603edee96fe7764d3de9c6ff8cf9970994"
+  version = "1.0.4"
 
 [[projects]]
   name = "github.com/mattn/go-isatty"
@@ -146,8 +105,8 @@
 [[projects]]
   name = "github.com/satori/go.uuid"
   packages = ["."]
-  revision = "879c5887cd475cd7864858769793b2ceb0d44feb"
-  version = "v1.1.0"
+  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -162,13 +121,13 @@
     "html",
     "html/atom"
   ]
-  revision = "42fe2e1c20de1054d3d30f82cc9fb5b41e2e3767"
+  revision = "ab555f366c4508dbe0802550b1b20c46c5c18aa0"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "dd9ec17814d5b1de388ebe438ec013d57d8b3779"
+  revision = "810d7000345868fc619eb81f46307107118f4ae1"
 
 [[projects]]
   name = "gopkg.in/go-playground/validator.v8"
@@ -178,25 +137,13 @@
 
 [[projects]]
   branch = "v2"
-  name = "gopkg.in/mgo.v2"
-  packages = [
-    ".",
-    "bson",
-    "internal/json",
-    "internal/sasl",
-    "internal/scram"
-  ]
-  revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
-
-[[projects]]
-  branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "0e4404da71227dcc02fb1deee803d93e86d08f72"
+  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e6d9672cd9c28d465beeac3585bfe8e6192fe3a3f3fd00410c9056ff88baa218"
+  inputs-digest = "0f78a5c90bf4c51d3cbacfa5a66832e6f2dfa3d88f49ec734a08652b62263168"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -7,6 +7,7 @@ import (
 	"github.com/shen100/golang123/controller/category"
 	"github.com/shen100/golang123/controller/collect"
 	"github.com/shen100/golang123/controller/comment"
+	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/controller/user"
 	"github.com/shen100/golang123/controller/vote"
 	"github.com/shen100/golang123/middleware"
@@ -47,11 +48,11 @@ func Route(router *gin.Engine) {
 		user.DeleteCareer)
 	api.DELETE("/user/school/delete/:id", middleware.ActiveRequired,
 		user.DeleteSchool)
-	// api.Post("/user/updateavatar", auth.ActiveRequired,
-	// 	user.UpdateAvatar)
+	api.POST("/user/updateavatar", middleware.ActiveRequired,
+		user.UpdateAvatar)
 
-	// api.Post("/upload", auth.ActiveRequired,
-	// 	common.UploadHandler)
+	api.POST("/upload", middleware.ActiveRequired,
+		common.UploadHandler)
 
 	// api.Get("/message/unread", auth.SigninRequired,
 	// 	message.Unread)
@@ -66,12 +67,12 @@ func Route(router *gin.Engine) {
 	api.GET("/articles/max/bybrowse", article.ListMaxBrowse)
 	api.GET("/articles/top/global", article.Tops)
 	api.GET("/articles/user/:userID", article.UserArticleList)
-	// api.Post("/article/create", auth.ActiveRequired,
-	// 	article.Create)
-	// api.Post("/article/update", auth.ActiveRequired,
-	// 	article.Update)
-	// api.Post("/article/delete/:id", auth.ActiveRequired,
-	// 	article.Delete)
+	api.POST("/article/create", middleware.ActiveRequired,
+		article.Create)
+	api.PUT("/article/update", middleware.ActiveRequired,
+		article.Update)
+	api.DELETE("/article/delete/:id", middleware.ActiveRequired,
+		article.Delete)
 	// api.Post("/article/top/:id", auth.EditorRequired,
 	// 	article.Top)
 	// api.Post("/article/deltop/:id", auth.EditorRequired,

@@ -37,6 +37,7 @@ func init() {
 }
 
 func main() {
+	fmt.Println("gin.Version: ", gin.Version)
 	if config.ServerConfig.Env != model.DevelopmentMode {
 		// Disable Console Color, you don't need console color when writing the logs to file.
 		gin.DisableConsoleColor()
@@ -51,6 +52,10 @@ func main() {
 
 	// Creates a router without any middleware by default
 	app := gin.New()
+
+	// Set a lower memory limit for multipart forms (default is 32 MiB)
+	maxSize := int64(config.ServerConfig.MaxMultipartMemory)
+	app.MaxMultipartMemory = maxSize << 20 // 3 MiB
 
 	// Global middleware
 	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.

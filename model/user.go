@@ -82,6 +82,20 @@ func UserFromRedis(userID int) (User, error) {
 	return user, nil
 }
 
+// UserToRedis 将用户信息存到redis
+func UserToRedis(user User) error {
+	userBytes, err := json.Marshal(user)
+	if err != nil {
+		return errors.New("error")
+	}
+	loginUserKey := fmt.Sprintf("%s%d", LoginUser, user.ID)
+	if _, redisErr := utils.RedisConn.Do("SET", loginUserKey, userBytes, "EX", config.ServerConfig.TokenMaxAge); redisErr != nil {
+		fmt.Println("redis set failed: ", redisErr.Error())
+		return errors.New("error")
+	}
+	return nil
+}
+
 const (
 	// UserRoleNormal 普通用户
 	UserRoleNormal = 1

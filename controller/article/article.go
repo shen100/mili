@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -392,22 +393,23 @@ func ListMaxBrowse(c *gin.Context) {
 	})
 }
 
-/*
-func save(ctx iris.Context, isEdit bool) {
+func save(c *gin.Context, isEdit bool) {
 	SendErrJSON := common.SendErrJSON
 	var article model.Article
 
-	if err := ctx.ReadJSON(&article); err != nil {
+	if err := c.ShouldBindJSON(&article); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("参数无效", ctx)
+		SendErrJSON("参数无效", c)
 		return
 	}
 
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
 	var queryArticle model.Article
 	if isEdit {
 		if model.DB.First(&queryArticle, article.ID).Error != nil {
-			SendErrJSON("无效的文章ID", ctx)
+			SendErrJSON("无效的文章ID", c)
 			return
 		}
 	} else {
@@ -429,7 +431,10 @@ func save(ctx iris.Context, isEdit bool) {
 		article.Status = model.ArticleVerifying
 		user.Score = user.Score + model.ArticleScore
 		user.ArticleCount = user.ArticleCount + 1
-		manager.Sess.Start(ctx).Set("user", user)
+		if model.UserToRedis(user) != nil {
+			SendErrJSON("error", c)
+			return
+		}
 	}
 
 	article.Name = utils.AvoidXSS(article.Name)
@@ -443,13 +448,13 @@ func save(ctx iris.Context, isEdit bool) {
 	}
 
 	if article.Name == "" {
-		SendErrJSON("文章名称不能为空", ctx)
+		SendErrJSON("文章名称不能为空", c)
 		return
 	}
 
 	if utf8.RuneCountInString(article.Name) > model.MaxNameLen {
 		msg := "文章名称不能超过" + strconv.Itoa(model.MaxNameLen) + "个字符"
-		SendErrJSON(msg, ctx)
+		SendErrJSON(msg, c)
 		return
 	}
 
@@ -461,31 +466,31 @@ func save(ctx iris.Context, isEdit bool) {
 	}
 
 	if theContent == "" || utf8.RuneCountInString(theContent) <= 0 {
-		SendErrJSON("文章内容不能为空", ctx)
+		SendErrJSON("文章内容不能为空", c)
 		return
 	}
 
 	if utf8.RuneCountInString(theContent) > model.MaxContentLen {
 		msg := "文章内容不能超过" + strconv.Itoa(model.MaxContentLen) + "个字符"
-		SendErrJSON(msg, ctx)
+		SendErrJSON(msg, c)
 		return
 	}
 
 	if article.Categories == nil || len(article.Categories) <= 0 {
-		SendErrJSON("请选择版块", ctx)
+		SendErrJSON("请选择版块", c)
 		return
 	}
 
 	if len(article.Categories) > model.MaxArticleCateCount {
 		msg := "文章最多属于" + strconv.Itoa(model.MaxArticleCateCount) + "个版块"
-		SendErrJSON(msg, ctx)
+		SendErrJSON(msg, c)
 		return
 	}
 
 	for i := 0; i < len(article.Categories); i++ {
 		var category model.Category
 		if err := model.DB.First(&category, article.Categories[i].ID).Error; err != nil {
-			SendErrJSON("无效的版块id", ctx)
+			SendErrJSON("无效的版块id", c)
 			return
 		}
 		article.Categories[i] = category
@@ -514,11 +519,11 @@ func save(ctx iris.Context, isEdit bool) {
 
 	if saveErr != nil {
 		fmt.Println(saveErr.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  article,
@@ -526,15 +531,14 @@ func save(ctx iris.Context, isEdit bool) {
 }
 
 // Create 创建文章
-func Create(ctx iris.Context) {
-	save(ctx, false)
+func Create(c *gin.Context) {
+	save(c, false)
 }
 
 // Update 更新文章
-func Update(ctx iris.Context) {
-	save(ctx, true)
+func Update(c *gin.Context) {
+	save(c, true)
 }
-*/
 
 // Info 获取文章信息
 func Info(c *gin.Context) {
@@ -804,37 +808,37 @@ func Tops(c *gin.Context) {
 	})
 }
 
-/*
 // Delete 删除文章
-func Delete(ctx iris.Context) {
+func Delete(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	// 删除文章，其他用户对文章的评论保留
 	// 其他用户对文章的点赞也保留
 	var id int
 	var idErr error
-	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
-		SendErrJSON("无效的id", ctx)
+	if id, idErr = strconv.Atoi(c.Param("id")); idErr != nil {
+		SendErrJSON("无效的id", c)
 		return
 	}
 
 	var article model.Article
 
 	if err := model.DB.First(&article, id).Error; err != nil {
-		SendErrJSON("无效的话题id", ctx)
+		SendErrJSON("无效的话题id", c)
 		return
 	}
 
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	iuser, exists := c.Get("user")
+	user := iuser.(model.User)
 
 	if user.ID != article.UserID {
-		SendErrJSON("没有权限执行此操作", ctx)
+		SendErrJSON("没有权限执行此操作", c)
 		return
 	}
 
 	tx := model.DB.Begin()
 
 	if err := tx.Delete(&article).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		tx.Rollback()
 		return
 	}
@@ -845,20 +849,22 @@ func Delete(ctx iris.Context) {
 	}).Error; err != nil {
 		fmt.Println(err.Error())
 		tx.Rollback()
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	manager.Sess.Start(ctx).Set("user", user)
+	if model.UserToRedis(user) != nil {
+		SendErrJSON("error", c)
+		return
+	}
 
 	tx.Commit()
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"id": id,
 		},
 	})
 }
-*/

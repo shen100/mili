@@ -3,7 +3,6 @@ package user
 import (
 	"crypto/md5"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -13,7 +12,6 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
@@ -241,11 +239,6 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
-	if _, err := govalidator.ValidateStruct(userData); err != nil {
-		SendErrJSON("参数无效.", c)
-		return
-	}
-
 	var verifErr error
 	var user model.User
 	if user, verifErr = verifyLink(model.ResetTime, c); verifErr != nil {
@@ -353,17 +346,8 @@ func Signin(c *gin.Context) {
 			return
 		}
 
-		loginUser := fmt.Sprintf("%s%d", model.LoginUser, user.ID)
-
-		userBytes, bytesErr := json.Marshal(user)
-		if bytesErr != nil {
+		if model.UserToRedis(user) != nil {
 			SendErrJSON("内部错误", c)
-			return
-		}
-
-		if _, err := utils.RedisConn.Do("SET", loginUser, userBytes, "EX", config.ServerConfig.TokenMaxAge); err != nil {
-			fmt.Println("redis set failed: ", err.Error())
-			SendErrJSON("内部错误.", c)
 			return
 		}
 
@@ -400,11 +384,6 @@ func Signup(c *gin.Context) {
 	userData.Name = utils.AvoidXSS(userData.Name)
 	userData.Name = strings.TrimSpace(userData.Name)
 	userData.Email = strings.TrimSpace(userData.Email)
-
-	if _, err := govalidator.ValidateStruct(userData); err != nil {
-		SendErrJSON("参数无效.", c)
-		return
-	}
 
 	if strings.Index(userData.Name, "@") != -1 {
 		SendErrJSON("用户名中不能含有@字符", c)
@@ -560,12 +539,6 @@ func UpdatePassword(c *gin.Context) {
 	var userData userReqData
 	if err := c.ShouldBindWith(&userData, binding.JSON); err != nil {
 		SendErrJSON("参数无效", c)
-		return
-	}
-
-	_, err := govalidator.ValidateStruct(userData)
-	if err != nil {
-		SendErrJSON("参数无效.", c)
 		return
 	}
 
@@ -742,38 +715,44 @@ func Top100(c *gin.Context) {
 	topN(c, 100)
 }
 
-/*
 // UpdateAvatar 修改用户头像
-func UpdateAvatar(ctx iris.Context) {
-	data, err := common.Upload(ctx)
+func UpdateAvatar(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	data, err := common.Upload(c)
 	if err != nil {
-		ctx.JSON(iris.Map{
+		c.JSON(http.StatusOK, gin.H{
 			"errNo": model.ErrorCode.ERROR,
 			"msg":   err.Error(),
-			"data":  iris.Map{},
+			"data":  gin.H{},
 		})
 		return
 	}
 
 	avatarURL := data["url"].(string)
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
 	if err := model.DB.Model(&user).Update("avatar_url", avatarURL).Error; err != nil {
-		ctx.JSON(iris.Map{
+		c.JSON(http.StatusOK, gin.H{
 			"errNo": model.ErrorCode.ERROR,
 			"msg":   err.Error(),
-			"data":  iris.Map{},
+			"data":  gin.H{},
 		})
 		return
 	}
 	user.AvatarURL = avatarURL
-	manager.Sess.Start(ctx).Set("user", user)
-	ctx.JSON(iris.Map{
+
+	if model.UserToRedis(user) != nil {
+		SendErrJSON("error", c)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  data,
 	})
 }
-*/
 
 // AddCareer 添加职业经历
 func AddCareer(c *gin.Context) {

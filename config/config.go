@@ -72,32 +72,33 @@ func initRedis() {
 }
 
 type serverConfig struct {
-	APIPoweredBy      string
-	SiteName          string
-	Host              string
-	ImgHost           string
-	Env               string
-	LogDir            string
-	LogFile           string
-	APIPrefix         string
-	UploadImgDir      string
-	ImgPath           string
-	Port              int
-	SessionID         string
-	TokenSecret       string
-	TokenMaxAge       int
-	SessionTimeout    int
-	PassSalt          string
-	LuosimaoVerifyURL string
-	LuosimaoAPIKey    string
-	CrawlerName       string
-	MailUser          string //域名邮箱账号
-	MailPass          string //域名邮箱密码
-	MailHost          string //smtp邮箱域名
-	MailPort          int    //smtp邮箱端口
-	MailFrom          string //邮件来源
-	Github            string
-	BaiduPushLink     string
+	APIPoweredBy       string
+	SiteName           string
+	Host               string
+	ImgHost            string
+	Env                string
+	LogDir             string
+	LogFile            string
+	APIPrefix          string
+	UploadImgDir       string
+	ImgPath            string
+	MaxMultipartMemory int
+	Port               int
+	SessionID          string
+	TokenSecret        string
+	TokenMaxAge        int
+	SessionTimeout     int
+	PassSalt           string
+	LuosimaoVerifyURL  string
+	LuosimaoAPIKey     string
+	CrawlerName        string
+	MailUser           string //域名邮箱账号
+	MailPass           string //域名邮箱密码
+	MailHost           string //smtp邮箱域名
+	MailPort           int    //smtp邮箱端口
+	MailFrom           string //邮件来源
+	Github             string
+	BaiduPushLink      string
 }
 
 // ServerConfig 服务器相关配置
