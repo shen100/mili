@@ -470,30 +470,30 @@ func Signout(c *gin.Context) {
 	})
 }
 
-/*
 // UpdateInfo 更新用户信息
-func UpdateInfo(ctx iris.Context) {
+func UpdateInfo(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var userReqData model.User
-	if err := ctx.ReadJSON(&userReqData); err != nil {
-		SendErrJSON("参数无效", ctx)
+	if err := c.ShouldBindWith(&userReqData, binding.JSON); err != nil {
+		SendErrJSON("参数无效", c)
 		return
 	}
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
 
-	field := ctx.Params().Get("field")
+	field := c.Param("field")
 	resData := make(map[string]interface{})
 	resData["id"] = user.ID
 
 	switch field {
 	case "sex":
 		if userReqData.Sex != model.UserSexMale && userReqData.Sex != model.UserSexFemale {
-			SendErrJSON("无效的性别", ctx)
+			SendErrJSON("无效的性别", c)
 			return
 		}
 		if err := model.DB.Model(&user).Update("sex", userReqData.Sex).Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		resData[field] = userReqData.Sex
@@ -502,12 +502,12 @@ func UpdateInfo(ctx iris.Context) {
 		userReqData.Signature = strings.TrimSpace(userReqData.Signature)
 		// 个性签名可以为空
 		if utf8.RuneCountInString(userReqData.Signature) > model.MaxSignatureLen {
-			SendErrJSON("个性签名不能超过"+fmt.Sprintf("%d", model.MaxSignatureLen)+"个字符", ctx)
+			SendErrJSON("个性签名不能超过"+fmt.Sprintf("%d", model.MaxSignatureLen)+"个字符", c)
 			return
 		}
 		if err := model.DB.Model(&user).Update("signature", userReqData.Signature).Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		resData[field] = userReqData.Signature
@@ -516,12 +516,12 @@ func UpdateInfo(ctx iris.Context) {
 		userReqData.Location = strings.TrimSpace(userReqData.Location)
 		// 居住地可以为空
 		if utf8.RuneCountInString(userReqData.Location) > model.MaxLocationLen {
-			SendErrJSON("居住地不能超过"+fmt.Sprintf("%d", model.MaxLocationLen)+"个字符", ctx)
+			SendErrJSON("居住地不能超过"+fmt.Sprintf("%d", model.MaxLocationLen)+"个字符", c)
 			return
 		}
 		if err := model.DB.Model(&user).Update("location", userReqData.Location).Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		resData[field] = userReqData.Location
@@ -530,20 +530,20 @@ func UpdateInfo(ctx iris.Context) {
 		userReqData.Introduce = strings.TrimSpace(userReqData.Introduce)
 		// 个人简介可以为空
 		if utf8.RuneCountInString(userReqData.Introduce) > model.MaxIntroduceLen {
-			SendErrJSON("个人简介不能超过"+fmt.Sprintf("%d", model.MaxIntroduceLen)+"个字符", ctx)
+			SendErrJSON("个人简介不能超过"+fmt.Sprintf("%d", model.MaxIntroduceLen)+"个字符", c)
 			return
 		}
 		if err := model.DB.Model(&user).Update("introduce", userReqData.Introduce).Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		resData[field] = userReqData.Introduce
 	default:
-		SendErrJSON("参数无效", ctx)
+		SendErrJSON("参数无效", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  resData,
@@ -551,48 +551,48 @@ func UpdateInfo(ctx iris.Context) {
 }
 
 // UpdatePassword 更新用户密码
-func UpdatePassword(ctx iris.Context) {
+func UpdatePassword(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	type userReqData struct {
-		Password string `json:"password" valid:"runelength(6|20)"`
-		NewPwd   string `json:"newPwd" valid:"runelength(6|20)"`
+		Password string `json:"password" binding:"required,min=6,max=20"`
+		NewPwd   string `json:"newPwd" binding:"required,min=6,max=20"`
 	}
 	var userData userReqData
-	if err := ctx.ReadJSON(&userData); err != nil {
-		SendErrJSON("参数无效", ctx)
+	if err := c.ShouldBindWith(&userData, binding.JSON); err != nil {
+		SendErrJSON("参数无效", c)
 		return
 	}
 
 	_, err := govalidator.ValidateStruct(userData)
 	if err != nil {
-		SendErrJSON("参数无效.", ctx)
+		SendErrJSON("参数无效.", c)
 		return
 	}
 
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
 
 	if err := model.DB.First(&user, user.ID).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if user.CheckPassword(userData.Password) {
 		user.Pass = user.EncryptPassword(userData.NewPwd, user.Salt())
 		if err := model.DB.Save(&user).Error; err != nil {
-			SendErrJSON("原密码不正确", ctx)
+			SendErrJSON("原密码不正确", c)
 			return
 		}
-		ctx.JSON(iris.Map{
+		c.JSON(http.StatusOK, gin.H{
 			"errNo": model.ErrorCode.SUCCESS,
 			"msg":   "success",
-			"data":  iris.Map{},
+			"data":  gin.H{},
 		})
 	} else {
-		SendErrJSON("原密码错误", ctx)
+		SendErrJSON("原密码错误", c)
 		return
 	}
 }
-*/
 
 // PublicInfo 用户公开的信息
 func PublicInfo(c *gin.Context) {
@@ -825,13 +825,12 @@ func AddCareer(c *gin.Context) {
 	})
 }
 
-/*
 // AddSchool 添加教育经历
-func AddSchool(ctx iris.Context) {
+func AddSchool(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var school model.School
-	if err := ctx.ReadJSON(&school); err != nil {
-		SendErrJSON("参数无效", ctx)
+	if err := c.ShouldBindWith(&school, binding.JSON); err != nil {
+		SendErrJSON("参数无效", c)
 		return
 	}
 
@@ -841,35 +840,35 @@ func AddSchool(ctx iris.Context) {
 	school.Speciality = strings.TrimSpace(school.Speciality)
 
 	if school.Name == "" {
-		SendErrJSON("学校或教育机构名不能为空", ctx)
+		SendErrJSON("学校或教育机构名不能为空", c)
 		return
 	}
 
 	if utf8.RuneCountInString(school.Name) > model.MaxSchoolNameLen {
-		SendErrJSON("学校或教育机构名不能超过"+fmt.Sprintf("%d", model.MaxSchoolNameLen)+"个字符", ctx)
+		SendErrJSON("学校或教育机构名不能超过"+fmt.Sprintf("%d", model.MaxSchoolNameLen)+"个字符", c)
 		return
 	}
 
 	if school.Speciality == "" {
-		SendErrJSON("专业方向不能为空", ctx)
+		SendErrJSON("专业方向不能为空", c)
 		return
 	}
 
 	if utf8.RuneCountInString(school.Speciality) > model.MaxSchoolSpecialityLen {
-		SendErrJSON("专业方向不能超过"+fmt.Sprintf("%d", model.MaxSchoolSpecialityLen)+"个字符", ctx)
+		SendErrJSON("专业方向不能超过"+fmt.Sprintf("%d", model.MaxSchoolSpecialityLen)+"个字符", c)
 		return
 	}
 
-	session := manager.Sess.Start(ctx)
-	user := session.Get("user").(model.User)
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
 	school.UserID = user.ID
 
 	if err := model.DB.Create(&school).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  school,
@@ -877,58 +876,57 @@ func AddSchool(ctx iris.Context) {
 }
 
 // DeleteCareer 删除职业经历
-func DeleteCareer(ctx iris.Context) {
+func DeleteCareer(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var id int
 	var idErr error
-	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
-		SendErrJSON("无效的id", ctx)
+	if id, idErr = strconv.Atoi(c.Param("id")); idErr != nil {
+		SendErrJSON("无效的id", c)
 		return
 	}
 	var career model.Career
 	if err := model.DB.First(&career, id).Error; err != nil {
-		SendErrJSON("无效的id.", ctx)
+		SendErrJSON("无效的id.", c)
 		return
 	}
 
 	if err := model.DB.Delete(&career).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"id": career.ID,
 		},
 	})
 }
 
 // DeleteSchool 删除教育经历
-func DeleteSchool(ctx iris.Context) {
+func DeleteSchool(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var id int
 	var idErr error
-	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
-		SendErrJSON("无��的id", ctx)
+	if id, idErr = strconv.Atoi(c.Param("id")); idErr != nil {
+		SendErrJSON("无效的id", c)
 		return
 	}
 	var school model.School
 	if err := model.DB.First(&school, id).Error; err != nil {
-		SendErrJSON("无效的id.", ctx)
+		SendErrJSON("无效的id.", c)
 		return
 	}
 
 	if err := model.DB.Delete(&school).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"id": school.ID,
 		},
 	})
 }
-*/

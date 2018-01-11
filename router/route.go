@@ -32,21 +32,21 @@ func Route(router *gin.Engine) {
 		user.SecretInfo)
 	api.GET("/user/info/detail", middleware.SigninRequired,
 		user.InfoDetail)
-	// api.Post("/user/update/:field", auth.ActiveRequired,
-	// 	user.UpdateInfo)
-	// api.Post("/user/password/update", auth.ActiveRequired,
-	// 	user.UpdatePassword)
+	api.PUT("/user/update/:field", middleware.ActiveRequired,
+		user.UpdateInfo)
+	api.PUT("/user/password/update", middleware.ActiveRequired,
+		user.UpdatePassword)
 	api.GET("/user/score/top10", user.Top10)
 	api.GET("/user/score/top100", user.Top100)
 	api.GET("/user/info/public/:id", user.PublicInfo)
 	api.POST("/user/career/add", middleware.ActiveRequired,
 		user.AddCareer)
-	// api.Post("/user/school/add", auth.ActiveRequired,
-	// 	user.AddSchool)
-	// api.Post("/user/career/delete/:id", auth.ActiveRequired,
-	// 	user.DeleteCareer)
-	// api.Post("/user/school/delete/:id", auth.ActiveRequired,
-	// 	user.DeleteSchool)
+	api.POST("/user/school/add", middleware.ActiveRequired,
+		user.AddSchool)
+	api.DELETE("/user/career/delete/:id", middleware.ActiveRequired,
+		user.DeleteCareer)
+	api.DELETE("/user/school/delete/:id", middleware.ActiveRequired,
+		user.DeleteSchool)
 	// api.Post("/user/updateavatar", auth.ActiveRequired,
 	// 	user.UpdateAvatar)
 

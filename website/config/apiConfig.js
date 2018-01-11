@@ -106,7 +106,7 @@ const api = {
     },
     changePwd: {
         url: url + '/user/password/update',
-        method: 'POST',
+        method: 'PUT',
         desc: '修改密码'
     },
     sendEmailPwd: {
@@ -263,7 +263,7 @@ const api = {
     },
     updateInfo: {
         url: url + '/user/update/:type',
-        method: 'POST',
+        method: 'PUT',
         desc: '修改用户信息'
     },
     schoolAdd: {
@@ -273,7 +273,7 @@ const api = {
     },
     schoolDelete: {
         url: url + '/user/school/delete/:id',
-        method: 'POST',
+        method: 'DELETE',
         desc: '删除教育经历'
     },
     careerAdd: {
@@ -283,7 +283,7 @@ const api = {
     },
     careerDelete: {
         url: url + '/user/career/delete/:id',
-        method: 'POST',
+        method: 'DELETE',
         desc: '删除工作经历'
     },
     getCollectDirList: {
