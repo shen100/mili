@@ -84,36 +84,36 @@ func ActiveRequired(c *gin.Context) {
 	}
 }
 
-// // EditorRequired 必须是网站编辑
-// func EditorRequired(ctx iris.Context) {
-// 	SendErrJSON := common.SendErrJSON
-// 	user, ok := manager.Sess.Start(ctx).Get("user").(model.User)
+// EditorRequired 必须是网站编辑
+func EditorRequired(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	var user model.User
+	var err error
+	if user, err = getUser(c); err != nil {
+		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
+		return
+	}
+	if user.Role == model.UserRoleEditor || user.Role == model.UserRoleAdmin || user.Role == model.UserRoleSuperAdmin {
+		c.Next()
+	} else {
+		SendErrJSON("没有权限", c)
+		return
+	}
+}
 
-// 	if !ok {
-// 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
-// 		return
-// 	}
-// 	if user.Role == model.UserRoleEditor || user.Role == model.UserRoleAdmin || user.Role == model.UserRoleSuperAdmin {
-// 		ctx.Next()
-// 	} else {
-// 		SendErrJSON("没有权限", ctx)
-// 		return
-// 	}
-// }
-
-// // AdminRequired 必须是管理员
-// func AdminRequired(ctx iris.Context) {
-// 	SendErrJSON := common.SendErrJSON
-// 	user, ok := manager.Sess.Start(ctx).Get("user").(model.User)
-
-// 	if !ok {
-// 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, ctx)
-// 		return
-// 	}
-// 	if user.Role == model.UserRoleAdmin || user.Role == model.UserRoleCrawler || user.Role == model.UserRoleSuperAdmin {
-// 		ctx.Next()
-// 	} else {
-// 		SendErrJSON("没有权限", ctx)
-// 		return
-// 	}
-// }
+// AdminRequired 必须是管理员
+func AdminRequired(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	var user model.User
+	var err error
+	if user, err = getUser(c); err != nil {
+		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
+		return
+	}
+	if user.Role == model.UserRoleAdmin || user.Role == model.UserRoleCrawler || user.Role == model.UserRoleSuperAdmin {
+		c.Next()
+	} else {
+		SendErrJSON("没有权限", c)
+		return
+	}
+}

@@ -101,7 +101,7 @@ const api = {
     },
     updateArticle: {
         url: url + '/article/update',
-        method: 'POST',
+        method: 'PUT',
         desc: '编辑文章'
     },
     changePwd: {
@@ -149,7 +149,7 @@ const api = {
         desc: '回复最多的话题'
     },
     getSiteComments: {
-        url: url + '/comments/:sourceName/:sourceID',
+        url: url + '/comments/source/:sourceName/:sourceID',
         method: 'GET'
     },
     getComments: {

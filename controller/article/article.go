@@ -229,12 +229,10 @@ func List(c *gin.Context) {
 	queryList(c, false)
 }
 
-/*
 // AllList 文章列表，后台管理提供的接口
-func AllList(ctx iris.Context) {
-	queryList(ctx, true)
+func AllList(c *gin.Context) {
+	queryList(c, true)
 }
-*/
 
 // UserArticleList 查询用户的文章
 func UserArticleList(c *gin.Context) {
@@ -637,14 +635,13 @@ func Info(c *gin.Context) {
 	})
 }
 
-/*
 // UpdateStatus 更新文章状态
-func UpdateStatus(ctx iris.Context) {
+func UpdateStatus(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var reqData model.Article
 
-	if err := ctx.ReadJSON(&reqData); err != nil {
-		SendErrJSON("无效的id或status", ctx)
+	if err := c.ShouldBindJSON(&reqData); err != nil {
+		SendErrJSON("无效的id或status", c)
 		return
 	}
 
@@ -653,26 +650,26 @@ func UpdateStatus(ctx iris.Context) {
 
 	var article model.Article
 	if err := model.DB.First(&article, articleID).Error; err != nil {
-		SendErrJSON("无效的文章ID", ctx)
+		SendErrJSON("无效的文章ID", c)
 		return
 	}
 
 	if status != model.ArticleVerifying && status != model.ArticleVerifySuccess && status != model.ArticleVerifyFail {
-		SendErrJSON("无效的文章状态", ctx)
+		SendErrJSON("无效的文章状态", c)
 		return
 	}
 
 	article.Status = status
 
 	if err := model.DB.Save(&article).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"id":     article.ID,
 			"status": article.Status,
 		},
@@ -680,31 +677,31 @@ func UpdateStatus(ctx iris.Context) {
 }
 
 // Top 文章置顶
-func Top(ctx iris.Context) {
+func Top(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var id int
 	var idErr error
-	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
-		SendErrJSON("error", ctx)
+	if id, idErr = strconv.Atoi(c.Param("id")); idErr != nil {
+		SendErrJSON("error", c)
 		return
 	}
 
 	var theArticle model.Article
 
 	if err := model.DB.First(&theArticle, id).Error; err != nil {
-		SendErrJSON("无效的文章id", ctx)
+		SendErrJSON("无效的文章id", c)
 		return
 	}
 
 	var count int
 
 	if err := model.DB.Model(&model.TopArticle{}).Count(&count).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if count >= model.MaxTopArticleCount {
-		SendErrJSON("最多只能有"+strconv.Itoa(count)+"篇文章置顶", ctx)
+		SendErrJSON("最多只能有"+strconv.Itoa(count)+"篇文章置顶", c)
 		return
 	}
 
@@ -714,11 +711,11 @@ func Top(ctx iris.Context) {
 
 	if err := model.DB.Save(&topArticle).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  topArticle,
@@ -726,36 +723,35 @@ func Top(ctx iris.Context) {
 }
 
 // DeleteTop 取消文章置顶
-func DeleteTop(ctx iris.Context) {
+func DeleteTop(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var id int
 	var idErr error
-	if id, idErr = ctx.Params().GetInt("id"); idErr != nil {
-		SendErrJSON("error", ctx)
+	if id, idErr = strconv.Atoi(c.Param("id")); idErr != nil {
+		SendErrJSON("error", c)
 		return
 	}
 
 	var topArticle model.TopArticle
 
 	if err := model.DB.Where("article_id = ?", id).Find(&topArticle).Error; err != nil {
-		SendErrJSON("无效的文章id", ctx)
+		SendErrJSON("无效的文章id", c)
 		return
 	}
 
 	if err := model.DB.Delete(&topArticle).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"articleID": id,
 		},
 	})
 }
-*/
 
 // Tops 所有置顶文章
 func Tops(c *gin.Context) {
@@ -827,7 +823,7 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	iuser, exists := c.Get("user")
+	iuser, _ := c.Get("user")
 	user := iuser.(model.User)
 
 	if user.ID != article.UserID {

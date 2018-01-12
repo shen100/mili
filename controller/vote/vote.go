@@ -1,19 +1,23 @@
 package vote
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/utils"
 )
 
-/*
 // List 查询投票列表
-func List(ctx iris.Context) {
+func List(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var status int
 	var hasStatus = false
@@ -22,7 +26,7 @@ func List(ctx iris.Context) {
 	var statusErr error
 	var votes []model.Vote
 
-	if pageNo, pageNoErr = strconv.Atoi(ctx.FormValue("pageNo")); pageNoErr != nil {
+	if pageNo, pageNoErr = strconv.Atoi(c.Query("pageNo")); pageNoErr != nil {
 		pageNo = 1
 	}
 
@@ -33,12 +37,12 @@ func List(ctx iris.Context) {
 	offset := (pageNo - 1) * model.PageSize
 	pageSize := model.PageSize
 
-	statusStr := ctx.FormValue("status")
+	statusStr := c.Query("status")
 	if statusStr == "" {
 		hasStatus = false
 	} else if status, statusErr = strconv.Atoi(statusStr); statusErr != nil {
 		fmt.Println(statusErr.Error())
-		SendErrJSON("status不正确", ctx)
+		SendErrJSON("status不正确", c)
 		return
 	} else {
 		hasStatus = true
@@ -46,18 +50,18 @@ func List(ctx iris.Context) {
 
 	if hasStatus {
 		if status != model.VoteUnderway && status != model.VoteOver {
-			SendErrJSON("status不正确", ctx)
+			SendErrJSON("status不正确", c)
 			return
 		}
 		if err := model.DB.Where("status = ?", status).Offset(offset).
 			Limit(pageSize).Order("created_at DESC").Find(&votes).Error; err != nil {
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 	} else {
 		if err := model.DB.Offset(offset).Limit(pageSize).
 			Order("created_at DESC").Find(&votes).Error; err != nil {
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 	}
@@ -65,58 +69,58 @@ func List(ctx iris.Context) {
 	for i := 0; i < len(votes); i++ {
 		if err := model.DB.Model(&votes[i]).Related(&votes[i].User, "users").Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		if votes[i].LastUserID != 0 {
 			if err := model.DB.Model(&votes[i]).Related(&votes[i].LastUser, "users", "last_user_id").Error; err != nil {
 				fmt.Println(err.Error())
-				SendErrJSON("error", ctx)
+				SendErrJSON("error", c)
 				return
 			}
 		}
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"votes": votes,
 		},
 	})
 }
 
 // ListMaxComment 评论最多的话题，返回5条
-func ListMaxComment(ctx iris.Context) {
+func ListMaxComment(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var votes []model.Vote
 	if err := model.DB.Order("comment_count DESC").Limit(5).Find(&votes).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"votes": votes,
 		},
 	})
 }
 
 // ListMaxBrowse 访问量最多的投票，返回5条
-func ListMaxBrowse(ctx iris.Context) {
+func ListMaxBrowse(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var votes []model.Vote
 	if err := model.DB.Order("browse_count DESC").Limit(5).Find(&votes).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"votes": votes,
 		},
 	})
@@ -192,7 +196,7 @@ func save(isEdit bool, vote model.Vote, user model.User, tx *gorm.DB) (model.Vot
 }
 
 // Create 创建投票
-func Create(ctx iris.Context) {
+func Create(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var voteErr error
 	var vote model.Vote
@@ -201,22 +205,23 @@ func Create(ctx iris.Context) {
 		VoteItems []model.VoteItem `json:"voteItems"`
 	}
 	var reqData ReqData
-	if err := ctx.ReadJSON(&reqData); err != nil {
+	if err := c.ShouldBindJSON(&reqData); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("参数无效", ctx)
+		SendErrJSON("参数无效", c)
 		return
 	}
 	if len(reqData.VoteItems) < 2 {
-		SendErrJSON("至少要添加两个投票项", ctx)
+		SendErrJSON("至少要添加两个投票项", c)
 		return
 	}
 
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
 
 	tx := model.DB.Begin()
 	if vote, voteErr = save(false, reqData.Vote, user, tx); voteErr != nil {
 		tx.Rollback()
-		SendErrJSON(voteErr.Error(), ctx)
+		SendErrJSON(voteErr.Error(), c)
 		return
 	}
 	for i := 0; i < len(reqData.VoteItems); i++ {
@@ -226,13 +231,13 @@ func Create(ctx iris.Context) {
 		reqData.VoteItems[i].VoteID = vote.ID
 		if voteItem, err = saveVoteItem(reqData.VoteItems[i], tx); err != nil {
 			tx.Rollback()
-			SendErrJSON(err.Error(), ctx)
+			SendErrJSON(err.Error(), c)
 			return
 		}
 		vote.VoteItems = append(vote.VoteItems, voteItem)
 	}
 	tx.Commit()
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  vote,
@@ -240,25 +245,26 @@ func Create(ctx iris.Context) {
 }
 
 // Update 更新投票
-func Update(ctx iris.Context) {
+func Update(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var vote model.Vote
-	if err := ctx.ReadJSON(&vote); err != nil {
+	if err := c.ShouldBindJSON(&vote); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("参数无效", ctx)
+		SendErrJSON("参数无效", c)
 		return
 	}
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
 
 	var voteErr error
 	tx := model.DB.Begin()
 	if vote, voteErr = save(true, vote, user, tx); voteErr != nil {
 		tx.Rollback()
-		SendErrJSON(voteErr.Error(), ctx)
+		SendErrJSON(voteErr.Error(), c)
 		return
 	}
 	tx.Commit()
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  vote,
@@ -266,18 +272,18 @@ func Update(ctx iris.Context) {
 }
 
 // Info 查询投票
-func Info(ctx iris.Context) {
+func Info(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	voteID, idErr := ctx.Params().GetInt("id")
+	voteID, idErr := strconv.Atoi(c.Param("id"))
 	if idErr != nil {
 		fmt.Println(idErr.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	var vote model.Vote
 	if err := model.DB.First(&vote, voteID).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 
@@ -289,32 +295,32 @@ func Info(ctx iris.Context) {
 
 	if err := model.DB.Save(&vote).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Model(&vote).Related(&vote.User, "users").Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Model(&vote).Related(&vote.VoteItems, "vote_items").Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	if err := model.DB.Model(&vote).Where("source_name = ?", model.CommentSourceVote).Related(&vote.Comments, "comments").Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
 	for i := 0; i < len(vote.Comments); i++ {
 		if err := model.DB.Model(&vote.Comments[i]).Related(&vote.Comments[i].User, "users").Error; err != nil {
 			fmt.Println(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
 		vote.Comments[i].Content = utils.MarkdownToHTML(vote.Comments[i].Content)
@@ -328,14 +334,14 @@ func Info(ctx iris.Context) {
 				parentExist = false
 				if err != gorm.ErrRecordNotFound {
 					fmt.Printf(err.Error())
-					SendErrJSON("error", ctx)
+					SendErrJSON("error", c)
 					return
 				}
 			}
 			if parentExist {
 				if err := model.DB.Model(&parent).Related(&parent.User, "users").Error; err != nil {
 					fmt.Println(err.Error())
-					SendErrJSON("error", ctx)
+					SendErrJSON("error", c)
 					return
 				}
 				parents = append(parents, parent)
@@ -344,11 +350,11 @@ func Info(ctx iris.Context) {
 		}
 	}
 
-	if ctx.FormValue("f") != "md" {
+	if c.Query("f") != "md" {
 		vote.Content = utils.MarkdownToHTML(vote.Content)
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  vote,
@@ -356,38 +362,38 @@ func Info(ctx iris.Context) {
 }
 
 // Delete 删除投票
-func Delete(ctx iris.Context) {
+func Delete(c *gin.Context) {
 	// 只删除投票本身，用户的投票记录保留
 	SendErrJSON := common.SendErrJSON
-	voteID, idErr := ctx.Params().GetInt("id")
+	voteID, idErr := strconv.Atoi(c.Param("id"))
 	if idErr != nil {
 		fmt.Println(idErr.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	var vote model.Vote
 	if err := model.DB.First(&vote, voteID).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 
 	tx := model.DB.Begin()
 	if err := tx.Delete(&vote).Error; err != nil {
 		tx.Rollback()
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 	if err := tx.Exec("DELETE FROM vote_items WHERE vote_id = ?", vote.ID).Error; err != nil {
 		tx.Rollback()
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 	tx.Commit()
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"voteID": vote.ID,
 		},
 	})
@@ -421,23 +427,23 @@ func saveVoteItem(voteItem model.VoteItem, tx *gorm.DB) (model.VoteItem, error) 
 }
 
 // CreateVoteItem 创建投票项
-func CreateVoteItem(ctx iris.Context) {
+func CreateVoteItem(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var voteItem model.VoteItem
-	if err := ctx.ReadJSON(&voteItem); err != nil {
+	if err := c.ShouldBindJSON(&voteItem); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("参数无效", ctx)
+		SendErrJSON("参数无效", c)
 		return
 	}
 	var itemErr error
 	tx := model.DB.Begin()
 	if voteItem, itemErr = saveVoteItem(voteItem, tx); itemErr != nil {
 		tx.Rollback()
-		SendErrJSON(itemErr.Error(), ctx)
+		SendErrJSON(itemErr.Error(), c)
 		return
 	}
 	tx.Commit()
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  voteItem,
@@ -445,43 +451,44 @@ func CreateVoteItem(ctx iris.Context) {
 }
 
 // UserVoteVoteItem 用户投了一票
-func UserVoteVoteItem(ctx iris.Context) {
+func UserVoteVoteItem(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	voteItemID, idErr := ctx.Params().GetInt("id")
+	voteItemID, idErr := strconv.Atoi(c.Param("id"))
 	if idErr != nil {
 		fmt.Println(idErr.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	var voteItem model.VoteItem
 	if err := model.DB.First(&voteItem, voteItemID).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	var vote model.Vote
 	if err := model.DB.Model(&voteItem).Related(&vote).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	if vote.Status == model.VoteOver {
-		SendErrJSON("投票已结束", ctx)
+		SendErrJSON("投票已结束", c)
 		return
 	}
 
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	iuser, _ := c.Get("user")
+	user := iuser.(model.User)
 
 	var existUserVote model.UserVote
 	if err := model.DB.Where("user_id = ? and vote_id = ?", user.ID, vote.ID).Find(&existUserVote).Error; err == nil {
-		SendErrJSON("已参与过投票", ctx)
+		SendErrJSON("已参与过投票", c)
 		return
 	}
 
 	voteItem.Count++
 	if err := model.DB.Save(&voteItem).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 
@@ -492,92 +499,91 @@ func UserVoteVoteItem(ctx iris.Context) {
 	}
 	if err := model.DB.Create(&userVote).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 	if err := model.DB.Save(&vote).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data":  iris.Map{},
+		"data":  gin.H{},
 	})
 }
 
 // EditVoteItem 编辑投票项
-func EditVoteItem(ctx iris.Context) {
+func EditVoteItem(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var voteItem model.VoteItem
-	if err := ctx.ReadJSON(&voteItem); err != nil {
+	if err := c.ShouldBindJSON(&voteItem); err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("参数无效", ctx)
+		SendErrJSON("参数无效", c)
 		return
 	}
 	voteItem.Name = utils.AvoidXSS(voteItem.Name)
 	voteItem.Name = strings.TrimSpace(voteItem.Name)
 
 	if voteItem.Name == "" {
-		SendErrJSON("名称不能为空", ctx)
+		SendErrJSON("名称不能为空", c)
 		return
 	}
 
 	if utf8.RuneCountInString(voteItem.Name) > model.MaxNameLen {
 		msg := "名称不能超过" + strconv.Itoa(model.MaxNameLen) + "个字符"
-		SendErrJSON(msg, ctx)
+		SendErrJSON(msg, c)
 		return
 	}
 
 	var queryVoteItem model.VoteItem
 	if err := model.DB.First(&queryVoteItem, voteItem.ID).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	queryVoteItem.Name = voteItem.Name
 	if err := model.DB.Save(&queryVoteItem).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"voteItem": queryVoteItem,
 		},
 	})
 }
 
 // DeleteItem 删除投票项
-func DeleteItem(ctx iris.Context) {
+func DeleteItem(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	voteItemID, idErr := ctx.Params().GetInt("id")
+	voteItemID, idErr := strconv.Atoi(c.Param("id"))
 	if idErr != nil {
 		fmt.Println(idErr.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	var voteItem model.VoteItem
 	if err := model.DB.First(&voteItem, voteItemID).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("无效的ID", ctx)
+		SendErrJSON("无效的ID", c)
 		return
 	}
 	if err := model.DB.Delete(&voteItem).Error; err != nil {
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": iris.Map{
+		"data": gin.H{
 			"voteItemID": voteItem.ID,
 		},
 	})
 }
-*/
 
 // UserVoteList 用户参与的投票
 func UserVoteList(c *gin.Context) {

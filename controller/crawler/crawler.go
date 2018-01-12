@@ -10,9 +10,9 @@ import (
 	"sync"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/controller/common"
-	"github.com/shen100/golang123/manager"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/utils"
 )
@@ -258,7 +258,7 @@ func crawlList(listURL string, user model.User, category model.Category, from in
 }
 
 // Crawl 抓取文章
-func Crawl(ctx iris.Context) {
+func Crawl(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	type JSONData struct {
 		URLS       []string `json:"urls"`
@@ -268,32 +268,33 @@ func Crawl(ctx iris.Context) {
 		CrawlExist bool     `json:"crawlExist"`
 	}
 	var jsonData JSONData
-	if err := ctx.ReadJSON(&jsonData); err != nil {
-		SendErrJSON("参数无效", ctx)
+	if err := c.ShouldBindJSON(&jsonData); err != nil {
+		SendErrJSON("参数无效", c)
 		return
 	}
 
 	if jsonData.From != model.ArticleFromJianShu && jsonData.From != model.ArticleFromZhihu &&
 		jsonData.From != model.ArticleFromHuxiu {
-		SendErrJSON("无效的from", ctx)
+		SendErrJSON("无效的from", c)
 		return
 	}
 	if jsonData.Scope != model.CrawlerScopePage && jsonData.Scope != model.CrawlerScopeList {
-		SendErrJSON("无效的scope", ctx)
+		SendErrJSON("无效的scope", c)
 		return
 	}
 
-	user, _ := manager.Sess.Start(ctx).Get("user").(model.User)
+	iuser, _ := c.Get("user")
+	user := iuser.(model.User)
 
 	if user.Name != config.ServerConfig.CrawlerName {
-		SendErrJSON("您没有权限执行此操作, 请使用爬虫账号", ctx)
+		SendErrJSON("您没有权限执行此操作, 请使用爬虫账号", c)
 		return
 	}
 
 	var category model.Category
 	if err := model.DB.First(&category, jsonData.CategoryID).Error; err != nil {
 		fmt.Printf(err.Error())
-		SendErrJSON("错误的categoryID", ctx)
+		SendErrJSON("错误的categoryID", c)
 		return
 	}
 
@@ -313,23 +314,23 @@ func Crawl(ctx iris.Context) {
 		}
 	}
 
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "抓取完成",
-		"data":  iris.Map{},
+		"data":  gin.H{},
 	})
 }
 
 // CrawlAccount 获取爬虫账号
-func CrawlAccount(ctx iris.Context) {
+func CrawlAccount(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var users []model.User
 	if err := model.DB.Where("name = ?", config.ServerConfig.CrawlerName).Find(&users).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data":  users,
@@ -337,12 +338,12 @@ func CrawlAccount(ctx iris.Context) {
 }
 
 // CreateAccount 创建爬虫账号
-func CreateAccount(ctx iris.Context) {
+func CreateAccount(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var users []model.User
 	if err := model.DB.Where("name = ?", config.ServerConfig.CrawlerName).Find(&users).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 	if len(users) <= 0 {
@@ -353,15 +354,15 @@ func CreateAccount(ctx iris.Context) {
 		user.Status = model.UserStatusActived
 		if err := model.DB.Save(&user).Error; err != nil {
 			fmt.Print(err.Error())
-			SendErrJSON("error", ctx)
+			SendErrJSON("error", c)
 			return
 		}
-		ctx.JSON(iris.Map{
+		c.JSON(http.StatusOK, gin.H{
 			"errNo": model.ErrorCode.SUCCESS,
 			"msg":   "success",
 			"data":  []model.User{user},
 		})
 		return
 	}
-	SendErrJSON("爬虫账号已存在", ctx)
+	SendErrJSON("爬虫账号已存在", c)
 }

@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
@@ -36,13 +37,13 @@ func postToBaidu(url string, data []byte) ([]byte, error) {
 }
 
 // PushToBaidu 百度链接提交
-func PushToBaidu(ctx iris.Context) {
+func PushToBaidu(c *gin.Context) {
 	// 查询参数type目前为article, 未来可添加
 	SendErrJSON := common.SendErrJSON
 	var count int
 	if err := model.DB.Model(&model.Article{}).Where("status <> ?", model.ArticleVerifyFail).Count(&count).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 		return
 	}
 	limit := 40
@@ -66,9 +67,9 @@ func PushToBaidu(ctx iris.Context) {
 			}
 		}
 	}()
-	ctx.JSON(iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data":  iris.Map{},
+		"data":  gin.H{},
 	})
 }
