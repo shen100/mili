@@ -4,7 +4,7 @@ Golang123
 golang123 是一个开源的社区系统，界面优雅，功能丰富，小巧迅速。
 已在[golang中文社区](https://www.golang123.com) 得到应用，你完全可以用它来搭建自己的社区。       
 
-golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**、**node.js**、**nuxt**等技术来开发, 后端使用**go**、**gin**、** gorm**等技术来开发。golang123的技术选型也是超前的, 我们大胆得使用**nuxt**来做**前后端同构渲染**。    
+golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**、**node.js**、**nuxt**等技术来开发, 后端使用**go**、**gin**、**gorm**等技术来开发。golang123的技术选型也是超前的, 我们大胆得使用**nuxt**来做**前后端同构渲染**。    
 
 ## 💎 社区首页
 <img src="https://user-images.githubusercontent.com/2443162/30106321-a234dc0c-932d-11e7-8f66-020975158dcd.jpeg" width="1000" alt=""/>
