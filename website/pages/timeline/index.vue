@@ -40,6 +40,15 @@
             return {
                 list: [
                     {
+                        name: 'golang123 v0.6发布',
+                        date: {
+                            year: 2018,
+                            month: 1,
+                            date: 13
+                        },
+                        content: '1.web框架切换到gin<br/>2.登录验证由session改为jwt<br/>3.使用dep来管理第三方包依赖'
+                    },
+                    {
                         name: '回复功能',
                         date: {
                             year: 2017,
