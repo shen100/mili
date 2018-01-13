@@ -1,10 +1,10 @@
 import request from '~/net/request'
 import ErrorCode from '~/constant/ErrorCode'
 import UserRole from '~/constant/UserRole'
-import session from '~/utils/session'
+import cookie from '~/utils/cookie'
 
 export default function (context, next) {
-    session.shiftExpiration(context.req, context.res)
+    cookie.refreshTokenCookie(context.req, context.res)
     return request.getUserInfo({client: context.req})
         .then(data => {
             if (data.errNo === ErrorCode.LOGIN_TIMEOUT) {

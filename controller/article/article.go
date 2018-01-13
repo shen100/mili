@@ -210,6 +210,10 @@ func queryList(c *gin.Context, isBackend bool) {
 				return
 			}
 		}
+		if c.Query("noContent") == "true" {
+			articles[i].Content = ""
+			articles[i].HTMLContent = ""
+		}
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,

@@ -10,7 +10,6 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/shen100/golang123/config"
-	"github.com/shen100/golang123/utils"
 )
 
 // User 用户
@@ -69,7 +68,11 @@ func (user User) EncryptPassword(password, salt string) (hash string) {
 // UserFromRedis 从redis中取出用户信息
 func UserFromRedis(userID int) (User, error) {
 	loginUser := fmt.Sprintf("%s%d", LoginUser, userID)
-	userBytes, err := redis.Bytes(utils.RedisConn.Do("GET", loginUser))
+
+	RedisConn := RedisPool.Get()
+	defer RedisConn.Close()
+
+	userBytes, err := redis.Bytes(RedisConn.Do("GET", loginUser))
 	if err != nil {
 		return User{}, errors.New("未登录")
 	}
@@ -86,10 +89,15 @@ func UserFromRedis(userID int) (User, error) {
 func UserToRedis(user User) error {
 	userBytes, err := json.Marshal(user)
 	if err != nil {
+		fmt.Println(err)
 		return errors.New("error")
 	}
 	loginUserKey := fmt.Sprintf("%s%d", LoginUser, user.ID)
-	if _, redisErr := utils.RedisConn.Do("SET", loginUserKey, userBytes, "EX", config.ServerConfig.TokenMaxAge); redisErr != nil {
+
+	RedisConn := RedisPool.Get()
+	defer RedisConn.Close()
+
+	if _, redisErr := RedisConn.Do("SET", loginUserKey, userBytes, "EX", config.ServerConfig.TokenMaxAge); redisErr != nil {
 		fmt.Println("redis set failed: ", redisErr.Error())
 		return errors.New("error")
 	}

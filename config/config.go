@@ -57,9 +57,11 @@ func initDB() {
 }
 
 type redisConfig struct {
-	Host string
-	Port int
-	URL  string
+	Host      string
+	Port      int
+	URL       string
+	MaxIdle   int
+	MaxActive int
 }
 
 // RedisConfig redis相关配置
@@ -84,10 +86,8 @@ type serverConfig struct {
 	ImgPath            string
 	MaxMultipartMemory int
 	Port               int
-	SessionID          string
 	TokenSecret        string
 	TokenMaxAge        int
-	SessionTimeout     int
 	PassSalt           string
 	LuosimaoVerifyURL  string
 	LuosimaoAPIKey     string

@@ -67,7 +67,8 @@
                     client: context.req,
                     query: {
                         cateId: query.cate || '',
-                        pageNo: query.pageNo || 1
+                        pageNo: query.pageNo || 1,
+                        noContent: 'true'
                     }
                 }),
                 request.getTop10({

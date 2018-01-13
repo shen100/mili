@@ -65,7 +65,7 @@
                         folderID: query.folder,
                         userID: context.params.id,
                         pageNo: query.pageNo || 1,
-                        pageSize: 2
+                        pageSize: 20
                     }
                 })
             ]).then(res => {

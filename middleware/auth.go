@@ -55,35 +55,6 @@ func SigninRequired(c *gin.Context) {
 	c.Next()
 }
 
-// ActiveRequired 用户必须是激活状态
-func ActiveRequired(c *gin.Context) {
-	SendErrJSON := common.SendErrJSON
-	var user model.User
-	var err error
-	if user, err = getUser(c); err != nil {
-		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
-		return
-	}
-
-	if user.Status == model.UserStatusActived {
-		c.Set("user", user)
-		c.Next()
-	} else {
-		var msg = ""
-		switch user.Status {
-		case model.UserStatusInActive:
-			{
-				msg = "账号未激活"
-			}
-		case model.UserStatusFrozen:
-			{
-				msg = "账号已被冻结"
-			}
-		}
-		SendErrJSON(msg, model.ErrorCode.InActive, c)
-	}
-}
-
 // EditorRequired 必须是网站编辑
 func EditorRequired(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -93,11 +64,11 @@ func EditorRequired(c *gin.Context) {
 		SendErrJSON("未登录", model.ErrorCode.LoginTimeout, c)
 		return
 	}
-	if user.Role == model.UserRoleEditor || user.Role == model.UserRoleAdmin || user.Role == model.UserRoleSuperAdmin {
+	if user.Role == model.UserRoleEditor || user.Role == model.UserRoleAdmin || user.Role == model.UserRoleCrawler || user.Role == model.UserRoleSuperAdmin {
+		c.Set("user", user)
 		c.Next()
 	} else {
 		SendErrJSON("没有权限", c)
-		return
 	}
 }
 
@@ -111,9 +82,9 @@ func AdminRequired(c *gin.Context) {
 		return
 	}
 	if user.Role == model.UserRoleAdmin || user.Role == model.UserRoleCrawler || user.Role == model.UserRoleSuperAdmin {
+		c.Set("user", user)
 		c.Next()
 	} else {
 		SendErrJSON("没有权限", c)
-		return
 	}
 }

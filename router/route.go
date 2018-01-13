@@ -25,36 +25,36 @@ func Route(router *gin.Engine) {
 		api.POST("/signup", user.Signup)
 		api.POST("/signout", middleware.SigninRequired,
 			user.Signout)
+		api.POST("/upload", middleware.SigninRequired,
+			common.UploadHandler)
+
 		api.POST("/active/sendmail", user.ActiveSendMail)
 		api.POST("/active/user/:id/:secret", user.ActiveAccount)
-		api.POST("/reset", user.ResetPasswordMail)
+		api.POST("/reset/sendmail", user.ResetPasswordMail)
 		api.POST("/reset/verify/:id/:secret", user.VerifyResetPasswordLink)
 		api.POST("/reset/password/:id/:secret", user.ResetPassword)
 
 		api.GET("/user/info", middleware.SigninRequired,
 			user.SecretInfo)
-		api.GET("/user/info/detail", middleware.SigninRequired,
-			user.InfoDetail)
-		api.PUT("/user/update/:field", middleware.ActiveRequired,
-			user.UpdateInfo)
-		api.PUT("/user/password/update", middleware.ActiveRequired,
-			user.UpdatePassword)
 		api.GET("/user/score/top10", user.Top10)
 		api.GET("/user/score/top100", user.Top100)
+		api.GET("/user/info/detail", middleware.SigninRequired,
+			user.InfoDetail)
 		api.GET("/user/info/public/:id", user.PublicInfo)
-		api.POST("/user/career/add", middleware.ActiveRequired,
+		api.POST("/user/uploadavatar", middleware.SigninRequired,
+			user.UploadAvatar)
+		api.POST("/user/career/add", middleware.SigninRequired,
 			user.AddCareer)
-		api.POST("/user/school/add", middleware.ActiveRequired,
+		api.POST("/user/school/add", middleware.SigninRequired,
 			user.AddSchool)
-		api.DELETE("/user/career/delete/:id", middleware.ActiveRequired,
+		api.PUT("/user/update/:field", middleware.SigninRequired,
+			user.UpdateInfo)
+		api.PUT("/user/password/update", middleware.SigninRequired,
+			user.UpdatePassword)
+		api.DELETE("/user/career/delete/:id", middleware.SigninRequired,
 			user.DeleteCareer)
-		api.DELETE("/user/school/delete/:id", middleware.ActiveRequired,
+		api.DELETE("/user/school/delete/:id", middleware.SigninRequired,
 			user.DeleteSchool)
-		api.POST("/user/updateavatar", middleware.ActiveRequired,
-			user.UpdateAvatar)
-
-		api.POST("/upload", middleware.ActiveRequired,
-			common.UploadHandler)
 
 		// api.Get("/message/unread", auth.SigninRequired,
 		// 	message.Unread)
@@ -64,81 +64,81 @@ func Route(router *gin.Engine) {
 		api.GET("/categories", category.List)
 
 		api.GET("/articles", article.List)
-		api.GET("/articles/info/:id", article.Info)
 		api.GET("/articles/max/bycomment", article.ListMaxComment)
 		api.GET("/articles/max/bybrowse", article.ListMaxBrowse)
 		api.GET("/articles/top/global", article.Tops)
+		api.GET("/articles/info/:id", article.Info)
 		api.GET("/articles/user/:userID", article.UserArticleList)
-		api.POST("/article/create", middleware.ActiveRequired,
+		api.POST("/articles/create", middleware.SigninRequired,
 			article.Create)
-		api.PUT("/article/update", middleware.ActiveRequired,
-			article.Update)
-		api.DELETE("/article/delete/:id", middleware.ActiveRequired,
-			article.Delete)
-		api.POST("/article/top/:id", middleware.EditorRequired,
+		api.POST("/articles/top/:id", middleware.EditorRequired,
 			article.Top)
-		api.POST("/article/deltop/:id", middleware.EditorRequired,
+		api.PUT("/articles/update", middleware.SigninRequired,
+			article.Update)
+		api.DELETE("/articles/delete/:id", middleware.SigninRequired,
+			article.Delete)
+		api.DELETE("/articles/deltop/:id", middleware.EditorRequired,
 			article.DeleteTop)
 
-		api.POST("/collect/folder/create", middleware.ActiveRequired,
-			collect.CreateFolder)
-		api.POST("/collect/create", middleware.ActiveRequired,
-			collect.CreateCollect)
-		api.POST("/collect/delete/:id", middleware.ActiveRequired,
-			collect.DeleteCollect)
-		api.GET("/collect/folders/withsource", middleware.SigninRequired,
-			collect.FoldersWithSource)
-		api.GET("/collect/user/:userID/folders", collect.Folders)
 		api.GET("/collects", collect.Collects)
+		api.GET("/collects/folders/withsource", middleware.SigninRequired,
+			collect.FoldersWithSource)
+		api.GET("/collects/user/:userID/folders", collect.Folders)
+		api.POST("/collects/create", middleware.SigninRequired,
+			collect.CreateCollect)
+		api.POST("/collects/folder/create", middleware.SigninRequired,
+			collect.CreateFolder)
+		api.DELETE("/collects/delete/:id", middleware.SigninRequired,
+			collect.DeleteCollect)
 
-		api.POST("/comment/create", middleware.ActiveRequired,
-			comment.Create)
-		api.POST("/comment/delete/:id", middleware.ActiveRequired,
-			comment.Delete)
-		api.POST("/comment/update", middleware.ActiveRequired,
-			comment.Update)
 		api.GET("/comments/user/:userID", comment.UserCommentList)
 		api.GET("/comments/source/:sourceName/:sourceID", comment.SourceComments)
+		api.POST("/comments/create", middleware.SigninRequired,
+			comment.Create)
+		api.PUT("/comments/update", middleware.SigninRequired,
+			comment.Update)
+		api.DELETE("/comments/delete/:id", middleware.SigninRequired,
+			comment.Delete)
 
 		api.GET("/votes", vote.List)
-		api.GET("/votes/maxbrowse", vote.ListMaxBrowse)
-		api.GET("/votes/maxcomment", vote.ListMaxComment)
+		api.GET("/votes/info/:id", vote.Info)
+		api.GET("/votes/max/bybrowse", vote.ListMaxBrowse)
+		api.GET("/votes/max/bycomment", vote.ListMaxComment)
 		api.GET("/votes/user/:userID", vote.UserVoteList)
-		api.POST("/vote/create", middleware.EditorRequired,
+		api.POST("/votes/create", middleware.EditorRequired,
 			vote.Create)
-		api.POST("/vote/update", middleware.EditorRequired,
-			vote.Update)
-		api.POST("/vote/delete/:id", middleware.EditorRequired,
-			vote.Delete)
-		api.GET("/vote/:id", vote.Info)
-		api.POST("/vote/item/create", middleware.EditorRequired,
+		api.POST("/votes/item/create", middleware.EditorRequired,
 			vote.CreateVoteItem)
-		api.POST("/vote/item/edit", middleware.EditorRequired,
-			vote.EditVoteItem)
-		api.POST("/vote/item/delete/:id", middleware.EditorRequired,
-			vote.DeleteItem)
-		api.POST("/vote/uservote/:id", middleware.ActiveRequired,
+		api.POST("/votes/uservote/:id", middleware.SigninRequired,
 			vote.UserVoteVoteItem)
+		api.PUT("/votes/update", middleware.EditorRequired,
+			vote.Update)
+		api.PUT("/votes/item/edit", middleware.EditorRequired,
+			vote.EditVoteItem)
+		api.DELETE("/votes/delete/:id", middleware.EditorRequired,
+			vote.Delete)
+		api.DELETE("/votes/item/delete/:id", middleware.EditorRequired,
+			vote.DeleteItem)
 	}
 
-	adminAPI := app.Party(apiPrefix+"/admin", middleware.RefreshTokenCookie, middleware.AdminRequired)
+	adminAPI := router.Group(apiPrefix+"/admin", middleware.RefreshTokenCookie, middleware.AdminRequired)
 	{
-		adminAPI.Get("/categories", category.List)
-		adminAPI.Post("/category/create", category.Create)
-		adminAPI.Post("/category/update", category.Update)
+		adminAPI.GET("/users", user.AllList)
 
-		adminAPI.Get("/articles", article.AllList)
-		adminAPI.Post("/article/status/update", article.UpdateStatus)
+		adminAPI.GET("/categories", category.List)
+		adminAPI.POST("/categories/create", category.Create)
+		adminAPI.PUT("/categories/update", category.Update)
 
-		adminAPI.Get("/comments", comment.Comments)
-		adminAPI.Put("/comments/update/status/:id", comment.UpdateStatus)
+		adminAPI.GET("/articles", article.AllList)
+		adminAPI.PUT("/articles/status/update", article.UpdateStatus)
 
-		adminAPI.Post("/crawl", crawler.Crawl)
-		adminAPI.Post("/crawl/account", crawler.CreateAccount)
-		adminAPI.Get("/crawl/account", crawler.CrawlAccount)
+		adminAPI.GET("/comments", comment.Comments)
+		adminAPI.PUT("/comments/update/status/:id", comment.UpdateStatus)
 
-		adminAPI.Post("/pushBaiduLink", baidu.PushToBaidu)
+		adminAPI.GET("/crawl/account", crawler.CrawlAccount)
+		adminAPI.POST("/crawl", crawler.Crawl)
+		adminAPI.POST("/crawl/account", crawler.CreateAccount)
 
-		adminAPI.Get("/users", user.AllList)
+		adminAPI.POST("/pushBaiduLink", baidu.PushToBaidu)
 	}
 }

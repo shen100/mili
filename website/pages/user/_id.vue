@@ -90,7 +90,7 @@
             return {
                 activeMenu: 'index',
                 uploaderVisible: false,
-                uploadURL: config.apiURL + '/user/updateavatar',
+                uploadURL: config.apiURL + '/user/uploadavatar',
                 croppie: null,
                 file: null,
                 sizeLimit: 3 * 1024 * 1024,

@@ -6,48 +6,10 @@ if (typeof window === 'undefined') {
 }
 
 const api = {
-    getCrawlAccount: {
-        url: url + '/admin/crawl/account', // 获取爬虫账号
-        method: 'GET'
-    },
-    createCrawlAccount: {
-        url: url + '/admin/crawl/account', // 获取爬虫账号
-        method: 'POST'
-    },
     getCategories: {
         url: url + '/categories',
         method: 'GET',
         desc: '获取分类列表'
-    },
-    getAdminCategories: {
-        url: url + '/admin/categories',
-        method: 'GET',
-        desc: '管理员获取分类列表'
-    },
-    getAdminArticles: {
-        url: url + '/admin/articles',
-        method: 'GET',
-        desc: '获取文章列表'
-    },
-    updateArticleStatus: {
-        url: url + '/admin/article/status/update',
-        method: 'POST',
-        desc: '更新文章状态'
-    },
-    categoryStatus: {
-        url: url + '/admin/category/status/update',
-        method: 'post',
-        desc: '更改分类状态'
-    },
-    categoryCreate: {
-        url: url + '/admin/category/create',
-        method: 'POST',
-        desc: '新增分类'
-    },
-    categoryUpdate: {
-        url: url + '/admin/category/update',
-        method: 'POST',
-        desc: '编辑分类'
     },
     getArticles: {
         url: url + '/articles',
@@ -60,8 +22,8 @@ const api = {
         desc: '获取文章信息'
     },
     deleteArticle: {
-        url: url + '/article/delete/:id',
-        method: 'POST',
+        url: url + '/articles/delete/:id',
+        method: 'DELETE',
         desc: '删除文章'
     },
     getTop10: {
@@ -85,7 +47,7 @@ const api = {
         desc: '获取当前登录用户信息'
     },
     createArticle: {
-        url: url + '/article/create',
+        url: url + '/articles/create',
         method: 'POST',
         desc: '新建文章'
     },
@@ -100,7 +62,7 @@ const api = {
         desc: '注册'
     },
     updateArticle: {
-        url: url + '/article/update',
+        url: url + '/articles/update',
         method: 'PUT',
         desc: '编辑文章'
     },
@@ -110,7 +72,7 @@ const api = {
         desc: '修改密码'
     },
     sendEmailPwd: {
-        url: url + '/reset',
+        url: url + '/reset/sendmail',
         method: 'POST',
         desc: '忘记密码邮箱确认'
     },
@@ -130,18 +92,14 @@ const api = {
         desc: '验证重置密码链接是否失效'
     },
     commentCreate: {
-        url: url + '/comment/create',
+        url: url + '/comments/create',
         method: 'POST',
         desc: '提交评论'
     },
     deleteComment: {
-        url: url + '/comment/delete/:id',
-        method: 'POST',
+        url: url + '/comments/delete/:id',
+        method: 'DELETE',
         desc: '删除评论'
-    },
-    updateCommentStatus: { // 更新评论状态
-        url: url + '/admin/comments/update/status/:id',
-        method: 'PUT'
     },
     getMaxComment: {
         url: url + '/articles/max/bycomment',
@@ -150,10 +108,6 @@ const api = {
     },
     getSiteComments: {
         url: url + '/comments/source/:sourceName/:sourceID',
-        method: 'GET'
-    },
-    getComments: {
-        url: url + '/admin/comments',
         method: 'GET'
     },
     getMaxBrowse: {
@@ -167,33 +121,33 @@ const api = {
         desc: '退出登录'
     },
     createVote: {
-        url: url + '/vote/create',
+        url: url + '/votes/create',
         method: 'POST',
         desc: '创建投票'
     },
     updateVote: {
-        url: url + '/vote/update',
-        method: 'POST',
+        url: url + '/votes/update',
+        method: 'PUT',
         desc: '编辑投票'
     },
     deleteVote: {
-        url: url + '/vote/delete/:id',
-        method: 'POST',
+        url: url + '/votes/delete/:id',
+        method: 'DELETE',
         desc: '删除投票'
     },
     editVoteItem: {
-        url: url + '/vote/item/edit',
-        method: 'POST',
+        url: url + '/votes/item/edit',
+        method: 'PUT',
         desc: '编辑投票项'
     },
     addVoteItem: {
-        url: url + '/vote/item/create',
+        url: url + '/votes/item/create',
         method: 'POST',
         desc: '新增投票项'
     },
     deleteVoteItem: {
-        url: url + '/vote/item/delete/:id',
-        method: 'POST',
+        url: url + '/votes/item/delete/:id',
+        method: 'DELETE',
         desc: '删除投票项'
     },
     getVotes: {
@@ -202,22 +156,22 @@ const api = {
         desc: '获取投票列表'
     },
     getVote: {
-        url: url + '/vote/:id',
+        url: url + '/votes/info/:id',
         method: 'GET',
         desc: '获取投票列表'
     },
     userVote: {
-        url: url + '/vote/uservote/:id',
+        url: url + '/votes/uservote/:id',
         method: 'POST',
         desc: '投票'
     },
     getVoteMaxBrowse: {
-        url: url + '/votes/maxbrowse',
+        url: url + '/votes/max/bybrowse',
         method: 'GET',
         desc: '浏览量最多的投票'
     },
     getVoteMaxComment: {
-        url: url + '/votes/maxcomment',
+        url: url + '/votes/max/bycomment',
         method: 'GET',
         desc: '回复最多的投票'
     },
@@ -227,13 +181,13 @@ const api = {
         desc: '获取置顶文章列表'
     },
     setTop: {
-        url: url + '/article/top/:id',
+        url: url + '/articles/top/:id',
         method: 'POST',
         desc: '设置置顶'
     },
     delTop: {
-        url: url + '/article/deltop/:id',
-        method: 'POST',
+        url: url + '/articles/deltop/:id',
+        method: 'DELETE',
         desc: '取消置顶'
     },
     getMineComment: {
@@ -287,21 +241,21 @@ const api = {
         desc: '删除工作经历'
     },
     getCollectDirList: {
-        url: url + '/collect/user/:userID/folders',
+        url: url + '/collects/user/:userID/folders',
         method: 'GET',
         desc: '查询用户的收藏夹列表'
     },
     getFoldersSource: {
-        url: url + '/collect/folders/withsource', // 查询用户的收藏夹列表，并且返回每个收藏夹中收藏了哪些话题或投票
+        url: url + '/collects/folders/withsource', // 查询用户的收藏夹列表，并且返回每个收藏夹中收藏了哪些话题或投票
         method: 'GET'
     },
     createCollectDir: {
-        url: url + '/collect/folder/create',
+        url: url + '/collects/folder/create',
         method: 'POST',
         desc: '创建收藏夹'
     },
     createCollect: {
-        url: url + '/collect/create', // collect_source_article收藏文章; collect_source_vote收藏投票
+        url: url + '/collects/create', // collect_source_article收藏文章; collect_source_vote收藏投票
         method: 'POST',
         desc: '收藏文章或收藏投票'
     },
@@ -309,20 +263,6 @@ const api = {
         url: url + '/collects',
         method: 'GET',
         desc: '获取收藏夹下的话题'
-    },
-    getAdminUserList: {
-        url: url + '/admin/users',
-        method: 'GET',
-        desc: '获取用户列表'
-    },
-    crawl: {
-        url: url + '/admin/crawl',
-        method: 'POST',
-        desc: '爬取微信文章'
-    },
-    pushToBaidu: {
-        url: url + '/admin/pushBaiduLink', // 链接提交到百度
-        method: 'POST'
     }
 }
 

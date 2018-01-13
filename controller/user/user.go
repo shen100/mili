@@ -68,8 +68,10 @@ func verifyLink(cacheKey string, c *gin.Context) (model.User, error) {
 	if secret == "" {
 		return user, errors.New("无效的链接")
 	}
+	RedisConn := model.RedisPool.Get()
+	defer RedisConn.Close()
 
-	emailTime, redisErr := redis.Int64(utils.RedisConn.Do("GET", cacheKey+fmt.Sprintf("%d", userID)))
+	emailTime, redisErr := redis.Int64(RedisConn.Do("GET", cacheKey+fmt.Sprintf("%d", userID)))
 	if redisErr != nil {
 		return user, errors.New("无效的链接")
 	}
@@ -120,7 +122,11 @@ func ActiveSendMail(c *gin.Context) {
 
 	curTime := time.Now().Unix()
 	activeUser := fmt.Sprintf("%s%d", model.ActiveTime, user.ID)
-	if _, err := utils.RedisConn.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
+
+	RedisConn := model.RedisPool.Get()
+	defer RedisConn.Close()
+
+	if _, err := RedisConn.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
 		fmt.Println("redis set failed:", err)
 	}
 	go func() {
@@ -156,7 +162,10 @@ func ActiveAccount(c *gin.Context) {
 		return
 	}
 
-	if _, err := utils.RedisConn.Do("DEL", fmt.Sprintf("%s%d", model.ActiveTime, user.ID)); err != nil {
+	RedisConn := model.RedisPool.Get()
+	defer RedisConn.Close()
+
+	if _, err := RedisConn.Do("DEL", fmt.Sprintf("%s%d", model.ActiveTime, user.ID)); err != nil {
 		fmt.Println("redis delelte failed:", err)
 	}
 
@@ -197,7 +206,11 @@ func ResetPasswordMail(c *gin.Context) {
 
 	curTime := time.Now().Unix()
 	resetUser := fmt.Sprintf("%s%d", model.ResetTime, user.ID)
-	if _, err := utils.RedisConn.Do("SET", resetUser, curTime, "EX", resetDuration); err != nil {
+
+	RedisConn := model.RedisPool.Get()
+	defer RedisConn.Close()
+
+	if _, err := RedisConn.Do("SET", resetUser, curTime, "EX", resetDuration); err != nil {
 		fmt.Println("redis set failed:", err)
 	}
 	go func() {
@@ -257,7 +270,10 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
-	if _, err := utils.RedisConn.Do("DEL", fmt.Sprintf("%s%d", model.ResetTime, user.ID)); err != nil {
+	RedisConn := model.RedisPool.Get()
+	defer RedisConn.Close()
+
+	if _, err := RedisConn.Do("DEL", fmt.Sprintf("%s%d", model.ResetTime, user.ID)); err != nil {
 		fmt.Println("redis delelte failed:", err)
 	}
 
@@ -346,8 +362,8 @@ func Signin(c *gin.Context) {
 			return
 		}
 
-		if model.UserToRedis(user) != nil {
-			SendErrJSON("内部错误", c)
+		if err := model.UserToRedis(user); err != nil {
+			SendErrJSON("内部错误.", c)
 			return
 		}
 
@@ -417,7 +433,11 @@ func Signup(c *gin.Context) {
 
 	curTime := time.Now().Unix()
 	activeUser := fmt.Sprintf("%s%d", model.ActiveTime, newUser.ID)
-	if _, err := utils.RedisConn.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
+
+	RedisConn := model.RedisPool.Get()
+	defer RedisConn.Close()
+
+	if _, err := RedisConn.Do("SET", activeUser, curTime, "EX", activeDuration); err != nil {
 		fmt.Println("redis set failed:", err)
 	}
 
@@ -438,7 +458,11 @@ func Signout(c *gin.Context) {
 	var user model.User
 	if exists {
 		user = userInter.(model.User)
-		if _, err := utils.RedisConn.Do("DEL", fmt.Sprintf("%s%d", model.LoginUser, user.ID)); err != nil {
+
+		RedisConn := model.RedisPool.Get()
+		defer RedisConn.Close()
+
+		if _, err := RedisConn.Do("DEL", fmt.Sprintf("%s%d", model.LoginUser, user.ID)); err != nil {
 			fmt.Println("redis delelte failed:", err)
 		}
 	}
@@ -611,7 +635,7 @@ func SecretInfo(c *gin.Context) {
 	}
 }
 
-// InfoDetail 返回用户详情信息，包含一些私密字段
+// InfoDetail 返回用户详情信息(教育经历、职业经历等)，包含一些私密字段
 func InfoDetail(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	userInter, _ := c.Get("user")
@@ -647,11 +671,10 @@ func InfoDetail(c *gin.Context) {
 	})
 }
 
-/*
 // AllList 查询用户列表，只有管理员才能调此接口
-func AllList(ctx iris.Context) {
+func AllList(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	pageNo, pageNoErr := strconv.Atoi(ctx.FormValue("pageNo"))
+	pageNo, pageNoErr := strconv.Atoi(c.Query("pageNo"))
 	if pageNoErr != nil {
 		pageNo = 1
 	}
@@ -665,11 +688,11 @@ func AllList(ctx iris.Context) {
 	var users []model.User
 	if err := model.DB.Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
 		fmt.Println(err.Error())
-		SendErrJSON("error", ctx)
+		SendErrJSON("error", c)
 	} else {
 		var results []interface{}
 		for i := 0; i < len(users); i++ {
-			results = append(results, iris.Map{
+			results = append(results, gin.H{
 				"id":     users[i].ID,
 				"name":   users[i].Name,
 				"email":  users[i].Email,
@@ -677,16 +700,15 @@ func AllList(ctx iris.Context) {
 				"status": users[i].Status,
 			})
 		}
-		ctx.JSON(iris.Map{
+		c.JSON(http.StatusOK, gin.H{
 			"errNo": model.ErrorCode.SUCCESS,
 			"msg":   "success",
-			"data": iris.Map{
+			"data": gin.H{
 				"users": results,
 			},
 		})
 	}
 }
-*/
 
 func topN(c *gin.Context, n int) {
 	SendErrJSON := common.SendErrJSON
@@ -715,8 +737,8 @@ func Top100(c *gin.Context) {
 	topN(c, 100)
 }
 
-// UpdateAvatar 修改用户头像
-func UpdateAvatar(c *gin.Context) {
+// UploadAvatar 上传用户头像
+func UploadAvatar(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	data, err := common.Upload(c)
 	if err != nil {
