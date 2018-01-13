@@ -4,7 +4,7 @@ Golang123
 golang123 是一个开源的社区系统，界面优雅，功能丰富，小巧迅速。
 已在[golang中文社区](https://www.golang123.com) 得到应用，你完全可以用它来搭建自己的社区。       
 
-golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**、**node.js**、**nuxt**等技术来开发, 后端使用**go**、**gorm**、**iris**等技术来开发。golang123的技术选型也是超前的, 我们大胆得使用**nuxt**来做**前后端同构渲染**。    
+golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**、**node.js**、**nuxt**等技术来开发, 后端使用**go**、**gin**、** gorm**等技术来开发。golang123的技术选型也是超前的, 我们大胆得使用**nuxt**来做**前后端同构渲染**。    
 
 ## 💎 社区首页
 <img src="https://user-images.githubusercontent.com/2443162/30106321-a234dc0c-932d-11e7-8f66-020975158dcd.jpeg" width="1000" alt=""/>
@@ -38,24 +38,16 @@ npm install --registry=https://registry.npm.taobao.org
 
 ### 后端依赖的库
 
+golang123使用dep来管理依赖的包，请先安装dep, 执行以下命令即完成安装
+
 ```
-//iris web框架
-go get -u github.com/kataras/iris
+go get -u github.com/golang/dep/cmd/dep
+```
 
-//gorm 持久层框架
-go get -u github.com/jinzhu/gorm
+然后，在项目目录下运行以下命令来安装依赖
 
-//redis客户端工具
-go get github.com/garyburd/redigo/redis
-
-//uuid生成工具
-go get github.com/satori/go.uuid
-
-//防XSS攻击
-go get -u github.com/microcosm-cc/bluemonday
-
-//markdown解析器
-go get github.com/russross/blackfriday
+```
+dep ensure
 ```
 
 ## ⚙️ 配置
@@ -107,6 +99,7 @@ server {
 2. 修改mysql的用户名及密码
 3. 修改redis的连接地址及端口
 4. 修改域名邮箱的用户名及密码(golang123使用的是QQ域名邮箱)
+5. 将`golang123/sql/golang123.sql`导入到你自己的数据库中
 
 ## 🚕 运行
 ### 运行前端项目
