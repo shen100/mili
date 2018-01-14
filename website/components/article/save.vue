@@ -133,7 +133,11 @@
                             }
                         }).then(res => {
                             if (res.errNo === ErrorCode.ERROR) {
-                                self.$Message.error(res.msg)
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
                             } else if (res.errNo === ErrorCode.IN_ACTIVE) {
                                 if (self.id) {
                                     self.$Message.error('账号未激活，不能保存话题')
@@ -148,7 +152,11 @@
                                 }, 500)
                             }
                         }).catch(err => {
-                            self.$Message.error(err.msg)
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err.message || err.msg
+                            })
                         })
                     }
                 })

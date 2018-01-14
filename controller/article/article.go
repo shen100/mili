@@ -9,6 +9,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/shen100/golang123/controller/common"
@@ -534,6 +535,49 @@ func save(c *gin.Context, isEdit bool) {
 
 // Create 创建文章
 func Create(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	iuser, _ := c.Get("user")
+	user := iuser.(model.User)
+
+	RedisConn := model.RedisPool.Get()
+	defer RedisConn.Close()
+
+	minuteKey := model.ArticleMinuteLimit + fmt.Sprintf("%d", user.ID)
+	minuteCount, minuteErr := redis.Int64(RedisConn.Do("GET", minuteKey))
+	if minuteErr == nil && minuteCount >= model.ArticleMinuteLimitCount {
+		SendErrJSON("您的操作过于频繁，请先休息一会儿。", c)
+		return
+	}
+
+	minuteRemainingTime, _ := redis.Int64(RedisConn.Do("TTL", minuteKey))
+	if minuteRemainingTime < 0 {
+		minuteRemainingTime = 60
+	}
+
+	if _, err := RedisConn.Do("SET", minuteKey, minuteCount+1, "EX", minuteRemainingTime); err != nil {
+		fmt.Println("redis set failed:", err)
+		SendErrJSON("内部错误", c)
+		return
+	}
+
+	dayKey := model.ArticleDayLimit + fmt.Sprintf("%d", user.ID)
+	dayCount, dayErr := redis.Int64(RedisConn.Do("GET", dayKey))
+	if dayErr == nil && dayCount >= model.ArticleDayLimitCount {
+		SendErrJSON("您今天的操作过于频繁，请先休息一会儿。", c)
+		return
+	}
+
+	dayRemainingTime, _ := redis.Int64(RedisConn.Do("TTL", dayKey))
+	if dayRemainingTime < 0 {
+		dayRemainingTime = 24 * 60 * 60
+	}
+
+	if _, err := RedisConn.Do("SET", dayKey, dayCount+1, "EX", dayRemainingTime); err != nil {
+		fmt.Println("redis set failed:", err)
+		SendErrJSON("内部错误.", c)
+		return
+	}
+
 	save(c, false)
 }
 

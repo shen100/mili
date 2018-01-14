@@ -45,6 +45,20 @@ const (
 	CollectScore = 1
 )
 
+const (
+	// ArticleMinuteLimitCount 用户每分钟最多能发表的文章数
+	ArticleMinuteLimitCount = 30
+
+	// ArticleDayLimitCount 用户每天最多能发表的文章数
+	ArticleDayLimitCount = 1000
+
+	// CommentMinuteLimitCount 用户每分钟最多能发表的评论数
+	CommentMinuteLimitCount = 30
+
+	// CommentDayLimitCount 用户每天最多能发表的评论数
+	CommentDayLimitCount = 1000
+)
+
 // redis相关常量, 为了防止从redis中存取数据时key混乱了，在此集中定义常量来作为各key的名字
 const (
 	// ActiveTime 生成激活账号的链接
@@ -55,4 +69,16 @@ const (
 
 	// LoginUser 用户信息
 	LoginUser = "loginUser"
+
+	// ArticleMinuteLimit 用户每分钟最多能发表的文章数
+	ArticleMinuteLimit = "articleMinuteLimit"
+
+	// ArticleDayLimit 用户每天最多能发表的文章数
+	ArticleDayLimit = "articleDayLimit"
+
+	// CommentMinuteLimit 用户每分钟最多能发表的评论数
+	CommentMinuteLimit = "commentMinuteLimit"
+
+	// CommentDayLimit 用户每天最多能发表的评论数
+	CommentDayLimit = "commentDayLimit"
 )
