@@ -48,8 +48,8 @@
     "pages/admin/user/list.128d89e9c3635ca2044a.js",
     "layouts/signin.927a17c025d64d3e5ab7.js",
     "common.2ce75b88c6ac206c8f9c.js",
-    "app.934ae3ce9781fd8f93a6.js",
-    "manifest.dbee00e56da9319ad668.js",
+    "app.e0132da15388789ce5e5.js",
+    "manifest.ed62913f62e95c4343d4.js",
     "img/logo.ca1f746.png",
     "pages/vote/_id.cce28e197d81f9d661f4.js.map",
     "pages/topic/_id.038045f557c7de864d91.js.map",
@@ -95,15 +95,15 @@
     "pages/admin/user/list.128d89e9c3635ca2044a.js.map",
     "layouts/signin.927a17c025d64d3e5ab7.js.map",
     "common.2ce75b88c6ac206c8f9c.js.map",
-    "app.934ae3ce9781fd8f93a6.js.map",
-    "manifest.dbee00e56da9319ad668.js.map",
+    "app.e0132da15388789ce5e5.js.map",
+    "manifest.ed62913f62e95c4343d4.js.map",
     "index.spa.html",
     "index.ssr.html"
   ],
   "initial": [
-    "manifest.dbee00e56da9319ad668.js",
+    "manifest.ed62913f62e95c4343d4.js",
     "common.2ce75b88c6ac206c8f9c.js",
-    "app.934ae3ce9781fd8f93a6.js"
+    "app.e0132da15388789ce5e5.js"
   ],
   "async": [
     "pages/vote/_id.cce28e197d81f9d661f4.js",
