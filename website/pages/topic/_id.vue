@@ -391,7 +391,7 @@
                     this.loading = true
                     request.commentCreate({
                         body: {
-                            sourceId: parseInt(this.$route.params.id),
+                            sourceID: parseInt(this.$route.params.id),
                             parentID: this.parentCommentID,
                             content: this.formData.content,
                             sourceName: 'article'

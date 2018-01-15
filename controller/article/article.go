@@ -550,7 +550,7 @@ func Create(c *gin.Context) {
 	}
 
 	minuteRemainingTime, _ := redis.Int64(RedisConn.Do("TTL", minuteKey))
-	if minuteRemainingTime < 0 {
+	if minuteRemainingTime < 0 || minuteRemainingTime > 60 {
 		minuteRemainingTime = 60
 	}
 
@@ -568,8 +568,9 @@ func Create(c *gin.Context) {
 	}
 
 	dayRemainingTime, _ := redis.Int64(RedisConn.Do("TTL", dayKey))
-	if dayRemainingTime < 0 {
-		dayRemainingTime = 24 * 60 * 60
+	secondsOfDay := int64(24 * 60 * 60)
+	if dayRemainingTime < 0 || dayRemainingTime > secondsOfDay {
+		dayRemainingTime = secondsOfDay
 	}
 
 	if _, err := RedisConn.Do("SET", dayKey, dayCount+1, "EX", dayRemainingTime); err != nil {

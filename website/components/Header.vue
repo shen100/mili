@@ -3,11 +3,14 @@
 		<div class="golang-top-box">
 			<div class="golang-top-header-left">
 				<div class="golang-logo-container">
-                    <a href="/">Golang123</a>
+                    <a href="/"><img src="/images/logo.png" /></a>
 				</div>
 				<div class="golang-header-search">
 					<form @submit.prevent="onSearch" action="" target="_blank" method="get" class="golang-top-search">
-						<input v-model="q" type="text" class="golang-top-input" name="topSearch">
+                        <p style="position: relative;">
+    						<input @focus="onInputFocus" @blur="onInputBlur" v-model="q" type="text" class="golang-top-input" v-bind:style="{border: isInputFocus ? '1px #a2a2a2 solid' : '1px #e3e3e3 solid'}" name="topSearch">
+                            <span class="search-icon"></span>
+                        </p>
 					</form>
 				</div>
 			</div>
@@ -62,13 +65,20 @@
         data () {
             return {
                 q: '',
-                userData: this.user
+                userData: this.user,
+                isInputFocus: false
             }
         },
         methods: {
             onSearch () {
                 let searchURL = 'http://zhannei.baidu.com/cse/search?s=2990237584871814305&entry=1&q=' + encodeURIComponent(this.q)
                 window.open(searchURL)
+            },
+            onInputFocus () {
+                this.isInputFocus = true
+            },
+            onInputBlur () {
+                this.isInputFocus = false
             },
             onSignin () {
                 location.href = '/signin?ref=' + encodeURIComponent(location.href)

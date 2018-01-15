@@ -52,7 +52,7 @@ func sendMail(action string, title string, curTime int64, user model.User, c *gi
 			"<p>感谢你对" + siteName + "的支持，希望你在" + siteName + "的体验有益且愉快。</p>" +
 			"<p>(这是一封自动产生的email，请勿回复。)</p>"
 	}
-	content += "<p><img src=\"http://ab.testin.cn/images/go.jpg\" style=\"width: 120px;\"/></p>"
+	content += "<p><img src=\"" + siteURL + "/images/logo.png\" style=\"height: 42px;\"/></p>"
 	//fmt.Println(content)
 
 	mail.SendMail(user.Email, title, content)
