@@ -96,6 +96,10 @@ const api = {
         method: 'POST',
         desc: '提交评论'
     },
+    commentEdit: { // 编辑评论
+        url: url + '/comments/update',
+        method: 'PUT'
+    },
     deleteComment: {
         url: url + '/comments/delete/:id',
         method: 'DELETE',

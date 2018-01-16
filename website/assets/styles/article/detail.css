@@ -70,6 +70,14 @@ body, .golang-home-body-left {
 	background-color: #fff;
 }
 
+.total-reply-count {
+    padding-left: 20px!important;
+}
+
+.add-reply-title {
+    padding-left: 20px!important;
+}
+
 .comment-box {
 	margin-top: 20px;
     -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1);
@@ -78,7 +86,7 @@ body, .golang-home-body-left {
 
 .comment-content {
 	background-color: #fff;
-	padding: 10px;
+	padding: 10px 20px 20px 20px;
 }
 
 .comment-actions {
@@ -94,6 +102,21 @@ body, .golang-home-body-left {
 }
 
 .comment-reply-txt {
+    line-height: 17px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 2px;
+}
+
+.comment-edit {
+    color: rgb(128, 128, 128);
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.comment-edit-txt {
     line-height: 17px;
     display: inline-block;
     vertical-align: top;
@@ -134,7 +157,7 @@ body, .golang-home-body-left {
 .reply-user-box {
     display: inline-block;
     vertical-align: top;
-    width: 850px;
+    width: 830px;
     padding-left: 5px;
 }
 

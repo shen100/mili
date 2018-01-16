@@ -21,12 +21,12 @@
                     </div>
                     <div class="home-vote-box">
                         <div class="golang123-editor" v-html="vote.content"></div>
-                        <div class="">
+                        <div class="" style="margin-bottom: 20px;">
                             <span v-for="item in vote.voteItems">
                                 <Button type="primary" class="vote-item" @click="onVoteSubmit(item.id)">支持<span class="vote-item-label">{{item.name}}</span><span class="vote-item-label">{{item.count}}</span></Button>
                             </span>
                         </div>
-                        <div v-if="!isEnd" style="margin-top: 20px;font-size: 14px;font-weight: 700;">{{endAtStr}}&nbsp;&nbsp;前可投票</div>
+                        <div v-if="!isEnd" style="margin-bottom: 20px;font-size: 14px;font-weight: 700;">{{endAtStr}}&nbsp;&nbsp;前可投票</div>
                         <div class="vote-actions">
                             <div class="vote-share">
                                 <div class="vote-share-btn" @click="collect">
@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="golang-cell comment-box">
-                    <div class="title">{{vote.commentCount > 0 ? vote.commentCount : '暂无'}}回复</div>
+                    <div class="title total-reply-count">{{vote.commentCount > 0 ? vote.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
                         <template v-if="vote.commentCount">
                             <div :id="`reply-${item.id}`" class="comment-item" v-for="(item, index) in vote.comments">
@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <div class="golang-cell comment-box" v-if="user && replyVote">
-                    <div class="title">添加回复</div>
+                    <div class="title add-reply-title">添加回复</div>
                     <div class="comment-content">
                         <Form ref="formData" :model="formData" :rules="formRule">
                             <Form-item prop="content">

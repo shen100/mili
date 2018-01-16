@@ -635,7 +635,7 @@ func Info(c *gin.Context) {
 			SendErrJSON("error", c)
 			return
 		}
-		article.Comments[i].Content = utils.MarkdownToHTML(article.Comments[i].Content)
+		article.Comments[i].HTMLContent = utils.MarkdownToHTML(article.Comments[i].Content)
 		parentID := article.Comments[i].ParentID
 		var parents []model.Comment
 		// 只查回复的直接父回复
@@ -664,14 +664,12 @@ func Info(c *gin.Context) {
 
 	if c.Query("f") != "md" {
 		if article.ContentType == model.ContentTypeMarkdown {
-			article.Content = utils.MarkdownToHTML(article.Content)
-			article.HTMLContent = ""
+			article.HTMLContent = utils.MarkdownToHTML(article.Content)
 		} else if article.ContentType == model.ContentTypeHTML {
 			article.HTMLContent = utils.AvoidXSS(article.HTMLContent)
 			article.Content = ""
 		} else {
-			article.Content = utils.MarkdownToHTML(article.Content)
-			article.HTMLContent = ""
+			article.HTMLContent = utils.MarkdownToHTML(article.Content)
 		}
 	}
 

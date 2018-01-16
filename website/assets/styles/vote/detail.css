@@ -29,7 +29,8 @@ body, .golang-home-body-left {
 
 .home-vote-box {
     background-color: #fff;
-    padding: 10px;
+    padding: 20px;
+    padding-bottom: 0;
     border-radius: 0 0 3px 3px;
 }
 
@@ -56,6 +57,14 @@ body, .golang-home-body-left {
     content: "\2022";
 }
 
+.total-reply-count {
+    padding-left: 20px!important;
+}
+
+.add-reply-title {
+    padding-left: 20px!important;
+}
+
 .comment-box {
     margin-top: 20px;
     -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1);
@@ -64,7 +73,8 @@ body, .golang-home-body-left {
 
 .comment-content {
     background-color: #fff;
-    padding: 10px;
+    padding: 20px;
+    padding-top: 10px;
 }
 
 .comment-item {
@@ -118,7 +128,7 @@ body, .golang-home-body-left {
 .reply-user-box {
     display: inline-block;
     vertical-align: top;
-    width: 850px;
+    width: 830px;
     padding-left: 5px;
 }
 
@@ -169,8 +179,8 @@ body, .golang-home-body-left {
 
 .vote-actions {
     background: #fff;
-    padding-left: 26px;
-    padding-right: 26px;
+    padding-left: 0;
+    padding-right: 0;
     height: 40px;
     color: #808080;
 }

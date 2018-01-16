@@ -100,6 +100,7 @@ func Save(c *gin.Context, isEdit bool) {
 	if !isEdit {
 		tx := model.DB.Begin()
 		if err := tx.Create(&comment).Error; err != nil {
+			fmt.Println(err)
 			tx.Rollback()
 			SendErrJSON("error", c)
 			return
@@ -112,11 +113,13 @@ func Save(c *gin.Context, isEdit bool) {
 
 		if err := tx.Model(&user).Updates(updateUserMap).Error; err != nil {
 			tx.Rollback()
+			fmt.Println(err)
 			SendErrJSON("error", c)
 			return
 		}
 
-		if model.UserToRedis(user) != nil {
+		if err := model.UserToRedis(user); err != nil {
+			fmt.Println(err)
 			SendErrJSON("error", c)
 			return
 		}
@@ -131,6 +134,7 @@ func Save(c *gin.Context, isEdit bool) {
 			}
 			if err := tx.Model(&article).Updates(articleMap).Error; err != nil {
 				tx.Rollback()
+				fmt.Println(err)
 				SendErrJSON("error", c)
 				return
 			}
@@ -143,6 +147,7 @@ func Save(c *gin.Context, isEdit bool) {
 			}
 			if err := tx.Model(&vote).Updates(voteMap).Error; err != nil {
 				tx.Rollback()
+				fmt.Println(err)
 				SendErrJSON("error", c)
 				return
 			}
@@ -152,12 +157,14 @@ func Save(c *gin.Context, isEdit bool) {
 		if user.ID != author.ID {
 			if err := tx.First(&author, author.ID).Error; err != nil {
 				tx.Rollback()
+				fmt.Println(err)
 				SendErrJSON("error", c)
 				return
 			}
 			authorScore := author.Score + model.ByCommentScore
 			if err := tx.Model(&author).Update("score", authorScore).Error; err != nil {
 				tx.Rollback()
+				fmt.Println(err)
 				SendErrJSON("error", c)
 				return
 			}
@@ -177,6 +184,7 @@ func Save(c *gin.Context, isEdit bool) {
 			"status":  model.CommentVerifying,
 		}
 		if err := model.DB.Model(&updatedComment).Updates(updateMap).Error; err != nil {
+			fmt.Println(err)
 			SendErrJSON("error", c)
 			return
 		}
@@ -438,7 +446,7 @@ func UserCommentList(c *gin.Context) {
 		var article model.Article
 		var vote model.Vote
 		data["id"] = comments[i].ID
-		data["content"] = utils.MarkdownToHTML(comments[i].Content)
+		data["HTMLContent"] = utils.MarkdownToHTML(comments[i].Content)
 		if comments[i].SourceName == model.CommentSourceArticle {
 			if err := model.DB.Model(&comments[i]).Related(&article, "articles", "source_id").Error; err != nil {
 				// 没有找到话题，即话题被删除了
@@ -525,7 +533,7 @@ func SourceComments(c *gin.Context) {
 	}
 
 	for i := 0; i < len(comments); i++ {
-		comments[i].Content = utils.MarkdownToHTML(comments[i].Content)
+		comments[i].HTMLContent = utils.MarkdownToHTML(comments[i].Content)
 		// 只查回复的直接父回复
 		var parentID = comments[i].ParentID
 		var parents []model.Comment
@@ -608,7 +616,8 @@ func Comments(c *gin.Context) {
 			SendErrJSON("error!", c)
 			return
 		}
-		comments[i].Content = utils.MarkdownToHTML(comments[i].Content)
+		comments[i].HTMLContent = utils.MarkdownToHTML(comments[i].Content)
+		comments[i].Content = ""
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
