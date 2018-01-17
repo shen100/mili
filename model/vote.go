@@ -17,6 +17,8 @@ type Vote struct {
 	CollectCount  int        `json:"collectCount"`
 	Status        int        `json:"status"`
 	Content       string     `json:"content"`
+	HTMLContent   string     `json:"htmlContent"`
+	ContentType   int        `json:"contentType"`
 	Comments      []Comment  `gorm:"ForeignKey:SourceID" json:"comments"`
 	UserID        uint       `json:"userID"`
 	User          User       `json:"user"`

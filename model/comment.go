@@ -11,6 +11,7 @@ type Comment struct {
 	Status      int        `json:"status"`
 	Content     string     `json:"content"`
 	HTMLContent string     `json:"htmlContent"`
+	ContentType int        `json:"contentType"`
 	ParentID    uint       `json:"parentID"`   //直接父评论的ID
 	Parents     []Comment  `json:"parents"`    //所有的父评论
 	SourceName  string     `json:"sourceName"` //用来区分是对话题，还是对投票进行评论

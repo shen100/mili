@@ -314,6 +314,10 @@
                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
             },
             onDelete () {
+                if (this.loading) {
+                    return
+                }
+                this.loading = true
                 let self = this
                 this.$Modal.confirm({
                     title: '删除话题',
@@ -324,6 +328,7 @@
                                 id: self.article.id
                             }
                         }).then(res => {
+                            self.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
                                 self.$Message.success({
                                     duration: config.messageDuration,
@@ -341,6 +346,7 @@
                                 })
                             }
                         }).catch(err => {
+                            self.loading = false
                             err = '内部错误'
                             self.$Message.error({
                                 duration: config.messageDuration,
@@ -476,6 +482,10 @@
                 }
             },
             onCommentDelete (id) {
+                if (this.loading) {
+                    return
+                }
+                this.loading = true
                 let self = this
                 this.$Modal.confirm({
                     title: '删除回复',
@@ -486,34 +496,19 @@
                                 id: id
                             }
                         }).then((res) => {
+                            this.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                self.$Message.success({
-                                    duration: config.messageDuration,
-                                    closable: true,
-                                    content: '回复已删除'
-                                })
-                                return request.getSiteComments({
-                                    params: {
-                                        sourceID: self.$route.params.id,
-                                        sourceName: 'article'
-                                    }
-                                })
-                            }
-                        }).then(res => {
-                            if (res.errNo === ErrorCode.SUCCESS) {
-                                let comments = res.data.comments || []
-                                let floorMap = {}
-                                for (let i = 0; i < comments.length; i++) {
-                                    comments[i].replyVisible = false
-                                    comments[i].editReplyVisible = false
-                                    floorMap[comments[i].id] = i + 1
-                                }
-                                self.article.comments = comments
-                                self.article.commentCount = comments.length
-                                self.replyArticle = true
-                                self.floorMap = floorMap
+                                location.href = `/topic/${this.article.id}`
+                                setTimeout(() => {
+                                    location.reload()
+                                }, 100)
+                            } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
+                                location.href = '/signin?ref=' + encodeURIComponent(location.href)
+                            } else {
+                                return Promise.reject(new Error(res.msg))
                             }
                         }).catch(err => {
+                            self.loading = false
                             self.$Message.error({
                                 duration: config.messageDuration,
                                 closable: true,

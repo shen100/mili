@@ -146,9 +146,11 @@ func save(isEdit bool, vote model.Vote, user model.User, tx *gorm.DB) (model.Vot
 		vote.CreatedAt = queryVote.CreatedAt
 		vote.UpdatedAt = time.Now()
 		vote.UserID = queryVote.UserID
+		vote.ContentType = queryVote.ContentType
 	} else {
 		vote.BrowseCount = 0
 		vote.CommentCount = 0
+		vote.ContentType = model.ContentTypeMarkdown
 		vote.Status = model.VoteUnderway
 		vote.CreatedAt = time.Now()
 		vote.UpdatedAt = vote.CreatedAt
@@ -323,7 +325,7 @@ func Info(c *gin.Context) {
 			SendErrJSON("error", c)
 			return
 		}
-		vote.Comments[i].Content = utils.MarkdownToHTML(vote.Comments[i].Content)
+		vote.Comments[i].HTMLContent = utils.MarkdownToHTML(vote.Comments[i].Content)
 		parentID := vote.Comments[i].ParentID
 		var parents []model.Comment
 		// 只查回复的直接父回复
@@ -351,7 +353,14 @@ func Info(c *gin.Context) {
 	}
 
 	if c.Query("f") != "md" {
-		vote.Content = utils.MarkdownToHTML(vote.Content)
+		if vote.ContentType == model.ContentTypeMarkdown {
+			vote.HTMLContent = utils.MarkdownToHTML(vote.Content)
+		} else if vote.ContentType == model.ContentTypeHTML {
+			vote.HTMLContent = utils.AvoidXSS(vote.HTMLContent)
+			vote.Content = ""
+		} else {
+			vote.HTMLContent = utils.MarkdownToHTML(vote.Content)
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{

@@ -102,6 +102,21 @@ body, .golang-home-body-left {
     cursor: pointer;
 }
 
+.comment-edit {
+    color: rgb(128, 128, 128);
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.comment-edit-txt {
+    line-height: 17px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 2px;
+}
+
 .comment-delete-txt {
     line-height: 17px;
     display: inline-block;

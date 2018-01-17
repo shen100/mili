@@ -98,6 +98,7 @@ func Save(c *gin.Context, isEdit bool) {
 	var updatedComment model.Comment
 
 	if !isEdit {
+		comment.ContentType = model.ContentTypeMarkdown
 		tx := model.DB.Begin()
 		if err := tx.Create(&comment).Error; err != nil {
 			fmt.Println(err)
@@ -446,7 +447,7 @@ func UserCommentList(c *gin.Context) {
 		var article model.Article
 		var vote model.Vote
 		data["id"] = comments[i].ID
-		data["HTMLContent"] = utils.MarkdownToHTML(comments[i].Content)
+		data["htmlContent"] = utils.MarkdownToHTML(comments[i].Content)
 		if comments[i].SourceName == model.CommentSourceArticle {
 			if err := model.DB.Model(&comments[i]).Related(&article, "articles", "source_id").Error; err != nil {
 				// 没有找到话题，即话题被删除了

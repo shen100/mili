@@ -432,6 +432,7 @@ func save(c *gin.Context, isEdit bool) {
 	} else {
 		article.BrowseCount = 0
 		article.Status = model.ArticleVerifying
+		article.ContentType = model.ContentTypeMarkdown
 		user.Score = user.Score + model.ArticleScore
 		user.ArticleCount = user.ArticleCount + 1
 		if model.UserToRedis(user) != nil {
