@@ -8,8 +8,6 @@
     <nuxt-link class="error-link" to="/">Back to the home page</nuxt-link>
   </p>
   
-  <p class="description" v-else>An error occurred while rendering the page. Check developer tools console for details.</p>
-  
 
   <div class="logo">
     <a href="https://nuxtjs.org" target="_blank" rel="noopener">Nuxt.js</a>
@@ -31,26 +29,6 @@ export default {
           content: 'width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no'
         }
       ]
-    }
-  },
-  
-  // Only on debug mode
-  data () {
-    return {
-      mounted: false
-    }
-  },
-  mounted () {
-    this.mounted = true
-  },
-  created () {
-    console.error(this.error)
-  },
-  watch: {
-    error(newErr) {
-      if(newErr) {
-        console.error(newErr)
-      }
     }
   },
   

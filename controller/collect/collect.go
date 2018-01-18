@@ -52,16 +52,11 @@ func CreateCollect(c *gin.Context) {
 		return
 	}
 
-	var collects []model.Collect
+	var theCollect model.Collect
 	if err := model.DB.Where("source_id=? AND source_name=?", collect.SourceID, collect.SourceName).
-		Preload("Folder").Find(&collects).Error; err == nil {
-		for i := 0; i < len(collects); i++ {
-			if collects[i].FolderID == collect.FolderID {
-				// 在相同的收藏夹下，之前已经收藏过
-				SendErrJSON("之前已经收藏过", c)
-				return
-			}
-		}
+		First(&theCollect).Error; err == nil {
+		SendErrJSON("之前已经收藏过", c)
+		return
 	}
 
 	iuser, _ := c.Get("user")
