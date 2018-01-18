@@ -28,7 +28,7 @@
                         <div class="article-share">
                             <div class="article-share-btn" @click="collect">
                                 <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;"></Icon>
-                                <span>收藏</span>
+                                <span>{{alreadyCollect ? '取消收藏' : '收藏'}}</span>
                             </div>
                             <div class="article-share-btn">
                                 <Icon type="android-share-alt" style="font-size: 16px"></Icon>
@@ -139,7 +139,7 @@
                     <p class="collects-item-num">{{(item.collects && item.collects.length) || 0}}条内容</p>
                 </div>
                 <Button v-if="item.hasCollect" class="info-button" style="width: 80px" disabled="disabled">已收藏</Button>
-                <Button v-else class="info-button" style="width: 80px" @click="createCollect(item.id)">收藏</Button>
+                <Button v-else-if="!alreadyCollect" class="info-button" style="width: 80px" @click="createCollect(item.id)">收藏</Button>
             </Row>
             <Button
                 type="primary"
@@ -258,6 +258,8 @@
                     let score = arr[2].data.users
                     let maxComment = arr[3].data.articles
                     let collectDirList = []
+                    let alreadyCollect = false
+                    let alreadyCollectID = 0
                     if (arr[4]) {
                         collectDirList = arr[4].data.folders || []
                         collectDirList.map(item => {
@@ -265,6 +267,8 @@
                             item.collects.map(items => {
                                 if (items.sourceID === parseInt(context.params.id) && items.sourceName === 'collect_source_article') {
                                     item.hasCollect = true
+                                    alreadyCollect = true
+                                    alreadyCollectID = items.id
                                 }
                             })
                         })
@@ -288,7 +292,9 @@
                         score: score,
                         maxComment: maxComment,
                         recentArticles: recentArticles,
-                        collectDirList: collectDirList
+                        collectDirList: collectDirList,
+                        alreadyCollect: alreadyCollect,
+                        alreadyCollectID: alreadyCollectID
                     }
                 })
             }).catch(err => {
@@ -526,6 +532,49 @@
                     location.href = '/signin?ref=' + encodeURIComponent(location.href)
                     return
                 }
+                if (this.alreadyCollect) {
+                    request.cancelCollect({
+                        params: {
+                            id: this.alreadyCollectID
+                        }
+                    }).then(res => {
+                        if (res.errNo === ErrorCode.SUCCESS) {
+                            this.alreadyCollect = false
+                            this.alreadyCollectID = 0
+
+                            let collectDirList = this.collectDirList
+                            collectDirList.map(item => {
+                                item.hasCollect = false
+                                item.collects.map(items => {
+                                    if (items.sourceID === parseInt(this.$route.params.id) && items.sourceName === 'collect_source_article') {
+                                        item.hasCollect = false
+                                    }
+                                })
+                            })
+                            this.$Message.success({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: '已取消收藏'
+                            })
+                        } else {
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: res.msg
+                            })
+                        }
+                    }).catch(err => {
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: err.message || err.msg
+                        })
+                    })
+                    return
+                }
+                this.hideCreateCollectDir()
+            },
+            hideCreateCollectDir () {
                 this.collectShowDir = false
                 this.collectData.title = ''
                 this.collectShow = true
@@ -555,7 +604,7 @@
                                 collectDir.hasCollect = false
                                 collectDir.collects = collectDir.collects || []
                                 this.collectDirList.unshift(collectDir)
-                                this.collect()
+                                this.hideCreateCollectDir()
                             } else {
                                 this.$Message.error({
                                     duration: config.messageDuration,
@@ -596,6 +645,8 @@
                                 break
                             }
                         }
+                        this.alreadyCollect = true
+                        this.alreadyCollectID = res.data.id
                     } else {
                         this.$Message.error({
                             duration: config.messageDuration,

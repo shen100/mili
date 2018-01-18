@@ -263,6 +263,10 @@ const api = {
         method: 'POST',
         desc: '收藏文章或收藏投票'
     },
+    cancelCollect: {
+        url: url + '/collects/delete/:id', // 取消收藏
+        method: 'DELETE'
+    },
     collectList: {
         url: url + '/collects',
         method: 'GET',
