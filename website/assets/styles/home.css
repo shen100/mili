@@ -143,3 +143,8 @@ body {
 	vertical-align: text-bottom;
     text-align: center;
 }
+
+#indexBanner {
+    width: 900px;
+    height: 64px;
+}
