@@ -65,6 +65,7 @@
                 <li class="golang-cell-item" v-for="item in votesMaxComment"><a :href="`/vote/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
             </ul>
         </div>
+        <div id="sideAd1"><a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=1kjxjjg7&productCode=qingcloud&utm_source=1kjxjjg7" target="_blank"><img src="/images/ad/aliyun/side.300x300.jpg"/></a></div>
     </div>
 </template>
 

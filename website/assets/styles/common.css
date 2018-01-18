@@ -577,6 +577,11 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     font-weight: bold;
 }
 
+#sideAd1 img {
+    width: 280px;
+    height: 280px;
+}
+
 .top100-link {
     color: #08c;
     padding-left: 8px;

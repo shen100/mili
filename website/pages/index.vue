@@ -3,7 +3,7 @@
         <app-header :user="user" />
         <div class="golang-home-body">
             <div class="golang-home-body-left">
-                <div id="indexBanner"><a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=1kjxjjg7&productCode=qingcloud&utm_source=1kjxjjg7" target="_blank"><img src="/images/ad/aliyun/index.banner.900x64.jpg"></a></div>
+                <div id="indexBanner"><a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=1kjxjjg7&productCode=qingcloud&utm_source=1kjxjjg7" target="_blank"><img src="/images/ad/aliyun/banner.900x64.jpg"></a></div>
                 <div class="home-categoties-box">
                     <a href="/" class="categoties-item" :class="{'categoties-select': !cate}">全部</a>
                     <a v-for="cateItem in categories" class="categoties-item" :href="'/?cate=' + cateItem.id" :class="{'categoties-select': cateItem.id == cate}">{{cateItem.name}}</a>

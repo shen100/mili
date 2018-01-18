@@ -2,6 +2,15 @@ body, .golang-home-body-left {
 	background-color: #e1e1e1;
 }
 
+#articleBanner {
+    margin-top: 20px;
+}
+
+#articleBanner img {
+    width: 900px;
+    height: 64px;
+}
+
 .topic-detail-left {
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -279,8 +288,6 @@ body, .golang-home-body-left {
 .parent-comment-user {
     color: #000;
 }
-
-
 
 
 

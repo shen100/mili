@@ -2,6 +2,15 @@ body, .golang-home-body-left {
     background-color: #e1e1e1;
 }
 
+#voteBanner {
+    margin-top: 20px;
+}
+
+#voteBanner img {
+    width: 900px;
+    height: 64px;
+}
+
 .vote-detail-left {
     -webkit-box-shadow: none;
     box-shadow: none;

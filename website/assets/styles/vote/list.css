@@ -2,6 +2,11 @@ body {
 	background-color: #e1e1e1;
 }
 
+#voteBanner {
+    width: 900px;
+    height: 64px;
+}
+
 .home-categoties-box {
 	background-color: #f6f6f6;
 	padding: 10px;
@@ -16,7 +21,7 @@ body {
 	padding: 5px;
 	margin-right: 10px;
 	display: inline-block;
-	border-radius: 5px;	
+	border-radius: 5px;
 }
 
 .categoties-item:hover, .categoties-select {
