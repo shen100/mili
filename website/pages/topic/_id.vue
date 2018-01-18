@@ -528,47 +528,56 @@
                 })
             },
             collect () {
+                let self = this
                 if (!this.user) {
                     location.href = '/signin?ref=' + encodeURIComponent(location.href)
                     return
                 }
                 if (this.alreadyCollect) {
-                    request.cancelCollect({
-                        params: {
-                            id: this.alreadyCollectID
-                        }
-                    }).then(res => {
-                        if (res.errNo === ErrorCode.SUCCESS) {
-                            this.alreadyCollect = false
-                            this.alreadyCollectID = 0
+                    this.$Modal.confirm({
+                        title: '取消收藏',
+                        content: '确认要取消收藏?',
+                        onOk () {
+                            request.cancelCollect({
+                                params: {
+                                    id: self.alreadyCollectID
+                                }
+                            }).then(res => {
+                                if (res.errNo === ErrorCode.SUCCESS) {
+                                    self.alreadyCollect = false
+                                    self.alreadyCollectID = 0
 
-                            let collectDirList = this.collectDirList
-                            collectDirList.map(item => {
-                                item.hasCollect = false
-                                item.collects.map(items => {
-                                    if (items.sourceID === parseInt(this.$route.params.id) && items.sourceName === 'collect_source_article') {
+                                    let collectDirList = self.collectDirList
+                                    collectDirList.map(item => {
                                         item.hasCollect = false
-                                    }
+                                        item.collects.map(items => {
+                                            if (items.sourceID === parseInt(self.$route.params.id) && items.sourceName === 'collect_source_article') {
+                                                item.hasCollect = false
+                                            }
+                                        })
+                                    })
+                                    self.$Message.success({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: '已取消收藏'
+                                    })
+                                } else {
+                                    self.$Message.error({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: res.msg
+                                    })
+                                }
+                            }).catch(err => {
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: err.message || err.msg
                                 })
                             })
-                            this.$Message.success({
-                                duration: config.messageDuration,
-                                closable: true,
-                                content: '已取消收藏'
-                            })
-                        } else {
-                            this.$Message.error({
-                                duration: config.messageDuration,
-                                closable: true,
-                                content: res.msg
-                            })
+                        },
+                        cancel () {
                         }
-                    }).catch(err => {
-                        this.$Message.error({
-                            duration: config.messageDuration,
-                            closable: true,
-                            content: err.message || err.msg
-                        })
                     })
                     return
                 }

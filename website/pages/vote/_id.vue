@@ -31,7 +31,7 @@
                             <div class="vote-share">
                                 <div class="vote-share-btn" @click="collect">
                                     <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;"></Icon>
-                                    <span>收藏</span>
+                                    <span>{{alreadyCollect ? '取消收藏' : '收藏'}}</span>
                                 </div>
                                 <div class="vote-share-btn">
                                     <Icon type="android-share-alt" style="font-size: 16px"></Icon>
@@ -143,7 +143,7 @@
                     <p class="collects-item-num">{{(item.collects && item.collects.length) || 0}}条内容</p>
                 </div>
                 <Button v-if="item.hasCollect" class="info-button" style="width: 80px" disabled="disabled">已收藏</Button>
-                <Button v-else class="info-button" style="width: 80px" @click="createCollect(item.id)">收藏</Button>
+                <Button v-else-if="!alreadyCollect" class="info-button" style="width: 80px" @click="createCollect(item.id)">收藏</Button>
             </Row>
             <Button
                 type="primary"
@@ -248,6 +248,8 @@
                 let score = arr[3].data.users
                 let isAuthor = context.user && context.user.id === vote.user.id
                 let collectDirList = []
+                let alreadyCollect = false
+                let alreadyCollectID = 0
                 if (arr[4]) {
                     collectDirList = arr[4].data.folders || []
                     collectDirList.map(item => {
@@ -255,6 +257,8 @@
                         item.collects.map(items => {
                             if (items.sourceID === parseInt(context.params.id) && items.sourceName === 'collect_source_vote') {
                                 item.hasCollect = true
+                                alreadyCollect = true
+                                alreadyCollectID = items.id
                             }
                         })
                     })
@@ -278,7 +282,9 @@
                     votesMaxComment: votesMaxComment,
                     score: score,
                     isEnd: vote.status !== VoteStatus.VOTE_UNDERWAY,
-                    collectDirList: collectDirList
+                    collectDirList: collectDirList,
+                    alreadyCollect: alreadyCollect,
+                    alreadyCollectID: alreadyCollectID
                 }
             }).catch(err => {
                 console.log(err)
@@ -533,9 +539,57 @@
                 }
             },
             collect () {
+                let self = this
                 if (!this.user) {
-                    window.location.href = '/signin'
+                    location.href = '/signin?ref=' + encodeURIComponent(location.href)
+                    return
                 }
+                if (this.alreadyCollect) {
+                    this.$Modal.confirm({
+                        title: '取消收藏',
+                        content: '确认要取消收藏?',
+                        onOk () {
+                            request.cancelCollect({
+                                params: {
+                                    id: self.alreadyCollectID
+                                }
+                            }).then(res => {
+                                if (res.errNo === ErrorCode.SUCCESS) {
+                                    self.alreadyCollect = false
+                                    self.alreadyCollectID = 0
+
+                                    let collectDirList = self.collectDirList
+                                    collectDirList.map(item => {
+                                        item.hasCollect = false
+                                    })
+                                    self.$Message.success({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: '已取消收藏'
+                                    })
+                                } else {
+                                    self.$Message.error({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: res.msg
+                                    })
+                                }
+                            }).catch(err => {
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: err.message || err.msg
+                                })
+                            })
+                        },
+                        cancel () {
+                        }
+                    })
+                    return
+                }
+                this.hideCreateCollectDir()
+            },
+            hideCreateCollectDir () {
                 this.collectShowDir = false
                 this.collectData.title = ''
                 this.collectShow = true
@@ -561,9 +615,11 @@
                         }).then(res => {
                             this.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                res.data.hasCollect = false
-                                this.collectDirList.unshift(res.data)
-                                this.collect()
+                                let collectDir = res.data
+                                collectDir.hasCollect = false
+                                collectDir.collects = collectDir.collects || []
+                                this.collectDirList.unshift(collectDir)
+                                this.hideCreateCollectDir()
                             } else {
                                 this.$Message.error({
                                     duration: config.messageDuration,
@@ -596,12 +652,23 @@
                 }).then(res => {
                     this.loading = false
                     if (res.errNo === ErrorCode.SUCCESS) {
-                        this.collectDirList.map(item => {
-                            if (item.id === id) {
-                                item.hasCollect = true
+                        // this.collectDirList.map(item => {
+                        //     if (item.id === id) {
+                        //         item.hasCollect = true
+                        //     }
+                        // })
+                        // this.alreadyCollect = true
+                        // this.alreadyCollectID = res.data.id
+                        let collectDirList = this.collectDirList || []
+                        for (let i = 0; i < collectDirList.length; i++) {
+                            if (collectDirList[i].id === id) {
+                                collectDirList[i].hasCollect = true
+                                collectDirList[i].collects.push(res.data)
+                                break
                             }
-                        })
-                        console.log(this.collectDirList)
+                        }
+                        this.alreadyCollect = true
+                        this.alreadyCollectID = res.data.id
                     } else {
                         this.$Message.error({
                             duration: config.messageDuration,
