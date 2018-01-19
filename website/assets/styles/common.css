@@ -379,38 +379,64 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang123-editor h1 {
-	font-size: 200%;
-	line-height: 200%;
+	font-size: 24px;
+	line-height: 32px;
     margin-bottom: 20px;
     padding-bottom: 6px;
     border-bottom: 1px solid #eaecef;
 }
 
 .golang123-editor h2 {
-	font-size: 160%;
-	line-height: 160%;
+	font-size: 22px;
+	line-height: 28px;
     margin-bottom: 20px;
     padding-bottom: 6px;
     border-bottom: 1px solid #eaecef;
 }
 
 .golang123-editor h3 {
-	font-size: 125%;
-	line-height: 32px;
+	font-size: 20px;
+	line-height: 24px;
     margin-bottom: 10px;
 }
 
 .golang123-editor h4 {
-	font-size: 110%;
-	line-height: 32px;
+	font-size: 18px;
+	line-height: 24px;
 }
 
 .golang123-editor h5 {
-	font-weight: 32px;
+	font-size: 16px;
+    line-height: 24px;
 }
 
 .golang123-editor h6 {
-	font-weight: 32px;
+	font-size: 14px;
+    line-height: 24px;
+}
+
+.editor-box-wrap .cm-header-1 {
+    font-size: 24px!important;
+}
+
+.editor-box-wrap .cm-header-2 {
+    font-size: 22px!important;
+}
+
+.editor-box-wrap .cm-header-3 {
+    font-size: 20px!important;
+}
+
+.editor-box-wrap .cm-header-4 {
+    font-size: 18px!important;
+}
+
+.editor-box-wrap .cm-header-5 {
+    font-size: 16px!important;
+}
+
+.editor-box-wrap .cm-header-6 {
+    font-size: 14px!important;
 }
 
 .golang123-editor em {

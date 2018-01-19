@@ -39,6 +39,7 @@ body, .golang-home-body-left {
 .article-detail-title h1 {
     display: inline-block;
     vertical-align: top;
+    font-size: 24px;
     line-height: 1.4;
 }
 

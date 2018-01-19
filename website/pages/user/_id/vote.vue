@@ -6,7 +6,7 @@
         <template v-if="votes.length > 0">
             <div v-for="(vote, index) in votes" class="articles-item" :class="{'articles-item-no': index === 0}">
                 <h2 class="articles-title"><a :href="`/vote/${vote.id}`" target="_blank">{{vote.name}}</a></h2>
-                <div class="golang123-digest" v-html="vote.content"></div>
+                <div class="golang123-digest" v-html="vote.htmlContent"></div>
             </div>
             <div style="text-align: center;">
                 <Page class="common-page"
@@ -51,7 +51,7 @@
                 for (let i = 0; i < votes.length; i++) {
                     let limit = 100
                     let more = `...&nbsp;&nbsp;<a href="/vote/${votes[i].id}" target="_blank" class="golang123-digest-continue">继续阅读»</a>`
-                    let trimObj = trimHtml(votes[i].content, {
+                    let trimObj = trimHtml(votes[i].htmlContent, {
                         limit: limit,
                         suffix: more,
                         moreLink: false
@@ -59,13 +59,13 @@
                     let content = trimObj.html
                     content = htmlUtil.trimImg(content)
                     if (!trimObj.more) {
-                        let newTrimObj = trimHtml(votes[i].content, {
+                        let newTrimObj = trimHtml(votes[i].htmlContent, {
                             limit: limit,
                             preserveTags: false
                         })
                         content = newTrimObj.html + more
                     }
-                    votes[i].content = content
+                    votes[i].htmlContent = content
                 }
                 return {
                     userId: context.params.id,

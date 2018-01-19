@@ -343,7 +343,12 @@ func UserArticleList(c *gin.Context) {
 				SendErrJSON("error", c)
 				return
 			}
-			articles[i].Content = utils.MarkdownToHTML(articles[i].Content)
+			if articles[i].ContentType == model.ContentTypeMarkdown {
+				articles[i].HTMLContent = utils.MarkdownToHTML(articles[i].Content)
+			} else {
+				articles[i].HTMLContent = utils.AvoidXSS(articles[i].HTMLContent)
+			}
+			articles[i].Content = ""
 		}
 	}
 

@@ -16,7 +16,7 @@
                         <a v-if="!collect.noSource" :href="collect.voteID ? `/vote/${collect.voteID}` : `/topic/${collect.articleID}`" target="_blank">{{collect.voteName ? collect.voteName : collect.articleName}}</a>
                         <span v-else class="collect-no-source">{{collect.sourceName === 'collect_source_vote' ? '原投票已被作者删除' : '原话题已被作者删除'}}</span>
                     </h1>
-                    <div class="golang123-digest" v-html="collect.content"></div>
+                    <div class="golang123-digest" v-html="collect.htmlContent"></div>
                 </div>
                 <div style="text-align: center;">
                     <Page class="common-page"
@@ -83,7 +83,7 @@
                     // 即没有articleID, 又没有voteID，说明原话题或原投票被删除
                     let noSource = !collects[i].articleID && !collects[i].voteID
                     collects[i].noSource = noSource
-                    let trimObj = trimHtml(collects[i].content, {
+                    let trimObj = trimHtml(collects[i].htmlContent, {
                         limit: limit,
                         suffix: !noSource ? more : '',
                         moreLink: false
@@ -91,13 +91,13 @@
                     let content = trimObj.html
                     content = htmlUtil.trimImg(content)
                     if (!trimObj.more) {
-                        let newTrimObj = trimHtml(collects[i].content, {
+                        let newTrimObj = trimHtml(collects[i].htmlContent, {
                             limit: limit,
                             preserveTags: false
                         })
                         content = newTrimObj.html + (!noSource ? more : '')
                     }
-                    collects[i].content = content
+                    collects[i].htmlContent = content
                 }
                 return {
                     user: context.user, // 登录用户

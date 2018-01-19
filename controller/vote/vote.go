@@ -693,7 +693,12 @@ func UserVoteList(c *gin.Context) {
 			SendErrJSON("error", c)
 			return
 		}
-		userVotes[i].Vote.Content = utils.MarkdownToHTML(userVotes[i].Vote.Content)
+		if userVotes[i].Vote.ContentType == model.ContentTypeMarkdown {
+			userVotes[i].Vote.HTMLContent = utils.MarkdownToHTML(userVotes[i].Vote.Content)
+		} else {
+			userVotes[i].Vote.HTMLContent = utils.AvoidXSS(userVotes[i].Vote.HTMLContent)
+		}
+		userVotes[i].Vote.Content = ""
 		votes = append(votes, userVotes[i].Vote)
 	}
 	c.JSON(http.StatusOK, gin.H{

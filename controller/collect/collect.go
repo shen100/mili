@@ -295,7 +295,11 @@ func Collects(c *gin.Context) {
 			data["sourceName"] = model.CollectSourceArticle
 			data["articleID"] = article.ID
 			data["articleName"] = article.Name
-			data["content"] = utils.MarkdownToHTML(article.Content)
+			if article.ContentType == model.ContentTypeMarkdown {
+				data["htmlContent"] = utils.MarkdownToHTML(article.Content)
+			} else {
+				data["htmlContent"] = utils.AvoidXSS(article.HTMLContent)
+			}
 		} else if collects[i].SourceName == model.CollectSourceVote {
 			if err := model.DB.Model(&collects[i]).Related(&vote, "votes", "source_id").Error; err != nil {
 				if err != gorm.ErrRecordNotFound {
@@ -307,7 +311,11 @@ func Collects(c *gin.Context) {
 			data["sourceName"] = model.CollectSourceVote
 			data["voteID"] = vote.ID
 			data["voteName"] = vote.Name
-			data["content"] = utils.MarkdownToHTML(vote.Content)
+			if vote.ContentType == model.ContentTypeMarkdown {
+				data["htmlContent"] = utils.MarkdownToHTML(vote.Content)
+			} else {
+				data["htmlContent"] = utils.AvoidXSS(vote.HTMLContent)
+			}
 		}
 		results = append(results, data)
 	}

@@ -15,7 +15,7 @@
                     <i-input size="large" type="password" v-model="formCustom.passwd" placeholder="密码" @keydown.native="handleKeyUp"></i-input>
                 </Form-item>
                 <div v-if="luosimaoSiteKey" style="min-height: 44px;">
-                    <div class="l-captcha" data-width="319" :data-site-key="luosimaoSiteKey" data-callback="luosimaoCallback"></div>
+                    <div class="l-captcha" data-width="100%" :data-site-key="luosimaoSiteKey" data-callback="luosimaoCallback"></div>
                 </div>
                 <p style="text-align: right;padding-right: 2px;margin-top:10px;">
                     <a href="/signup" class="golang-common-link" style="margin-right: 12px;">立即注册</a>

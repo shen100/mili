@@ -10,7 +10,7 @@
                     <img class="articles-user-info-img" :src="article.user.avatarURL" alt="">
                     <a class="articles-user-info-name">{{article.user.name}}</a>
                 </p>
-                <div class="golang123-digest" v-html="article.content"></div>
+                <div class="golang123-digest" v-html="article.htmlContent"></div>
             </div>
             <div style="text-align: center;">
                 <Page class="common-page"
@@ -55,21 +55,21 @@
                 for (let i = 0; i < articles.length; i++) {
                     let limit = 100
                     let more = `...&nbsp;&nbsp;<a href="/topic/${articles[i].id}" target="_blank" class="golang123-digest-continue">继续阅读»</a>`
-                    let trimObj = trimHtml(articles[i].content, {
+                    let trimObj = trimHtml(articles[i].htmlContent, {
                         limit: limit,
-                        suffix: more,
+                        suffix: more, // string that will be appended at the end
                         moreLink: false
                     })
                     let content = trimObj.html
                     content = htmlUtil.trimImg(content)
                     if (!trimObj.more) {
-                        let newTrimObj = trimHtml(articles[i].content, {
+                        let newTrimObj = trimHtml(articles[i].htmlContent, {
                             limit: limit,
-                            preserveTags: false
+                            preserveTags: false // Strip HTML tags (default true)
                         })
                         content = newTrimObj.html + more
                     }
-                    articles[i].content = content
+                    articles[i].htmlContent = content
                 }
                 return {
                     pageNo: res.data.pageNo,

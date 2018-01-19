@@ -44,8 +44,8 @@
                         </li>
                     </template>
 					<template v-else>
-						<a @click="onSignin"><li>登录</li></a>
-                        <a href="/signup"><li>注册</li></a>
+						<a @click="onSignin"><li style="color: #333;">登录</li></a>
+                        <a href="/signup"><li style="color: #333;">注册</li></a>
 					</template>
 				</ul>
 			</div>

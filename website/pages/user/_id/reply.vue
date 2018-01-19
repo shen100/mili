@@ -13,7 +13,7 @@
                     <img class="articles-user-info-img" :src="comment.user.avatarURL" alt="">
                     <a class="articles-user-info-name">{{comment.user.name}}</a>
                 </p>
-                <div class="golang123-digest" v-html="comment.content"></div>
+                <div class="golang123-digest" v-html="comment.htmlContent"></div>
             </div>
             <div style="text-align: center;">
                 <Page class="common-page"
@@ -68,7 +68,7 @@
                     // 即没有articleID, 又没有voteID，说明原话题或原投票被删除
                     let noSource = !comments[i].articleID && !comments[i].voteID
                     comments[i].noSource = noSource
-                    let trimObj = trimHtml(comments[i].content, {
+                    let trimObj = trimHtml(comments[i].htmlContent, {
                         limit: limit,
                         suffix: !noSource ? more : '',
                         moreLink: false
@@ -76,13 +76,13 @@
                     let content = trimObj.html
                     content = htmlUtil.trimImg(content)
                     if (!trimObj.more) {
-                        let newTrimObj = trimHtml(comments[i].content, {
+                        let newTrimObj = trimHtml(comments[i].htmlContent, {
                             limit: limit,
                             preserveTags: false
                         })
                         content = newTrimObj.html + (!noSource ? more : '')
                     }
-                    comments[i].content = content
+                    comments[i].htmlContent = content
                 }
                 return {
                     userId: context.params.id,

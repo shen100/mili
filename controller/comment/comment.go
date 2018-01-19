@@ -447,7 +447,12 @@ func UserCommentList(c *gin.Context) {
 		var article model.Article
 		var vote model.Vote
 		data["id"] = comments[i].ID
-		data["htmlContent"] = utils.MarkdownToHTML(comments[i].Content)
+		if comments[i].ContentType == model.ContentTypeMarkdown {
+			data["htmlContent"] = utils.MarkdownToHTML(comments[i].Content)
+		} else {
+			data["htmlContent"] = utils.AvoidXSS(comments[i].HTMLContent)
+		}
+
 		if comments[i].SourceName == model.CommentSourceArticle {
 			if err := model.DB.Model(&comments[i]).Related(&article, "articles", "source_id").Error; err != nil {
 				// 没有找到话题，即话题被删除了
