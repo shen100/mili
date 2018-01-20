@@ -57,7 +57,13 @@
                 用户管理
             </template>
             <router-link to="/admin/user/list">
-                <Menu-item name="/admin/user/list">用户列表</Menu-item>
+                <Menu-item name="/admin/user/list">全部用户</Menu-item>
+            </router-link>
+            <router-link to="/admin/user/today">
+                <Menu-item name="/admin/user/today">今日用户</Menu-item>
+            </router-link>
+            <router-link to="/admin/user/yesterday">
+                <Menu-item name="/admin/user/yesterday">昨日用户</Menu-item>
             </router-link>
         </Submenu>
         <Submenu name="craler">

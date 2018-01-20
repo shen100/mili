@@ -674,6 +674,37 @@ func InfoDetail(c *gin.Context) {
 // AllList 查询用户列表，只有管理员才能调此接口
 func AllList(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
+	role, _ := strconv.Atoi(c.Query("role"))
+	allUserRole := []int{
+		model.UserRoleNormal,
+		model.UserRoleEditor,
+		model.UserRoleAdmin,
+		model.UserRoleCrawler,
+		model.UserRoleSuperAdmin,
+	}
+	foundRole := false
+	for _, r := range allUserRole {
+		if r == role {
+			foundRole = true
+			break
+		}
+	}
+
+	var startTime string
+	var endTime string
+
+	if startAt, err := strconv.Atoi(c.Query("startAt")); err != nil {
+		startTime = time.Unix(0, 0).Format("2006-01-02 15:04:05")
+	} else {
+		startTime = time.Unix(int64(startAt/1000), 0).Format("2006-01-02 15:04:05")
+	}
+
+	if endAt, err := strconv.Atoi(c.Query("endAt")); err != nil {
+		endTime = time.Now().Format("2006-01-02 15:04:05")
+	} else {
+		endTime = time.Unix(int64(endAt/1000), 0).Format("2006-01-02 15:04:05")
+	}
+
 	pageNo, pageNoErr := strconv.Atoi(c.Query("pageNo"))
 	if pageNoErr != nil {
 		pageNo = 1
@@ -686,28 +717,54 @@ func AllList(c *gin.Context) {
 	pageSize := model.PageSize
 
 	var users []model.User
-	if err := model.DB.Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
-		fmt.Println(err.Error())
-		SendErrJSON("error", c)
-	} else {
-		var results []interface{}
-		for i := 0; i < len(users); i++ {
-			results = append(results, gin.H{
-				"id":     users[i].ID,
-				"name":   users[i].Name,
-				"email":  users[i].Email,
-				"role":   users[i].Role,
-				"status": users[i].Status,
-			})
+	var totalCount int
+	if foundRole {
+		if err := model.DB.Model(&model.User{}).Where("created_at >= ? AND created_at < ? AND role = ?", startTime, endTime, role).
+			Count(&totalCount).Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", c)
+			return
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"errNo": model.ErrorCode.SUCCESS,
-			"msg":   "success",
-			"data": gin.H{
-				"users": results,
-			},
+		if err := model.DB.Where("created_at >= ? AND created_at < ? AND role = ?", startTime, endTime, role).
+			Order("created_at DESC").Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", c)
+			return
+		}
+	} else {
+		if err := model.DB.Model(&model.User{}).Where("created_at >= ? AND created_at < ?", startTime, endTime).
+			Count(&totalCount).Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", c)
+			return
+		}
+		if err := model.DB.Where("created_at >= ? AND created_at < ?", startTime, endTime).Order("created_at DESC").Offset(offset).
+			Limit(pageSize).Find(&users).Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error", c)
+			return
+		}
+	}
+	var results []interface{}
+	for i := 0; i < len(users); i++ {
+		results = append(results, gin.H{
+			"id":     users[i].ID,
+			"name":   users[i].Name,
+			"email":  users[i].Email,
+			"role":   users[i].Role,
+			"status": users[i].Status,
 		})
 	}
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"users":      results,
+			"pageNo":     pageNo,
+			"pageSize":   pageSize,
+			"totalCount": totalCount,
+		},
+	})
 }
 
 func topN(c *gin.Context, n int) {

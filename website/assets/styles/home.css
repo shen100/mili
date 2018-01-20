@@ -74,6 +74,7 @@ body {
 
 .user-icon-box img {
 	width: 100%;
+    border-radius: 4px;
 }
 
 .user-small-icon-box img {
