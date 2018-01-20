@@ -43,7 +43,7 @@
                         render: (h, obj) => {
                             return h('div', {
                                 domProps: {
-                                    innerHTML: obj.row.content
+                                    innerHTML: obj.row.htmlContent
                                 }
                             })
                         }

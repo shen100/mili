@@ -308,7 +308,7 @@
                 title: this.article.name,
                 link: [
                     { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' },
-                    { rel: 'stylesheet', href: '/styles/highlight/googlecode.css' }
+                    { rel: 'stylesheet', href: '/styles/highlight/codestyle.css' } // Solarized Light
                 ],
                 script: [
                     { src: '/javascripts/highlight/highlight.min.js' }

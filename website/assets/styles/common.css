@@ -24,6 +24,14 @@ html,body {
 	height: 100%;
 }
 
+body {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857;
+    color: #333;
+    background-color: #fff;
+}
+
 
 .golang-top-header {
     height: 60px;
@@ -376,43 +384,42 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .golang123-editor {
 	font-size: 16px;
+    font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+    color: #2f2f2f;
+    line-height: 1.7;
+    -webkit-font-smoothing: auto;
 }
 
 .golang123-editor h1 {
-	font-size: 24px;
-	line-height: 32px;
+	font-size: 26px;
+    font-weight: 700;
     margin-bottom: 20px;
     padding-bottom: 6px;
     border-bottom: 1px solid #eaecef;
 }
 
 .golang123-editor h2 {
-	font-size: 22px;
-	line-height: 28px;
+	font-size: 24px;
     margin-bottom: 20px;
     padding-bottom: 6px;
     border-bottom: 1px solid #eaecef;
 }
 
 .golang123-editor h3 {
-	font-size: 20px;
-	line-height: 24px;
+	font-size: 22px;
     margin-bottom: 10px;
 }
 
 .golang123-editor h4 {
-	font-size: 18px;
-	line-height: 24px;
+	font-size: 20px;
 }
 
 .golang123-editor h5 {
-	font-size: 16px;
-    line-height: 24px;
+	font-size: 18px;
 }
 
 .golang123-editor h6 {
-	font-size: 14px;
-    line-height: 24px;
+	font-size: 16px;
 }
 
 .editor-box-wrap .cm-header-1 {
@@ -472,7 +479,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .CodeMirror-line  {
     background: none!important;
     padding: 0!important;
-    border-left: none!important;
+    border: none!important;
     margin-bottom: 0!important;
 }
 
@@ -485,28 +492,47 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .golang123-editor pre {
-    background: #f6f8fa;
-    padding: 20px;
-    overflow-x: auto;
+    background: #f6f6f6;
+    word-spacing: normal;
+    padding: 15px;
+    word-wrap: normal;
+    word-break: break-word!important;
+    word-break: break-all;
+    white-space: pre;
+    overflow: auto;
+    border-radius: 0;
     line-height: 26px;
-    border-left: 4px #2cbe4e solid;
-    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    line-height: 1.42857;
+    text-size-adjust: 100%;
+    box-sizing: border-box;
 }
 
 .golang123-editor pre code {
+    -webkit-font-smoothing: auto;
     padding: 0;
     border-radius: 0;
-    background: #f6f8fa;
+    background: #f6f6f6;
     border: none;
     font-weight: normal;
     font-size: 16px;
+    font-family: Menlo,Monaco,Consolas,Courier New,monospace;
+    font-size: 12px;
+    white-space: pre;
+    color: #657b83;
+    line-height: 1.42857;
 }
 
 .golang123-editor code {
-    padding: 3px 6px;
+    padding: 2px 4px;
     border-radius: 3px;
-    background: #f1fbff;
-    border: 1px #cef1ff solid;
+    background-color: #f6f6f6;
+    border: none;
+    color: #657b83;
+    font-size: 12px;
+    white-space: pre-wrap;
+    border-radius: 4px;
 }
 
 .golang123-editor blockquote {
