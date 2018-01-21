@@ -1,7 +1,7 @@
 <template>
     <Row>
-        <Form ref="urlsForm" :model="formData" :label-width="80">
-            <FormItem label="网页类型" prop="scope">
+        <Form ref="crawlerForm" :model="formData" :rules="ruleCustom" :label-width="120">
+            <FormItem label="网页类型">
                 <Row>
                     <Col>
                         <RadioGroup v-model="formData.scope">
@@ -22,7 +22,6 @@
                 </Row>
             </FormItem>
 
-
             <FormItem label="版块">
                 <Row>
                     <Col span="12">
@@ -32,6 +31,60 @@
                     </Col>
                 </Row>
             </FormItem>
+
+            <template v-if="isCustom">
+                <FormItem label="来源网站名称" prop="siteName">
+                    <Row>
+                        <Col span="12">
+                            <Input v-model="formData.siteName" placeholder="请输入来源网站名称"></Input>
+                        </Col>
+                    </Row>
+                </FormItem>
+                <FormItem label="来源网站URL" prop="siteURL">
+                    <Row>
+                        <Col span="12">
+                            <Input v-model="formData.siteURL" placeholder="请输入来源网站URL"></Input>
+                        </Col>
+                    </Row>
+                </FormItem>
+            </template>
+
+            <template v-if="isCustom && formData.scope === 'list'">
+                <FormItem label="列表项选择器" prop="listItemSelector">
+                    <Row>
+                        <Col span="12">
+                            <Input v-model="formData.listItemSelector" placeholder="请输入列表项选择器"></Input>
+                        </Col>
+                    </Row>
+                </FormItem>
+
+                <FormItem label="列表项标题选择器" prop="listItemTitleSelector">
+                    <Row>
+                        <Col span="12">
+                            <Input v-model="formData.listItemTitleSelector" placeholder="请输入列表项标题选择器"></Input>
+                        </Col>
+                    </Row>
+                </FormItem>
+            </template>
+
+            <template v-if="isCustom">
+                <FormItem label="标题选择器" prop="titleSelector">
+                    <Row>
+                        <Col span="12">
+                            <Input v-model="formData.titleSelector" placeholder="请输入标题选择器"></Input>
+                        </Col>
+                    </Row>
+                </FormItem>
+
+                <FormItem label="内容选择器" prop="contentSelector">
+                    <Row>
+                        <Col span="12">
+                            <Input v-model="formData.contentSelector" placeholder="请输入内容选择器"></Input>
+                        </Col>
+                    </Row>
+                </FormItem>
+            </template>
+
             <FormItem :key="i" v-for="(article, i) in formData.articles" label="URL" :prop="'articles.' + i + '.url'" :rules="urlValidate">
                 <Row>
                     <Col span="12">
@@ -64,13 +117,40 @@
 
         data () {
             return {
+                isCustom: this.from === 10,
                 formData: {
                     scope: 'list', // 爬单篇文章，还是列表
                     crawlExist: 0, // 已爬过的文章，是否再次爬
-                    articles: []
+                    articles: [],
+                    siteName: '',
+                    siteURL: '',
+                    listItemSelector: '',
+                    listItemTitleSelector: '',
+                    titleSelector: '',
+                    contentSelector: ''
                 },
                 urlValidate: {
                     type: 'url', required: true, message: '无效的URL'
+                },
+                ruleCustom: {
+                    siteName: [
+                        { required: true, message: '来源网站名称不能为空', trigger: 'blur' }
+                    ],
+                    siteURL: [
+                        { type: 'url', required: true, message: '无效的URL', trigger: 'blur' }
+                    ],
+                    listItemSelector: [
+                        { required: true, message: '列表项选择器不能为空', trigger: 'blur' }
+                    ],
+                    listItemTitleSelector: [
+                        { required: true, message: '列表项标题选择器不能为空', trigger: 'blur' }
+                    ],
+                    titleSelector: [
+                        { required: true, message: '标题选择器不能为空', trigger: 'blur' }
+                    ],
+                    contentSelector: [
+                        { required: true, message: '内容选择器不能为空', trigger: 'blur' }
+                    ]
                 }
             }
         },
@@ -86,7 +166,7 @@
                 })
             },
             onSubmit () {
-                this.$refs['urlsForm'].validate((valid) => {
+                this.$refs['crawlerForm'].validate((valid) => {
                     if (!valid) {
                         return
                     }
@@ -95,14 +175,27 @@
                         urls.push(this.formData.articles[i].url)
                     }
 
-                    request.crawl({
-                        body: {
-                            scope: this.formData.scope,
-                            crawlExist: !!this.formData.crawlExist,
-                            urls: urls,
-                            from: this.from,
-                            categoryID: parseInt(this.cateId)
-                        }
+                    let reqData = {
+                        scope: this.formData.scope,
+                        crawlExist: !!this.formData.crawlExist,
+                        urls: urls,
+                        from: this.from,
+                        categoryID: parseInt(this.cateId)
+                    }
+
+                    let crawl = request.crawl
+                    if (this.isCustom) {
+                        crawl = request.customCrawl
+                        reqData.siteName = this.formData.siteName
+                        reqData.siteURL = this.formData.siteURL
+                        reqData.listItemSelector = this.formData.listItemSelector
+                        reqData.listItemTitleSelector = this.formData.listItemTitleSelector
+                        reqData.titleSelector = this.formData.titleSelector
+                        reqData.contentSelector = this.formData.contentSelector
+                    }
+
+                    crawl({
+                        body: reqData
                     }).then((data) => {
                         if (data.errNo === ErrorCode.ERROR) {
                             this.$Message.error({

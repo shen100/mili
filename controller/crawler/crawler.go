@@ -17,52 +17,92 @@ import (
 	"github.com/shen100/golang123/utils"
 )
 
-var selectorMap = map[int]map[string]string{
-	model.ArticleFromJianShu: map[string]string{
-		"ListItemSelector":  ".note-list li",
-		"ItemTitleSelector": ".title",
-		"TitleSelector":     ".article .title",
-		"ContentSelector":   ".show-content",
-	},
-	model.ArticleFromZhihu: map[string]string{
-		"ListItemSelector":  ".PostListItem",
-		"ItemTitleSelector": ".PostListItem-info a",
-		"TitleSelector":     ".PostIndex-title",
-		"ContentSelector":   ".PostIndex-content",
-	},
-	model.ArticleFromHuxiu: map[string]string{
-		"ListItemSelector":  ".mod-art",
-		"ItemTitleSelector": ".mob-ctt h2 a",
-		"TitleSelector":     ".t-h1",
-		"ContentSelector":   ".article-content-wrap",
-	},
+type crawlSelector struct {
+	From                  int
+	ListItemSelector      string
+	ListItemTitleSelector string
+	TitleSelector         string
+	ContentSelector       string
 }
 
-var sourceHTMLMap = map[int][]string{
-	model.ArticleFromJianShu: []string{
-		"<div id=\"golang123-content-outter-footer\">",
-		"<blockquote>",
-		"<p>来源: <a href=\"https://www.jianshu.com/\" target=\"_blank\">简书</a><br>",
-		"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
-		"</blockquote>",
-		"</div>",
-	},
-	model.ArticleFromZhihu: []string{
-		"<div id=\"golang123-content-outter-footer\">",
-		"<blockquote>",
-		"<p>来源: <a href=\"https://www.zhihu.com\" target=\"_blank\">知乎</a><br>",
-		"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
-		"</blockquote>",
-		"</div>",
-	},
-	model.ArticleFromHuxiu: []string{
-		"<div id=\"golang123-content-outter-footer\">",
-		"<blockquote>",
-		"<p>来源: <a href=\"https://www.huxiu.com\" target=\"_blank\">虎嗅</a><br>",
-		"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
-		"</blockquote>",
-		"</div>",
-	},
+func createCrawlSelector(from int) crawlSelector {
+	selector := crawlSelector{
+		From: from,
+	}
+	switch from {
+	case model.ArticleFromJianShu:
+		selector.ListItemSelector = ".note-list li"
+		selector.ListItemTitleSelector = ".title"
+		selector.TitleSelector = ".article .title"
+		selector.ContentSelector = ".show-content"
+		return selector
+	case model.ArticleFromZhihu:
+		selector.ListItemSelector = ".PostListItem"
+		selector.ListItemTitleSelector = ".PostListItem-info a"
+		selector.TitleSelector = ".PostIndex-title"
+		selector.ContentSelector = ".PostIndex-content"
+		return selector
+	case model.ArticleFromHuxiu:
+		selector.ListItemSelector = ".mod-art"
+		selector.ListItemTitleSelector = ".mob-ctt h2 a"
+		selector.TitleSelector = ".t-h1"
+		selector.ContentSelector = ".article-content-wrap"
+		return selector
+	default:
+		selector.ListItemSelector = ""
+		selector.ListItemTitleSelector = ""
+		selector.TitleSelector = ""
+		selector.ContentSelector = ""
+		return selector
+	}
+}
+
+type sourceHTML struct {
+	from          int
+	sourceHTMLStr string
+}
+
+func createSourceHTML(from int) string {
+	var htmlArr []string
+	switch from {
+	case model.ArticleFromJianShu:
+		htmlArr = []string{
+			"<div id=\"golang123-content-outter-footer\">",
+			"<blockquote>",
+			"<p>来源: <a href=\"https://www.jianshu.com/\" target=\"_blank\">简书</a><br>",
+			"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
+			"</blockquote>",
+			"</div>",
+		}
+	case model.ArticleFromZhihu:
+		htmlArr = []string{
+			"<div id=\"golang123-content-outter-footer\">",
+			"<blockquote>",
+			"<p>来源: <a href=\"https://www.zhihu.com\" target=\"_blank\">知乎</a><br>",
+			"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
+			"</blockquote>",
+			"</div>",
+		}
+	case model.ArticleFromHuxiu:
+		htmlArr = []string{
+			"<div id=\"golang123-content-outter-footer\">",
+			"<blockquote>",
+			"<p>来源: <a href=\"https://www.huxiu.com\" target=\"_blank\">虎嗅</a><br>",
+			"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
+			"</blockquote>",
+			"</div>",
+		}
+	default:
+		htmlArr = []string{
+			"<div id=\"golang123-content-outter-footer\">",
+			"<blockquote>",
+			"<p>来源: <a href=\"{siteURL}\" target=\"_blank\">{siteName}</a><br>",
+			"原文: <a href=\"{articleURL}\" target=\"_blank\">{title}</a></p>",
+			"</blockquote>",
+			"</div>",
+		}
+	}
+	return strings.Join(htmlArr, "")
 }
 
 func createArticle(user model.User, category model.Category, from int, data map[string]string) {
@@ -93,7 +133,7 @@ func createArticle(user model.User, category model.Category, from int, data map[
 	tx.Commit()
 }
 
-func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
+func crawlContent(pageURL string, crawlSelector crawlSelector, siteInfo map[string]string, crawlExist bool) map[string]string {
 	var crawlerArticle model.CrawlerArticle
 	if err := model.DB.Where("url = ?", pageURL).Find(&crawlerArticle).Error; err == nil {
 		if !crawlExist {
@@ -105,18 +145,18 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 	if err != nil {
 		return nil
 	}
-	title := articleDOC.Find(selectorMap[from]["TitleSelector"]).Text()
+	title := articleDOC.Find(crawlSelector.TitleSelector).Text()
 	if title == "" {
 		return nil
 	}
-	contentDOM := articleDOC.Find(selectorMap[from]["ContentSelector"])
+	contentDOM := articleDOC.Find(crawlSelector.ContentSelector)
 	imgs := contentDOM.Find("img")
 	if imgs.Length() > 0 {
 		imgs.Each(func(j int, img *goquery.Selection) {
 			imgURL, exists := img.Attr("src")
 			var ext string
 			if !exists {
-				if from != model.ArticleFromJianShu {
+				if crawlSelector.From != model.ArticleFromJianShu {
 					return
 				}
 				originalSrc, originalExists := img.Attr("data-original-src")
@@ -145,7 +185,7 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 				}
 			}
 
-			if imgURL == "" || from == model.ArticleFromZhihu && strings.Index(imgURL, "data:image/svg+xml;utf8,") == 0 {
+			if imgURL == "" || crawlSelector.From == model.ArticleFromZhihu && strings.Index(imgURL, "data:image/svg+xml;utf8,") == 0 {
 				actualsrc, actualsrcExists := img.Attr("data-actualsrc")
 				if actualsrcExists && actualsrc != "" {
 					imgURL = actualsrc
@@ -210,7 +250,11 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 		return nil
 	}
 
-	sourceHTML := strings.Join(sourceHTMLMap[from], "")
+	sourceHTML := createSourceHTML(crawlSelector.From)
+	if crawlSelector.From == model.ArticleFromCustom {
+		sourceHTML = strings.Replace(sourceHTML, "{siteURL}", siteInfo["siteURL"], -1)
+		sourceHTML = strings.Replace(sourceHTML, "{siteName}", siteInfo["siteName"], -1)
+	}
 	sourceHTML = strings.Replace(sourceHTML, "{title}", title, -1)
 	sourceHTML = strings.Replace(sourceHTML, "{articleURL}", pageURL, -1)
 	articleHTML += sourceHTML
@@ -222,7 +266,7 @@ func crawlContent(pageURL string, from int, crawlExist bool) map[string]string {
 	}
 }
 
-func crawlList(listURL string, user model.User, category model.Category, from int, crawlExist bool, wg *sync.WaitGroup) {
+func crawlList(listURL string, user model.User, category model.Category, crawlSelector crawlSelector, siteInfo map[string]string, crawlExist bool, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	if _, err := url.Parse(listURL); err != nil {
@@ -236,11 +280,12 @@ func crawlList(listURL string, user model.User, category model.Category, from in
 	}
 
 	var articleURLArr []string
-	doc.Find(selectorMap[from]["ListItemSelector"]).Each(func(i int, s *goquery.Selection) {
-		articleLink := s.Find(selectorMap[from]["ItemTitleSelector"])
+	doc.Find(crawlSelector.ListItemSelector).Each(func(i int, s *goquery.Selection) {
+		articleLink := s.Find(crawlSelector.ListItemTitleSelector)
 		fmt.Println(s.Html())
 		fmt.Println(articleLink.Html())
 		href, exists := articleLink.Attr("href")
+		href = strings.TrimSpace(href)
 		if exists {
 			url, err := utils.RelativeURLToAbsoluteURL(href, listURL)
 			if err == nil {
@@ -250,9 +295,9 @@ func crawlList(listURL string, user model.User, category model.Category, from in
 	})
 
 	for i := 0; i < len(articleURLArr); i++ {
-		articleMap := crawlContent(articleURLArr[i], from, crawlExist)
+		articleMap := crawlContent(articleURLArr[i], crawlSelector, siteInfo, crawlExist)
 		if articleMap != nil {
-			createArticle(user, category, from, articleMap)
+			createArticle(user, category, crawlSelector.From, articleMap)
 		}
 	}
 }
@@ -298,18 +343,99 @@ func Crawl(c *gin.Context) {
 		return
 	}
 
+	crawlSelector := createCrawlSelector(jsonData.From)
+
 	if jsonData.Scope == model.CrawlerScopeList {
 		var wg sync.WaitGroup
 		for i := 0; i < len(jsonData.URLS); i++ {
 			wg.Add(1)
-			go crawlList(jsonData.URLS[i], user, category, jsonData.From, jsonData.CrawlExist, &wg)
+			go crawlList(jsonData.URLS[i], user, category, crawlSelector, nil, jsonData.CrawlExist, &wg)
 		}
 		wg.Wait()
 	} else if jsonData.Scope == model.CrawlerScopePage {
 		for i := 0; i < len(jsonData.URLS); i++ {
-			data := crawlContent(jsonData.URLS[i], jsonData.From, jsonData.CrawlExist)
+			data := crawlContent(jsonData.URLS[i], crawlSelector, nil, jsonData.CrawlExist)
 			if data != nil {
 				createArticle(user, category, jsonData.From, data)
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "抓取完成",
+		"data":  gin.H{},
+	})
+}
+
+// CustomCrawl 自定义抓取
+func CustomCrawl(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	type JSONData struct {
+		URLS                  []string `json:"urls"`
+		From                  int      `json:"from"`
+		CategoryID            int      `json:"categoryID"`
+		Scope                 string   `json:"scope"`
+		CrawlExist            bool     `json:"crawlExist"`
+		ListItemSelector      string   `json:"listItemSelector"`
+		ListItemTitleSelector string   `json:"listItemTitleSelector"`
+		TitleSelector         string   `json:"titleSelector"`
+		ContentSelector       string   `json:"contentSelector"`
+		SiteURL               string   `json:"siteURL" binding:"required,url"`
+		SiteName              string   `json:"siteName" binding:"required"`
+	}
+	var jsonData JSONData
+	if err := c.ShouldBindJSON(&jsonData); err != nil {
+		SendErrJSON("参数无效", c)
+		return
+	}
+
+	if jsonData.From != model.ArticleFromCustom {
+		SendErrJSON("无效的from", c)
+		return
+	}
+	if jsonData.Scope != model.CrawlerScopePage && jsonData.Scope != model.CrawlerScopeList {
+		SendErrJSON("无效的scope", c)
+		return
+	}
+
+	iuser, _ := c.Get("user")
+	user := iuser.(model.User)
+
+	if user.Name != config.ServerConfig.CrawlerName {
+		SendErrJSON("您没有权限执行此操作, 请使用爬虫账号", c)
+		return
+	}
+
+	var category model.Category
+	if err := model.DB.First(&category, jsonData.CategoryID).Error; err != nil {
+		fmt.Printf(err.Error())
+		SendErrJSON("错误的categoryID", c)
+		return
+	}
+
+	crawlSelector := createCrawlSelector(model.ArticleFromCustom)
+	crawlSelector.ListItemSelector = jsonData.ListItemSelector
+	crawlSelector.ListItemTitleSelector = jsonData.ListItemTitleSelector
+	crawlSelector.TitleSelector = jsonData.TitleSelector
+	crawlSelector.ContentSelector = jsonData.ContentSelector
+
+	siteInfo := map[string]string{
+		"siteURL":  jsonData.SiteURL,
+		"siteName": jsonData.SiteName,
+	}
+	if jsonData.Scope == model.CrawlerScopeList {
+		var wg sync.WaitGroup
+		for i := 0; i < len(jsonData.URLS); i++ {
+			wg.Add(1)
+			go crawlList(jsonData.URLS[i], user, category, crawlSelector, siteInfo, jsonData.CrawlExist, &wg)
+		}
+		wg.Wait()
+	} else if jsonData.Scope == model.CrawlerScopePage {
+		for i := 0; i < len(jsonData.URLS); i++ {
+			data := crawlContent(jsonData.URLS[i], crawlSelector, siteInfo, jsonData.CrawlExist)
+			if data != nil {
+				createArticle(user, category, crawlSelector.From, data)
 			}
 		}
 	}

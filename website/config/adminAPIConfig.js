@@ -46,10 +46,13 @@ const api = {
         method: 'GET',
         desc: '获取用户列表'
     },
-    crawl: {
+    crawl: { // 抓取文章
         url: url + '/admin/crawl',
-        method: 'POST',
-        desc: '爬取微信文章'
+        method: 'POST'
+    },
+    customCrawl: { // 自定义抓取
+        url: url + '/admin/customcrawl',
+        method: 'POST'
     },
     getCrawlAccount: {
         url: url + '/admin/crawl/account', // 获取爬虫账号

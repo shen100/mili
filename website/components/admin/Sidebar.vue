@@ -86,6 +86,9 @@
                 <router-link to="/admin/crawl/huxiu">
                     <Menu-item name="/admin/crawl/huxiu">虎嗅</Menu-item>
                 </router-link>
+                <router-link to="/admin/crawl/custom">
+                    <Menu-item name="/admin/crawl/custom">自定义抓取</Menu-item>
+                </router-link>
             </MenuGroup>
         </Submenu>
     </Menu>

@@ -137,6 +137,7 @@ func Route(router *gin.Engine) {
 
 		adminAPI.GET("/crawl/account", crawler.CrawlAccount)
 		adminAPI.POST("/crawl", crawler.Crawl)
+		adminAPI.POST("/customcrawl", crawler.CustomCrawl)
 		adminAPI.POST("/crawl/account", crawler.CreateAccount)
 
 		adminAPI.POST("/pushBaiduLink", baidu.PushToBaidu)
