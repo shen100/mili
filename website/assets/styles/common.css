@@ -481,6 +481,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     padding: 0!important;
     border: none!important;
     margin-bottom: 0!important;
+    white-space: unset!important;
 }
 
 .golang123-editor .CodeMirror-measure pre {
