@@ -20,7 +20,7 @@
                         </p>
                     </div>
                     <div class="home-vote-box">
-                        <div class="golang123-editor" v-html="vote.htmlContent"></div>
+                        <div class="golang123-editor golang123-richtxt" v-html="vote.htmlContent"></div>
                         <div class="" style="margin-bottom: 20px;">
                             <span v-for="item in vote.voteItems">
                                 <Button type="primary" class="vote-item" @click="onVoteSubmit(item.id)">支持<span class="vote-item-label">{{item.name}}</span><span class="vote-item-label">{{item.count}}</span></Button>
@@ -95,7 +95,7 @@
                                             <span style="text-decoration: line-through;">此回复已被作者删除</span>
                                         </template>
                                     </div>
-                                    <div v-if="!item.editReplyVisible" class="golang123-editor" v-html="item.htmlContent"></div>
+                                    <div v-if="!item.editReplyVisible" class="golang123-editor golang123-richtxt" v-html="item.htmlContent"></div>
                                     <div v-if="item.replyVisible || item.editReplyVisible">
                                         <div>
                                             <md-editor :user="user" :value="formData.content" @change="onContentChage" />

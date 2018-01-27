@@ -6,15 +6,13 @@ if (typeof window === 'undefined') {
 }
 
 const api = {
-    getCategories: {
+    getCategories: { // 获取分类列表
         url: url + '/categories',
-        method: 'GET',
-        desc: '获取分类列表'
+        method: 'GET'
     },
-    getArticles: {
+    getArticles: { // 获取文章列表
         url: url + '/articles',
-        method: 'GET',
-        desc: '获取文章列表'
+        method: 'GET'
     },
     getArticle: {
         url: url + '/articles/info/:id',
@@ -26,15 +24,13 @@ const api = {
         method: 'DELETE',
         desc: '删除文章'
     },
-    getTop10: {
+    getTop10: { // 获取积分排名前10的用户
         url: url + '/user/score/top10',
-        method: 'GET',
-        desc: '获取积分排名前10的用户'
+        method: 'GET'
     },
-    getTop100: {
+    getTop100: { // 获取积分排名前100的用户
         url: url + '/user/score/top100',
-        method: 'GET',
-        desc: '获取积分排名前100的用户'
+        method: 'GET'
     },
     getUserArticles: {
         url: url + '/articles/user/:userID',
@@ -105,19 +101,17 @@ const api = {
         method: 'DELETE',
         desc: '删除评论'
     },
-    getMaxComment: {
+    getMaxComment: { // 回复最多的话题
         url: url + '/articles/max/bycomment',
-        method: 'GET',
-        desc: '回复最多的话题'
+        method: 'GET'
     },
     getSiteComments: {
         url: url + '/comments/source/:sourceName/:sourceID',
         method: 'GET'
     },
-    getMaxBrowse: {
+    getMaxBrowse: { // 浏览最多的话题
         url: url + '/articles/max/bybrowse',
-        method: 'GET',
-        desc: '浏览最多的话题'
+        method: 'GET'
     },
     logout: {
         url: url + '/signout',
@@ -179,10 +173,9 @@ const api = {
         method: 'GET',
         desc: '回复最多的投票'
     },
-    getTopList: {
+    getTopList: { // 获取置顶文章列表
         url: url + '/articles/top/global',
-        method: 'GET',
-        desc: '获取置顶文章列表'
+        method: 'GET'
     },
     setTop: {
         url: url + '/articles/top/:id',
@@ -271,6 +264,10 @@ const api = {
         url: url + '/collects',
         method: 'GET',
         desc: '获取收藏夹下的话题'
+    },
+    getMessages: { // 未读消息
+        url: url + '/message/unread',
+        method: 'GET'
     }
 }
 

@@ -10,6 +10,7 @@ import (
 	"github.com/shen100/golang123/controller/comment"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/controller/crawler"
+	"github.com/shen100/golang123/controller/message"
 	"github.com/shen100/golang123/controller/user"
 	"github.com/shen100/golang123/controller/vote"
 	"github.com/shen100/golang123/middleware"
@@ -56,10 +57,8 @@ func Route(router *gin.Engine) {
 		api.DELETE("/user/school/delete/:id", middleware.SigninRequired,
 			user.DeleteSchool)
 
-		// api.Get("/message/unread", auth.SigninRequired,
-		// 	message.Unread)
-		// api.Get("/message/unread/count", auth.SigninRequired,
-		// 	message.UnreadCount)
+		api.GET("/message/unread", middleware.SigninRequired,
+			message.Unread)
 
 		api.GET("/categories", category.List)
 

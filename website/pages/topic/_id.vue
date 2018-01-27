@@ -22,7 +22,7 @@
                         </p>
                     </div>
                     <div class="home-articles-box">
-                        <div class="golang123-editor" v-html="article.htmlContent"></div>
+                        <div class="golang123-editor golang123-richtxt" v-html="article.htmlContent"></div>
                     </div>
                     <div class="article-actions">
                         <div class="article-share">
@@ -91,7 +91,7 @@
                                             <span style="text-decoration: line-through;">此回复已被作者删除</span>
                                         </template>
                                     </div>
-                                    <div v-if="!item.editReplyVisible" class="golang123-editor" v-html="item.htmlContent"></div>
+                                    <div v-if="!item.editReplyVisible" class="golang123-editor golang123-richtxt" v-html="item.htmlContent"></div>
                                     <div v-if="item.replyVisible || item.editReplyVisible">
                                         <div>
                                             <md-editor :user="user" :value="formData.content" @change="onContentChage" />

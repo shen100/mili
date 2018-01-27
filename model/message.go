@@ -4,23 +4,29 @@ import "time"
 
 // Message 消息
 type Message struct {
-    ID             uint               `gorm:"primary_key" json:"id"`
-    CreatedAt      time.Time          `json:"createdAt"`
-    UpdatedAt      time.Time          `json:"updatedAt"`
-    DeletedAt      *time.Time         `sql:"index" json:"deletedAt"`
-	Type           int                `json:"type"`
-	HasRead        bool               `json:"hasRead"`
-	ArticleID      int                `json:"articleID"`
-	UserID         int                `json:"userID"`
-	FromUserID     int                `json:"fromUserID"`
-	ChatID         int                `json:"chatID"`
-	CommentID      int                `json:"commentID"`
+	ID         uint       `gorm:"primary_key" json:"id"`
+	CreatedAt  time.Time  `json:"createdAt"`
+	UpdatedAt  time.Time  `json:"updatedAt"`
+	DeletedAt  *time.Time `sql:"index" json:"deletedAt"`
+	Type       string     `json:"type"`
+	Readed     bool       `json:"readed"`
+	FromUserID uint       `json:"fromUserID"`
+	ToUserID   uint       `json:"toUserID"`
+	FromUser   User       `json:"fromUser"`
+	SourceID   uint       `json:"sourceID"`
+	SourceName string     `json:"sourceName"`
+	CommentID  uint       `json:"commentID"`
+	Title      string     `json:"title"`
+	Content    string     `json:"content"`
 }
 
 const (
-    // MessageTypeComment 有人评论了文章
-    MessageTypeComment = 1
+	// MessageTypeCommentArticle 回复了话题
+	MessageTypeCommentArticle = "messageTypeCommentArticle"
 
-    // MessageTypeInvite 有人邀请回答
-    MessageTypeInvite  = 2
+	// MessageTypeCommentVote 回复了投票
+	MessageTypeCommentVote = "MessageTypeCommentVote"
+
+	// MessageTypeCommentComment 对回复进行了回复
+	MessageTypeCommentComment = "messageTypeCommentComment"
 )

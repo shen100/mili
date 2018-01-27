@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header :user="user" />
+        <app-header :user="user" :messages="messages"/>
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div id="indexBanner"><a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=1kjxjjg7&productCode=qingcloud&utm_source=1kjxjjg7" target="_blank"><img src="/images/ad/aliyun/banner.900x64.jpg"></a></div>
@@ -22,7 +22,7 @@
                         </span>
                         <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
                         <a :href="'/topic/' + article.id" target="_blank" class="home-articles-title" :title="article.name">{{article.name | entity2HTML}}</a>
-                        <p class="articles-res-time">{{article.lastCommentAt || article.createdAt | getReplyTime}}</p>
+                        <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
                         <a v-if="article.lastUser && article.lastUser.id" :href="'/user/' + article.lastUser.id" target="_blank" class="user-small-icon-box"><img :src="article.lastUser.avatarURL" alt=""/></a>
                     </div>
 
@@ -83,6 +83,9 @@
                 }),
                 request.getTopList({
                     client: context.req
+                }),
+                request.getMessages({
+                    client: context.req
                 })
             ]).then(data => {
                 let categories = data[0].data.categories || []
@@ -96,6 +99,8 @@
                 let maxComment = data[3].data.articles || []
                 let maxBrowse = data[4].data.articles || []
                 let topList = (data[5] && data[5].data.articles) || []
+                let messages = data[6].data.messages || []
+                let messageCount = data[6].data.count
                 articles.map(items => {
                     items.isTop = false
                 })
@@ -105,7 +110,7 @@
                     })
                     articles = topList.concat(articles)
                 }
-
+                console.log(messages)
                 return {
                     totalVisible: process.env.NODE_ENV !== 'production',
                     categories: categories,
@@ -117,7 +122,9 @@
                     user: user,
                     cate: cate,
                     maxComment: maxComment,
-                    maxBrowse: maxBrowse
+                    maxBrowse: maxBrowse,
+                    messages: messages,
+                    messageCount: messageCount
                 }
             }).catch(err => {
                 console.log(err.message)

@@ -21,6 +21,7 @@ import (
 func Save(c *gin.Context, isEdit bool) {
 	SendErrJSON := common.SendErrJSON
 	var comment model.Comment
+	var parentComment model.Comment
 
 	iuser, _ := c.Get("user")
 	user := iuser.(model.User)
@@ -67,7 +68,6 @@ func Save(c *gin.Context, isEdit bool) {
 		}
 
 		if comment.ParentID != model.NoParent {
-			var parentComment model.Comment
 			if err := model.DB.First(&parentComment, comment.ParentID).Error; err != nil {
 				SendErrJSON("无效的parentID", c)
 				return
@@ -170,6 +170,34 @@ func Save(c *gin.Context, isEdit bool) {
 				return
 			}
 		}
+
+		// 回复别人的话题或投票时，给消息提醒
+		// 进回复进行回复，即使回复属于的话题或投票是自己创建的，也给父回复的用户发消息
+		if user.ID != author.ID || comment.ParentID != model.NoParent {
+			var message model.Message
+			message.FromUserID = user.ID
+			message.SourceID = comment.SourceID
+			message.SourceName = comment.SourceName
+			message.CommentID = comment.ID
+			message.Readed = false
+			if comment.ParentID != model.NoParent {
+				message.Type = model.MessageTypeCommentComment
+				message.ToUserID = parentComment.UserID
+			} else if comment.SourceName == model.CommentSourceArticle {
+				message.Type = model.MessageTypeCommentArticle
+				message.ToUserID = author.ID
+			} else if comment.SourceName == model.CommentSourceVote {
+				message.Type = model.MessageTypeCommentVote
+				message.ToUserID = author.ID
+			}
+			if err := model.DB.Create(&message).Error; err != nil {
+				tx.Rollback()
+				fmt.Println(err)
+				SendErrJSON("error", c)
+				return
+			}
+		}
+
 		tx.Commit()
 	} else {
 		if err := model.DB.First(&updatedComment, comment.ID).Error; err != nil {

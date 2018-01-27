@@ -29,6 +29,16 @@
                     <template v-if="userData">
                         <li>
                             <Tooltip trigger="hover" title="提示标题" placement="bottom">
+                                <a href="" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon></a>
+                                <ul slot="content" class="header-message-list">
+                                    <li v-for="message in messages">
+                                        <p v-if="1 || message.type === 'messageTypeCommentArticle'">{{message.fromUser.name}}&nbsp;回复了你的话题</p>
+                                    </li>
+                                </ul>
+                            </Tooltip>
+                        </li>
+                        <li style="padding-right:0;">
+                            <Tooltip trigger="hover" title="提示标题" placement="bottom">
                                 <a :href="`/user/${user.id}`" class="header-usre-box">
                                     <span class="header-avatar">
                                         <img :src="user.avatarURL" alt="">
@@ -60,7 +70,8 @@
 
     export default {
         props: [
-            'user'
+            'user',
+            'messages'
         ],
         data () {
             return {
