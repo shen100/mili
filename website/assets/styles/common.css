@@ -231,6 +231,36 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .header-message-list li {
     display: block;
+    line-height: 32px;
+}
+
+.header-message-item {
+    white-space: normal;
+    color: #fff;
+}
+
+.header-message-item:hover {
+    color: #fff;
+}
+
+.header-message-content {
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #56c0f5!important;
+}
+
+.header-message-content:hover {
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #56c0f5!important;
+}
+
+.header-message-user {
+    color: #56c0f5!important;
+}
+
+.header-message-user:hover {
+    color: #56c0f5!important;
 }
 
 .golang-footer {

@@ -33,10 +33,6 @@
   version = "1.4.0"
 
 [[constraint]]
-  name = "github.com/jinzhu/gorm"
-  version = "1.0.0"
-
-[[constraint]]
   branch = "master"
   name = "github.com/microcosm-cc/bluemonday"
 

@@ -28,11 +28,13 @@
                     <li><a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a></li>
                     <template v-if="userData">
                         <li>
-                            <Tooltip trigger="hover" title="提示标题" placement="bottom">
+                            <Tooltip :always="true" trigger="hover" title="提示标题" placement="bottom">
                                 <a href="" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon></a>
                                 <ul slot="content" class="header-message-list">
-                                    <li v-for="message in messages">
-                                        <p v-if="1 || message.type === 'messageTypeCommentArticle'">{{message.fromUser.name}}&nbsp;回复了你的话题</p>
+                                    <li v-for="message in userMessages">
+                                        <p v-if="message.type === 'messageTypeCommentArticle'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你的话题&nbsp;<a :href="`/topic/${message.sourceID}/#reply-${message.commentID}`" target="_blank" class="header-message-content">{{message.data.title}}</a></p>
+                                        <p v-else-if="message.type === 'messageTypeCommentVote'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你的投票&nbsp;<a :href="`/vote/${message.sourceID}/#reply-${message.commentID}`" target="_blank" class="header-message-content">{{message.data.title}}</a></p>
+                                        <p v-else-if="message.type === 'messageTypeCommentComment'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你&nbsp;<a class="header-message-content" :href="message.sourceName === 'article' ? `/topic/${message.sourceID}/#reply-${message.commentID}` : `/vote/${message.sourceID}/#reply-${message.commentID}`" target="_blank">{{message.data.commentContent}}</a></p>
                                     </li>
                                 </ul>
                             </Tooltip>
@@ -66,6 +68,8 @@
 <script>
     import request from '~/net/request'
     import ErrorCode from '~/constant/ErrorCode'
+    import htmlUtil from '~/utils/html'
+    import trimHtml from 'trim-html'
     import '~/utils/bd'
 
     export default {
@@ -77,7 +81,8 @@
             return {
                 q: '',
                 userData: this.user,
-                isInputFocus: false
+                isInputFocus: false,
+                userMessages: []
             }
         },
         methods: {
@@ -109,6 +114,28 @@
             }
         },
         mounted () {
+            let messages = this.messages || []
+            let userMessages = messages.slice(0)
+            let maxLen = 15
+            for (let i = 0; i < userMessages.length; i++) {
+                if (userMessages[i].type === 'messageTypeCommentComment') {
+                    let trimObj = trimHtml(userMessages[i].data.commentContent, {
+                        limit: maxLen,
+                        wordBreak: true,
+                        suffix: '...',
+                        preserveTags: false,
+                        moreLink: false
+                    })
+                    let content = trimObj.html
+                    content = htmlUtil.trimImg(content)
+                    userMessages[i].data.commentContent = content
+                }
+                let title = userMessages[i].data.title || ''
+                if (title.length > maxLen) {
+                    userMessages[i].data.title = title.substr(0, maxLen) + '...'
+                }
+            }
+            this.userMessages = userMessages
         }
     }
 </script>

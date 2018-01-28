@@ -74,6 +74,7 @@ func UserFromRedis(userID int) (User, error) {
 
 	userBytes, err := redis.Bytes(RedisConn.Do("GET", loginUser))
 	if err != nil {
+		fmt.Println(err)
 		return User{}, errors.New("未登录")
 	}
 	var user User

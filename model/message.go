@@ -2,6 +2,11 @@ package model
 
 import "time"
 
+type data struct {
+	Title          string `json:"title"`
+	CommentContent string `json:"commentContent"`
+}
+
 // Message 消息
 type Message struct {
 	ID         uint       `gorm:"primary_key" json:"id"`
@@ -16,8 +21,7 @@ type Message struct {
 	SourceID   uint       `json:"sourceID"`
 	SourceName string     `json:"sourceName"`
 	CommentID  uint       `json:"commentID"`
-	Title      string     `json:"title"`
-	Content    string     `json:"content"`
+	Data       data       `json:"data"`
 }
 
 const (
@@ -25,7 +29,7 @@ const (
 	MessageTypeCommentArticle = "messageTypeCommentArticle"
 
 	// MessageTypeCommentVote 回复了投票
-	MessageTypeCommentVote = "MessageTypeCommentVote"
+	MessageTypeCommentVote = "messageTypeCommentVote"
 
 	// MessageTypeCommentComment 对回复进行了回复
 	MessageTypeCommentComment = "messageTypeCommentComment"

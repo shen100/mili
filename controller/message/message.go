@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
+	"github.com/shen100/golang123/utils"
 )
 
 // Unread 未读消息
@@ -33,7 +34,7 @@ func Unread(c *gin.Context) {
 	iuser, _ := c.Get("user")
 	user := iuser.(model.User)
 
-	if model.DB.Where("readed = ? AND to_user_id = ?", 0, user.ID).Order("created_at DESC").
+	if model.DB.Where("readed = ? AND to_user_id = ?", 0, user.ID).Order("created_at ASC").
 		Offset((pageNo-1)*pageSize).Limit(pageSize).Find(&messages).Error != nil {
 		SendErrJSON("error", c)
 		return
@@ -48,8 +49,34 @@ func Unread(c *gin.Context) {
 			SendErrJSON("error", c)
 			return
 		}
-		if messages[i].SourceName == model.CommentSourceArticle {
-
+		if messages[i].Type == model.MessageTypeCommentArticle {
+			var article model.Article
+			if err := model.DB.Select("name").Where("id = ?", messages[i].SourceID).First(&article).Error; err != nil {
+				SendErrJSON("error", c)
+				return
+			}
+			messages[i].Data.Title = article.Name
+		} else if messages[i].Type == model.MessageTypeCommentVote {
+			var vote model.Vote
+			if err := model.DB.Select("name").Where("id = ?", messages[i].SourceID).First(&vote).Error; err != nil {
+				SendErrJSON("error", c)
+				return
+			}
+			messages[i].Data.Title = vote.Name
+		} else if messages[i].Type == model.MessageTypeCommentComment {
+			var comment model.Comment
+			if err := model.DB.Select("content_type, content, html_content").Where("id = ?", messages[i].CommentID).
+				First(&comment).Error; err != nil {
+				SendErrJSON("error", c)
+				return
+			}
+			var commentContent string
+			if comment.ContentType == model.ContentTypeMarkdown {
+				commentContent = utils.MarkdownToHTML(comment.Content)
+			} else {
+				commentContent = utils.AvoidXSS(comment.HTMLContent)
+			}
+			messages[i].Data.CommentContent = commentContent
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{

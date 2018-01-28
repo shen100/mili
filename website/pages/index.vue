@@ -110,7 +110,6 @@
                     })
                     articles = topList.concat(articles)
                 }
-                console.log(messages)
                 return {
                     totalVisible: process.env.NODE_ENV !== 'production',
                     categories: categories,

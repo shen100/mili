@@ -14,12 +14,6 @@
   revision = "349dd0209470eabd9514242c688c403c0926d266"
 
 [[projects]]
-  name = "github.com/asaskevich/govalidator"
-  packages = ["."]
-  revision = "521b25f4b05fd26bec69d9dedeb8f9c9a83939a8"
-  version = "v8"
-
-[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
@@ -144,6 +138,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0f78a5c90bf4c51d3cbacfa5a66832e6f2dfa3d88f49ec734a08652b62263168"
+  inputs-digest = "5a90a29c73942b4f9e24ded17510b0ec55802ed2518dd57b43a1e45a29445f50"
   solver-name = "gps-cdcl"
   solver-version = 1
