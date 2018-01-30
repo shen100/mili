@@ -4,6 +4,7 @@ import config from '~/config'
  * 引入AdSense
  */
 if (config.adsenseID && typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+    let adsenseID = config.adsenseID;
     let s = document.createElement('script');
     s.async = true;
     s.src = '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
