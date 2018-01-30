@@ -27,17 +27,18 @@
                     <li><a href="https://github.com/shen100/golang123" target="_blank">golang123源码</a></li>
                     <li><a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a></li>
                     <template v-if="userData">
-                        <li>
-                            <Tooltip :always="true" trigger="hover" title="提示标题" placement="bottom">
-                                <a href="" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon></a>
+                        <li class="user-message-wrapbox">
+                            <Tooltip v-if="userMessages.length" trigger="hover" title="提示标题" placement="bottom">
+                                <a href="" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon><span class="user-message-tip-count">{{messageCount}}</span></a>
                                 <ul slot="content" class="header-message-list">
                                     <li v-for="message in userMessages">
-                                        <p v-if="message.type === 'messageTypeCommentArticle'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你的话题&nbsp;<a :href="`/topic/${message.sourceID}/#reply-${message.commentID}`" target="_blank" class="header-message-content">{{message.data.title}}</a></p>
-                                        <p v-else-if="message.type === 'messageTypeCommentVote'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你的投票&nbsp;<a :href="`/vote/${message.sourceID}/#reply-${message.commentID}`" target="_blank" class="header-message-content">{{message.data.title}}</a></p>
-                                        <p v-else-if="message.type === 'messageTypeCommentComment'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你&nbsp;<a class="header-message-content" :href="message.sourceName === 'article' ? `/topic/${message.sourceID}/#reply-${message.commentID}` : `/vote/${message.sourceID}/#reply-${message.commentID}`" target="_blank">{{message.data.commentContent}}</a></p>
+                                        <p v-if="message.type === 'messageTypeCommentArticle'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你的话题&nbsp;<a @click="onReadMessage(message)" :href="`/topic/${message.sourceID}/#reply-${message.commentID}`" target="_blank" class="header-message-content" :style="{color: message.readed ? '#a0a3a4' : ''}">{{message.data.title}}</a></p>
+                                        <p v-else-if="message.type === 'messageTypeCommentVote'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你的投票&nbsp;<a @click="onReadMessage(message)" :href="`/vote/${message.sourceID}/#reply-${message.commentID}`" target="_blank" class="header-message-content" :style="{color: message.readed ? '#a0a3a4' : ''}">{{message.data.title}}</a></p>
+                                        <p v-else-if="message.type === 'messageTypeCommentComment'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你&nbsp;<a @click="onReadMessage(message)" class="header-message-content" :href="message.sourceName === 'article' ? `/topic/${message.sourceID}/#reply-${message.commentID}` : `/vote/${message.sourceID}/#reply-${message.commentID}`" :style="{color: message.readed ? '#a0a3a4' : ''}" target="_blank">{{message.data.commentContent}}</a></p>
                                     </li>
                                 </ul>
                             </Tooltip>
+                            <a v-else href="" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon></a>
                         </li>
                         <li style="padding-right:0;">
                             <Tooltip trigger="hover" title="提示标题" placement="bottom">
@@ -71,11 +72,13 @@
     import htmlUtil from '~/utils/html'
     import trimHtml from 'trim-html'
     import '~/utils/bd'
+    import '~/utils/adsense'
 
     export default {
         props: [
             'user',
-            'messages'
+            'messages',
+            'messageCount'
         ],
         data () {
             return {
@@ -95,6 +98,15 @@
             },
             onInputBlur () {
                 this.isInputFocus = false
+            },
+            onReadMessage (message) {
+                request.readMessage({
+                    params: {
+                        id: message.id
+                    }
+                }).then(() => {
+                    message.readed = true
+                })
             },
             onSignin () {
                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
@@ -134,6 +146,7 @@
                 if (title.length > maxLen) {
                     userMessages[i].data.title = title.substr(0, maxLen) + '...'
                 }
+                userMessages[i].readed = false
             }
             this.userMessages = userMessages
         }

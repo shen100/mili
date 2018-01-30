@@ -157,13 +157,16 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     color: #eee;
 }
 
-.golang-top-header-right a {
+/*.golang-top-header-right a {
     color: #333;
 }
-
+*/
 .golang-top-header-right a:hover {
-    color: #333;
     text-decoration: none;
+}
+
+.user-message-wrapbox .ivu-tooltip-inner {
+    cursor: default!important;
 }
 
 .user-message-box {
@@ -181,6 +184,21 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     position: absolute;
     top: 0;
     left: 3px;
+}
+
+.user-message-tip-count {
+    display: inline-block;
+    position: absolute;
+    right: -8px;
+    top: -4px;
+    line-height: 14px;
+    background-color: #ec2929;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
 }
 
 .header-user-box a {
@@ -229,9 +247,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     text-align: center;
 }
 
+.header-message-list {
+    cursor: default;
+}
+
 .header-message-list li {
     display: block;
     line-height: 32px;
+    cursor: default;
 }
 
 .header-message-item {
@@ -246,13 +269,13 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 .header-message-content {
     word-break: break-all;
     word-wrap: break-word;
-    color: #56c0f5!important;
+    color: #56c0f5;
 }
 
 .header-message-content:hover {
     word-break: break-all;
     word-wrap: break-word;
-    color: #56c0f5!important;
+    color: #56c0f5;
 }
 
 .header-message-user {

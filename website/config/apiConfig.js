@@ -266,7 +266,11 @@ const api = {
         desc: '获取收藏夹下的话题'
     },
     getMessages: { // 未读消息
-        url: url + '/message/unread',
+        url: url + '/messages/unread',
+        method: 'GET'
+    },
+    readMessage: { // 将消息标记为已读
+        url: url + '/messages/read/:id',
         method: 'GET'
     }
 }

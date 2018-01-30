@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header :user="user" :messages="messages"/>
+        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div id="indexBanner"><a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=1kjxjjg7&productCode=qingcloud&utm_source=1kjxjjg7" target="_blank"><img src="/images/ad/aliyun/banner.900x64.jpg"></a></div>

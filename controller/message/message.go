@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/jinzhu/gorm"
+
 	"github.com/gin-gonic/gin"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
@@ -34,7 +36,7 @@ func Unread(c *gin.Context) {
 	iuser, _ := c.Get("user")
 	user := iuser.(model.User)
 
-	if model.DB.Where("readed = ? AND to_user_id = ?", 0, user.ID).Order("created_at ASC").
+	if model.DB.Where("readed = ? AND to_user_id = ?", 0, user.ID).Order("created_at DESC").
 		Offset((pageNo-1)*pageSize).Limit(pageSize).Find(&messages).Error != nil {
 		SendErrJSON("error", c)
 		return
@@ -44,7 +46,7 @@ func Unread(c *gin.Context) {
 		SendErrJSON("error", c)
 		return
 	}
-	for i := 0; i < len(messages); i++ {
+	for i := len(messages) - 1; i >= 0; i-- {
 		if err := model.DB.Model(&messages[i]).Related(&messages[i].FromUser, "users", "from_user_id").Error; err != nil {
 			SendErrJSON("error", c)
 			return
@@ -52,23 +54,44 @@ func Unread(c *gin.Context) {
 		if messages[i].Type == model.MessageTypeCommentArticle {
 			var article model.Article
 			if err := model.DB.Select("name").Where("id = ?", messages[i].SourceID).First(&article).Error; err != nil {
-				SendErrJSON("error", c)
-				return
+				if err != gorm.ErrRecordNotFound {
+					messages = append(messages[:i], messages[i+1:]...)
+					continue
+				}
 			}
 			messages[i].Data.Title = article.Name
 		} else if messages[i].Type == model.MessageTypeCommentVote {
 			var vote model.Vote
 			if err := model.DB.Select("name").Where("id = ?", messages[i].SourceID).First(&vote).Error; err != nil {
-				SendErrJSON("error", c)
-				return
+				if err != gorm.ErrRecordNotFound {
+					messages = append(messages[:i], messages[i+1:]...)
+					continue
+				}
 			}
 			messages[i].Data.Title = vote.Name
 		} else if messages[i].Type == model.MessageTypeCommentComment {
 			var comment model.Comment
-			if err := model.DB.Select("content_type, content, html_content").Where("id = ?", messages[i].CommentID).
+			if err := model.DB.Where("id = ?", messages[i].CommentID).
 				First(&comment).Error; err != nil {
 				SendErrJSON("error", c)
 				return
+			}
+			if comment.SourceName == model.CommentSourceArticle {
+				var article model.Article
+				if err := model.DB.Select("id").Where("id = ?", comment.SourceID).First(&article).Error; err != nil {
+					if err != gorm.ErrRecordNotFound {
+						messages = append(messages[:i], messages[i+1:]...)
+						continue
+					}
+				}
+			} else if comment.SourceName == model.CommentSourceVote {
+				var vote model.Vote
+				if err := model.DB.Select("id").Where("id = ?", comment.SourceID).First(&vote).Error; err != nil {
+					if err != gorm.ErrRecordNotFound {
+						messages = append(messages[:i], messages[i+1:]...)
+						continue
+					}
+				}
 			}
 			var commentContent string
 			if comment.ContentType == model.ContentTypeMarkdown {
@@ -91,19 +114,21 @@ func Unread(c *gin.Context) {
 	})
 }
 
-// UnreadCount 未读消息数量
-func UnreadCount(c *gin.Context) {
+// Read 读消息
+func Read(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	var count int
-	if err := model.DB.Model(&model.Message{}).Where("readed = ?", 0).Count(&count).Error; err != nil {
+	id, idErr := strconv.Atoi(c.Param("id"))
+	if idErr != nil {
+		SendErrJSON("error", c)
+		return
+	}
+	if err := model.DB.Model(&model.Message{}).Where("id = ?", id).Update("readed", true).Error; err != nil {
 		SendErrJSON("error", c)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
-		"data": gin.H{
-			"count": count,
-		},
+		"data":  gin.H{},
 	})
 }

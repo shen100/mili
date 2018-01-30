@@ -2,3 +2,4 @@
 node_modules
 static
 utils/bd.js
+utils/adsense.js

@@ -5,6 +5,7 @@ var config = {
     tokenCookieName: 'token',
     bdStatEnable: false,
     bdStatSI: '',
+    adsenseID: '',
     messageDuration: 5,
     luosimaoSiteKey: '',
     proxy: {

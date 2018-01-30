@@ -57,8 +57,10 @@ func Route(router *gin.Engine) {
 		api.DELETE("/user/school/delete/:id", middleware.SigninRequired,
 			user.DeleteSchool)
 
-		api.GET("/message/unread", middleware.SigninRequired,
+		api.GET("/messages/unread", middleware.SigninRequired,
 			message.Unread)
+		api.GET("/messages/read/:id", middleware.SigninRequired,
+			message.Read)
 
 		api.GET("/categories", category.List)
 
