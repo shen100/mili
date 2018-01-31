@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header :user="user" />
+        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
         <div class="golang-home-body">
             <div class="golang-home-body-left topic-detail-left">
                 <div class="topic-detail-box">
@@ -246,6 +246,9 @@
                     }),
                     request.getMaxComment({
                         client: context.req
+                    }),
+                    request.getMessages({
+                        client: context.req
                     })
                 ]
                 if (context.user) {
@@ -261,8 +264,10 @@
                     let collectDirList = []
                     let alreadyCollect = false
                     let alreadyCollectID = 0
-                    if (arr[4]) {
-                        collectDirList = arr[4].data.folders || []
+                    let messages = arr[4].data.messages || []
+                    let messageCount = arr[4].data.count
+                    if (arr[5]) {
+                        collectDirList = arr[5].data.folders || []
                         collectDirList.map(item => {
                             item.hasCollect = false
                             item.collects.map(items => {
@@ -295,7 +300,9 @@
                         recentArticles: recentArticles,
                         collectDirList: collectDirList,
                         alreadyCollect: alreadyCollect,
-                        alreadyCollectID: alreadyCollectID
+                        alreadyCollectID: alreadyCollectID,
+                        messages: messages,
+                        messageCount: messageCount
                     }
                 })
             }).catch(err => {

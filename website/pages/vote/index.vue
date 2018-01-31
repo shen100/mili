@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header :user="user" />
+        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
         <div class="golang-home-body">
             <div class="golang-home-body-left">
                 <div id="voteBanner"><a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=1kjxjjg7&productCode=qingcloud&utm_source=1kjxjjg7" target="_blank"><img src="/images/ad/aliyun/banner.900x64.jpg"/></a></div>
@@ -63,19 +63,26 @@
                 }),
                 request.getTop10({
                     client: context.req
+                }),
+                request.getMessages({
+                    client: context.req
                 })
             ]).then(arr => {
                 let votes = arr[0].data.votes
                 let votesMaxBrowse = arr[1].data.votes
                 let votesMaxComment = arr[2].data.votes
                 let score = arr[3].data.users
+                let messages = arr[4].data.messages || []
+                let messageCount = arr[4].data.count
                 return {
                     user: context.user,
                     votes: votes,
                     votesMaxBrowse: votesMaxBrowse,
                     votesMaxComment: votesMaxComment,
                     score: score,
-                    status: query.status || ''
+                    status: query.status || '',
+                    messages: messages,
+                    messageCount: messageCount
                 }
             }).catch(err => {
                 console.log(err)

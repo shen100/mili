@@ -1,0 +1,11 @@
+.book-box {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.editor-box-wrap {
+    width: 900px;
+    padding-top: 24px;
+    min-height: 720px;
+    background: #fff;
+}

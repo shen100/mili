@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header :user="user"/>
+        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
         <div class="timeline-box">
             <h1 class="timeline-title">Golang中文社区成长历史</h1>
             <div>
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+    import request from '~/net/request'
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
 
@@ -134,9 +135,15 @@
         },
         asyncData (context) {
             const user = context.user
-            return {
-                user: user
-            }
+            return request.getMessages({
+                client: context.req
+            }).then((res) => {
+                return {
+                    user: user,
+                    messages: res.data.messages || [],
+                    messageCount: res.data.count
+                }
+            })
         },
         head () {
             return {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header :user="user" />
+        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
         <div class="about-box">
             <div class="about-main">
                 <ul class="about-nav">
@@ -47,14 +47,22 @@
             }
         },
         asyncData (context) {
-            return request.getMaxBrowse({
-                client: context.req
-            }).then(data => {
-                console.log(data)
-                let maxBrowse = data.data.articles
+            return Promise.all([
+                request.getMaxBrowse({
+                    client: context.req
+                }),
+                request.getMessages({
+                    client: context.req
+                })
+            ]).then(arr => {
+                let maxBrowse = arr[0].data.articles
+                let messages = arr[1].data.messages || []
+                let messageCount = arr[1].data.count
                 return {
                     user: context.user,
-                    maxBrowse: maxBrowse
+                    maxBrowse: maxBrowse,
+                    messages: messages,
+                    messageCount: messageCount
                 }
             })
         },
