@@ -1,6 +1,5 @@
 <template>
     <div>
-        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
         <div class="golang-home-body">
             <div class="golang-home-body-left topic-detail-left">
                 <div class="topic-detail-box">
@@ -121,9 +120,7 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :user="user" :score="score" :maxComment="maxComment" :author="article.user" :maxBrowse="maxBrowse" :recentArticles="recentArticles"/>
         </div>
-        <app-footer />
         <Modal
             v-model="collectShow"
             class="collect-modal"
@@ -170,7 +167,6 @@
             </Row>
             <div slot="footer"></div>
         </Modal>
-        <BackTop></BackTop>
     </div>
 </template>
 
@@ -178,9 +174,6 @@
     import config from '~/config'
     import htmlUtil from '~/utils/html'
     import ErrorCode from '~/constant/ErrorCode'
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
-    import Sidebar from '~/components/Sidebar'
     import Editor from '~/components/Editor'
     import request from '~/net/request'
     import dateTool from '~/utils/date'
@@ -227,9 +220,6 @@
                     return
                 }
                 let reqArr = [
-                    request.getMaxBrowse({
-                        client: context.req
-                    }),
                     request.getUserArticles({
                         client: context.req,
                         params: {
@@ -240,15 +230,6 @@
                             desc: 1,
                             pageSize: 5
                         }
-                    }),
-                    request.getTop10({
-                        client: context.req
-                    }),
-                    request.getMaxComment({
-                        client: context.req
-                    }),
-                    request.getMessages({
-                        client: context.req
                     })
                 ]
                 if (context.user) {
@@ -257,17 +238,12 @@
                     }))
                 }
                 return Promise.all(reqArr).then(arr => {
-                    let maxBrowse = arr[0].data.articles
-                    let recentArticles = arr[1].data.articles
-                    let score = arr[2].data.users
-                    let maxComment = arr[3].data.articles
+                    let recentArticles = arr[0].data.articles
                     let collectDirList = []
                     let alreadyCollect = false
                     let alreadyCollectID = 0
-                    let messages = arr[4].data.messages || []
-                    let messageCount = arr[4].data.count
-                    if (arr[5]) {
-                        collectDirList = arr[5].data.folders || []
+                    if (arr[1]) {
+                        collectDirList = arr[1].data.folders || []
                         collectDirList.map(item => {
                             item.hasCollect = false
                             item.collects.map(items => {
@@ -294,15 +270,10 @@
                         parentCommentID: 0,
                         floorMap: floorMap,
                         article: article,
-                        maxBrowse: maxBrowse,
-                        score: score,
-                        maxComment: maxComment,
                         recentArticles: recentArticles,
                         collectDirList: collectDirList,
                         alreadyCollect: alreadyCollect,
-                        alreadyCollectID: alreadyCollectID,
-                        messages: messages,
-                        messageCount: messageCount
+                        alreadyCollectID: alreadyCollectID
                     }
                 })
             }).catch(err => {
@@ -322,7 +293,6 @@
                 ]
             }
         },
-        middleware: 'userInfo',
         methods: {
             onSignin () {
                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
@@ -709,9 +679,6 @@
             entity2HTML: htmlUtil.entity2HTML
         },
         components: {
-            'app-header': Header,
-            'app-footer': Footer,
-            'app-sidebar': Sidebar,
             'md-editor': Editor
         }
     }

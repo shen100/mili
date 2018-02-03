@@ -574,7 +574,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     word-wrap: normal;
     word-break: break-word!important;
     word-break: break-all;
-    white-space: pre;
+    /*white-space: pre;*/
     overflow: auto;
     border-radius: 0;
     line-height: 26px;

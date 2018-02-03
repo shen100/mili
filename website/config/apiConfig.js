@@ -6,6 +6,10 @@ if (typeof window === 'undefined') {
 }
 
 const api = {
+    getSiteConfig: { // 网站配置信息
+        url: url + '/siteconfig',
+        method: 'GET'
+    },
     getCategories: { // 获取分类列表
         url: url + '/categories',
         method: 'GET'

@@ -1,6 +1,5 @@
 <template>
     <div>
-        <app-header :user="user" />
         <div class="golang-home-body">
             <div class="golang-home-body-left" style="padding-top: 20px;min-height: 500px;">
                 <p v-if="user && user.id == currentUser.id" class="back-container">
@@ -28,7 +27,6 @@
                 </div>
             </div>
         </div>
-        <app-footer />
     </div>
 </template>
 
@@ -36,8 +34,6 @@
     import trimHtml from 'trim-html'
     import request from '~/net/request'
     import htmlUtil from '~/utils/html'
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
 
     export default {
         data () {
@@ -125,11 +121,6 @@
             return {
                 title: '收藏'
             }
-        },
-        middleware: 'userInfo',
-        components: {
-            'app-header': Header,
-            'app-footer': Footer
         }
     }
 </script>

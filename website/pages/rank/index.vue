@@ -1,32 +1,24 @@
 <template>
-    <div>
-        <app-header :user="user" />
-        <div class="common-body-box">
-            <div class="common-body-main">
-                <ul class="common-body-nav">
-                    <li><a href="/"><span>主页</span></a></li>
-                    <li class="common-body-nav-sep"><span>/</span></li>
-                    <li><span class="top100-label">Top 100 积分榜</span></li>
-                </ul>
-                <div class="rank-container">
-                    <Table
-                        class="rank-list"
-                        :rowClassName="rowClassName"
-                        :data="topList"
-                        :columns="columns"/>
-                </div>
+    <div class="common-body-box">
+        <div class="common-body-main">
+            <ul class="common-body-nav">
+                <li><a href="/"><span>主页</span></a></li>
+                <li class="common-body-nav-sep"><span>/</span></li>
+                <li><span class="top100-label">Top 100 积分榜</span></li>
+            </ul>
+            <div class="rank-container">
+                <Table
+                    class="rank-list"
+                    :rowClassName="rowClassName"
+                    :data="topList"
+                    :columns="columns"/>
             </div>
-            <app-sidebar :score="score" :user="user" :userLoginVisible="true" :maxComment="maxComment" :pubTopic="true" :maxBrowse="maxBrowse"/>
         </div>
-        <app-footer />
     </div>
 </template>
 
 <script>
     import request from '~/net/request'
-    import Header from '~/components/Header'
-    import Sidebar from '~/components/Sidebar'
-    import Footer from '~/components/Footer'
 
     export default {
         data () {
@@ -110,7 +102,6 @@
                 context.error({ statusCode: 404, message: 'Page not found' })
             })
         },
-        middleware: 'userInfo',
         methods: {
             rowClassName: (row, index) => {
                 return index % 2 ? '' : 'rank-line-active'
@@ -120,11 +111,6 @@
             return {
                 title: '积分榜'
             }
-        },
-        components: {
-            'app-header': Header,
-            'app-footer': Footer,
-            'app-sidebar': Sidebar
         }
     }
 </script>

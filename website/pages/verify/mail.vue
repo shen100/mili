@@ -27,13 +27,11 @@
                 </div>
             </div>
         </div>
-        <app-footer />
     </div>
 </template>
 
 <script>
     import ErrorCode from '~/constant/ErrorCode'
-    import Footer from '~/components/Footer'
     import request from '~/net/request'
 
     export default {
@@ -70,9 +68,6 @@
             return {
                 title: '邮箱验证'
             }
-        },
-        components: {
-            'app-footer': Footer
         }
     }
 </script>

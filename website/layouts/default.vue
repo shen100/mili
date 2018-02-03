@@ -1,53 +1,46 @@
 <template>
-  <div>
-    <nuxt/>
-  </div>
+    <div>
+        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
+        <nuxt/>
+        <app-sidebar :top10Users="top10Users" :user="user" :userLoginVisible="userLoginVisible" :maxCommentArticles="maxCommentArticles" :pubTopic="true" :maxBrowseArticles="maxBrowseArticles"/>
+        <app-footer />
+        <BackTop></BackTop>
+    </div>
 </template>
 
-<style>
-html
-{
-  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
-}
-*, *:before, *:after
-{
-  box-sizing: border-box;
-  margin: 0;
-}
-.button--green
-{
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
-.button--green:hover
-{
-  color: #fff;
-  background-color: #3b8070;
-}
-.button--grey
-{
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-.button--grey:hover
-{
-  color: #fff;
-  background-color: #35495e;
-}
-</style>
+<script>
+    import Header from '~/components/Header2'
+    import Footer from '~/components/Footer2'
+    import Sidebar from '~/components/Sidebar2'
+
+    export default {
+        data () {
+            return {
+                siteConfig: this.$store.state.siteConfig,
+                user: this.$store.state.user,
+                userLoginVisible: !this.$store.state.user,
+                messages: this.$store.state.messages,
+                messageCount: this.$store.state.messageCount,
+                top10Users: this.$store.state.top10Users,
+                maxCommentArticles: this.$store.state.maxCommentArticles,
+                maxBrowseArticles: this.$store.state.maxBrowseArticles
+            }
+        },
+        head () {
+            let siteConfig = this.siteConfig
+            return {
+                titleTemplate: '%s - ' + siteConfig.title,
+                meta: [
+                    { hid: 'description', name: 'description', content: siteConfig.description },
+                    { name: 'keywords', content: siteConfig.keywords }
+                ]
+            }
+        },
+        middleware: 'appData',
+        components: {
+            'app-header': Header,
+            'app-footer': Footer,
+            'app-sidebar': Sidebar
+        }
+    }
+</script>

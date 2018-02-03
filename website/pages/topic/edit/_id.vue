@@ -1,15 +1,11 @@
 <template>
     <div>
-        <app-header :user="user" />
         <article-save :categories="categories" :article="article" :recentArticles="recentArticles" :hasRecentArticles="hasRecentArticles" :id="id" :user="user"></article-save>
-        <app-footer></app-footer>
     </div>
 </template>
 
 <script>
     import request from '~/net/request'
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
     import ArticleSave from '~/components/article/save'
 
     export default {
@@ -81,8 +77,6 @@
         },
         middleware: 'userRequired',
         components: {
-            'app-header': Header,
-            'app-footer': Footer,
             'article-save': ArticleSave
         }
     }

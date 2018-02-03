@@ -1,6 +1,5 @@
 <template>
 	<div>
-        <go-header :userStatus="user" />
         <div class="golang-forget-container">
             <h1>账号中心</h1>
             <p class="golang-forget-title">账号激活</p>
@@ -18,8 +17,6 @@
 </template>
 
 <script>
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
     import request from '~/net/request'
 
     export default {
@@ -60,11 +57,6 @@
             return {
                 title: '账号激活'
             }
-        },
-        middleware: 'userInfo',
-        components: {
-            'go-header': Header,
-            'go-footer': Footer
         }
     }
 </script>

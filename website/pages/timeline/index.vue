@@ -1,6 +1,5 @@
 <template>
     <div>
-        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
         <div class="timeline-box">
             <h1 class="timeline-title">Golang中文社区成长历史</h1>
             <div>
@@ -27,15 +26,10 @@
                 </ul>
             </div>
         </div>
-        <app-footer />
     </div>
 </template>
 
 <script>
-    import request from '~/net/request'
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
-
     export default {
         data () {
             return {
@@ -133,18 +127,6 @@
                 ]
             }
         },
-        asyncData (context) {
-            const user = context.user
-            return request.getMessages({
-                client: context.req
-            }).then((res) => {
-                return {
-                    user: user,
-                    messages: res.data.messages || [],
-                    messageCount: res.data.count
-                }
-            })
-        },
         head () {
             return {
                 title: 'Golang中文社区成长历史'
@@ -168,11 +150,6 @@
                 }
                 return '' + year + '-' + month + '-' + d
             }
-        },
-        middleware: 'userInfo',
-        components: {
-            'app-header': Header,
-            'app-footer': Footer
         }
     }
 </script>

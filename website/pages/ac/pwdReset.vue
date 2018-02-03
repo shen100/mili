@@ -1,6 +1,5 @@
 <template>
     <div>
-        <go-header :user="user"/>
         <div class="golang-forget-container">
             <h1>账号安全中心</h1>
             <p class="golang-forget-title">忘记密码</p>
@@ -34,8 +33,6 @@
 </template>
 
 <script>
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
     import config from '~/config'
@@ -73,7 +70,6 @@
                 ]
             }
         },
-        middleware: 'userInfo',
         methods: {
             handleKeyUp (e) {
                 if (e.keyCode === 13) {
@@ -160,10 +156,6 @@
         },
         destroyed () {
             clearInterval(this.count)
-        },
-        components: {
-            'go-header': Header,
-            'go-footer': Footer
         }
     }
 </script>

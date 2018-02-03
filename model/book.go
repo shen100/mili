@@ -69,7 +69,7 @@ type BookComment struct {
 	CreatedAt   time.Time     `json:"createdAt"`
 	UpdatedAt   time.Time     `json:"updatedAt"`
 	DeletedAt   *time.Time    `sql:"index" json:"deletedAt"`
-	Status      int           `json:"status"`
+	Status      string        `json:"status"`
 	Content     string        `json:"content"`
 	HTMLContent string        `json:"htmlContent"`
 	ContentType int           `json:"contentType"`

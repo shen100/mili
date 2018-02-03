@@ -1,6 +1,5 @@
 <template>
 	<div>
-        <go-header :user="user"/>
         <div class="golang-forget-container">
             <h1>账号安全中心</h1>
             <p class="golang-forget-title">修改密码</p>
@@ -28,8 +27,6 @@
 <script>
     import Account from '~/constant/Account'
     import ErrorCode from '~/constant/ErrorCode'
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
     import request from '~/net/request'
     import {trim} from '~/utils/tool'
     import config from '~/config'
@@ -147,10 +144,6 @@
             return {
                 title: '修改密码'
             }
-        },
-        components: {
-            'go-header': Header,
-            'go-footer': Footer
         }
     }
 </script>

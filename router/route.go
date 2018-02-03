@@ -22,6 +22,7 @@ func Route(router *gin.Engine) {
 
 	api := router.Group(apiPrefix, middleware.RefreshTokenCookie)
 	{
+		api.GET("/siteconfig", common.SiteConfig)
 		api.POST("/signin", user.Signin)
 		api.POST("/signup", user.Signup)
 		api.POST("/signout", middleware.SigninRequired,

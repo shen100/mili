@@ -1,5 +1,5 @@
 .nuxt
 node_modules
 static
-utils/bd.js
-utils/adsense.js
+plugins/bdStat.js
+plugins/adsense.js

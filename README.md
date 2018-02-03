@@ -119,13 +119,10 @@ go run main.go
 ### 访问
 浏览器中访问 https://dev.golang123.com/
 
-## ❓问题
-
-有任何问题或建议都欢迎提 issue  
-
-## 👥 技术交流  
-QQ群: 32550512   
-QQ群中的消息很可能还没被看到，就被后来的消息给冲掉，有问题还是建议大家开issue
+## ❓问题反馈
+QQ群: 32550512    
+<img src="https://static.oschina.net/uploads/space/2018/0201/181259_75b3_1185257.jpg" width="300" />    
+欢迎加入Golang123的QQ群反馈问题，也可以在Gihub上开issue。
 
 ## 💰 赞助
 如果你觉得`golang123`这个项目还不错的话，可以通过扫描下面的二维码来赞助我, 金额任意，无上限😃 

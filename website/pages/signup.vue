@@ -55,18 +55,14 @@
                 </div>
     	    </div>
         </div>
-        <app-footer />
     </div>
 </template>
 
 <script>
-    import Footer from '~/components/Footer'
-    import Sidebar from '~/components/Sidebar'
     import ErrorCode from '~/constant/ErrorCode'
     import config from '~/config'
     import request from '~/net/request'
     import {trim, trimBlur} from '~/utils/tool'
-    import '~/utils/bd'
 
     export default {
         data () {
@@ -129,23 +125,11 @@
                 }
             }
         },
-        asyncData (context) {
-            const user = context.user
-            if (user) {
-                let redirectURL = context.req.headers['referer'] || '/'
-                context.redirect(redirectURL)
-                return
-            }
-            return {
-                user: user
-            }
-        },
         head () {
             return {
                 title: '注册'
             }
         },
-        middleware: 'userInfo',
         methods: {
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
@@ -190,10 +174,6 @@
             blur (name) {
                 trimBlur(name, this)
             }
-        },
-        components: {
-            'app-footer': Footer,
-            'app-sidebar': Sidebar
         }
     }
 </script>

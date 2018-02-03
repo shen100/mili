@@ -1,6 +1,5 @@
 <template>
     <div>
-        <app-header :user="user" />
         <div class="golang-home-body">
             <div class="golang-main-top">
                 <div class="mine-img-box" :style="{'background-image': 'url(' + userInfo.coverURL + ')'}"></div>
@@ -160,14 +159,11 @@
                 </div>
             </div>
         </div>
-        <app-footer />
     </div>
 </template>
 
 <script>
     import axios from 'axios'
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
     import request from '~/net/request'
     import ErrorCode from '~/constant/ErrorCode'
     import config from '~/config'
@@ -502,10 +498,6 @@
                     { src: '/javascripts/croppie/croppie.min.js' }
                 ]
             }
-        },
-        components: {
-            'app-header': Header,
-            'app-footer': Footer
         }
     }
 </script>

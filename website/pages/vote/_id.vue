@@ -1,6 +1,5 @@
 <template>
     <div>
-        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
         <div class="golang-home-body">
             <div class="golang-home-body-left vote-detail-left">
                 <div class="vote-detail-box">
@@ -125,7 +124,6 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :score="score" :votesMaxBrowse="votesMaxBrowse" :votesMaxComment="votesMaxComment"/>
         </div>
         <app-footer />
         <Modal
@@ -183,9 +181,6 @@
     import config from '~/config'
     import htmlUtil from '~/utils/html'
     import VoteStatus from '~/constant/VoteStatus'
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
-    import Sidebar from '~/components/Sidebar'
     import Editor from '~/components/Editor'
     import request from '~/net/request'
     import dateTool from '~/utils/date'
@@ -226,18 +221,6 @@
                     params: {
                         id: context.params.id
                     }
-                }),
-                request.getVoteMaxBrowse({
-                    client: context.req
-                }),
-                request.getVoteMaxComment({
-                    client: context.req
-                }),
-                request.getTop10({
-                    client: context.req
-                }),
-                request.getMessages({
-                    client: context.req
                 })
             ]
             if (context.user) {
@@ -247,17 +230,12 @@
             }
             return Promise.all(arr).then(arr => {
                 let vote = arr[0].data
-                let votesMaxBrowse = arr[1].data.votes
-                let votesMaxComment = arr[2].data.votes
-                let score = arr[3].data.users
                 let isAuthor = context.user && context.user.id === vote.user.id
                 let collectDirList = []
                 let alreadyCollect = false
                 let alreadyCollectID = 0
-                let messages = arr[4].data.messages || []
-                let messageCount = arr[4].data.count
-                if (arr[5]) {
-                    collectDirList = arr[5].data.folders || []
+                if (arr[1]) {
+                    collectDirList = arr[1].data.folders || []
                     collectDirList.map(item => {
                         item.hasCollect = false
                         item.collects.map(items => {
@@ -284,22 +262,16 @@
                     user: context.user,
                     replyVote: true, // 直接回复投票的编辑器是否显示(即parentCommentID为0)
                     parentCommentID: 0,
-                    votesMaxBrowse: votesMaxBrowse,
-                    votesMaxComment: votesMaxComment,
-                    score: score,
                     isEnd: vote.status !== VoteStatus.VOTE_UNDERWAY,
                     collectDirList: collectDirList,
                     alreadyCollect: alreadyCollect,
-                    alreadyCollectID: alreadyCollectID,
-                    messages: messages,
-                    messageCount: messageCount
+                    alreadyCollectID: alreadyCollectID
                 }
             }).catch(err => {
                 console.log(err)
                 context.error({ statusCode: 404, message: 'Page not found' })
             })
         },
-        middleware: 'userInfo',
         methods: {
             onSignin () {
                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
@@ -734,9 +706,6 @@
             entity2HTML: htmlUtil.entity2HTML
         },
         components: {
-            'app-header': Header,
-            'app-footer': Footer,
-            'app-sidebar': Sidebar,
             'md-editor': Editor
         }
     }

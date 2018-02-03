@@ -1,6 +1,5 @@
 <template>
     <div>
-        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
         <div class="about-box">
             <div class="about-main">
                 <ul class="about-nav">
@@ -28,43 +27,16 @@
                     </div>
                 </div>
             </div>
-            <app-sidebar :maxBrowse="maxBrowse"/>
         </div>
-        <app-footer />
     </div>
 </template>
 
 <script>
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
-    import Sidebar from '~/components/Sidebar'
-    import request from '~/net/request'
-
     export default {
         data () {
             return {
 
             }
-        },
-        asyncData (context) {
-            return Promise.all([
-                request.getMaxBrowse({
-                    client: context.req
-                }),
-                request.getMessages({
-                    client: context.req
-                })
-            ]).then(arr => {
-                let maxBrowse = arr[0].data.articles
-                let messages = arr[1].data.messages || []
-                let messageCount = arr[1].data.count
-                return {
-                    user: context.user,
-                    maxBrowse: maxBrowse,
-                    messages: messages,
-                    messageCount: messageCount
-                }
-            })
         },
         head () {
             return {
@@ -72,12 +44,6 @@
             }
         },
         mounted () {
-        },
-        middleware: 'userInfo',
-        components: {
-            'app-header': Header,
-            'app-footer': Footer,
-            'app-sidebar': Sidebar
         }
     }
 </script>

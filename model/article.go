@@ -42,14 +42,6 @@ const (
 // MaxTopArticleCount 最多能置顶的文章数
 const MaxTopArticleCount = 4
 
-const (
-	// ContentTypeMarkdown markdown
-	ContentTypeMarkdown = 1
-
-	// ContentTypeHTML html
-	ContentTypeHTML = 2
-)
-
 // TopArticle 置顶的文章
 type TopArticle struct {
 	ID        uint       `gorm:"primary_key" json:"id"`

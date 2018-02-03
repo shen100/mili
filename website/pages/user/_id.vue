@@ -1,6 +1,5 @@
 <template>
     <div>
-        <app-header :user="user" />
         <div class="golang-home-body">
             <div class="golang-main-top">
                 <div class="mine-img-box" :style="{'background-image': 'url(' + currentUser.coverURL + ')'}"></div>
@@ -71,7 +70,6 @@
                 </div>
             </div>
         </div>
-        <app-footer />
     </div>
 </template>
 
@@ -80,8 +78,6 @@
     import url from 'url'
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
     import config from '~/config'
 
     export default {
@@ -233,11 +229,6 @@
                     })
                 })
             }
-        },
-        middleware: 'userInfo',
-        components: {
-            'app-header': Header,
-            'app-footer': Footer
         }
     }
 </script>

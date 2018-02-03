@@ -36,7 +36,6 @@
     import config from '~/config'
     import url from 'url'
     import {trim, trimBlur} from '~/utils/tool'
-    import '~/utils/bd'
 
     export default {
         data () {
@@ -86,7 +85,6 @@
             }
         },
         layout: 'signin',
-        middleware: 'userInfo',
         head () {
             return {
                 title: '登录',

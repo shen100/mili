@@ -4,10 +4,16 @@
   "description": "golang123 pc project",
   "author": "shen100 <liushen_shen@163.com>",
   "private": true,
+  "config": {
+    "nuxt": {
+      "host": "0.0.0.0",
+      "port": 8020
+    }
+  },
   "scripts": {
-    "dev": "HOST=0.0.0.0 PORT=8020 nuxt",
+    "dev": "nuxt",
     "build": "nuxt build",
-    "start": "HOST=0.0.0.0 PORT=8020 nuxt start",
+    "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .eslintignore .",
     "precommit": "npm run lint"

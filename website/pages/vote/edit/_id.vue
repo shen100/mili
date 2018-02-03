@@ -1,6 +1,5 @@
 <template>
     <div>
-        <app-header :user="user" />
         <div class="vote-box">
             <div class="vote-main">
                 <ul class="vote-nav">
@@ -15,13 +14,10 @@
                 </div>
             </div>
         </div>
-        <app-footer></app-footer>
     </div>
 </template>
 
 <script>
-    import Header from '~/components/Header'
-    import Footer from '~/components/Footer'
     import VoteEditor from '~/components/vote/save'
     import request from '~/net/request'
 
@@ -66,8 +62,6 @@
             console.log(this.vote)
         },
         components: {
-            'app-header': Header,
-            'app-footer': Footer,
             'vote-editor': VoteEditor
         }
     }

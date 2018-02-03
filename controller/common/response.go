@@ -37,4 +37,5 @@ func SendErrJSON(msg string, args ...interface{}) {
 		"msg":   msg,
 		"data":  gin.H{},
 	})
+	c.Abort()
 }

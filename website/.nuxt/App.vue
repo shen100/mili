@@ -25,7 +25,7 @@ let layouts = {
 let resolvedLayouts = {}
 
 export default {
-  head: {"titleTemplate":"%s - Golang中文社区 - 和地鼠们分享你的知识、经验和见解","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"golang123 - 一个专业的Go语言技术社区，帮助你寻找答案，分享知识。"},{"name":"keywords","content":"golang,go,go语言,golang社区,go社区,golang中国,go中国,golang中文社区,go中文社区,go语言中文网,golang123,社区"}],"link":[{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"},{"rel":"stylesheet","href":"/styles/iview-2.0.0.css"}],"style":[],"script":[]},
+  head: {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"}],"link":[{"rel":"icon","type":"image/x-icon","href":"/favicon.ico"},{"rel":"stylesheet","href":"/styles/iview-2.0.0.css"}],"style":[],"script":[]},
   data: () => ({
     layout: null,
     layoutName: ''
