@@ -144,6 +144,7 @@
                 trimBlur(name, this)
             }
         },
+        layout: 'nosidebar',
         mounted () {
             this.count = setInterval(() => {
                 if (this.times > 0) {

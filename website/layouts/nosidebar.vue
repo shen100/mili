@@ -1,11 +1,8 @@
 <template>
     <div>
-        <app-header />
-        <div class="common-body">
-            <div class="common-body-left">
-                <nuxt ref="content"/>
-            </div>
-            <app-sidebar />
+        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
+        <div class="common-body" style="margin-bottom: 20px;">
+            <nuxt/>
         </div>
         <app-footer />
         <BackTop></BackTop>
@@ -15,12 +12,15 @@
 <script>
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
-    import Sidebar from '~/components/Sidebar'
 
     export default {
         data () {
             return {
-                siteConfig: this.$store.state.siteConfig
+                siteConfig: this.$store.state.siteConfig,
+                user: this.$store.state.user,
+                userLoginVisible: !this.$store.state.user,
+                messages: this.$store.state.messages,
+                messageCount: this.$store.state.messageCount
             }
         },
         head () {
@@ -36,8 +36,7 @@
         middleware: 'appData',
         components: {
             'app-header': Header,
-            'app-footer': Footer,
-            'app-sidebar': Sidebar
+            'app-footer': Footer
         }
     }
 </script>

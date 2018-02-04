@@ -28,6 +28,7 @@
 
 .signup-box {
 	width: 1000px;
+    min-height: 594px;
 	overflow: hidden;
 	background-color: #fff;
 	border: 1px solid #e9e9e9;

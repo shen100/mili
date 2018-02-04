@@ -369,7 +369,7 @@ func UserArticleList(c *gin.Context) {
 func ListMaxComment(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
-	if err := model.DB.Where("status = 1 OR status = 2").Order("comment_count DESC").Limit(5).Find(&articles).Error; err != nil {
+	if err := model.DB.Select("id, name").Where("status = 1 OR status = 2").Order("comment_count DESC").Limit(5).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -387,7 +387,7 @@ func ListMaxComment(c *gin.Context) {
 func ListMaxBrowse(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var articles []model.Article
-	if err := model.DB.Where("status = 1 OR status = 2").Order("browse_count DESC").Limit(5).Find(&articles).Error; err != nil {
+	if err := model.DB.Select("id, name").Where("status = 1 OR status = 2").Order("browse_count DESC").Limit(5).Find(&articles).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -845,6 +845,8 @@ func Tops(c *gin.Context) {
 			}
 		}
 
+		article.Content = ""
+		article.HTMLContent = ""
 		articles = append(articles, article)
 	}
 

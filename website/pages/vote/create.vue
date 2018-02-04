@@ -5,7 +5,7 @@
                 <ul class="vote-nav">
                     <li><a href="/"><span>主页</span></a></li>
                     <li class="vote-nav-sep"><span>/</span></li>
-                    <li><span class="publish-label">发布话题</span></li>
+                    <li><span class="publish-label">发起投票</span></li>
                 </ul>
                 <div class="vote-box-wrap">
                     <div class="vote-area">
@@ -69,6 +69,7 @@
             }
         },
         middleware: 'userRequired',
+        layout: 'nosidebar',
         components: {
             'vote-editor': VoteEditor
         }

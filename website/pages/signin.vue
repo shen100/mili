@@ -84,7 +84,7 @@
                 redirectURL: redirectURL
             }
         },
-        layout: 'signin',
+        layout: 'nolayout',
         head () {
             return {
                 title: '登录',

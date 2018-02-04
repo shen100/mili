@@ -140,6 +140,7 @@
                 })
             }
         },
+        layout: 'nosidebar',
         head () {
             return {
                 title: '修改密码'

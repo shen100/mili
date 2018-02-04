@@ -10,7 +10,7 @@
                 <Table
                     class="rank-list"
                     :rowClassName="rowClassName"
-                    :data="topList"
+                    :data="topUsers"
                     :columns="columns"/>
             </div>
         </div>
@@ -67,35 +67,18 @@
         },
         asyncData (context) {
             return Promise.all([
-                request.getTop10({
-                    client: context.req
-                }),
-                request.getMaxComment({
-                    client: context.req
-                }),
-                request.getMaxBrowse({
-                    client: context.req
-                }),
                 request.getTop100({
                     client: context.req
                 })
             ]).then(data => {
                 let user = context.user
-                let score = data[0].data.users
-                let maxComment = data[1].data.articles || []
-                let maxBrowse = data[2].data.articles || []
-                let topList = data[3].data.users || []
-
-                topList.map((item, index) => {
+                let topUsers = data[0].data.users || []
+                topUsers.map((item, index) => {
                     item.index = index + 1
                 })
-
                 return {
-                    score: score,
                     user: user,
-                    maxComment: maxComment,
-                    maxBrowse: maxBrowse,
-                    topList: topList
+                    topUsers: topUsers
                 }
             }).catch(err => {
                 console.log(err)

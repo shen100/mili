@@ -18,15 +18,13 @@ const api = {
         url: url + '/articles',
         method: 'GET'
     },
-    getArticle: {
+    getArticle: { // 获取文章信息
         url: url + '/articles/info/:id',
-        method: 'GET',
-        desc: '获取文章信息'
+        method: 'GET'
     },
-    deleteArticle: {
+    deleteArticle: { // 删除文章
         url: url + '/articles/delete/:id',
-        method: 'DELETE',
-        desc: '删除文章'
+        method: 'DELETE'
     },
     getTop10: { // 获取积分排名前10的用户
         url: url + '/user/score/top10',
@@ -36,238 +34,193 @@ const api = {
         url: url + '/user/score/top100',
         method: 'GET'
     },
-    getUserArticles: {
+    getUserArticles: { // 获取用户的文章列表
         url: url + '/articles/user/:userID',
-        method: 'GET',
-        desc: '获取用户的文章列表'
+        method: 'GET'
     },
-    getUserInfo: {
+    getUserInfo: { // 获取当前登录用户信息
         url: url + '/user/info',
-        method: 'GET',
-        desc: '获取当前登录用户信息'
+        method: 'GET'
     },
-    createArticle: {
+    createArticle: { // 新建文章
         url: url + '/articles/create',
-        method: 'POST',
-        desc: '新建文章'
+        method: 'POST'
     },
-    signin: {
+    signin: { // 登陆
         url: url + '/signin',
-        method: 'POST',
-        desc: '登陆'
+        method: 'POST'
     },
-    signup: {
+    signup: { // 注册
         url: url + '/signup',
-        method: 'POST',
-        desc: '注册'
+        method: 'POST'
     },
-    updateArticle: {
+    updateArticle: { // 编辑文章
         url: url + '/articles/update',
-        method: 'PUT',
-        desc: '编辑文章'
+        method: 'PUT'
     },
-    changePwd: {
+    changePwd: { // 修改密码
         url: url + '/user/password/update',
-        method: 'PUT',
-        desc: '修改密码'
+        method: 'PUT'
     },
-    sendEmailPwd: {
+    sendEmailPwd: { // 忘记密码邮箱确认
         url: url + '/reset/sendmail',
-        method: 'POST',
-        desc: '忘记密码邮箱确认'
+        method: 'POST'
     },
-    resetPwd: {
+    resetPwd: { // 重置密码
         url: url + '/reset/password/:id/:key',
-        method: 'POST',
-        desc: '重置密码'
+        method: 'POST'
     },
-    activeUser: {
+    activeUser: { // 账号激活
         url: url + '/active/user/:id/:key',
-        method: 'POST',
-        desc: '账号激活'
+        method: 'POST'
     },
-    verifyUrl: {
+    verifyUrl: { // 验证重置密码链接是否失效
         url: url + '/reset/verify/:id/:key',
-        method: 'GET',
-        desc: '验证重置密码链接是否失效'
+        method: 'GET'
     },
-    commentCreate: {
+    commentCreate: { // 提交评论
         url: url + '/comments/create',
-        method: 'POST',
-        desc: '提交评论'
+        method: 'POST'
     },
     commentEdit: { // 编辑评论
         url: url + '/comments/update',
         method: 'PUT'
     },
-    deleteComment: {
+    deleteComment: { // 删除评论
         url: url + '/comments/delete/:id',
-        method: 'DELETE',
-        desc: '删除评论'
+        method: 'DELETE'
     },
     getMaxComment: { // 回复最多的话题
         url: url + '/articles/max/bycomment',
-        method: 'GET'
-    },
-    getSiteComments: {
-        url: url + '/comments/source/:sourceName/:sourceID',
         method: 'GET'
     },
     getMaxBrowse: { // 浏览最多的话题
         url: url + '/articles/max/bybrowse',
         method: 'GET'
     },
-    logout: {
+    logout: { // 退出登录
         url: url + '/signout',
-        method: 'POST',
-        desc: '退出登录'
+        method: 'POST'
     },
-    createVote: {
+    createVote: { // 创建投票
         url: url + '/votes/create',
-        method: 'POST',
-        desc: '创建投票'
+        method: 'POST'
     },
-    updateVote: {
+    updateVote: { // 编辑投票
         url: url + '/votes/update',
-        method: 'PUT',
-        desc: '编辑投票'
+        method: 'PUT'
     },
-    deleteVote: {
+    deleteVote: { // 删除投票
         url: url + '/votes/delete/:id',
-        method: 'DELETE',
-        desc: '删除投票'
+        method: 'DELETE'
     },
-    editVoteItem: {
+    editVoteItem: { // 编辑投票项
         url: url + '/votes/item/edit',
-        method: 'PUT',
-        desc: '编辑投票项'
+        method: 'PUT'
     },
-    addVoteItem: {
+    addVoteItem: { // 新增投票项
         url: url + '/votes/item/create',
-        method: 'POST',
-        desc: '新增投票项'
+        method: 'POST'
     },
-    deleteVoteItem: {
+    deleteVoteItem: { // 删除投票项
         url: url + '/votes/item/delete/:id',
-        method: 'DELETE',
-        desc: '删除投票项'
+        method: 'DELETE'
     },
-    getVotes: {
+    getVotes: { // 获取投票列表
         url: url + '/votes',
-        method: 'GET',
-        desc: '获取投票列表'
+        method: 'GET'
     },
-    getVote: {
+    getVote: { // 获取投票列表
         url: url + '/votes/info/:id',
-        method: 'GET',
-        desc: '获取投票列表'
+        method: 'GET'
     },
-    userVote: {
+    userVote: { // 投票
         url: url + '/votes/uservote/:id',
-        method: 'POST',
-        desc: '投票'
+        method: 'POST'
     },
-    getVoteMaxBrowse: {
+    getVoteMaxBrowse: { // 浏览量最多的投票
         url: url + '/votes/max/bybrowse',
-        method: 'GET',
-        desc: '浏览量最多的投票'
+        method: 'GET'
     },
-    getVoteMaxComment: {
+    getVoteMaxComment: { // 回复最多的投票
         url: url + '/votes/max/bycomment',
-        method: 'GET',
-        desc: '回复最多的投票'
+        method: 'GET'
     },
     getTopList: { // 获取置顶文章列表
         url: url + '/articles/top/global',
         method: 'GET'
     },
-    setTop: {
+    setTop: { // 设置置顶
         url: url + '/articles/top/:id',
-        method: 'POST',
-        desc: '设置置顶'
+        method: 'POST'
     },
-    delTop: {
+    delTop: { // 取消置顶
         url: url + '/articles/deltop/:id',
-        method: 'DELETE',
-        desc: '取消置顶'
+        method: 'DELETE'
     },
-    getMineComment: {
+    getMineComment: { // 获取当前用户回复
         url: url + '/comments/user/:userID',
-        method: 'GET',
-        desc: '获取当前用户回复'
+        method: 'GET'
     },
-    getMineVote: {
+    getMineVote: { // 获取当前用户投票
         url: url + '/votes/user/:userID',
-        method: 'GET',
-        desc: '获取当前用户投票'
+        method: 'GET'
     },
-    getPublicUser: {
+    getPublicUser: { // 获取其他用户信息
         url: url + '/user/info/public/:id',
-        method: 'GET',
-        desc: '获取其他用户信息'
+        method: 'GET'
     },
-    sendmail: {
+    sendmail: { // 发送邮件
         url: url + '/active/sendmail',
-        method: 'POST',
-        desc: '发送邮件'
+        method: 'POST'
     },
-    userInfoDetail: {
+    userInfoDetail: { // 获取用户详情
         url: url + '/user/info/detail',
-        method: 'GET',
-        desc: '获取用户详情'
+        method: 'GET'
     },
-    updateInfo: {
+    updateInfo: { // 修改用户信息
         url: url + '/user/update/:type',
-        method: 'PUT',
-        desc: '修改用户信息'
+        method: 'PUT'
     },
-    schoolAdd: {
+    schoolAdd: { // 添加教育经历
         url: url + '/user/school/add',
-        method: 'POST',
-        desc: '添加教育经历'
+        method: 'POST'
     },
-    schoolDelete: {
+    schoolDelete: { // 删除教育经历
         url: url + '/user/school/delete/:id',
-        method: 'DELETE',
-        desc: '删除教育经历'
+        method: 'DELETE'
     },
-    careerAdd: {
+    careerAdd: { // 增加工作经历
         url: url + '/user/career/add',
-        method: 'POST',
-        desc: '增加工作经历'
+        method: 'POST'
     },
-    careerDelete: {
+    careerDelete: { // 删除工作经历
         url: url + '/user/career/delete/:id',
-        method: 'DELETE',
-        desc: '删除工作经历'
+        method: 'DELETE'
     },
-    getCollectDirList: {
+    getCollectDirList: { // 查询用户的收藏夹列表
         url: url + '/collects/user/:userID/folders',
-        method: 'GET',
-        desc: '查询用户的收藏夹列表'
+        method: 'GET'
     },
     getFoldersSource: {
         url: url + '/collects/folders/withsource', // 查询用户的收藏夹列表，并且返回每个收藏夹中收藏了哪些话题或投票
         method: 'GET'
     },
-    createCollectDir: {
+    createCollectDir: { // 创建收藏夹
         url: url + '/collects/folder/create',
-        method: 'POST',
-        desc: '创建收藏夹'
+        method: 'POST'
     },
-    createCollect: {
+    createCollect: { // 收藏文章或收藏投票
         url: url + '/collects/create', // collect_source_article收藏文章; collect_source_vote收藏投票
-        method: 'POST',
-        desc: '收藏文章或收藏投票'
+        method: 'POST'
     },
-    cancelCollect: {
-        url: url + '/collects/delete/:id', // 取消收藏
+    cancelCollect: { // 取消收藏
+        url: url + '/collects/delete/:id',
         method: 'DELETE'
     },
-    collectList: {
+    collectList: { // 获取收藏夹下的话题
         url: url + '/collects',
-        method: 'GET',
-        desc: '获取收藏夹下的话题'
+        method: 'GET'
     },
     getMessages: { // 未读消息
         url: url + '/messages/unread',

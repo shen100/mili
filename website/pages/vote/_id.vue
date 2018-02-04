@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="golang-home-body">
-            <div class="golang-home-body-left vote-detail-left">
+        <div>
+            <div>
                 <div class="vote-detail-box">
                     <div class="detail-title-box">
                         <p class="vote-detail-title">{{vote.name | entity2HTML}}</p>
@@ -125,7 +125,6 @@
                 </div>
             </div>
         </div>
-        <app-footer />
         <Modal
             v-model="collectShow"
             class="collect-modal"
@@ -172,7 +171,6 @@
             </Row>
             <div slot="footer"></div>
         </Modal>
-        <BackTop></BackTop>
     </div>
 </template>
 

@@ -26,7 +26,7 @@
 				<ul>
                     <li><a href="https://github.com/shen100/golang123" target="_blank">golang123源码</a></li>
                     <li><a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a></li>
-                    <template v-if="userData">
+                    <template v-if="user">
                         <li class="user-message-wrapbox">
                             <Tooltip v-if="userMessages.length" trigger="hover" title="提示标题" placement="bottom">
                                 <a href="" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon><span class="user-message-tip-count">{{messageCount}}</span></a>
@@ -41,7 +41,7 @@
                             <a v-else href="" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon></a>
                         </li>
                         <li style="padding-right:0;">
-                            <Tooltip trigger="hover" title="提示标题" placement="bottom">
+                            <Tooltip v-if="user" trigger="hover" title="提示标题" placement="bottom">
                                 <a :href="`/user/${user.id}`" class="header-usre-box">
                                     <span class="header-avatar">
                                         <img :src="user.avatarURL" alt="">
@@ -73,17 +73,14 @@
     import trimHtml from 'trim-html'
 
     export default {
-        props: [
-            'user',
-            'messages',
-            'messageCount'
-        ],
         data () {
             return {
                 q: '',
-                userData: this.user,
+                user: this.$store.state.user,
                 isInputFocus: false,
-                userMessages: []
+                userMessages: [],
+                messages: this.$store.state.messages,
+                messageCount: this.$store.state.messageCount
             }
         },
         methods: {
@@ -114,7 +111,7 @@
                     .logout()
                     .then(res => {
                         if (res.errNo === ErrorCode.SUCCESS) {
-                            this.userData = null
+                            this.user = null
                             window.location.href = '/signin'
                         }
                     })

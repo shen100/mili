@@ -3,12 +3,10 @@ body {
 }
 
 .about-box {
-    width: 1200px;
     overflow: hidden;
     font-size: 0;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 20px;
 }
 
 .about-main {

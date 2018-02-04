@@ -13,7 +13,7 @@
                 <span class="title">{{!success ? '账号注册' : '邮箱验证' }}</span>
                 <span class="desc">{{!success ? '如果您有Golang123账号' : '如果您已经完成验证'}}，那么可以<a href="/signin">登录</a></span>
             </div>
-    		<Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">
+    		<Form v-show="isMounted" ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" class="signup-form" v-if="!success" style="height: 500px">
     			<Form-item label="用户名" prop="username">
     	            <i-input
                         size="large"
@@ -97,6 +97,7 @@
                 callback()
             }
             return {
+                isMounted: false,
                 loading: false,
                 formCustom: {
                     passwd: '',
@@ -130,6 +131,7 @@
                 title: '注册'
             }
         },
+        layout: 'onlyfooter',
         methods: {
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
@@ -174,6 +176,9 @@
             blur (name) {
                 trimBlur(name, this)
             }
+        },
+        mounted () {
+            this.isMounted = true
         }
     }
 </script>

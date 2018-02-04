@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="golang-home-body">
-            <div class="golang-home-body-left topic-detail-left">
+        <div>
+            <div>
                 <div class="topic-detail-box">
                     <div class="detail-title-box">
                         <div class="article-detail-title"><h1>{{article.name | entity2HTML}}</h1></div>
@@ -263,6 +263,8 @@
                         article.comments[i].editReplyVisible = false
                         floorMap[article.comments[i].id] = i + 1
                     }
+                    context.store.commit('topicAuthor', article.user)
+                    context.store.commit('authorRecentArticles', recentArticles)
                     return {
                         isAuthor: isAuthor,
                         user: context.user,

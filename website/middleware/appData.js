@@ -12,7 +12,7 @@ export default function (context, next) {
         let siteConfig = arr[0].data
         context.user = arr[1].data.user || null
         let messages = arr[2].data.messages || []
-        let messageCount = arr[2].data.messageCount || 0
+        let messageCount = arr[2].data.count || 0
         let top10Users = arr[3].data.users || []
         let maxCommentArticles = arr[4].data.articles || []
         let maxBrowseArticles = arr[5].data.articles || []

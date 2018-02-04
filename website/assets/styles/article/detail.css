@@ -11,11 +11,6 @@ body, .golang-home-body-left {
     height: 64px;
 }
 
-.topic-detail-left {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
 .topic-detail-box {
     -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1);
     box-shadow: 0 1px 3px rgba(0,0,0,.1);

@@ -18,7 +18,11 @@ let layouts = {
 
   "_default": () => import('../layouts/default.vue'  /* webpackChunkName: "layouts/default" */).then(m => m.default || m),
 
-  "_signin": () => import('../layouts/signin.vue'  /* webpackChunkName: "layouts/signin" */).then(m => m.default || m)
+  "_nolayout": () => import('../layouts/nolayout.vue'  /* webpackChunkName: "layouts/nolayout" */).then(m => m.default || m),
+
+  "_nosidebar": () => import('../layouts/nosidebar.vue'  /* webpackChunkName: "layouts/nosidebar" */).then(m => m.default || m),
+
+  "_onlyfooter": () => import('../layouts/onlyfooter.vue'  /* webpackChunkName: "layouts/onlyfooter" */).then(m => m.default || m)
 
 }
 

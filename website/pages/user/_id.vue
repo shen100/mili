@@ -157,6 +157,7 @@
                 this.activeMenu = route[3]
             }
         },
+        layout: 'nosidebar',
         methods: {
             onFormatError () {
                 this.$Message.error({

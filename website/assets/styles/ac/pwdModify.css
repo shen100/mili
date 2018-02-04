@@ -2,12 +2,6 @@ body {
     background-color: #e1e1e1;
 }
 
-.golang-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
 .golang-forget-container {
     width: 1200px;
     margin: 0 auto;

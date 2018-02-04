@@ -488,6 +488,7 @@
         middleware: 'userRequired',
         mounted () {
         },
+        layout: 'nosidebar',
         head () {
             return {
                 title: '个人信息',

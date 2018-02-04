@@ -338,17 +338,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	margin: 11px 0;
 }
 
-.golang-home-body-right {
+.common-body-right {
 	float: right;
 	display: inline-block;
-}
-
-.golang-home-body-right {
 	width: 280px;
     margin-left: 20px;
 }
 
-.golang-home-body-right .golang-cell {
+.common-body-right .golang-cell {
 	margin-bottom: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,.1);
     box-sizing: border-box;
@@ -375,17 +372,16 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 	border: 0;
 }
 
-.golang-home-body {
+.common-body {
 	width: 1200px;
 	margin: 20px auto;
 	min-height: 300px;
 }
 
-.golang-home-body-left {
+.common-body-left {
 	background-color: #fff;
 	width: 900px;
 	display: inline-block;
-    box-shadow: 0 1px 3px rgba(0,0,0,.1);
     box-sizing: border-box;
 }
 
@@ -758,12 +754,10 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 .common-body-box {
-	width: 1200px;
 	overflow: hidden;
 	font-size: 0;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 20px;
 }
 
 .common-body-main {

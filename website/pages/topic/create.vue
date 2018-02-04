@@ -56,6 +56,7 @@
         methods: {
         },
         middleware: 'userRequired',
+        layout: 'nosidebar',
         components: {
             'article-save': ArticleSave
         }
