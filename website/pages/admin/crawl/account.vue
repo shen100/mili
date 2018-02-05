@@ -122,8 +122,7 @@
         },
         mounted () {
         },
-        layout: 'admin',
-        middleware: 'adminRequired'
+        layout: 'admin'
     }
 </script>
 

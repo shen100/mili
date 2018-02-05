@@ -206,7 +206,6 @@
             }
         },
         layout: 'admin',
-        middleware: 'adminRequired',
         mounted () {
             console.log(this.list)
         }

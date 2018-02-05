@@ -6,10 +6,13 @@ Vue.use(Vuex)
 const store = () => new Vuex.Store({
     state: {
         siteConfig: null,
+        isAdminPage: false,
         user: null,
         messages: [],
         messageCount: 0,
-
+        userCount: 0,
+        topicCount: 0,
+        replyCount: 0,
         top10Users: [],
         maxCommentArticles: [],
         maxBrowseArticles: [],
@@ -20,13 +23,18 @@ const store = () => new Vuex.Store({
 
         userLoginVisible: true,
         publishTopicVisible: true,
-        top10Visible: true,
+        top10Visible: false,
         maxBrowseVisible: true,
-        maxCommentVisible: true
+        maxCommentVisible: true,
+        friendLinkVisible: false,
+        statVisible: false
     },
     mutations: {
         siteConfig (state, siteConfig) {
             state.siteConfig = siteConfig
+        },
+        isAdminPage (state, isAdminPage) {
+            state.isAdminPage = isAdminPage
         },
         messages (state, messages) {
             state.messages = messages
@@ -66,6 +74,21 @@ const store = () => new Vuex.Store({
         },
         maxCommentVisible (state, maxCommentVisible) {
             state.maxCommentVisible = maxCommentVisible
+        },
+        friendLinkVisible (state, friendLinkVisible) {
+            state.friendLinkVisible = friendLinkVisible
+        },
+        statVisible (state, statVisible) {
+            state.statVisible = statVisible
+        },
+        userCount (state, userCount) {
+            state.userCount = userCount
+        },
+        topicCount (state, topicCount) {
+            state.topicCount = topicCount
+        },
+        replyCount (state, replyCount) {
+            state.replyCount = replyCount
         }
     }
 })

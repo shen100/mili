@@ -10,9 +10,6 @@
     import request from '~/net/request'
 
     export default {
-        layout: 'admin',
-        middleware: 'adminRequired',
-
         asyncData (context) {
             return request.getCategories({
                 client: context.req
@@ -40,7 +37,8 @@
             return {
                 title: '自定义抓取'
             }
-        }
+        },
+        layout: 'admin'
     }
 </script>
 

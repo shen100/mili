@@ -5,6 +5,9 @@ import config from '~/config'
  */
 export default ({ app: { router }, store }) => {
     router.afterEach((to, from) => {
+        if (store.state.isAdminPage) {
+            return;
+        }
         if (config.adsenseID && typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
             let adsenseID = config.adsenseID
             let s = document.createElement('script')

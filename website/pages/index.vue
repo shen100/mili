@@ -47,6 +47,9 @@
             }
         },
         asyncData (context) {
+            context.store.commit('top10Visible', true)
+            context.store.commit('friendLinkVisible', true)
+            context.store.commit('statVisible', true)
             const query = context.query || {}
             return Promise.all([
                 request.getCategories({

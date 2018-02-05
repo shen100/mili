@@ -47,7 +47,6 @@
         components: {
             'user-list': UserList
         },
-        layout: 'admin',
-        middleware: 'adminRequired'
+        layout: 'admin'
     }
 </script>

@@ -1,8 +1,6 @@
 <template>
     <Row>
-        <Row class="admin-common-line">
-            <h2 class="common-title-h">Golang123后台管理</h2>
-        </Row>
+        网站设置
     </Row>
 </template>
 
@@ -16,6 +14,3 @@
         layout: 'admin'
     }
 </script>
-
-<style>
-</style>

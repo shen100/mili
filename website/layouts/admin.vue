@@ -23,13 +23,25 @@
     export default {
         data () {
             return {
-                activeName: ''
+                activeName: '',
+                siteConfig: this.$store.state.siteConfig
+            }
+        },
+        head () {
+            let siteConfig = this.siteConfig
+            return {
+                titleTemplate: '%s - ' + siteConfig.title,
+                meta: [
+                    { hid: 'description', name: 'description', content: siteConfig.description },
+                    { name: 'keywords', content: siteConfig.keywords }
+                ]
             }
         },
         components: {
             adminHeader: Header,
             adminSidebar: Sidebar
         },
+        middleware: 'adminRequired',
         mounted () {
             this.activeName = this.$refs.content.$route.path
         }

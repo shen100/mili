@@ -62,8 +62,6 @@
                 context.error({ message: 'Not Found', statusCode: 404 })
             })
         },
-        layout: 'admin',
-        middleware: 'adminRequired',
         head () {
             return {
                 title: '全部话题'
@@ -73,6 +71,7 @@
         },
         components: {
             'article-list': ArticleList
-        }
+        },
+        layout: 'admin'
     }
 </script>

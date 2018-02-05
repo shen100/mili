@@ -23,6 +23,10 @@
                     {
                         name: 'CNode 社区',
                         url: 'https://cnodejs.org'
+                    },
+                    {
+                        name: 'Ruby China',
+                        url: 'https://ruby-china.org/'
                     }
                 ]
             }

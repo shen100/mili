@@ -38,6 +38,12 @@
 
             }
         },
+        asyncData (context) {
+            context.store.commit('publishTopicVisible', false)
+            context.store.commit('maxBrowseVisible', false)
+            context.store.commit('maxCommentVisible', false)
+            return {}
+        },
         head () {
             return {
                 title: '关于'

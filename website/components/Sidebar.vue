@@ -65,6 +65,21 @@
                 <li class="golang-cell-item" v-for="item in votesMaxComment"><a :href="`/vote/${item.id}`" class="sidebar-articles-title">{{item.name}}</a></li>
             </ul>
         </div>
+        <div v-if="friendLinkVisible" class="golang-cell">
+            <div class="title">友情链接</div>
+            <ul style="text-align: center;">
+                <li class="golang-cell-item"><a href="https://cnodejs.org" target="_blank" class="sidebar-articles-title"><img style="width: 150px;" src="https://cnodejs.org/public/images/cnodejs.svg"/></a></li>
+                <li class="golang-cell-item"><a href="https://ruby-china.org/" target="_blank" class="sidebar-articles-title"><img style="width: 150px;" src="https://dn-phphub.qbox.me/assets/images/friends/ruby-china.png"/></a></li>
+            </ul>
+        </div>
+        <div v-if="statVisible" class="golang-cell">
+            <div class="title">统计信息</div>
+            <ul>
+                <li class="golang-cell-item">会员:&nbsp;{{userCount}}&nbsp;个</li>
+                <li class="golang-cell-item">话题:&nbsp;{{topicCount}}&nbsp;个</li>
+                <li class="golang-cell-item">回复:&nbsp;{{replyCount}}&nbsp;个</li>
+            </ul>
+        </div>
         <div id="sideAd1"><a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=1kjxjjg7&productCode=qingcloud&utm_source=1kjxjjg7" target="_blank"><img src="/images/ad/aliyun/side.300x300.jpg"/></a></div>
     </div>
 </template>
@@ -74,6 +89,9 @@
         data () {
             return {
                 user: this.$store.state.user,
+                userCount: this.$store.state.userCount,
+                topicCount: this.$store.state.topicCount,
+                replyCount: this.$store.state.replyCount,
                 top10Users: this.$store.state.top10Users,
                 maxCommentArticles: this.$store.state.maxCommentArticles,
                 maxBrowseArticles: this.$store.state.maxBrowseArticles,
@@ -85,7 +103,9 @@
                 publishTopicVisible: this.$store.state.publishTopicVisible,
                 top10Visible: this.$store.state.top10Visible,
                 maxBrowseVisible: this.$store.state.maxBrowseVisible,
-                maxCommentVisible: this.$store.state.maxCommentVisible
+                maxCommentVisible: this.$store.state.maxCommentVisible,
+                friendLinkVisible: this.$store.state.friendLinkVisible,
+                statVisible: this.$store.state.statVisible
             }
         },
         methods: {

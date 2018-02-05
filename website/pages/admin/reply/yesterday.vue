@@ -35,8 +35,6 @@
                 context.error({ message: 'Not Found', statusCode: 404 })
             })
         },
-        layout: 'admin',
-        middleware: 'adminRequired',
         head () {
             return {
                 title: '昨日回复'
@@ -44,6 +42,7 @@
         },
         components: {
             'reply-list': ReplyList
-        }
+        },
+        layout: 'admin'
     }
 </script>

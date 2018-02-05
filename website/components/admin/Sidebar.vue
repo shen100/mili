@@ -8,6 +8,9 @@
             <router-link to="/admin">
                 <Menu-item name="/admin">网站概览</Menu-item>
             </router-link>
+            <router-link to="/admin/setting">
+                <Menu-item name="/admin/setting">网站设置</Menu-item>
+            </router-link>
             <router-link to="/admin/pushLink">
                 <Menu-item name="/admin/pushLink">提交链接</Menu-item>
             </router-link>

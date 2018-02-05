@@ -16,15 +16,11 @@
     import config from '~/config'
 
     export default {
-        layout: 'admin',
-        middleware: 'adminRequired',
-
         head () {
             return {
                 title: '提交链接'
             }
         },
-
         methods: {
             onPushLink () {
                 request.pushToBaidu({
@@ -45,7 +41,8 @@
                     })
                 })
             }
-        }
+        },
+        layout: 'admin'
     }
 </script>
 

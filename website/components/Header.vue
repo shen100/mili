@@ -50,6 +50,7 @@
                                 </a>
                                 <ul slot="content" class="header-user-box">
                                     <li><a :href="`/user/${user.id}`">个人主页</a></li>
+                                    <li v-if="adminVisible"><a href="/admin">后台管理</a></li>
                                     <li><a href="/ac/pwdModify">修改密码</a></li>
                                     <li @click="onSignout">退&nbsp&nbsp出</li>
                                 </ul>
@@ -67,6 +68,7 @@
 </template>
 
 <script>
+    import UserRole from '~/constant/UserRole'
     import request from '~/net/request'
     import ErrorCode from '~/constant/ErrorCode'
     import htmlUtil from '~/utils/html'
@@ -74,9 +76,20 @@
 
     export default {
         data () {
+            let user = this.$store.state.user
+            let admins = [
+                UserRole.USER_ROLE_ADMIN,
+                UserRole.USER_ROLE_SUPER_ADMIN,
+                UserRole.USER_ROLE_CRAWLER_ADMIN
+            ]
+            let adminVisible = false
+            if (user && admins.indexOf(user.role) >= 0) {
+                adminVisible = true
+            }
             return {
                 q: '',
-                user: this.$store.state.user,
+                user: user,
+                adminVisible: adminVisible,
                 isInputFocus: false,
                 userMessages: [],
                 messages: this.$store.state.messages,
