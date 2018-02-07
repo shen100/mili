@@ -124,7 +124,7 @@ func initServer() {
 	if ServerConfig.LogDir == "" {
 		ServerConfig.LogDir = execPath
 	}
-	ServerConfig.LogFile = execPath + ymdStr + ".log"
+	ServerConfig.LogFile = ServerConfig.LogDir + ymdStr + ".log"
 }
 
 func init() {
