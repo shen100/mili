@@ -1,6 +1,50 @@
+body {
+    background-color: #e1e1e1;
+}
+
 .book-box {
     width: 1200px;
-    margin: 0 auto;
+    overflow: hidden;
+    font-size: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.book-main, .book-nav {
+    width: 900px;
+    display: inline-block;
+}
+
+.book-nav {
+    height: 40px;
+    padding-left: 20px;
+    background: #f6f6f6;
+}
+
+.book-main, .book-nav {
+    width: 900px;
+    display: inline-block;
+}
+
+.book-nav li {
+    float: left;
+    line-height: 40px;
+}
+
+.book-nav a {
+    color: #80bd01;
+}
+
+.book-nav-sep {
+    padding: 0 8px;
+}
+
+.book-nav span {
+    font-size: 14px;
+}
+
+.book-label {
+    color: #999;
 }
 
 .editor-box-wrap {
@@ -9,3 +53,13 @@
     min-height: 720px;
     background: #fff;
 }
+
+.book-area {
+    clear: both;
+    padding: 0 20px 1px;
+}
+
+.book-content .ivu-form-item-content {
+    margin-left: 0!important;
+}
+

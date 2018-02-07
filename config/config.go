@@ -123,6 +123,12 @@ func initServer() {
 
 	if ServerConfig.LogDir == "" {
 		ServerConfig.LogDir = execPath
+	} else {
+		length := utf8.RuneCountInString(ServerConfig.LogDir)
+		lastChar := ServerConfig.LogDir[length-1:]
+		if lastChar != sep {
+			ServerConfig.LogDir = ServerConfig.LogDir + sep
+		}
 	}
 	ServerConfig.LogFile = ServerConfig.LogDir + ymdStr + ".log"
 }

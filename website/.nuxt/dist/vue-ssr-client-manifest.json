@@ -23,9 +23,9 @@
     "pages/vote/create.c56fd0b55d50355ef8c0.js",
     "layouts/admin.26984d92c719e54b8990.js",
     "pages/user/_id.1d5abc26e52aec68337d.js",
-    "layouts/nosidebar.6b18f1ce43d91259086f.js",
+    "layouts/nosidebar.0070c85c9537520feb57.js",
     "pages/user/edit.8d8f954329280961ba55.js",
-    "pages/book/create.4d1150f76dcf09eb8b8a.js",
+    "pages/book/create.e16b4cc6f6b3e9f10553.js",
     "pages/admin/user/yesterday.de23fc4015fdfba7f4f8.js",
     "pages/admin/user/today.0541430e9a93681188b8.js",
     "pages/admin/user/list.060f821c0b964aefdc2a.js",
@@ -56,7 +56,7 @@
     "layouts/nolayout.df0f2eb35903a12a828e.js",
     "common.337a9ce9ce6bcc81d979.js",
     "app.33cc9910758bc9c8bd85.js",
-    "manifest.4830958bca9d707eb600.js",
+    "manifest.8c4dcb66b3513331fea3.js",
     "img/logo.ca1f746.png",
     "pages/vote/_id.6553388295c677be66d7.js.map",
     "pages/topic/_id.57c937f495118b883559.js.map",
@@ -77,9 +77,9 @@
     "pages/vote/create.c56fd0b55d50355ef8c0.js.map",
     "layouts/admin.26984d92c719e54b8990.js.map",
     "pages/user/_id.1d5abc26e52aec68337d.js.map",
-    "layouts/nosidebar.6b18f1ce43d91259086f.js.map",
+    "layouts/nosidebar.0070c85c9537520feb57.js.map",
     "pages/user/edit.8d8f954329280961ba55.js.map",
-    "pages/book/create.4d1150f76dcf09eb8b8a.js.map",
+    "pages/book/create.e16b4cc6f6b3e9f10553.js.map",
     "pages/admin/user/yesterday.de23fc4015fdfba7f4f8.js.map",
     "pages/admin/user/today.0541430e9a93681188b8.js.map",
     "pages/admin/user/list.060f821c0b964aefdc2a.js.map",
@@ -110,12 +110,12 @@
     "layouts/nolayout.df0f2eb35903a12a828e.js.map",
     "common.337a9ce9ce6bcc81d979.js.map",
     "app.33cc9910758bc9c8bd85.js.map",
-    "manifest.4830958bca9d707eb600.js.map",
+    "manifest.8c4dcb66b3513331fea3.js.map",
     "index.spa.html",
     "index.ssr.html"
   ],
   "initial": [
-    "manifest.4830958bca9d707eb600.js",
+    "manifest.8c4dcb66b3513331fea3.js",
     "common.337a9ce9ce6bcc81d979.js",
     "app.33cc9910758bc9c8bd85.js"
   ],
@@ -139,9 +139,9 @@
     "pages/vote/create.c56fd0b55d50355ef8c0.js",
     "layouts/admin.26984d92c719e54b8990.js",
     "pages/user/_id.1d5abc26e52aec68337d.js",
-    "layouts/nosidebar.6b18f1ce43d91259086f.js",
+    "layouts/nosidebar.0070c85c9537520feb57.js",
     "pages/user/edit.8d8f954329280961ba55.js",
-    "pages/book/create.4d1150f76dcf09eb8b8a.js",
+    "pages/book/create.e16b4cc6f6b3e9f10553.js",
     "pages/admin/user/yesterday.de23fc4015fdfba7f4f8.js",
     "pages/admin/user/today.0541430e9a93681188b8.js",
     "pages/admin/user/list.060f821c0b964aefdc2a.js",
@@ -267,10 +267,6 @@
       53,
       107
     ],
-    "43d46dd2": [
-      24,
-      78
-    ],
     "51314f0c": [
       39,
       93,
@@ -287,10 +283,6 @@
     "3ccf055f": [
       53,
       107
-    ],
-    "6f0b46a9": [
-      22,
-      76
     ],
     "6679f675": [
       53,
@@ -315,6 +307,10 @@
     "1819d3c0": [
       54,
       108
+    ],
+    "3459110a": [
+      24,
+      78
     ],
     "d8953ca8": [
       28,
@@ -447,6 +443,10 @@
     "28d9f457": [
       4,
       58
+    ],
+    "36d02fb4": [
+      24,
+      78
     ],
     "e0e25416": [
       53,
@@ -817,10 +817,6 @@
       11,
       65
     ],
-    "05e9509a": [
-      24,
-      78
-    ],
     "01241347": [
       47,
       101
@@ -929,6 +925,10 @@
       39,
       93,
       1
+    ],
+    "1b1a58ab": [
+      22,
+      76
     ],
     "7735db0f": [
       53,
@@ -1297,6 +1297,10 @@
       46,
       100
     ],
+    "455aa1f8": [
+      24,
+      78
+    ],
     "72571bcf": [
       53,
       107
@@ -1385,14 +1389,6 @@
     "60548d85": [
       8,
       62
-    ],
-    "92ba627a": [
-      53,
-      107
-    ],
-    "4a85a6d1": [
-      53,
-      107
     ],
     "95d61d36": [
       53,
@@ -1606,10 +1602,6 @@
       31,
       85
     ],
-    "163080a8": [
-      24,
-      78
-    ],
     "634530a0": [
       46,
       100
@@ -1709,6 +1701,10 @@
     "58b96b90": [
       7,
       61
+    ],
+    "92ba627a": [
+      53,
+      107
     ],
     "4b984187": [
       14,
@@ -1882,6 +1878,10 @@
       86,
       56,
       2
+    ],
+    "4a85a6d1": [
+      53,
+      107
     ],
     "c7bbec2c": [
       26,

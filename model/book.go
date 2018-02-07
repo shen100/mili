@@ -15,22 +15,32 @@ type BookCategory struct {
 
 // Book 图书
 type Book struct {
-	ID           uint           `gorm:"primary_key" json:"id"`
-	CreatedAt    time.Time      `json:"createdAt"`
-	UpdatedAt    time.Time      `json:"updatedAt"`
-	DeletedAt    *time.Time     `sql:"index" json:"deletedAt"`
-	Name         string         `json:"name"`
-	BrowseCount  uint           `json:"browseCount"`
-	CommentCount uint           `json:"commentCount"`
-	CollectCount uint           `json:"collectCount"`
-	Status       string         `json:"status"`
-	Content      string         `json:"content"`
-	HTMLContent  string         `json:"htmlContent"`
-	ContentType  int            `json:"contentType"`
-	Categories   []BookCategory `gorm:"many2many:book_category;ForeignKey:ID;AssociationForeignKey:ID" json:"categories"`
-	Comments     []BookComment  `json:"comments"`
-	UserID       uint           `json:"userID"`
-	User         User           `json:"user"`
+	ID             uint           `gorm:"primary_key" json:"id"`
+	CreatedAt      time.Time      `json:"createdAt"`
+	UpdatedAt      time.Time      `json:"updatedAt"`
+	DeletedAt      *time.Time     `sql:"index" json:"deletedAt"`
+	Name           string         `json:"name"`
+	OriginalName   string         `json:"originalName"`
+	Author         string         `json:"author"`
+	Translator     string         `json:"translator"`
+	Star           int            `json:"star"`
+	OneStarCount   int            `json:"oneStarCount"`
+	TwoStarCount   int            `json:"twoStarCount"`
+	ThreeStarCount int            `json:"threeStarCount"`
+	FourStarCount  int            `json:"fourStarCount"`
+	FiveStarCount  int            `json:"fiveStarCount"`
+	TotalStarCount int            `json:"TotalStarCount"`
+	BrowseCount    uint           `json:"browseCount"`
+	CommentCount   uint           `json:"commentCount"`
+	CollectCount   uint           `json:"collectCount"`
+	Status         string         `json:"status"`
+	Content        string         `json:"content"`
+	HTMLContent    string         `json:"htmlContent"`
+	ContentType    int            `json:"contentType"`
+	Categories     []BookCategory `gorm:"many2many:book_category;ForeignKey:ID;AssociationForeignKey:ID" json:"categories"`
+	Comments       []BookComment  `json:"comments"`
+	UserID         uint           `json:"userID"`
+	User           User           `json:"user"`
 }
 
 // Chapter 章节
@@ -63,8 +73,24 @@ type Page struct {
 	User         User          `json:"user"`
 }
 
-// BookComment 图书评论
+// BookComment 书评
 type BookComment struct {
+	ID          uint       `gorm:"primary_key" json:"id"`
+	CreatedAt   time.Time  `json:"createdAt"`
+	UpdatedAt   time.Time  `json:"updatedAt"`
+	DeletedAt   *time.Time `sql:"index" json:"deletedAt"`
+	Status      string     `json:"status"`
+	Star        int        `json:"Star"`
+	Content     string     `json:"content"`
+	HTMLContent string     `json:"htmlContent"`
+	ContentType int        `json:"contentType"`
+	BookID      uint       `json:"bookID"`
+	UserID      uint       `json:"userID"`
+	User        User       `json:"user"`
+}
+
+// BookPageComment 图书评论，对应到相应的页码
+type BookPageComment struct {
 	ID          uint          `gorm:"primary_key" json:"id"`
 	CreatedAt   time.Time     `json:"createdAt"`
 	UpdatedAt   time.Time     `json:"updatedAt"`

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header :user="user" :messages="messages" :messageCount="messageCount"/>
+        <app-header />
         <div class="common-body" style="margin-bottom: 20px;">
             <nuxt/>
         </div>
