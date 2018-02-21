@@ -45,6 +45,11 @@ const store = () => new Vuex.Store({
         user (state, user) {
             state.user = user
         },
+        avatarURL (state, url) {
+            if (state.user) {
+                state.user.avatarURL = url
+            }
+        },
         top10Users (state, top10Users) {
             state.top10Users = top10Users
         },

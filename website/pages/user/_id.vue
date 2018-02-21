@@ -200,6 +200,7 @@
                     }, 200)
                 })
                 reader.readAsDataURL(file)
+                return false
             },
             onUpload () {
                 let self = this
@@ -219,6 +220,9 @@
                             if (self.isAuthor) {
                                 self.user.avatarURL = result.data.url
                             }
+
+                            self.$store.commit('avatarURL', result.data.url)
+
                             self.uploaderVisible = false
                         } else {
                             self.$Message.error({

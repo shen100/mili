@@ -176,7 +176,7 @@
                 editIndex: [0, 0, 0, 0, 0, 0],
                 success: false,
                 uploaderVisible: false,
-                uploadURL: config.apiURL + '/user/updateavatar',
+                uploadURL: config.apiURL + '/user/uploadavatar',
                 croppie: null,
                 file: null,
                 sizeLimit: 3 * 1024 * 1024,
@@ -253,6 +253,7 @@
                     }, 200)
                 })
                 reader.readAsDataURL(file)
+                return false
             },
             onUpload () {
                 let self = this
@@ -270,6 +271,8 @@
                             self.avatarURL = result.data.url
                             self.user.avatarURL = result.data.url
                             self.uploaderVisible = false
+
+                            self.$store.commit('avatarURL', result.data.url)
                         } else {
                             self.$Message.error({
                                 duration: config.messageDuration,

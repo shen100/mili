@@ -21,8 +21,8 @@ type Book struct {
 	DeletedAt      *time.Time     `sql:"index" json:"deletedAt"`
 	Name           string         `json:"name"`
 	OriginalName   string         `json:"originalName"`
-	Author         string         `json:"author"`
-	Translator     string         `json:"translator"`
+	Authors        string         `json:"authors"`
+	Translators    string         `json:"translators"`
 	Star           int            `json:"star"`
 	OneStarCount   int            `json:"oneStarCount"`
 	TwoStarCount   int            `json:"twoStarCount"`
