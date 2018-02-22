@@ -59,6 +59,7 @@ func initDB() {
 type redisConfig struct {
 	Host      string
 	Port      int
+	Password  string
 	URL       string
 	MaxIdle   int
 	MaxActive int
