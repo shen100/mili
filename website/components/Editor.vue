@@ -38,7 +38,7 @@
                 host: '',
                 simplemde: null,
                 SimpleMDE: null,
-                uploadURL: config.apiURL + '/upload',
+                uploadURL: config.uploadURL,
                 modalVisible: false,
                 toolbar: null,
                 isFullscreen: false

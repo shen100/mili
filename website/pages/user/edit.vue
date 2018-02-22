@@ -8,7 +8,6 @@
                         <img :src="avatarURL" alt="" />
                         <div class="mine-info-upload">
                             <Upload style="width:160px; height: 160px;"
-                                ref="upload"
                                 action=""
                                 accept="image/*"
                                 :show-upload-list="false"
@@ -176,11 +175,11 @@
                 editIndex: [0, 0, 0, 0, 0, 0],
                 success: false,
                 uploaderVisible: false,
-                uploadURL: config.apiURL + '/user/uploadavatar',
+                uploadURL: config.uploadAvatar,
                 croppie: null,
                 file: null,
-                sizeLimit: 3 * 1024 * 1024,
-                sizeLimitTip: '3M'
+                sizeLimit: config.sizeLimit,
+                sizeLimitTip: config.sizeLimitTip
             }
         },
         asyncData (context) {

@@ -86,11 +86,11 @@
             return {
                 activeMenu: 'index',
                 uploaderVisible: false,
-                uploadURL: config.apiURL + '/user/uploadavatar',
+                uploadURL: config.uploadAvatar,
                 croppie: null,
                 file: null,
-                sizeLimit: 3 * 1024 * 1024,
-                sizeLimitTip: '3M'
+                sizeLimit: config.sizeLimit,
+                sizeLimitTip: config.sizeLimitTip
             }
         },
         validate ({ params }) {

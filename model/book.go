@@ -20,10 +20,8 @@ type Book struct {
 	UpdatedAt      time.Time      `json:"updatedAt"`
 	DeletedAt      *time.Time     `sql:"index" json:"deletedAt"`
 	Name           string         `json:"name"`
-	OriginalName   string         `json:"originalName"`
-	Authors        string         `json:"authors"`
-	Translators    string         `json:"translators"`
-	Star           int            `json:"star"`
+	CoverURL       string         `json:"coverURL"`
+	Star           int            `json:"star"` // 图书最终得了几颗星
 	OneStarCount   int            `json:"oneStarCount"`
 	TwoStarCount   int            `json:"twoStarCount"`
 	ThreeStarCount int            `json:"threeStarCount"`

@@ -5,6 +5,7 @@ import (
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/controller/article"
 	"github.com/shen100/golang123/controller/baidu"
+	"github.com/shen100/golang123/controller/book"
 	"github.com/shen100/golang123/controller/category"
 	"github.com/shen100/golang123/controller/collect"
 	"github.com/shen100/golang123/controller/comment"
@@ -121,6 +122,9 @@ func Route(router *gin.Engine) {
 			vote.Delete)
 		api.DELETE("/votes/item/delete/:id", middleware.EditorRequired,
 			vote.DeleteItem)
+
+		api.POST("/books", middleware.EditorRequired,
+			book.Create)
 	}
 
 	adminAPI := router.Group(apiPrefix+"/admin", middleware.RefreshTokenCookie, middleware.AdminRequired)

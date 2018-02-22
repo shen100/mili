@@ -229,6 +229,14 @@ const api = {
     readMessage: { // 将消息标记为已读
         url: url + '/messages/read/:id',
         method: 'GET'
+    },
+    getBook: { // 获取图书信息
+        url: url + '/books/:id',
+        method: 'GET'
+    },
+    createBook: { // 创建图书
+        url: url + '/books',
+        method: 'POST'
     }
 }
 

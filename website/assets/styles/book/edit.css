@@ -63,3 +63,11 @@ body {
     margin-left: 0!important;
 }
 
+.book-img {
+    width: 135px;
+    height: 170px;
+    border: 1px #f2f2f2 solid;
+    margin-bottom: 10px;
+}
+
+
