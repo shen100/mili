@@ -8,6 +8,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/utils"
@@ -49,13 +50,14 @@ func Save(c *gin.Context, isEdit bool) {
 		theContent = bookData.Content
 	}
 
-	if theContent == "" || utf8.RuneCountInString(theContent) <= 0 {
-		SendErrJSON("图书内容不能为空", c)
+	contentCount := utf8.RuneCountInString(theContent)
+	if theContent == "" || contentCount <= 0 {
+		SendErrJSON("图书简介不能为空", c)
 		return
 	}
 
-	if utf8.RuneCountInString(theContent) > model.MaxContentLen {
-		msg := "图书内容不能超过" + strconv.Itoa(model.MaxContentLen) + "个字符"
+	if contentCount > model.MaxContentLen {
+		msg := "图书简介不能超过" + strconv.Itoa(model.MaxContentLen) + "个字符"
 		SendErrJSON(msg, c)
 		return
 	}
@@ -137,6 +139,64 @@ func Info(c *gin.Context) {
 		"msg":   "success",
 		"data": gin.H{
 			"book": book,
+		},
+	})
+}
+
+// Chapters 获取图书的章节
+func Chapters(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"chapters": nil,
+		},
+	})
+}
+
+// CreateChapter 创建图书的章节
+func CreateChapter(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	type ReqData struct {
+		Name     string `json:"name" binding:"required,min=1,max=100"`
+		ParentID uint   `json:"parentID"`
+		BookID   uint   `json:"bookID"`
+	}
+	var reqData ReqData
+	if err := c.ShouldBindWith(&reqData, binding.JSON); err != nil {
+		fmt.Println(err)
+		SendErrJSON("参数无效", c)
+		return
+	}
+
+	reqData.Name = strings.TrimSpace(reqData.Name)
+	if reqData.Name == "" {
+		SendErrJSON("章节名称不能为空", c)
+		return
+	}
+
+	var chapter model.Chapter
+	chapter.Name = reqData.Name
+	chapter.ParentID = reqData.ParentID
+	chapter.BookID = reqData.BookID
+	if chapter.ParentID != model.NoParent {
+		var parentChapter model.Chapter
+		if err := model.DB.First(&parentChapter, chapter.ParentID).Error; err != nil {
+			SendErrJSON("无效的parentID", c)
+			return
+		}
+	}
+
+	var book model.Book
+	if err := model.DB.First(&book, chapter.BookID).Error; err != nil {
+		SendErrJSON("无效的bookID", c)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"chapter": chapter,
 		},
 	})
 }

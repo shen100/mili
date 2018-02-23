@@ -70,4 +70,19 @@ body {
     margin-bottom: 10px;
 }
 
+#uploader-pop-title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: normal;
+    height: 32px;
+    color: #262626;
+}
+
+#uploader-pop-subheading {
+    color: #8590a6;
+}
+
+#avatarUploader {
+    min-height: 294px;
+}
 

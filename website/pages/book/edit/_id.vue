@@ -24,7 +24,6 @@
                 }
             })
         },
-        layout: 'nosidebar',
         middleware: 'userRequired',
         components: {
             'book': Book

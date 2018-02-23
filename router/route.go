@@ -125,6 +125,12 @@ func Route(router *gin.Engine) {
 
 		api.POST("/books", middleware.EditorRequired,
 			book.Create)
+		api.PUT("/books/update", middleware.EditorRequired,
+			book.Update)
+		api.GET("/books/info/:id", book.Info)
+		api.GET("/books/chapters/:id", book.Chapters)
+		api.POST("/books/chapters", middleware.EditorRequired,
+			book.CreateChapter)
 	}
 
 	adminAPI := router.Group(apiPrefix+"/admin", middleware.RefreshTokenCookie, middleware.AdminRequired)

@@ -12,7 +12,6 @@
                 user: context.user
             }
         },
-        layout: 'nosidebar',
         middleware: 'userRequired',
         components: {
             'book': Book

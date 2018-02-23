@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "axios": "0.16.2",
-    "iview": "2.5.1",
+    "iview": "2.9.2",
     "moment": "2.18.1",
     "mysql": "^2.15.0",
     "nuxt": "1.0.0-rc11",

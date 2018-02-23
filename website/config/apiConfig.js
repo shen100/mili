@@ -231,12 +231,20 @@ const api = {
         method: 'GET'
     },
     getBook: { // 获取图书信息
-        url: url + '/books/:id',
+        url: url + '/books/info/:id',
         method: 'GET'
     },
     createBook: { // 创建图书
         url: url + '/books',
         method: 'POST'
+    },
+    updateBook: { // 更新图书
+        url: url + '/books/update',
+        method: 'PUT'
+    },
+    getBookChapters: { // 获取图书的章节
+        url: url + '/books/chapters/:id',
+        method: 'GET'
     }
 }
 

@@ -1,0 +1,41 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.book-chapter-box {
+    background-color: #fff;
+    padding: 0 20px 4px 0;
+}
+
+.book-name {
+    padding-left: 20px;
+    line-height: 40px;
+    background-color: #f7f7f7;
+}
+
+.curchapter-name {
+    line-height: 40px;
+}
+
+.book-chapter-tree-box {
+    width: 320px;
+    min-height: 600px;
+    display: inline-block;
+    vertical-align: top;
+    border-right: 1px #e2e2e2 solid;
+}
+
+.book-chapter-tree {
+    padding-left: 20px;
+}
+
+.book-chapter-editor {
+    margin-left: 20px;
+    width: 838px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.CodeMirror {
+    height: 400px;
+}

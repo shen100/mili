@@ -4,7 +4,7 @@
             <ul class="book-nav">
                 <li><a href="/"><span>主页</span></a></li>
                 <li class="book-nav-sep"><span>/</span></li>
-                <li><span class="book-label">创建图书</span></li>
+                <li><span class="book-label">{{bookID ? '编辑图书' : '创建图书'}}</span></li>
             </ul>
             <div class="editor-box-wrap">
                 <div class="book-area">
@@ -20,14 +20,14 @@
                                 action=""
                                 accept="image/*"
                                 :show-upload-list="false"
-                                :before-upload="beforeUpload" :name="'upFile'" :format="['jpg', 'jpeg', 'png', 'gif']"
+                                :before-upload="beforeUpload" :name="'upFile'" :format="['jpg', 'jpeg', 'png']"
                                 :on-format-error="onFormatError">
                                 <Button type="ghost" icon="ios-cloud-upload-outline">上传封面图片</Button>
                             </Upload>
                             <Modal v-model="uploaderVisible" width="400">
                                 <div slot="header" style="color:#f60;text-align:center">
-                                    <p id="uploader-pop-title">编辑头像</p>
-                                    <p id="uploader-pop-subheading">调整头像尺寸和位置</p>
+                                    <p id="uploader-pop-title">编辑封面图片</p>
+                                    <p id="uploader-pop-subheading">调整尺寸和位置</p>
                                 </div>
                                 <div id="avatarUploader"></div>
                                 <div slot="footer">
@@ -37,10 +37,10 @@
                         </Form-item>
                         <Form-item label="图书简介" prop="content">
                             <div>
-                            <md-editor :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChage"></md-editor>
+                                <md-editor :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
                             </div>
                         </Form-item>
-                        <Form-item class="topic-submit" :label-width="0">
+                        <Form-item :label-width="0">
                             <Button size="large" v-if="isMounted" type="primary" @click="onSubmit">{{bookID ? '保存图书' : '创建图书'}}</Button>
                         </Form-item>
                     </Form>
@@ -65,8 +65,8 @@
         data () {
             return {
                 isMounted: false,
-                bookID: this.book && this.book.id,
-                coverURL: this.book && this.book.coverURL,
+                bookID: (this.book && this.book.id) || undefined,
+                coverURL: (this.book && this.book.coverURL) || '',
                 uploadURL: config.uploadURL,
                 file: null,
                 uploaderVisible: false,
@@ -80,7 +80,7 @@
                         { required: true, message: '请输入图书名称', trigger: 'blur' }
                     ],
                     content: [
-                        { required: true, message: '请输入内容简介', trigger: 'blur' }
+                        { required: true, message: '请输入图书简介', trigger: 'blur' }
                     ]
                 }
             }
@@ -129,12 +129,12 @@
                         let opts = {
                             url: reader.result,
                             boundary: {
-                                width: 240,
-                                height: 240
+                                width: 215,
+                                height: 250
                             },
                             viewport: {
-                                width: 160,
-                                height: 160,
+                                width: 135,
+                                height: 170,
                                 type: 'square'
                             }
                         }
@@ -169,7 +169,7 @@
                     })
                 })
             },
-            onContentChage (content) {
+            onContentChange (content) {
                 this.formValidate.content = content
             },
             onContentSave () {

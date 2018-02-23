@@ -41,21 +41,8 @@ type Book struct {
 	User           User           `json:"user"`
 }
 
-// Chapter 章节
+// Chapter 图书的章节
 type Chapter struct {
-	ID        uint       `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `sql:"index" json:"deletedAt"`
-	Name      string     `json:"name"`
-	Sequence  int        `json:"sequence"` //同级别的章节可根据sequence的值来排序
-	ParentID  int        `json:"parentId"` //直接父章节的ID
-	UserID    uint       `json:"userID"`
-	User      User       `json:"user"`
-}
-
-// Page 图书的每一页
-type Page struct {
 	ID           uint          `gorm:"primary_key" json:"id"`
 	CreatedAt    time.Time     `json:"createdAt"`
 	UpdatedAt    time.Time     `json:"updatedAt"`
@@ -69,6 +56,8 @@ type Page struct {
 	Comments     []BookComment `json:"comments"`
 	UserID       uint          `json:"userID"`
 	User         User          `json:"user"`
+	ParentID     uint          `json:"parentID"` //直接父章节的ID
+	BookID       uint          `json:"bookID"`
 }
 
 // BookComment 书评
@@ -87,8 +76,8 @@ type BookComment struct {
 	User        User       `json:"user"`
 }
 
-// BookPageComment 图书评论，对应到相应的页码
-type BookPageComment struct {
+// BookChapterComment 章节的评论
+type BookChapterComment struct {
 	ID          uint          `gorm:"primary_key" json:"id"`
 	CreatedAt   time.Time     `json:"createdAt"`
 	UpdatedAt   time.Time     `json:"updatedAt"`
