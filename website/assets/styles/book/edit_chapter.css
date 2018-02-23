@@ -39,3 +39,7 @@ body {
 .CodeMirror {
     height: 400px;
 }
+
+.book-chapter-create {
+    margin-left: 20px;
+}

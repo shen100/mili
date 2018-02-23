@@ -245,6 +245,10 @@ const api = {
     getBookChapters: { // 获取图书的章节
         url: url + '/books/chapters/:id',
         method: 'GET'
+    },
+    createBookChapter: { // 创建图书的章节
+        url: url + '/books/chapters',
+        method: 'POST'
     }
 }
 

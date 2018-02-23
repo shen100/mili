@@ -175,12 +175,12 @@ func CreateChapter(c *gin.Context) {
 		return
 	}
 
-	var chapter model.Chapter
+	var chapter model.BookChapter
 	chapter.Name = reqData.Name
 	chapter.ParentID = reqData.ParentID
 	chapter.BookID = reqData.BookID
 	if chapter.ParentID != model.NoParent {
-		var parentChapter model.Chapter
+		var parentChapter model.BookChapter
 		if err := model.DB.First(&parentChapter, chapter.ParentID).Error; err != nil {
 			SendErrJSON("无效的parentID", c)
 			return
@@ -190,6 +190,11 @@ func CreateChapter(c *gin.Context) {
 	var book model.Book
 	if err := model.DB.First(&book, chapter.BookID).Error; err != nil {
 		SendErrJSON("无效的bookID", c)
+		return
+	}
+
+	if err := model.DB.Create(&chapter).Error; err != nil {
+		SendErrJSON("error", c)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

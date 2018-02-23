@@ -41,8 +41,8 @@ type Book struct {
 	User           User           `json:"user"`
 }
 
-// Chapter 图书的章节
-type Chapter struct {
+// BookChapter 图书的章节
+type BookChapter struct {
 	ID           uint          `gorm:"primary_key" json:"id"`
 	CreatedAt    time.Time     `json:"createdAt"`
 	UpdatedAt    time.Time     `json:"updatedAt"`
