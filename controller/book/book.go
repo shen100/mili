@@ -145,11 +145,23 @@ func Info(c *gin.Context) {
 
 // Chapters 获取图书的章节
 func Chapters(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		SendErrJSON("错误的图书id", c)
+		return
+	}
+	var chapters []model.BookChapter
+	if err := model.DB.Model(&model.BookChapter{}).Where("book_id = ?", id).Find(&chapters).Error; err != nil {
+		fmt.Println(err)
+		SendErrJSON("error", c)
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data": gin.H{
-			"chapters": nil,
+			"chapters": chapters,
 		},
 	})
 }

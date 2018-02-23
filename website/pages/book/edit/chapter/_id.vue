@@ -11,7 +11,7 @@
                 </div>
                 <Modal
                     v-model="createChapterModalVisible"
-                    title="创建章节"
+                    :title="createChapterID ? '添加子章节' : '创建章节'"
                     @on-cancel="cancelCreateChapter">
                     <Input v-model="createChapterName"
                         placeholder="章节名称"
@@ -57,6 +57,10 @@
                 })
             ]).then((arr) => {
                 let book = arr[0].data.book
+                if (!book) {
+                    context.error({ statusCode: 404, message: 'Page not found' })
+                    return
+                }
                 let chapters = arr[1].data.chapters || []
                 return {
                     isMounted: false,
@@ -85,6 +89,9 @@
                         }
                     ]
                 }
+            }).catch(err => {
+                console.log(err)
+                context.error({ statusCode: 404, message: 'Page not found' })
             })
         },
         mounted () {
@@ -121,7 +128,8 @@
                 request.createBookChapter({
                     body: {
                         name: this.createChapterName,
-                        bookID: this.book.id
+                        bookID: this.book.id,
+                        createChapterID: createChapterID
                     }
                 }).then(res => {
                     if (res.errNo === ErrorCode.ERROR) {

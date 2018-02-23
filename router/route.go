@@ -123,12 +123,12 @@ func Route(router *gin.Engine) {
 		api.DELETE("/votes/item/delete/:id", middleware.EditorRequired,
 			vote.DeleteItem)
 
-		api.POST("/books", middleware.EditorRequired,
-			book.Create)
-		api.PUT("/books/update", middleware.EditorRequired,
-			book.Update)
 		api.GET("/books/info/:id", book.Info)
 		api.GET("/books/chapters/:id", book.Chapters)
+		api.PUT("/books/update", middleware.EditorRequired,
+			book.Update)
+		api.POST("/books", middleware.EditorRequired,
+			book.Create)
 		api.POST("/books/chapters", middleware.EditorRequired,
 			book.CreateChapter)
 	}

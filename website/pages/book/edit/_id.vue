@@ -18,10 +18,18 @@
                     id: context.params.id
                 }
             }).then(function (res) {
+                let book = res.data.book
+                if (!book) {
+                    context.error({ statusCode: 404, message: 'Page not found' })
+                    return
+                }
                 return {
-                    book: res.data.book,
+                    book: book,
                     user: context.user
                 }
+            }).catch(err => {
+                console.log(err)
+                context.error({ statusCode: 404, message: 'Page not found' })
             })
         },
         middleware: 'userRequired',
