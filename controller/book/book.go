@@ -146,13 +146,13 @@ func Info(c *gin.Context) {
 // Chapters 获取图书的章节
 func Chapters(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("bookID"))
 	if err != nil {
 		SendErrJSON("错误的图书id", c)
 		return
 	}
 	var chapters []model.BookChapter
-	if err := model.DB.Model(&model.BookChapter{}).Where("book_id = ?", id).Find(&chapters).Error; err != nil {
+	if err := model.DB.Model(&model.BookChapter{}).Where("book_id = ?", id).Order("created_at desc").Find(&chapters).Error; err != nil {
 		fmt.Println(err)
 		SendErrJSON("error", c)
 		return
@@ -214,6 +214,29 @@ func CreateChapter(c *gin.Context) {
 		"msg":   "success",
 		"data": gin.H{
 			"chapter": chapter,
+		},
+	})
+}
+
+// DeleteChapter 删除图书的章节
+func DeleteChapter(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	id, err := strconv.Atoi(c.Param("chapterID"))
+	if err != nil {
+		SendErrJSON("错误的章节id", c)
+		return
+	}
+	var sql = "DELETE FROM book_chapters WHERE id = ? OR parent_id = ?"
+	if err := model.DB.Exec(sql, id, id).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"id": id,
 		},
 	})
 }

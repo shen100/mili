@@ -20,6 +20,7 @@ body {
 .book-chapter-tree-box {
     width: 320px;
     min-height: 600px;
+    padding-bottom: 20px;
     display: inline-block;
     vertical-align: top;
     border-right: 1px #e2e2e2 solid;

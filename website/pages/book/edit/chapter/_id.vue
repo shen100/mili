@@ -3,19 +3,16 @@
         <div>
             <div class="book-chapter-tree-box">
                 <h1 class="book-name">{{book.name}}</h1>
-                <div class="book-chapter-tree">
-                    <Tree v-if="isMounted" :data="treeData" :render="renderContent"></Tree>
+                <div class="book-chapter-tree" :style="{padding: treeData.length ? '' : '12px 0 12px 20px'}">
+                    <Tree v-if="isMounted" :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
                 </div>
                 <div class="book-chapter-create">
                     <Button size="large" v-if="isMounted" type="primary" @click="onCreateChapterClick">创建章节</Button>
                 </div>
-                <Modal
-                    v-model="createChapterModalVisible"
+                <Modal v-model="createChapterModalVisible"
                     :title="createChapterID ? '添加子章节' : '创建章节'"
                     @on-cancel="cancelCreateChapter">
-                    <Input v-model="createChapterName"
-                        placeholder="章节名称"
-                        size="large"/>
+                    <Input v-model="createChapterName" placeholder="章节名称" size="large"/>
                     <Row style="margin-top: 14px;" type="flex" justify="space-between">
                         <Button type="ghost" style="width:48%" @click="cancelCreateChapter">取消</Button>
                         <Button type="primary" style="width:48%" @click="onCreateChapter">确定</Button>
@@ -24,7 +21,7 @@
                 </Modal>
             </div>
             <div class="book-chapter-editor">
-                <h2 class="curchapter-name">正在编辑: {{curChapter.name}}</h2>
+                <h2 class="curchapter-name">正在编辑{{curChapter ? curChapter.name : ''}}</h2>
                 <md-editor :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
                 <div>
                     <Button size="large" v-if="isMounted" type="primary" @click="onSubmit">保存</Button>
@@ -39,8 +36,13 @@
     import Editor from '~/components/Editor'
     import ErrorCode from '~/constant/ErrorCode'
     import config from '~/config'
+    import { parseTree } from '~/utils/tree'
 
     export default {
+        validate ({ params }) {
+            var hasId = !!params.id
+            return hasId
+        },
         asyncData (context) {
             return Promise.all([
                 request.getBook({
@@ -62,32 +64,32 @@
                     return
                 }
                 let chapters = arr[1].data.chapters || []
+                for (let i = 0; i < chapters.length; i++) {
+                    chapters[i].expand = true
+                }
+                let treeData = parseTree(chapters, {
+                    titleKey: 'name',
+                    dataKeys: ['expand']
+                })
+                console.log(treeData)
+                let curChapter = null
+                if (treeData && treeData.length) {
+                    curChapter = treeData[0]
+                }
                 return {
                     isMounted: false,
                     user: context.user,
-                    content: '',
                     book: book,
-                    chapters: chapters,
-                    curChapter: {name: 'Go语言编程'},
-                    createChapterID: 0,
+                    content: '', // 用来设置编辑器的内容
+                    curChapter: curChapter, // 当前选中的章节
+                    createChapterID: 0, // 创建章节时，用来记录父章节的id，若为0，表示无父章节
                     createChapterName: '',
                     createChapterModalVisible: false,
+                    treeData: treeData,
                     buttonProps: {
                         type: 'ghost',
                         size: 'small'
-                    },
-                    treeData: [
-                        {
-                            title: '第一章',
-                            expand: true,
-                            children: []
-                        },
-                        {
-                            title: '第二章',
-                            expand: true,
-                            children: []
-                        }
-                    ]
+                    }
                 }
             }).catch(err => {
                 console.log(err)
@@ -96,27 +98,29 @@
         },
         mounted () {
             this.isMounted = true
+            console.log(this.treeData)
         },
         methods: {
             onCreateChapterClick () {
                 this.createChapterID = 0
                 this.createChapterModalVisible = true
+                this.createChapterName = ''
             },
             cancelCreateChapter () {
-                this.createChapterModalVisible = false
                 this.createChapterID = 0
-                self.createChapterName = ''
+                this.createChapterModalVisible = false
+                this.createChapterName = ''
             },
             getNode (chapterID) {
                 let nodes = this.treeData.slice(0)
-                while (nodes.length > 0) {
+                while (nodes.length) {
                     let node = nodes[0]
-                    if (node.chapterID !== chapterID) {
+                    if (node.id !== chapterID) {
                         let children = node.children
                         if (children && children.length > 0) {
                             nodes = nodes.concat(children)
                         }
-                        nodes.shift(0)
+                        nodes.shift()
                     } else {
                         return node
                     }
@@ -129,7 +133,7 @@
                     body: {
                         name: this.createChapterName,
                         bookID: this.book.id,
-                        createChapterID: createChapterID
+                        parentID: createChapterID
                     }
                 }).then(res => {
                     if (res.errNo === ErrorCode.ERROR) {
@@ -144,11 +148,12 @@
                         let chapterData = {
                             title: res.data.chapter.name,
                             expand: true,
-                            chapterID: res.data.chapter.id,
+                            id: res.data.chapter.id,
                             children: []
                         }
                         if (createChapterID) {
                             let node = self.getNode(createChapterID)
+                            console.log('--------', node, createChapterID)
                             node.children.push(chapterData)
                         } else {
                             self.treeData.push(chapterData)
@@ -223,26 +228,59 @@
                 ])
             },
             append (data) {
-                console.log(this)
-                this.createChapterID = data.chapterID || 0
+                this.createChapterID = data.id || 0
                 this.createChapterModalVisible = true
             },
             remove (root, node, data) {
-                console.log(node, data)
-                const parentKey = root.find(el => el === node).parent
-                if (parentKey) {
-                    const parent = root.find(el => el.nodeKey === parentKey).node
-                    const index = parent.children.indexOf(data)
-                    parent.children.splice(index, 1)
-                } else {
-                    console.log(node)
-                    for (let i = 0; i < this.treeData.length; i++) {
-                        if (this.treeData[i] === node.node) {
-                            this.treeData.splice(i, 1)
-                            break
-                        }
+                let self = this
+                this.$Modal.confirm({
+                    title: '删除章节',
+                    content: '确定要删除这个章节?',
+                    onOk () {
+                        request.deleteBookChapter({
+                            params: {
+                                chapterID: data.id
+                            }
+                        }).then(res => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                self.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '已删除'
+                                })
+                                const parentKey = root.find(el => el === node).parent
+                                if (parentKey) {
+                                    const parent = root.find(el => el.nodeKey === parentKey).node
+                                    const index = parent.children.indexOf(data)
+                                    parent.children.splice(index, 1)
+                                } else {
+                                    for (let i = 0; i < self.treeData.length; i++) {
+                                        if (self.treeData[i] === node.node) {
+                                            self.treeData.splice(i, 1)
+                                            break
+                                        }
+                                    }
+                                }
+                            } else {
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
+                            }
+                        }).catch(err => {
+                            // err = '内部错误'
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err
+                            })
+                        })
+                    },
+                    onCancel () {
+
                     }
-                }
+                })
             }
         },
         components: {

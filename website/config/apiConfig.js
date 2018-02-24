@@ -249,6 +249,10 @@ const api = {
     createBookChapter: { // 创建图书的章节
         url: url + '/books/chapters',
         method: 'POST'
+    },
+    deleteBookChapter: { // 删除图书的章节
+        url: url + '/books/chapters/:chapterID',
+        method: 'DELETE'
     }
 }
 

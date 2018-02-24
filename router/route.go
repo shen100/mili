@@ -124,13 +124,15 @@ func Route(router *gin.Engine) {
 			vote.DeleteItem)
 
 		api.GET("/books/info/:id", book.Info)
-		api.GET("/books/chapters/:id", book.Chapters)
+		api.GET("/books/chapters/:bookID", book.Chapters)
 		api.PUT("/books/update", middleware.EditorRequired,
 			book.Update)
 		api.POST("/books", middleware.EditorRequired,
 			book.Create)
 		api.POST("/books/chapters", middleware.EditorRequired,
 			book.CreateChapter)
+		api.DELETE("/books/chapters/:chapterID", middleware.EditorRequired,
+			book.DeleteChapter)
 	}
 
 	adminAPI := router.Group(apiPrefix+"/admin", middleware.RefreshTokenCookie, middleware.AdminRequired)
