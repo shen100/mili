@@ -2,7 +2,20 @@
     <div class="book-chapter-box">
         <div>
             <div class="book-chapter-tree-box">
-                <h1 class="book-name">{{book.name}}</h1>
+                <div class="book-name-edit-box">
+                    <div v-if="!isEditBookName">
+                        <h1 class="book-name">{{book.name}}</h1>
+                        <ButtonGroup shape="circle" class="book-name-btngroup">
+                            <Button @click="onEditBookNameClick" type="primary" icon="edit" size="small"></Button>
+                            <Button @click="onPublishBookClick" type="primary" icon="android-upload" size="small"></Button>
+                        </ButtonGroup>
+                    </div>
+                    <div v-else class="book-name-input-box">
+                        <Input v-model="inputBookName" style="width: 180px;" :value="book.name" placeholder="请输入图书名称" size="small"></Input>
+                        <Button @click="cancelEditBookNameClick" type="ghost" size="small" style="float:right;margin-right: 17px;">取消</Button>
+                        <Button @click="onEditBookName" type="primary" size="small" style="float:right;margin-right: 10px;">确定</Button>
+                    </div>
+                </div>
                 <div class="book-chapter-tree" :style="{padding: treeData.length ? '' : '12px 0 12px 20px'}">
                     <Tree v-if="isMounted" :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
                 </div>
@@ -19,12 +32,22 @@
                     </Row>
                     <div slot="footer"></div>
                 </Modal>
+                <Modal v-model="editChapterNameModalVisible"
+                    title="修改章节名称"
+                    @on-cancel="cancelEditChapterName">
+                    <Input v-model="tempChapterName" placeholder="章节名称" size="large"/>
+                    <Row style="margin-top: 14px;" type="flex" justify="space-between">
+                        <Button type="ghost" style="width:48%" @click="cancelEditChapterName">取消</Button>
+                        <Button type="primary" style="width:48%" @click="onEditChapterName">确定</Button>
+                    </Row>
+                    <div slot="footer"></div>
+                </Modal>
             </div>
             <div class="book-chapter-editor">
-                <h2 class="curchapter-name">正在编辑{{curChapter ? curChapter.name : ''}}</h2>
-                <md-editor :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
+                <h2 class="curchapter-name">正在编辑{{curChapter ? curChapter.title : ''}}</h2>
+                <md-editor ref="mdEditor" :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
                 <div>
-                    <Button size="large" v-if="isMounted" type="primary" @click="onSubmit">保存</Button>
+                    <Button size="large" v-if="isMounted" type="primary" @click="onSaveChapterContent">保存</Button>
                 </div>
             </div>
         </div>
@@ -69,18 +92,25 @@
                 }
                 let treeData = parseTree(chapters, {
                     titleKey: 'name',
-                    dataKeys: ['expand']
+                    dataKeys: ['expand', 'content']
                 })
-                console.log(treeData)
                 let curChapter = null
+                let content = ''
                 if (treeData && treeData.length) {
                     curChapter = treeData[0]
+                    content = curChapter.content
                 }
                 return {
+                    isEditBookName: false,
+                    inputBookName: '',
+                    editChapterNameModalVisible: false,
+                    tempChapterID: 0, // 要修改名称的章节的id
+                    tempChapterName: '', // 要修改名称的章节的名称
                     isMounted: false,
                     user: context.user,
                     book: book,
-                    content: '', // 用来设置编辑器的内容
+                    content: content, // 用来设置编辑器的内容
+                    submitContent: content, // 用户在编辑器中操作后的内容
                     curChapter: curChapter, // 当前选中的章节
                     createChapterID: 0, // 创建章节时，用来记录父章节的id，若为0，表示无父章节
                     createChapterName: '',
@@ -98,9 +128,137 @@
         },
         mounted () {
             this.isMounted = true
-            console.log(this.treeData)
         },
         methods: {
+            onEditChapterName () {
+                let self = this
+                request.updateBookChapterName({
+                    body: {
+                        name: this.tempChapterName,
+                        id: this.tempChapterID
+                    }
+                }).then(res => {
+                    if (res.errNo === ErrorCode.ERROR) {
+                        self.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
+                    } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
+                        location.href = '/signin?ref=' + encodeURIComponent(location.href)
+                    } else if (res.errNo === ErrorCode.SUCCESS) {
+                        let node = self.getNode(self.tempChapterID)
+                        node.title = self.tempChapterName
+                        self.tempChapterID = 0
+                        self.tempChapterName = ''
+                        self.editChapterNameModalVisible = false
+                        self.$Message.success({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '修改成功'
+                        })
+                    }
+                }).catch(err => {
+                    self.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
+                })
+            },
+            cancelEditChapterName () {
+                this.tempChapterID = 0
+                this.tempChapterName = ''
+                this.editChapterNameModalVisible = false
+            },
+            onPublishBookClick () {
+                let self = this
+                this.$Modal.confirm({
+                    title: '发布图书',
+                    content: '确定要发布图书?',
+                    onOk () {
+                        request.publishBook({
+                            params: {
+                                bookID: self.book.id
+                            }
+                        }).then(res => {
+                            if (res.errNo === ErrorCode.SUCCESS) {
+                                self.$Message.success({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: '发布成功'
+                                })
+                            } else {
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: res.msg
+                                })
+                            }
+                        }).catch(err => {
+                            err = '内部错误'
+                            self.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: err
+                            })
+                        })
+                    },
+                    onCancel () {
+
+                    }
+                })
+            },
+            onEditBookNameClick () {
+                this.isEditBookName = true
+                this.inputBookName = this.book.name
+            },
+            cancelEditBookNameClick () {
+                this.isEditBookName = false
+            },
+            onEditBookName () {
+                let self = this
+                if (!this.inputBookName) {
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '图书名称不能为空'
+                    })
+                    return
+                }
+                request.updateBook({
+                    body: {
+                        id: this.book.id,
+                        name: this.inputBookName,
+                        content: this.book.content,
+                        coverURL: this.book.coverURL
+                    }
+                }).then(res => {
+                    if (res.errNo === ErrorCode.ERROR) {
+                        self.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
+                    } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
+                        location.href = '/signin?ref=' + encodeURIComponent(location.href)
+                    } else if (res.errNo === ErrorCode.SUCCESS) {
+                        self.$Message.success({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '修改成功'
+                        })
+                        self.book.name = res.data.book.name
+                        self.isEditBookName = false
+                    }
+                }).catch(err => {
+                    self.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
+                })
+            },
             onCreateChapterClick () {
                 this.createChapterID = 0
                 this.createChapterModalVisible = true
@@ -148,12 +306,12 @@
                         let chapterData = {
                             title: res.data.chapter.name,
                             expand: true,
+                            content: '',
                             id: res.data.chapter.id,
                             children: []
                         }
                         if (createChapterID) {
                             let node = self.getNode(createChapterID)
-                            console.log('--------', node, createChapterID)
                             node.children.push(chapterData)
                         } else {
                             self.treeData.push(chapterData)
@@ -170,14 +328,44 @@
                     })
                 })
             },
-            onSubmit () {
-
+            onSaveChapterContent () {
+                let self = this
+                request.saveBookChapterContent({
+                    body: {
+                        chapterID: this.curChapter.id,
+                        content: this.submitContent
+                    }
+                }).then(res => {
+                    if (res.errNo === ErrorCode.ERROR) {
+                        self.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: res.msg
+                        })
+                    } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
+                        location.href = '/signin?ref=' + encodeURIComponent(location.href)
+                    } else if (res.errNo === ErrorCode.SUCCESS) {
+                        let node = self.getNode(self.curChapter.id)
+                        node.content = self.submitContent
+                        self.$Message.success({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: '保存成功'
+                        })
+                    }
+                }).catch(err => {
+                    self.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: err.message || err.msg
+                    })
+                })
             },
             onContentSave () {
 
             },
-            onContentChange () {
-
+            onContentChange (content) {
+                this.submitContent = content
             },
             renderContent (h, { root, node, data }) {
                 let hasChildren = !!(node.children && node.children.length)
@@ -196,7 +384,14 @@
                                 marginRight: '8px'
                             }
                         }),
-                        h('span', data.title)
+                        h('span', {
+                            style: {
+                                color: (this.curChapter && data.id === this.curChapter.id) ? '#348eed' : '#333'
+                            },
+                            on: {
+                                click: this.selectChapter.bind(this, data)
+                            }
+                        }, data.title)
                     ]),
                     h('span', {
                         style: {
@@ -207,7 +402,18 @@
                     }, [
                         h('Button', {
                             props: Object.assign({}, this.buttonProps, {
-                                icon: 'ios-plus-empty'
+                                icon: 'edit'
+                            }),
+                            style: {
+                                marginRight: '8px'
+                            },
+                            on: {
+                                click: this.showEditChapterNameModal.bind(this, data)
+                            }
+                        }),
+                        h('Button', {
+                            props: Object.assign({}, this.buttonProps, {
+                                icon: 'android-add'
                             }),
                             style: {
                                 marginRight: '8px'
@@ -218,7 +424,7 @@
                         }),
                         h('Button', {
                             props: Object.assign({}, this.buttonProps, {
-                                icon: 'ios-minus-empty'
+                                icon: 'android-remove'
                             }),
                             on: {
                                 click: () => { this.remove(root, node, data) }
@@ -226,6 +432,17 @@
                         })
                     ])
                 ])
+            },
+            selectChapter (data) {
+                let node = this.getNode(data.id)
+                this.curChapter = node
+                this.content = node.content
+                this.submitContent = node.content
+            },
+            showEditChapterNameModal (data) {
+                this.tempChapterID = data.id
+                this.tempChapterName = data.title
+                this.editChapterNameModalVisible = true
             },
             append (data) {
                 this.createChapterID = data.id || 0
@@ -269,7 +486,7 @@
                                 })
                             }
                         }).catch(err => {
-                            // err = '内部错误'
+                            err = '内部错误'
                             self.$Message.error({
                                 duration: config.messageDuration,
                                 closable: true,

@@ -95,6 +95,9 @@ type BookChapterComment struct {
 }
 
 const (
+	// BookUnpublish 未发布
+	BookUnpublish = "book_unpublish"
+
 	// BookVerifying 审核中
 	BookVerifying = "book_verifying"
 

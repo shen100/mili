@@ -125,12 +125,18 @@ func Route(router *gin.Engine) {
 
 		api.GET("/books/info/:id", book.Info)
 		api.GET("/books/chapters/:bookID", book.Chapters)
-		api.PUT("/books/update", middleware.EditorRequired,
-			book.Update)
 		api.POST("/books", middleware.EditorRequired,
 			book.Create)
 		api.POST("/books/chapters", middleware.EditorRequired,
 			book.CreateChapter)
+		api.PUT("/books/update", middleware.EditorRequired,
+			book.Update)
+		api.PUT("/books/publish/:bookID", middleware.EditorRequired,
+			book.Publish)
+		api.PUT("/books/chapters/content", middleware.EditorRequired,
+			book.UpdateChapterContent)
+		api.PUT("/books/chapters/updatename", middleware.EditorRequired,
+			book.UpdateChapterName)
 		api.DELETE("/books/chapters/:chapterID", middleware.EditorRequired,
 			book.DeleteChapter)
 	}

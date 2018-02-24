@@ -27,7 +27,8 @@ export const parseTree = (nodes, options) => {
                 if (options.dataKeys) {
                     for (let j = 0; j < options.dataKeys.length; j++) {
                         let key = options.dataKeys[j]
-                        node[key] = copyList[j][key]
+                        node[key] = copyList[i][key]
+                        console.log(copyList[i].id, key, copyList[i][key])
                     }
                 }
                 stores.push(node)

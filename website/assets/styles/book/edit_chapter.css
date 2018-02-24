@@ -11,6 +11,28 @@ body {
     padding-left: 20px;
     line-height: 40px;
     background-color: #f7f7f7;
+    display: inline-block;
+    vertical-align: top;
+    width: 240px;
+    font-size: 14px;
+}
+
+.book-name-btngroup {
+    float: right;
+    margin-right: 17px;
+    margin-top: 8px;
+}
+
+.book-name-edit-box {
+    font-size: 0;
+    height: 40px;
+    background-color: #f7f7f7;
+}
+
+.book-name-input-box {
+    padding-left: 20px;
+    padding-top: 10px;
+    font-size: 0;
 }
 
 .curchapter-name {

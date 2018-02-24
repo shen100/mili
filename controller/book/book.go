@@ -68,7 +68,7 @@ func Save(c *gin.Context, isEdit bool) {
 	var updatedBook model.Book
 	if !isEdit {
 		//创建图书
-		bookData.Status = model.BookVerifying
+		bookData.Status = model.BookUnpublish
 		bookData.UserID = user.ID
 		bookData.ContentType = model.ContentTypeMarkdown
 		if err := model.DB.Create(&bookData).Error; err != nil {
@@ -117,6 +117,34 @@ func Create(c *gin.Context) {
 // Update 更新图书
 func Update(c *gin.Context) {
 	Save(c, true)
+}
+
+// Publish 发布图书
+func Publish(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	id, err := strconv.Atoi(c.Param("bookID"))
+	if err != nil {
+		SendErrJSON("错误的图书id", c)
+		return
+	}
+	var book model.Book
+	if err := model.DB.First(&book, id).Error; err != nil {
+		SendErrJSON("错误的图书id", c)
+		return
+	}
+	book.Status = model.BookVerifying
+	if err := model.DB.Save(&book).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"book": book,
+		},
+	})
 }
 
 // Info 获取图书信息
@@ -182,6 +210,7 @@ func CreateChapter(c *gin.Context) {
 	}
 
 	reqData.Name = strings.TrimSpace(reqData.Name)
+	reqData.Name = utils.AvoidXSS(reqData.Name)
 	if reqData.Name == "" {
 		SendErrJSON("章节名称不能为空", c)
 		return
@@ -237,6 +266,82 @@ func DeleteChapter(c *gin.Context) {
 		"msg":   "success",
 		"data": gin.H{
 			"id": id,
+		},
+	})
+}
+
+// UpdateChapterContent 更新图书的章节内容
+func UpdateChapterContent(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	type ReqData struct {
+		ID      uint   `json:"chapterID"`
+		Content string `json:"content"`
+	}
+	var reqData ReqData
+	if err := c.ShouldBindJSON(&reqData); err != nil {
+		fmt.Println(err)
+		SendErrJSON("参数无效", c)
+		return
+	}
+	reqData.Content = strings.TrimSpace(reqData.Content)
+
+	var chapter model.BookChapter
+	if err := model.DB.First(&chapter, reqData.ID).Error; err != nil {
+		SendErrJSON("错误的章节id", c)
+		return
+	}
+	chapter.Content = reqData.Content
+	if err := model.DB.Save(&chapter).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"id": reqData.ID,
+		},
+	})
+}
+
+// UpdateChapterName 更新图书的章节的名称
+func UpdateChapterName(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	type ReqData struct {
+		ID   uint   `json:"id"`
+		Name string `json:"name" binding:"required,min=1,max=100"`
+	}
+	var reqData ReqData
+	if err := c.ShouldBindJSON(&reqData); err != nil {
+		fmt.Println(err)
+		SendErrJSON("参数无效", c)
+		return
+	}
+
+	reqData.Name = strings.TrimSpace(reqData.Name)
+	reqData.Name = utils.AvoidXSS(reqData.Name)
+	if reqData.Name == "" {
+		SendErrJSON("章节名称不能为空", c)
+		return
+	}
+	var chapter model.BookChapter
+	if err := model.DB.First(&chapter, reqData.ID).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("无效的章节id", c)
+		return
+	}
+	chapter.Name = reqData.Name
+	if err := model.DB.Save(&chapter).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"chapter": chapter,
 		},
 	})
 }

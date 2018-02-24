@@ -242,6 +242,10 @@ const api = {
         url: url + '/books/update',
         method: 'PUT'
     },
+    publishBook: { // 发布图书
+        url: url + '/books/publish/:bookID',
+        method: 'PUT'
+    },
     getBookChapters: { // 获取图书的章节
         url: url + '/books/chapters/:id',
         method: 'GET'
@@ -249,6 +253,14 @@ const api = {
     createBookChapter: { // 创建图书的章节
         url: url + '/books/chapters',
         method: 'POST'
+    },
+    updateBookChapterName: { // 更新图书的章节的名称
+        url: url + '/books/chapters/updatename',
+        method: 'PUT'
+    },
+    saveBookChapterContent: { // 保存图书的章节内容
+        url: url + '/books/chapters/content',
+        method: 'PUT'
     },
     deleteBookChapter: { // 删除图书的章节
         url: url + '/books/chapters/:chapterID',
