@@ -1,0 +1,53 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.book-box {
+    width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+}
+
+.book-header {
+    height: 55px;
+    padding-left: 20px;
+    border-bottom: 1px #e2e2e2 solid;
+}
+
+.book-header h1 {
+    line-height: 55px;
+    font-size: 26px;
+}
+
+.book-tree-box {
+    display: inline-block;
+    vertical-align: top;
+    width: 320px;
+    padding-left: 20px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border-right: 1px solid #e2e2e2;
+    min-height: 600px;
+}
+
+.book-tree-link:hover {
+    text-decoration: none;
+}
+
+.book-tree-link:hover span {
+    color: #348eed!important;
+}
+
+.book-content-box {
+    width: 840px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 19px;
+    margin-top: 4px;
+}
+
+.book-chapter-name {
+    font-size: 26px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

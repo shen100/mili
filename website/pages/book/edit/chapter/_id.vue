@@ -70,6 +70,9 @@
             return Promise.all([
                 request.getBook({
                     client: context.req,
+                    query: {
+                        f: 'md'
+                    },
                     params: {
                         id: context.params.id
                     }
@@ -225,12 +228,10 @@
                     })
                     return
                 }
-                request.updateBook({
+                request.updateBookName({
                     body: {
                         id: this.book.id,
-                        name: this.inputBookName,
-                        content: this.book.content,
-                        coverURL: this.book.coverURL
+                        name: this.inputBookName
                     }
                 }).then(res => {
                     if (res.errNo === ErrorCode.ERROR) {

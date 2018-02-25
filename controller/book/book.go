@@ -119,6 +119,48 @@ func Update(c *gin.Context) {
 	Save(c, true)
 }
 
+// UpdateName 更新图书名称
+func UpdateName(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	var bookData model.Book
+	if err := c.ShouldBindJSON(&bookData); err != nil {
+		SendErrJSON("参数无效", c)
+		return
+	}
+
+	bookData.Name = utils.AvoidXSS(bookData.Name)
+	bookData.Name = strings.TrimSpace(bookData.Name)
+
+	if bookData.Name == "" {
+		SendErrJSON("图书名称不能为空", c)
+		return
+	}
+
+	if utf8.RuneCountInString(bookData.Name) > model.MaxNameLen {
+		msg := "图书名称不能超过" + strconv.Itoa(model.MaxNameLen) + "个字符"
+		SendErrJSON(msg, c)
+		return
+	}
+	var book model.Book
+	if err := model.DB.First(&book, bookData.ID).Error; err != nil {
+		SendErrJSON("错误的图书id", c)
+		return
+	}
+	book.Name = bookData.Name
+	if err := model.DB.Save(&book).Error; err != nil {
+		SendErrJSON("error", c)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"book": book,
+		},
+	})
+}
+
 // Publish 发布图书
 func Publish(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -147,6 +189,31 @@ func Publish(c *gin.Context) {
 	})
 }
 
+// List 获取图书列表
+func List(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	var books []model.Book
+	if err := model.DB.Model(&model.Book{}).Find(&books).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+	for i := 0; i < len(books); i++ {
+		if err := model.DB.Model(&books[i]).Related(&books[i].User, "users").Error; err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("error.", c)
+			return
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"books": books,
+		},
+	})
+}
+
 // Info 获取图书信息
 func Info(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
@@ -162,6 +229,17 @@ func Info(c *gin.Context) {
 		return
 	}
 
+	if c.Query("f") != "md" {
+		if book.ContentType == model.ContentTypeMarkdown {
+			book.HTMLContent = utils.MarkdownToHTML(book.Content)
+		} else if book.ContentType == model.ContentTypeHTML {
+			book.HTMLContent = utils.AvoidXSS(book.HTMLContent)
+		} else {
+			book.HTMLContent = utils.MarkdownToHTML(book.Content)
+		}
+		book.Content = ""
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
@@ -171,7 +249,7 @@ func Info(c *gin.Context) {
 	})
 }
 
-// Chapters 获取图书的章节
+// Chapters 获取图书的所有章节
 func Chapters(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	id, err := strconv.Atoi(c.Param("bookID"))
@@ -190,6 +268,41 @@ func Chapters(c *gin.Context) {
 		"msg":   "success",
 		"data": gin.H{
 			"chapters": chapters,
+		},
+	})
+}
+
+// Chapter 查询章节
+func Chapter(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	id, err := strconv.Atoi(c.Param("chapterID"))
+	if err != nil {
+		SendErrJSON("错误的章节id", c)
+		return
+	}
+	var chapter model.BookChapter
+	if err := model.DB.First(&chapter, id).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+
+	if c.Query("f") != "md" {
+		if chapter.ContentType == model.ContentTypeMarkdown {
+			chapter.HTMLContent = utils.MarkdownToHTML(chapter.Content)
+		} else if chapter.ContentType == model.ContentTypeHTML {
+			chapter.HTMLContent = utils.AvoidXSS(chapter.HTMLContent)
+		} else {
+			chapter.HTMLContent = utils.MarkdownToHTML(chapter.Content)
+		}
+		chapter.Content = ""
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"chapter": chapter,
 		},
 	})
 }

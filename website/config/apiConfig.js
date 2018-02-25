@@ -230,6 +230,10 @@ const api = {
         url: url + '/messages/read/:id',
         method: 'GET'
     },
+    getBooks: { // 获取图书列表
+        url: url + '/books',
+        method: 'GET'
+    },
     getBook: { // 获取图书信息
         url: url + '/books/info/:id',
         method: 'GET'
@@ -242,12 +246,20 @@ const api = {
         url: url + '/books/update',
         method: 'PUT'
     },
+    updateBookName: { // 更新图书的名称
+        url: url + '/books/updatename',
+        method: 'PUT'
+    },
     publishBook: { // 发布图书
         url: url + '/books/publish/:bookID',
         method: 'PUT'
     },
-    getBookChapters: { // 获取图书的章节
+    getBookChapters: { // 获取图书的所有章节
         url: url + '/books/chapters/:id',
+        method: 'GET'
+    },
+    getBookChapter: { // 获取章节
+        url: url + '/books/chapter/:chapterID',
         method: 'GET'
     },
     createBookChapter: { // 创建图书的章节

@@ -357,10 +357,10 @@ func Info(c *gin.Context) {
 			vote.HTMLContent = utils.MarkdownToHTML(vote.Content)
 		} else if vote.ContentType == model.ContentTypeHTML {
 			vote.HTMLContent = utils.AvoidXSS(vote.HTMLContent)
-			vote.Content = ""
 		} else {
 			vote.HTMLContent = utils.MarkdownToHTML(vote.Content)
 		}
+		vote.Content = ""
 	}
 
 	c.JSON(http.StatusOK, gin.H{

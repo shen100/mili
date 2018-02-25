@@ -13,7 +13,7 @@
                             <Input v-model="formValidate.bookName" placeholder="请输入图书名称" style="width: 400px"></Input>
                         </Form-item>
                         <Form-item label="封面图片" prop="bookPic">
-                            <div class="book-img">
+                            <div class="book-img" :style="{width: (imgWidth + 2) + 'px', height: (imgHeight + 2) + 'px'}">
                                 <img :src="coverURL">
                             </div>
                             <Upload
@@ -71,6 +71,8 @@
                 file: null,
                 uploaderVisible: false,
                 croppie: null,
+                imgWidth: 188,
+                imgHeight: 238,
                 formValidate: {
                     bookName: (this.book && this.book.name) || '',
                     content: (this.book && (this.book.content || this.book.htmlContent)) || ''
@@ -129,12 +131,12 @@
                         let opts = {
                             url: reader.result,
                             boundary: {
-                                width: 215,
-                                height: 250
+                                width: self.imgWidth + 80,
+                                height: self.imgHeight + 80
                             },
                             viewport: {
-                                width: 135,
-                                height: 170,
+                                width: self.imgWidth,
+                                height: self.imgHeight,
                                 type: 'square'
                             }
                         }

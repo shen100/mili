@@ -14,6 +14,9 @@
         asyncData (context) {
             return request.getBook({
                 client: context.req,
+                query: {
+                    f: 'md'
+                },
                 params: {
                     id: context.params.id
                 }
