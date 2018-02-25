@@ -44,7 +44,7 @@
                 </Modal>
             </div>
             <div class="book-chapter-editor">
-                <h2 class="curchapter-name">正在编辑{{curChapter ? curChapter.title : ''}}</h2>
+                <h2 class="curchapter-name">正在编辑: {{curChapter ? curChapter.title : ''}}</h2>
                 <md-editor ref="mdEditor" :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
                 <div>
                     <Button size="large" v-if="isMounted" type="primary" @click="onSaveChapterContent">保存</Button>
@@ -110,7 +110,6 @@
                     user: context.user,
                     book: book,
                     content: content, // 用来设置编辑器的内容
-                    submitContent: content, // 用户在编辑器中操作后的内容
                     curChapter: curChapter, // 当前选中的章节
                     createChapterID: 0, // 创建章节时，用来记录父章节的id，若为0，表示无父章节
                     createChapterName: '',
@@ -319,6 +318,9 @@
                         self.createChapterModalVisible = false
                         self.createChapterName = ''
                         self.createChapterID = 0
+                        self.selectChapter({
+                            id: res.data.chapter.id
+                        })
                     }
                 }).catch(err => {
                     self.$Message.error({
@@ -333,7 +335,7 @@
                 request.saveBookChapterContent({
                     body: {
                         chapterID: this.curChapter.id,
-                        content: this.submitContent
+                        content: this.content
                     }
                 }).then(res => {
                     if (res.errNo === ErrorCode.ERROR) {
@@ -346,7 +348,7 @@
                         location.href = '/signin?ref=' + encodeURIComponent(location.href)
                     } else if (res.errNo === ErrorCode.SUCCESS) {
                         let node = self.getNode(self.curChapter.id)
-                        node.content = self.submitContent
+                        node.content = self.content
                         self.$Message.success({
                             duration: config.messageDuration,
                             closable: true,
@@ -365,7 +367,7 @@
 
             },
             onContentChange (content) {
-                this.submitContent = content
+                this.content = content
             },
             renderContent (h, { root, node, data }) {
                 let hasChildren = !!(node.children && node.children.length)
@@ -375,7 +377,14 @@
                         width: '100%'
                     }
                 }, [
-                    h('span', [
+                    h('span', {
+                        style: {
+                            cursor: 'pointer'
+                        },
+                        on: {
+                            click: this.selectChapter.bind(this, data)
+                        }
+                    }, [
                         h('Icon', {
                             props: {
                                 type: hasChildren ? 'ios-folder-outline' : 'ios-paper-outline'
@@ -387,9 +396,6 @@
                         h('span', {
                             style: {
                                 color: (this.curChapter && data.id === this.curChapter.id) ? '#348eed' : '#333'
-                            },
-                            on: {
-                                click: this.selectChapter.bind(this, data)
                             }
                         }, data.title)
                     ]),
@@ -437,7 +443,8 @@
                 let node = this.getNode(data.id)
                 this.curChapter = node
                 this.content = node.content
-                this.submitContent = node.content
+                this.content = node.content
+                console.log('selectChapter', this.content)
             },
             showEditChapterNameModal (data) {
                 this.tempChapterID = data.id
@@ -465,6 +472,9 @@
                                     closable: true,
                                     content: '已删除'
                                 })
+                                if (self.curChapter && self.curChapter.id === data.id) {
+                                    self.curChapter = self.treeData[0]
+                                }
                                 const parentKey = root.find(el => el === node).parent
                                 if (parentKey) {
                                     const parent = root.find(el => el.nodeKey === parentKey).node

@@ -215,7 +215,7 @@
         watch: {
             value: function (newVal, oldVal) {
                 newVal = newVal || ''
-                if (newVal !== oldVal) {
+                if (newVal !== this.simplemde.value()) {
                     this.simplemde.value(newVal)
                 }
             }
