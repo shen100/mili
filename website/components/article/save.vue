@@ -19,7 +19,7 @@
                         </Form-item>
                         <Form-item class="topic-content" :label-width="0" prop="content">
                             <html-editor v-if="article && article.contentType == 2" :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChage" />
-                            <md-editor v-else :value="editorInitContent" :user="user" @save="onContentSave" @change="onContentChage"></md-editor>
+                            <md-editor v-else :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChage"></md-editor>
                         </Form-item>
                         <Form-item class="topic-submit" :label-width="0">
                             <Button size="large" v-if="isMounted" type="primary" @click="onSubmit">{{id ? '保存话题' : '发布话题'}}</Button>
@@ -71,15 +71,13 @@
             'user'
         ],
         data () {
-            let content = (this.article && (this.article.content || this.article.htmlContent)) || ''
             return {
                 isMounted: false,
-                editorInitContent: content,
                 formValidate: {
                     topicName: (this.article && this.article.name) || '',
                     categories: this.categories,
                     selected: (this.article && this.article.categories[0].id + '') || '',
-                    content: content
+                    content: (this.article && (this.article.content || this.article.htmlContent)) || ''
                 },
                 ruleInline: {
                     topicName: [

@@ -93,7 +93,7 @@
                                     <div v-if="!item.editReplyVisible" class="golang123-editor golang123-richtxt" v-html="item.htmlContent"></div>
                                     <div v-if="item.replyVisible || item.editReplyVisible">
                                         <div>
-                                            <md-editor :user="user" :value="editorInitContent" @change="onContentChage" />
+                                            <md-editor :user="user" :value="formData.content" @change="onContentChage" />
                                         </div>
                                         <Row>
                                             <Button @click="onEditOrSubmitReply(item)" type="primary">保存</Button>
@@ -113,7 +113,7 @@
                     <div class="comment-content">
                         <Form ref="formData" :model="formData" :rules="formRule">
                             <Form-item prop="content">
-                                <md-editor :user="user" :value="editorInitContent" @change="onContentChage" />
+                                <md-editor :user="user" :value="formData.content" @change="onContentChage" />
                             </Form-item>
                         </Form>
                         <Button type="primary" @click="onSubmitReply">发表回复</Button>
@@ -185,7 +185,6 @@
                 collectShowDir: false,
                 collectShow: false,
                 loading: false,
-                editorInitContent: '',
                 formData: {
                     content: ''
                 },
@@ -376,7 +375,6 @@
                 this.parentCommentID = comment.parentID
                 this.replyArticle = false
                 this.formData.content = comment.content
-                this.editorInitContent = comment.content
             },
             cancelReply () {
                 for (let i = 0; i < this.article.comments.length; i++) {
@@ -386,7 +384,6 @@
                 this.parentCommentID = 0
                 this.replyArticle = true
                 this.formData.content = ''
-                this.editorInitContent = ''
             },
             onEditOrSubmitReply (comment) {
                 if (comment.editReplyVisible) {

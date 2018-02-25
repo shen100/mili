@@ -37,7 +37,7 @@
                         </Form-item>
                         <Form-item label="图书简介" prop="content">
                             <div>
-                                <md-editor :value="editorInitContent" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
+                                <md-editor :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
                             </div>
                         </Form-item>
                         <Form-item :label-width="0">
@@ -63,10 +63,8 @@
             'user'
         ],
         data () {
-            let content = (this.book && (this.book.content || this.book.htmlContent)) || ''
             return {
                 isMounted: false,
-                editorInitContent: content,
                 bookID: (this.book && this.book.id) || undefined,
                 coverURL: (this.book && this.book.coverURL) || '',
                 uploadURL: config.uploadURL,
@@ -75,7 +73,7 @@
                 croppie: null,
                 formValidate: {
                     bookName: (this.book && this.book.name) || '',
-                    content: content
+                    content: (this.book && (this.book.content || this.book.htmlContent)) || ''
                 },
                 ruleInline: {
                     bookName: [

@@ -443,8 +443,6 @@
                 let node = this.getNode(data.id)
                 this.curChapter = node
                 this.content = node.content
-                this.content = node.content
-                console.log('selectChapter', this.content)
             },
             showEditChapterNameModal (data) {
                 this.tempChapterID = data.id

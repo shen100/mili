@@ -7,7 +7,7 @@
             <Date-picker type="datetime" v-model="formValidate.date" placeholder="选择日期" style="width: 400px" @on-change="onDateChange"/>
         </Form-item>
         <Form-item class="vote-content" :label-width="0" prop="content">
-            <md-editor :user="user" :value="editorInitContent" @change="onContentChage"></md-editor>
+            <md-editor :user="user" :value="formValidate.content" @change="onContentChage"></md-editor>
         </Form-item>
         <Form-item
             v-for="(item, index) in formValidate.items"
@@ -53,13 +53,11 @@
             'id'
         ],
         data () {
-            let content = (this.vote && this.vote.content) || ''
             return {
-                editorInitContent: content,
                 formValidate: {
                     voteName: (this.vote && this.vote.name) || '',
                     date: (this.vote && this.vote.endAt && new Date(this.vote.endAt)) || null,
-                    content: content,
+                    content: (this.vote && this.vote.content) || '',
                     items: (this.vote && this.vote.voteItems.map(item => {
                         return {
                             id: item.id,
