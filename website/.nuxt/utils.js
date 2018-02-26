@@ -74,7 +74,7 @@ export function getContext (context, app) {
     isServer: !!context.isServer,
     isClient: !!context.isClient,
     isStatic: process.static,
-    isDev: true,
+    isDev: false,
     isHMR: context.isHMR || false,
     app: app,
     store: context.store,
