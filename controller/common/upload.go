@@ -64,7 +64,8 @@ func Upload(ctx iris.Context) {
 
 	timeDir := strconv.Itoa(year) + sep + monthStr + sep + dateStr
 
-	title := uuid.NewV4().String() + ext
+	uuidV4, _ := uuid.NewV4()
+	title := uuidV4.String() + ext
 
 	uploadDir := config.ServerConfig.UploadImgDir + sep + timeDir
 	mkErr := os.MkdirAll(uploadDir, 0777)
