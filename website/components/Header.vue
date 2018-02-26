@@ -16,10 +16,9 @@
 			</div>
             <div class="golang-top-header-nav">
                 <ul>
-                    <li><a href="/">首页</a></li>
+                    <li><a href="/">话题</a></li>
+                    <li><a href="/book">图书</a></li>
                     <li><a href="/vote">投票</a></li>
-                    <li><a href="/timeline">成长历史</a></li>
-                    <li><a href="/about">关于</a></li>
                 </ul>
             </div>
 			<div class="golang-top-header-right">

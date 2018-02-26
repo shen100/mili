@@ -22,7 +22,7 @@
             <a href="/about">关于我们</a>
         </div>
         <div class="golang-footer-copyright">
-            <span>©&nbsp;2017&nbsp;<a href="/">golang中文社区</a>&nbsp;<a href="/">golang123.com</a>&nbsp;版权所有</span>
+            <span>©&nbsp;2017&nbsp;<a href="/">golang中文社区</a>&nbsp;版权所有</span>
             <span>&nbsp;|&nbsp;</span>
             <span>京ICP备12045181号-2</span>
         </div>

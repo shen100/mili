@@ -44,7 +44,7 @@ golang123使用dep来管理依赖的包，请先安装dep, 执行以下命令即
 go get -u github.com/golang/dep/cmd/dep
 ```
 
-然后，在项目目录下运行以下命令来安装依赖
+然后，在 **golang123** 项目目录下运行以下命令来安装依赖
 
 ```
 dep ensure
