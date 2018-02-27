@@ -333,6 +333,7 @@ func CreateChapter(c *gin.Context) {
 	chapter.Name = reqData.Name
 	chapter.ParentID = reqData.ParentID
 	chapter.BookID = reqData.BookID
+	chapter.ContentType = model.ContentTypeMarkdown
 	if chapter.ParentID != model.NoParent {
 		var parentChapter model.BookChapter
 		if err := model.DB.First(&parentChapter, chapter.ParentID).Error; err != nil {
@@ -396,6 +397,7 @@ func UpdateChapterContent(c *gin.Context) {
 		SendErrJSON("参数无效", c)
 		return
 	}
+
 	reqData.Content = strings.TrimSpace(reqData.Content)
 
 	var chapter model.BookChapter

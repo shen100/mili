@@ -33,7 +33,14 @@
             }
         },
         mounted () {
-            console.log(11111, this.value)
+        },
+        watch: {
+            value: function (newVal, oldVal) {
+                newVal = newVal || ''
+                if (newVal !== this.inputValue) {
+                    this.inputValue = newVal
+                }
+            }
         }
     }
 </script>

@@ -16,6 +16,9 @@ type CrawlerArticle struct {
 }
 
 const (
+	// ArticleFromNULL 无来源
+	ArticleFromNULL = 0
+
 	// ArticleFromJianShu 简书
 	ArticleFromJianShu = 1
 

@@ -66,3 +66,27 @@ body {
 .book-chapter-create {
     margin-left: 20px;
 }
+
+.crawl-btn {
+    color: #08c;
+    margin-left: 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.chapter-html-editor {
+    margin-bottom: 14px;
+}
+
+.chapter-html-editor textarea {
+    height: 470px;
+}
+
+
+
+
+
+
+
+
+

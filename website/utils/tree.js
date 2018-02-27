@@ -10,6 +10,7 @@ export const parseTree = (nodes, options) => {
     let root = {
         id: 0,
         title: '无',
+        depth: 0,
         children: []
     }
     let stores = []
@@ -22,6 +23,7 @@ export const parseTree = (nodes, options) => {
                 let node = {
                     id: copyList[i].id,
                     title: copyList[i][options.titleKey],
+                    depth: tree.depth + 1,
                     children: []
                 }
                 if (options.dataKeys) {

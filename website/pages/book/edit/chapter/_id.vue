@@ -45,17 +45,54 @@
             </div>
             <div class="book-chapter-editor">
                 <h2 class="curchapter-name">正在编辑: {{curChapter ? curChapter.title : ''}}</h2>
-                <md-editor ref="mdEditor" :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
+                <div v-if="contentType === 'html'" class="chapter-html-editor">
+                    <html-editor :value="content" :user="user" @save="onContentSave" @change="onContentChange" />
+                </div>
+                <md-editor v-else ref="mdEditor" :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
+                <div style="margin-bottom: 12px;">
+                    <RadioGroup v-if="isMounted" v-model="contentType">
+                        <Radio label="markdown"></Radio>
+                        <Radio label="html"></Radio>
+                    </RadioGroup>
+                </div>
                 <div>
                     <Button size="large" v-if="isMounted" type="primary" @click="onSaveChapterContent">保存</Button>
+                    <span v-if="contentType === 'html'" @click="showCrawlModal" class="crawl-btn">抓取内容</span>
                 </div>
             </div>
+            <Modal v-model="crawlModalVisible" title="抓取内容"
+                    @on-cancel="cancelCrawl">
+                <div>
+                    <Form ref="crawlerForm" :model="crawlerFormData" :rules="ruleCrawler" :label-width="120">
+                        <FormItem label="内容选择器" prop="contentSelector">
+                            <Row>
+                                <Col span="12">
+                                    <Input v-model="crawlerFormData.contentSelector" placeholder="请输入内容选择器"></Input>
+                                </Col>
+                            </Row>
+                        </FormItem>
+                        <FormItem label="url" prop="url">
+                            <Row>
+                                <Col span="12">
+                                    <Input v-model="crawlerFormData.url" placeholder="请输入URL"></Input>
+                                </Col>
+                            </Row>
+                        </FormItem>
+                    </Form>
+                </div>
+                <Row style="margin-top: 14px;" type="flex" justify="space-between">
+                    <Button type="ghost" style="width:48%" @click="cancelCrawl">取消</Button>
+                    <Button type="primary" style="width:48%" @click="onCrawl">确定</Button>
+                </Row>
+                <div slot="footer"></div>
+            </Modal>
         </div>
     </div>
 </template>
 
 <script>
     import request from '~/net/request'
+    import HTMLEditor from '~/components/HTMLEditor'
     import Editor from '~/components/Editor'
     import ErrorCode from '~/constant/ErrorCode'
     import config from '~/config'
@@ -65,6 +102,22 @@
         validate ({ params }) {
             var hasId = !!params.id
             return hasId
+        },
+        data () {
+            return {
+                crawlerFormData: {
+                    contentSelector: '',
+                    url: ''
+                },
+                ruleCrawler: {
+                    contentSelector: [
+                        { required: true, message: '内容选择器不能为空', trigger: 'blur' }
+                    ],
+                    url: [
+                        { type: 'url', required: true, message: '无效的URL', trigger: 'blur' }
+                    ]
+                }
+            }
         },
         asyncData (context) {
             return Promise.all([
@@ -104,6 +157,9 @@
                     content = curChapter.content
                 }
                 return {
+                    contentType: 'markdown',
+                    maxDepth: 4,
+                    crawlModalVisible: false,
                     isEditBookName: false,
                     inputBookName: '',
                     editChapterNameModalVisible: false,
@@ -132,6 +188,44 @@
             this.isMounted = true
         },
         methods: {
+            showCrawlModal () {
+                this.crawlModalVisible = true
+            },
+            cancelCrawl () {
+                this.crawlModalVisible = false
+            },
+            onCrawl () {
+                this.$refs['crawlerForm'].validate((valid) => {
+                    if (!valid) {
+                        return
+                    }
+                    let reqData = {
+                        url: this.crawlerFormData.url,
+                        contentSelector: this.crawlerFormData.contentSelector
+                    }
+                    request.crawlNotSaveContent({
+                        body: reqData
+                    }).then((res) => {
+                        console.log(res)
+                        if (res.errNo === ErrorCode.ERROR) {
+                            this.$Message.error({
+                                duration: config.messageDuration,
+                                closable: true,
+                                content: res.msg
+                            })
+                            return
+                        }
+                        this.content = res.data.content || ''
+                        this.crawlModalVisible = false
+                    }).catch((err) => {
+                        this.$Message.error({
+                            duration: config.messageDuration,
+                            closable: true,
+                            content: err.msg
+                        })
+                    })
+                })
+            },
             onEditChapterName () {
                 let self = this
                 request.updateBookChapterName({
@@ -423,7 +517,8 @@
                                 icon: 'android-add'
                             }),
                             style: {
-                                marginRight: '8px'
+                                marginRight: '8px',
+                                display: data.depth >= this.maxDepth ? 'none' : 'inline-block'
                             },
                             on: {
                                 click: this.append.bind(this, data)
@@ -510,7 +605,8 @@
             }
         },
         components: {
-            'md-editor': Editor
+            'md-editor': Editor,
+            'html-editor': HTMLEditor
         },
         head () {
             return {

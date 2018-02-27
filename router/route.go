@@ -30,6 +30,8 @@ func Route(router *gin.Engine) {
 			user.Signout)
 		api.POST("/upload", middleware.SigninRequired,
 			common.UploadHandler)
+		api.POST("crawlnotsavecontent", middleware.EditorRequired,
+			crawler.CrawlNotSaveContent)
 
 		api.POST("/active/sendmail", user.ActiveSendMail)
 		api.POST("/active/user/:id/:secret", user.ActiveAccount)

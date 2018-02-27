@@ -39,6 +39,7 @@
 
 <script>
     import UserStatus from '~/constant/UserStatus'
+    import DateUtil from '~/utils/date'
 
     export default {
         props: [
@@ -78,6 +79,13 @@
                                 }
                             })
                             return role
+                        }
+                    },
+                    {
+                        title: '注册时间',
+                        key: 'createdAt',
+                        render: (h, obj) => {
+                            return DateUtil.formatYMDHMS(obj.row.createdAt)
                         }
                     },
                     {

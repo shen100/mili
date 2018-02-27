@@ -35,26 +35,28 @@ func createCrawlSelector(from int) crawlSelector {
 		selector.ListItemTitleSelector = ".title"
 		selector.TitleSelector = ".article .title"
 		selector.ContentSelector = ".show-content"
-		return selector
 	case model.ArticleFromZhihu:
 		selector.ListItemSelector = ".PostListItem"
 		selector.ListItemTitleSelector = ".PostListItem-info a"
 		selector.TitleSelector = ".PostIndex-title"
 		selector.ContentSelector = ".PostIndex-content"
-		return selector
 	case model.ArticleFromHuxiu:
 		selector.ListItemSelector = ".mod-art"
 		selector.ListItemTitleSelector = ".mob-ctt h2 a"
 		selector.TitleSelector = ".t-h1"
 		selector.ContentSelector = ".article-content-wrap"
-		return selector
-	default:
+	case model.ArticleFromCustom:
 		selector.ListItemSelector = ""
 		selector.ListItemTitleSelector = ""
 		selector.TitleSelector = ""
 		selector.ContentSelector = ""
-		return selector
+	case model.ArticleFromNULL:
+		selector.ListItemSelector = ""
+		selector.ListItemTitleSelector = ""
+		selector.TitleSelector = ""
+		selector.ContentSelector = ""
 	}
+	return selector
 }
 
 type sourceHTML struct {
@@ -92,7 +94,7 @@ func createSourceHTML(from int) string {
 			"</blockquote>",
 			"</div>",
 		}
-	default:
+	case model.ArticleFromCustom:
 		htmlArr = []string{
 			"<div id=\"golang123-content-outter-footer\">",
 			"<blockquote>",
@@ -101,6 +103,8 @@ func createSourceHTML(from int) string {
 			"</blockquote>",
 			"</div>",
 		}
+	case model.ArticleFromNULL:
+		htmlArr = []string{}
 	}
 	return strings.Join(htmlArr, "")
 }
@@ -146,7 +150,7 @@ func crawlContent(pageURL string, crawlSelector crawlSelector, siteInfo map[stri
 		return nil
 	}
 	title := articleDOC.Find(crawlSelector.TitleSelector).Text()
-	if title == "" {
+	if title == "" && crawlSelector.From != model.ArticleFromNULL {
 		return nil
 	}
 	contentDOM := articleDOC.Find(crawlSelector.ContentSelector)
@@ -444,6 +448,35 @@ func CustomCrawl(c *gin.Context) {
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "抓取完成",
 		"data":  gin.H{},
+	})
+}
+
+// CrawlNotSaveContent 抓取的内容直接返回，而不保存到数据库
+func CrawlNotSaveContent(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	type JSONData struct {
+		URL             string `json:"url"`
+		TitleSelector   string `json:"titleSelector"`
+		ContentSelector string `json:"contentSelector"`
+	}
+	var jsonData JSONData
+	if err := c.ShouldBindJSON(&jsonData); err != nil {
+		SendErrJSON("参数无效", c)
+		return
+	}
+
+	crawlSelector := createCrawlSelector(model.ArticleFromNULL)
+	crawlSelector.TitleSelector = jsonData.TitleSelector
+	crawlSelector.ContentSelector = jsonData.ContentSelector
+
+	data := crawlContent(jsonData.URL, crawlSelector, nil, true)
+
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"content": data["Content"],
+		},
 	})
 }
 

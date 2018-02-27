@@ -277,6 +277,10 @@ const api = {
     deleteBookChapter: { // 删除图书的章节
         url: url + '/books/chapters/:chapterID',
         method: 'DELETE'
+    },
+    crawlNotSaveContent: { // 抓取的内容直接返回，而不保存到数据库
+        url: url + '/crawlnotsavecontent',
+        method: 'POST'
     }
 }
 

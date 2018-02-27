@@ -106,7 +106,6 @@
                     h('a', {
                         attrs: {
                             href: `/book/${this.book.id}?chapterID=${data.id}`,
-                            target: '_blank',
                             'class': 'book-tree-link'
                         },
                         style: {
