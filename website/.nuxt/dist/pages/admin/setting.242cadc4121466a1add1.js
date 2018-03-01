@@ -1,0 +1,2 @@
+webpackJsonp([52],{"9A/r":function(e,t,n){"use strict";t.a={head:function(){return{title:"网站概览"}},layout:"admin"}},p4Zr:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r=n("9A/r"),u=n("pq3N"),a=n("VU/8"),c=a(r.a,u.a,!1,null,null,null);t.default=c.exports},pq3N:function(e,t,n){"use strict";var r=function(){var e=this,t=e.$createElement;return(e._self._c||t)("Row",[e._v("\n    网站设置\n")])},u=[],a={render:r,staticRenderFns:u};t.a=a}});
+//# sourceMappingURL=setting.242cadc4121466a1add1.js.map
