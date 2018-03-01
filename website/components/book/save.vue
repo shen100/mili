@@ -35,10 +35,20 @@
                                 </div>
                             </Modal>
                         </Form-item>
-                        <Form-item label="图书简介" prop="content">
-                            <div>
-                                <md-editor :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
+                        <Form-item label="图书格式" prop="contentType">
+                            <div v-if="!bookID">
+                                <RadioGroup v-if="isMounted" v-model="formValidate.contentType">
+                                    <Radio label="markdown"></Radio>
+                                    <Radio label="html"></Radio>
+                                </RadioGroup>
                             </div>
+                            <div v-else>{{formValidate.contentType}}</div>
+                        </Form-item>
+                        <Form-item label="图书简介" prop="content">
+                            <div v-show="formValidate.contentType === 'html'" class="chapter-html-editor">
+                                <html-editor :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChange" />
+                            </div>
+                            <md-editor v-show="formValidate.contentType === 'markdown'" :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
                         </Form-item>
                         <Form-item :label-width="0">
                             <Button size="large" v-if="isMounted" type="primary" @click="onSubmit">{{bookID ? '保存图书' : '创建图书'}}</Button>
@@ -54,6 +64,7 @@
     import axios from 'axios'
     import ErrorCode from '~/constant/ErrorCode'
     import Editor from '~/components/Editor'
+    import HTMLEditor from '~/components/HTMLEditor'
     import request from '~/net/request'
     import config from '~/config'
 
@@ -63,6 +74,17 @@
             'user'
         ],
         data () {
+            let contentType = 'markdown'
+            let content = ''
+            if (this.book) {
+                if (this.book.contentType === 2) {
+                    contentType = 'html'
+                    content = this.book.htmlContent
+                } else if (this.book.contentType === 1) {
+                    contentType = 'markdown'
+                    content = this.book.content
+                }
+            }
             return {
                 isMounted: false,
                 bookID: (this.book && this.book.id) || undefined,
@@ -75,11 +97,15 @@
                 imgHeight: 238,
                 formValidate: {
                     bookName: (this.book && this.book.name) || '',
-                    content: (this.book && (this.book.content || this.book.htmlContent)) || ''
+                    contentType: contentType,
+                    content: content || ''
                 },
                 ruleInline: {
                     bookName: [
                         { required: true, message: '请输入图书名称', trigger: 'blur' }
+                    ],
+                    contentType: [
+                        { required: true, message: '' }
                     ],
                     content: [
                         { required: true, message: '请输入图书简介', trigger: 'blur' }
@@ -182,13 +208,22 @@
                     if (valid) {
                         let self = this
                         let func = this.bookID ? request.updateBook : request.createBook
+                        let type
+                        let reqData = {
+                            id: this.bookID,
+                            name: this.formValidate.bookName,
+                            coverURL: this.coverURL
+                        }
+                        if (this.formValidate.contentType === 'html') {
+                            type = 2
+                            reqData.htmlContent = this.formValidate.content
+                        } else if (this.formValidate.contentType === 'markdown') {
+                            type = 1
+                            reqData.content = this.formValidate.content
+                        }
+                        reqData.contentType = type
                         func({
-                            body: {
-                                id: this.bookID,
-                                name: this.formValidate.bookName,
-                                content: this.formValidate.content,
-                                coverURL: this.coverURL
-                            }
+                            body: reqData
                         }).then(res => {
                             if (res.errNo === ErrorCode.ERROR) {
                                 self.$Message.error({
@@ -199,10 +234,10 @@
                             } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
                                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
                             } else if (res.errNo === ErrorCode.SUCCESS) {
-                                setTimeout(function () {
-                                    let userID = self.user.id
-                                    location.href = `/user/${userID}/books/`
-                                }, 500)
+                                // setTimeout(function () {
+                                //     let userID = self.user.id
+                                //     location.href = `/user/${userID}/books/`
+                                // }, 500)
                             }
                         }).catch(err => {
                             self.$Message.error({
@@ -217,7 +252,8 @@
             }
         },
         components: {
-            'md-editor': Editor
+            'md-editor': Editor,
+            'html-editor': HTMLEditor
         }
     }
 </script>

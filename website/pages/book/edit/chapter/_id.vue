@@ -48,13 +48,7 @@
                 <div v-if="contentType === 'html'" class="chapter-html-editor">
                     <html-editor :value="content" :user="user" @save="onContentSave" @change="onContentChange" />
                 </div>
-                <md-editor v-else ref="mdEditor" :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
-                <div style="margin-bottom: 12px;">
-                    <RadioGroup v-if="isMounted" v-model="contentType">
-                        <Radio label="markdown"></Radio>
-                        <Radio label="html"></Radio>
-                    </RadioGroup>
-                </div>
+                <md-editor v-else="contentType === 'markdown'" ref="mdEditor" :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
                 <div>
                     <Button size="large" v-if="isMounted" type="primary" @click="onSaveChapterContent">保存</Button>
                     <span v-if="contentType === 'html'" @click="showCrawlModal" class="crawl-btn">抓取内容</span>
@@ -148,16 +142,24 @@
                 }
                 let treeData = parseTree(chapters, {
                     titleKey: 'name',
-                    dataKeys: ['expand', 'content']
+                    dataKeys: ['expand', 'content', 'htmlContent', 'contentType']
                 })
+                treeData = treeData || []
                 let curChapter = null
                 let content = ''
+                let contentType = 'markdown'
                 if (treeData && treeData.length) {
                     curChapter = treeData[0]
-                    content = curChapter.content
+                }
+                if (book.contentType === 1) {
+                    contentType = 'markdown'
+                    content = (curChapter && curChapter.content) || ''
+                } else if (book.contentType === 2) {
+                    content = (curChapter && curChapter.htmlContent) || ''
+                    contentType = 'html'
                 }
                 return {
-                    contentType: 'markdown',
+                    contentType: contentType,
                     maxDepth: 4,
                     crawlModalVisible: false,
                     isEditBookName: false,
@@ -170,6 +172,8 @@
                     book: book,
                     content: content, // 用来设置编辑器的内容
                     curChapter: curChapter, // 当前选中的章节
+                    // nextChapter: this.getNextChapter(curChapter), // 下一节
+                    // prevChapter: this.getPrevChapter(curChapter), // 上一节
                     createChapterID: 0, // 创建章节时，用来记录父章节的id，若为0，表示无父章节
                     createChapterName: '',
                     createChapterModalVisible: false,
@@ -188,6 +192,39 @@
             this.isMounted = true
         },
         methods: {
+            // getPrevChapter (node) {
+            //     if (node.children && node.children.length) {
+            //         return node.children[0]
+            //     }
+            //     let parent = node.parent
+            //     if (parent) {
+            //         let index = parent.children.indexOf(node)
+            //         if (index > 0) {
+            //             return parent.children[index - 1]
+            //         }
+            //         return parent
+            //     } else {
+            //         let index = this.treeData.indexOf(node)
+            //         return this.treeData[index - 1]
+            //     }
+            // },
+            // getNextChapter (node) {
+            //     if (node.children && node.children.length) {
+            //         return node.children[0]
+            //     }
+            //     let parent = node.parent
+            //     if (parent) {
+            //         let index = parent.children.indexOf(node)
+            //         if (parent.children[index + 1]) {
+            //             return parent.children[index + 1]
+            //         }
+            //         return this.nextChapter(parent)
+            //     } else {
+            //         let index = this.treeData.indexOf(node)
+            //         return this.treeData[index + 1]
+            //     }
+
+            // },
             showCrawlModal () {
                 this.crawlModalVisible = true
             },
@@ -401,6 +438,7 @@
                             title: res.data.chapter.name,
                             expand: true,
                             content: '',
+                            htmlContent: '',
                             id: res.data.chapter.id,
                             children: []
                         }
@@ -427,11 +465,16 @@
             },
             onSaveChapterContent () {
                 let self = this
+                let reqData = {
+                    chapterID: this.curChapter.id
+                }
+                if (this.contentType === 'html') {
+                    reqData.htmlContent = this.content
+                } else {
+                    reqData.content = this.content
+                }
                 request.saveBookChapterContent({
-                    body: {
-                        chapterID: this.curChapter.id,
-                        content: this.content
-                    }
+                    body: reqData
                 }).then(res => {
                     if (res.errNo === ErrorCode.ERROR) {
                         self.$Message.error({
@@ -443,7 +486,11 @@
                         location.href = '/signin?ref=' + encodeURIComponent(location.href)
                     } else if (res.errNo === ErrorCode.SUCCESS) {
                         let node = self.getNode(self.curChapter.id)
-                        node.content = self.content
+                        if (self.contentType === 'html') {
+                            node.htmlContent = self.content
+                        } else {
+                            node.content = self.content
+                        }
                         self.$Message.success({
                             duration: config.messageDuration,
                             closable: true,
@@ -538,7 +585,12 @@
             selectChapter (data) {
                 let node = this.getNode(data.id)
                 this.curChapter = node
-                this.content = node.content
+                console.log(this.contentType)
+                if (this.contentType === 'markdown') {
+                    this.content = node.content
+                } else if (this.contentType === 'html') {
+                    this.content = node.htmlContent
+                }
             },
             showEditChapterNameModal (data) {
                 this.tempChapterID = data.id

@@ -5,6 +5,9 @@
  *   dataKeys: 自定义数剧的key组成的数组
  */
 export const parseTree = (nodes, options) => {
+    if (!nodes || nodes.length <= 0) {
+        return null
+    }
     options = options || { titleKey: 'title' }
     let copyList = nodes.slice()
     let root = {

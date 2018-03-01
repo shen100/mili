@@ -9,8 +9,8 @@ type BookCategory struct {
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `sql:"index" json:"deletedAt"`
 	Name      string     `json:"name"`
-	Sequence  int        `json:"sequence"` //同级别的分类可根据sequence的值来排序
-	ParentID  int        `json:"parentId"` //直接父分类的ID
+	Sequence  uint       `json:"sequence"` //同级别的分类可根据sequence的值来排序
+	ParentID  uint       `json:"parentId"` //直接父分类的ID
 }
 
 // Book 图书

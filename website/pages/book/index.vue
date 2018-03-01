@@ -8,7 +8,7 @@
                     </a>
                 </div>
                 <h3 class="book-item-title">{{book.name | entity2HTML}}</h3>
-                <div class="book-item-producer">{{book.user.name}}</div>
+                <!-- <div class="book-item-producer">{{book.user.name}}</div> -->
             </li>
         </ul>
     </div>

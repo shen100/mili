@@ -8,7 +8,6 @@ import (
 	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/utils"
@@ -22,6 +21,12 @@ func Save(c *gin.Context, isEdit bool) {
 		SendErrJSON("参数无效", c)
 		return
 	}
+
+	if bookData.ContentType != model.ContentTypeMarkdown && bookData.ContentType != model.ContentTypeHTML {
+		SendErrJSON("无效的图书格式", c)
+		return
+	}
+
 	bookData.Name = utils.AvoidXSS(bookData.Name)
 	bookData.Name = strings.TrimSpace(bookData.Name)
 
@@ -67,10 +72,10 @@ func Save(c *gin.Context, isEdit bool) {
 
 	var updatedBook model.Book
 	if !isEdit {
-		//创建图书
+		// 创建图书
 		bookData.Status = model.BookUnpublish
 		bookData.UserID = user.ID
-		bookData.ContentType = model.ContentTypeMarkdown
+		// 创建图书时，可以选择格式，之后不能修改
 		if err := model.DB.Create(&bookData).Error; err != nil {
 			SendErrJSON("error", c)
 			return
@@ -316,14 +321,13 @@ func CreateChapter(c *gin.Context) {
 		BookID   uint   `json:"bookID"`
 	}
 	var reqData ReqData
-	if err := c.ShouldBindWith(&reqData, binding.JSON); err != nil {
+	if err := c.ShouldBindJSON(&reqData); err != nil {
 		fmt.Println(err)
 		SendErrJSON("参数无效", c)
 		return
 	}
-
-	reqData.Name = strings.TrimSpace(reqData.Name)
 	reqData.Name = utils.AvoidXSS(reqData.Name)
+	reqData.Name = strings.TrimSpace(reqData.Name)
 	if reqData.Name == "" {
 		SendErrJSON("章节名称不能为空", c)
 		return
@@ -333,7 +337,7 @@ func CreateChapter(c *gin.Context) {
 	chapter.Name = reqData.Name
 	chapter.ParentID = reqData.ParentID
 	chapter.BookID = reqData.BookID
-	chapter.ContentType = model.ContentTypeMarkdown
+
 	if chapter.ParentID != model.NoParent {
 		var parentChapter model.BookChapter
 		if err := model.DB.First(&parentChapter, chapter.ParentID).Error; err != nil {
@@ -347,6 +351,8 @@ func CreateChapter(c *gin.Context) {
 		SendErrJSON("无效的bookID", c)
 		return
 	}
+
+	chapter.ContentType = book.ContentType
 
 	if err := model.DB.Create(&chapter).Error; err != nil {
 		SendErrJSON("error", c)
@@ -388,8 +394,9 @@ func DeleteChapter(c *gin.Context) {
 func UpdateChapterContent(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	type ReqData struct {
-		ID      uint   `json:"chapterID"`
-		Content string `json:"content"`
+		ID          uint   `json:"chapterID"`
+		Content     string `json:"content"`
+		HTMLContent string `json:"htmlContent"`
 	}
 	var reqData ReqData
 	if err := c.ShouldBindJSON(&reqData); err != nil {
@@ -399,6 +406,11 @@ func UpdateChapterContent(c *gin.Context) {
 	}
 
 	reqData.Content = strings.TrimSpace(reqData.Content)
+	reqData.HTMLContent = strings.TrimSpace(reqData.HTMLContent)
+
+	if reqData.HTMLContent != "" {
+		reqData.HTMLContent = utils.AvoidXSS(reqData.HTMLContent)
+	}
 
 	var chapter model.BookChapter
 	if err := model.DB.First(&chapter, reqData.ID).Error; err != nil {
@@ -406,6 +418,8 @@ func UpdateChapterContent(c *gin.Context) {
 		return
 	}
 	chapter.Content = reqData.Content
+	chapter.HTMLContent = reqData.HTMLContent
+
 	if err := model.DB.Save(&chapter).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
@@ -434,8 +448,8 @@ func UpdateChapterName(c *gin.Context) {
 		return
 	}
 
-	reqData.Name = strings.TrimSpace(reqData.Name)
 	reqData.Name = utils.AvoidXSS(reqData.Name)
+	reqData.Name = strings.TrimSpace(reqData.Name)
 	if reqData.Name == "" {
 		SendErrJSON("章节名称不能为空", c)
 		return
