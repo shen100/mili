@@ -17,7 +17,7 @@
             <div class="golang-top-header-nav">
                 <ul>
                     <li><a href="/">话题</a></li>
-                    <li><a href="/book">图书</a></li>
+                    <li><a href="/book">在线图书</a></li>
                     <li><a href="/vote">投票</a></li>
                 </ul>
             </div>
