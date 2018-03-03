@@ -509,4 +509,46 @@ CREATE TABLE `votes` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+INSERT INTO `users` (
+  `created_at`,
+  `updated_at`,
+  `deleted_at`,
+  `name`,
+  `pass`,
+  `email`,
+  `sex`,
+  `location`,
+  `introduce`,
+  `phone`,
+  `score`,
+  `article_count`,
+  `comment_count`,
+  `collect_count`,
+  `signature`,
+  `role`,
+  `avatar_url`,
+  `cover_url`,
+  `status`
+) VALUES (
+  now(),
+  now(),
+  NULL,
+  'golang123',
+  '15200465163e745426e8bc5a90e2a1188efa22cae1',
+  '',
+  '0',
+  '',
+  '',
+  '',
+  '0',
+  '0',
+  '0',
+  '0',
+  '',
+  '3',
+  '/images/avatar/1.png',
+  '',
+  '2'
+);
+
 -- Dump completed on 2018-03-02 23:13:22
