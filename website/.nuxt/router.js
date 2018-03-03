@@ -6,37 +6,37 @@ Vue.use(Router)
 const _babf75b0 = () => import('../pages/index.vue' /* webpackChunkName: "pages/index" */).then(m => m.default || m)
 const _a5cffcf2 = () => import('../pages/vote/index.vue' /* webpackChunkName: "pages/vote/index" */).then(m => m.default || m)
 const _72fca08f = () => import('../pages/links.vue' /* webpackChunkName: "pages/links" */).then(m => m.default || m)
-const _fa2f2b3a = () => import('../pages/about.vue' /* webpackChunkName: "pages/about" */).then(m => m.default || m)
+const _33af311e = () => import('../pages/timeline/index.vue' /* webpackChunkName: "pages/timeline/index" */).then(m => m.default || m)
+const _690f0cb2 = () => import('../pages/signup.vue' /* webpackChunkName: "pages/signup" */).then(m => m.default || m)
 const _5ea836c6 = () => import('../pages/book/index.vue' /* webpackChunkName: "pages/book/index" */).then(m => m.default || m)
 const _69a8d049 = () => import('../pages/rank/index.vue' /* webpackChunkName: "pages/rank/index" */).then(m => m.default || m)
-const _33af311e = () => import('../pages/timeline/index.vue' /* webpackChunkName: "pages/timeline/index" */).then(m => m.default || m)
-const _c1682030 = () => import('../pages/admin/index.vue' /* webpackChunkName: "pages/admin/index" */).then(m => m.default || m)
+const _fa2f2b3a = () => import('../pages/about.vue' /* webpackChunkName: "pages/about" */).then(m => m.default || m)
 const _5478b63c = () => import('../pages/signin.vue' /* webpackChunkName: "pages/signin" */).then(m => m.default || m)
-const _690f0cb2 = () => import('../pages/signup.vue' /* webpackChunkName: "pages/signup" */).then(m => m.default || m)
+const _c1682030 = () => import('../pages/admin/index.vue' /* webpackChunkName: "pages/admin/index" */).then(m => m.default || m)
 const _c3da2690 = () => import('../pages/book/create.vue' /* webpackChunkName: "pages/book/create" */).then(m => m.default || m)
 const _323a1c3a = () => import('../pages/verify/mail.vue' /* webpackChunkName: "pages/verify/mail" */).then(m => m.default || m)
-const _1f015ab5 = () => import('../pages/ac/pwdReset.vue' /* webpackChunkName: "pages/ac/pwdReset" */).then(m => m.default || m)
-const _1d9c7a17 = () => import('../pages/vote/create.vue' /* webpackChunkName: "pages/vote/create" */).then(m => m.default || m)
-const _38b10234 = () => import('../pages/admin/setting.vue' /* webpackChunkName: "pages/admin/setting" */).then(m => m.default || m)
+const _9efbadb8 = () => import('../pages/user/edit.vue' /* webpackChunkName: "pages/user/edit" */).then(m => m.default || m)
 const _5d1ea1f6 = () => import('../pages/topic/create.vue' /* webpackChunkName: "pages/topic/create" */).then(m => m.default || m)
 const _6feabdc4 = () => import('../pages/ac/pwdModify.vue' /* webpackChunkName: "pages/ac/pwdModify" */).then(m => m.default || m)
 const _232b888e = () => import('../pages/admin/pushLink.vue' /* webpackChunkName: "pages/admin/pushLink" */).then(m => m.default || m)
-const _9efbadb8 = () => import('../pages/user/edit.vue' /* webpackChunkName: "pages/user/edit" */).then(m => m.default || m)
+const _1f015ab5 = () => import('../pages/ac/pwdReset.vue' /* webpackChunkName: "pages/ac/pwdReset" */).then(m => m.default || m)
+const _1d9c7a17 = () => import('../pages/vote/create.vue' /* webpackChunkName: "pages/vote/create" */).then(m => m.default || m)
 const _118f2d52 = () => import('../pages/admin/user/today.vue' /* webpackChunkName: "pages/admin/user/today" */).then(m => m.default || m)
+const _6deaecb3 = () => import('../pages/admin/reply/yesterday.vue' /* webpackChunkName: "pages/admin/reply/yesterday" */).then(m => m.default || m)
+const _92db6710 = () => import('../pages/admin/user/list.vue' /* webpackChunkName: "pages/admin/user/list" */).then(m => m.default || m)
+const _23658bdb = () => import('../pages/admin/crawl/account.vue' /* webpackChunkName: "pages/admin/crawl/account" */).then(m => m.default || m)
 const _7baa359a = () => import('../pages/admin/crawl/custom.vue' /* webpackChunkName: "pages/admin/crawl/custom" */).then(m => m.default || m)
-const _5961ca38 = () => import('../pages/admin/topic/yesterday.vue' /* webpackChunkName: "pages/admin/topic/yesterday" */).then(m => m.default || m)
-const _0babce58 = () => import('../pages/admin/topic/list.vue' /* webpackChunkName: "pages/admin/topic/list" */).then(m => m.default || m)
 const _58157af6 = () => import('../pages/admin/crawl/zhihu.vue' /* webpackChunkName: "pages/admin/crawl/zhihu" */).then(m => m.default || m)
-const _bcaa891c = () => import('../pages/admin/reply/today.vue' /* webpackChunkName: "pages/admin/reply/today" */).then(m => m.default || m)
+const _aaacbb6e = () => import('../pages/admin/settings/site.vue' /* webpackChunkName: "pages/admin/settings/site" */).then(m => m.default || m)
+const _4ce745a5 = () => import('../pages/admin/crawl/huxiu.vue' /* webpackChunkName: "pages/admin/crawl/huxiu" */).then(m => m.default || m)
 const _4ff3b5a5 = () => import('../pages/admin/category/list.vue' /* webpackChunkName: "pages/admin/category/list" */).then(m => m.default || m)
 const _14c2fdc2 = () => import('../pages/admin/crawl/jianshu.vue' /* webpackChunkName: "pages/admin/crawl/jianshu" */).then(m => m.default || m)
+const _bcaa891c = () => import('../pages/admin/reply/today.vue' /* webpackChunkName: "pages/admin/reply/today" */).then(m => m.default || m)
+const _0babce58 = () => import('../pages/admin/topic/list.vue' /* webpackChunkName: "pages/admin/topic/list" */).then(m => m.default || m)
 const _7115bfd0 = () => import('../pages/admin/user/yesterday.vue' /* webpackChunkName: "pages/admin/user/yesterday" */).then(m => m.default || m)
-const _23658bdb = () => import('../pages/admin/crawl/account.vue' /* webpackChunkName: "pages/admin/crawl/account" */).then(m => m.default || m)
 const _454f2377 = () => import('../pages/admin/topic/today.vue' /* webpackChunkName: "pages/admin/topic/today" */).then(m => m.default || m)
-const _92db6710 = () => import('../pages/admin/user/list.vue' /* webpackChunkName: "pages/admin/user/list" */).then(m => m.default || m)
-const _4ce745a5 = () => import('../pages/admin/crawl/huxiu.vue' /* webpackChunkName: "pages/admin/crawl/huxiu" */).then(m => m.default || m)
 const _98606a06 = () => import('../pages/admin/reply/list.vue' /* webpackChunkName: "pages/admin/reply/list" */).then(m => m.default || m)
-const _6deaecb3 = () => import('../pages/admin/reply/yesterday.vue' /* webpackChunkName: "pages/admin/reply/yesterday" */).then(m => m.default || m)
+const _5961ca38 = () => import('../pages/admin/topic/yesterday.vue' /* webpackChunkName: "pages/admin/topic/yesterday" */).then(m => m.default || m)
 const _ac10f8a2 = () => import('../pages/book/edit/chapter/_id.vue' /* webpackChunkName: "pages/book/edit/chapter/_id" */).then(m => m.default || m)
 const _0bfba810 = () => import('../pages/vote/edit/_id.vue' /* webpackChunkName: "pages/vote/edit/_id" */).then(m => m.default || m)
 const _489ff671 = () => import('../pages/book/edit/_id.vue' /* webpackChunkName: "pages/book/edit/_id" */).then(m => m.default || m)
@@ -103,9 +103,14 @@ export function createRouter () {
 			name: "links"
 		},
 		{
-			path: "/about",
-			component: _fa2f2b3a,
-			name: "about"
+			path: "/timeline",
+			component: _33af311e,
+			name: "timeline"
+		},
+		{
+			path: "/signup",
+			component: _690f0cb2,
+			name: "signup"
 		},
 		{
 			path: "/book",
@@ -118,14 +123,9 @@ export function createRouter () {
 			name: "rank"
 		},
 		{
-			path: "/timeline",
-			component: _33af311e,
-			name: "timeline"
-		},
-		{
-			path: "/admin",
-			component: _c1682030,
-			name: "admin"
+			path: "/about",
+			component: _fa2f2b3a,
+			name: "about"
 		},
 		{
 			path: "/signin",
@@ -133,9 +133,9 @@ export function createRouter () {
 			name: "signin"
 		},
 		{
-			path: "/signup",
-			component: _690f0cb2,
-			name: "signup"
+			path: "/admin",
+			component: _c1682030,
+			name: "admin"
 		},
 		{
 			path: "/book/create",
@@ -148,19 +148,9 @@ export function createRouter () {
 			name: "verify-mail"
 		},
 		{
-			path: "/ac/pwdReset",
-			component: _1f015ab5,
-			name: "ac-pwdReset"
-		},
-		{
-			path: "/vote/create",
-			component: _1d9c7a17,
-			name: "vote-create"
-		},
-		{
-			path: "/admin/setting",
-			component: _38b10234,
-			name: "admin-setting"
+			path: "/user/edit",
+			component: _9efbadb8,
+			name: "user-edit"
 		},
 		{
 			path: "/topic/create",
@@ -178,9 +168,14 @@ export function createRouter () {
 			name: "admin-pushLink"
 		},
 		{
-			path: "/user/edit",
-			component: _9efbadb8,
-			name: "user-edit"
+			path: "/ac/pwdReset",
+			component: _1f015ab5,
+			name: "ac-pwdReset"
+		},
+		{
+			path: "/vote/create",
+			component: _1d9c7a17,
+			name: "vote-create"
 		},
 		{
 			path: "/admin/user/today",
@@ -188,19 +183,24 @@ export function createRouter () {
 			name: "admin-user-today"
 		},
 		{
+			path: "/admin/reply/yesterday",
+			component: _6deaecb3,
+			name: "admin-reply-yesterday"
+		},
+		{
+			path: "/admin/user/list",
+			component: _92db6710,
+			name: "admin-user-list"
+		},
+		{
+			path: "/admin/crawl/account",
+			component: _23658bdb,
+			name: "admin-crawl-account"
+		},
+		{
 			path: "/admin/crawl/custom",
 			component: _7baa359a,
 			name: "admin-crawl-custom"
-		},
-		{
-			path: "/admin/topic/yesterday",
-			component: _5961ca38,
-			name: "admin-topic-yesterday"
-		},
-		{
-			path: "/admin/topic/list",
-			component: _0babce58,
-			name: "admin-topic-list"
 		},
 		{
 			path: "/admin/crawl/zhihu",
@@ -208,9 +208,14 @@ export function createRouter () {
 			name: "admin-crawl-zhihu"
 		},
 		{
-			path: "/admin/reply/today",
-			component: _bcaa891c,
-			name: "admin-reply-today"
+			path: "/admin/settings/site",
+			component: _aaacbb6e,
+			name: "admin-settings-site"
+		},
+		{
+			path: "/admin/crawl/huxiu",
+			component: _4ce745a5,
+			name: "admin-crawl-huxiu"
 		},
 		{
 			path: "/admin/category/list",
@@ -223,14 +228,19 @@ export function createRouter () {
 			name: "admin-crawl-jianshu"
 		},
 		{
+			path: "/admin/reply/today",
+			component: _bcaa891c,
+			name: "admin-reply-today"
+		},
+		{
+			path: "/admin/topic/list",
+			component: _0babce58,
+			name: "admin-topic-list"
+		},
+		{
 			path: "/admin/user/yesterday",
 			component: _7115bfd0,
 			name: "admin-user-yesterday"
-		},
-		{
-			path: "/admin/crawl/account",
-			component: _23658bdb,
-			name: "admin-crawl-account"
 		},
 		{
 			path: "/admin/topic/today",
@@ -238,24 +248,14 @@ export function createRouter () {
 			name: "admin-topic-today"
 		},
 		{
-			path: "/admin/user/list",
-			component: _92db6710,
-			name: "admin-user-list"
-		},
-		{
-			path: "/admin/crawl/huxiu",
-			component: _4ce745a5,
-			name: "admin-crawl-huxiu"
-		},
-		{
 			path: "/admin/reply/list",
 			component: _98606a06,
 			name: "admin-reply-list"
 		},
 		{
-			path: "/admin/reply/yesterday",
-			component: _6deaecb3,
-			name: "admin-reply-yesterday"
+			path: "/admin/topic/yesterday",
+			component: _5961ca38,
+			name: "admin-topic-yesterday"
 		},
 		{
 			path: "/book/edit/chapter/:id?",

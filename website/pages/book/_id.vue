@@ -84,10 +84,18 @@
         },
         mounted () {
             this.isMounted = true
+            window.hljs.initHighlightingOnLoad()
         },
         head () {
             return {
-                title: htmlUtil.entity2HTML(this.book.name) + ' - ' + htmlUtil.entity2HTML(this.chapter.name)
+                title: htmlUtil.entity2HTML(this.book.name) + ' - ' + htmlUtil.entity2HTML(this.chapter.name),
+                link: [
+                    { rel: 'stylesheet', href: '/styles/editor/simplemde.min.css' },
+                    { rel: 'stylesheet', href: '/styles/highlight/codestyle.css' } // Solarized Light
+                ],
+                script: [
+                    { src: '/javascripts/highlight/highlight.min.js' }
+                ]
             }
         },
         layout: 'nosidebar',

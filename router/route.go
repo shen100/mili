@@ -36,7 +36,7 @@ func Route(router *gin.Engine) {
 		api.POST("/active/sendmail", user.ActiveSendMail)
 		api.POST("/active/user/:id/:secret", user.ActiveAccount)
 		api.POST("/reset/sendmail", user.ResetPasswordMail)
-		api.POST("/reset/verify/:id/:secret", user.VerifyResetPasswordLink)
+		api.GET("/reset/verify/:id/:secret", user.VerifyResetPasswordLink)
 		api.POST("/reset/password/:id/:secret", user.ResetPassword)
 
 		api.GET("/user/info", middleware.SigninRequired,
