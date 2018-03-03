@@ -117,7 +117,10 @@ go run main.go
 ```
 
 ### 访问
-浏览器中访问 https://dev.golang123.com/
+首页: https://dev.golang123.com    
+管理后台: https://dev.golang123.com/admin  
+用户名: golang123  
+密码: 123456 (**登陆后请修改密码**)
 
 ## ❓问题反馈
 QQ群: 32550512    
