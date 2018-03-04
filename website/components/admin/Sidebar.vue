@@ -94,7 +94,7 @@
 
         <Submenu name="user">
             <template slot="title">
-                <Icon type="ios-people"></Icon>
+                <Icon type="gear-b"></Icon>
                 设置
             </template>
             <router-link to="/admin/settings/site">

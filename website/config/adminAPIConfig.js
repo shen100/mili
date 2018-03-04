@@ -6,6 +6,10 @@ if (typeof window === 'undefined') {
 }
 
 const api = {
+    setKeyVaueConfig: { // 设置key, value
+        url: url + '/admin/keyvalueconfig',
+        method: 'POST'
+    },
     categoryCreate: { // 新增分类
         url: url + '/admin/categories/create',
         method: 'POST'

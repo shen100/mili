@@ -472,6 +472,25 @@ CREATE TABLE `vote_items` (
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+--
+-- Table structure for table `key_value_configs`
+--
+
+DROP TABLE IF EXISTS `key_value_configs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `key_value_configs` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `key_name` varchar(100) NOT NULL DEFAULT '',
+  `value` varchar(500) NOT NULL DEFAULT '',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
 -- Table structure for table `votes`
 --

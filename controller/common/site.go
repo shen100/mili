@@ -1,6 +1,8 @@
 package common
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,15 +26,32 @@ func SiteInfo(c *gin.Context) {
 		SendErrJSON("error", c)
 		return
 	}
+	siteConfig := make(map[string]interface{})
+	var keyvalueconfig model.KeyValueConfig
+	if err := model.DB.Where("key_name = \"site_config\"").Find(&keyvalueconfig).Error; err != nil {
+		fmt.Println(err.Error())
+		siteConfig["name"] = ""
+		siteConfig["icp"] = ""
+		siteConfig["title"] = ""
+		siteConfig["description"] = ""
+		siteConfig["keywords"] = ""
+		siteConfig["logoURL"] = "/images/logo.png"
+	}
+	if err := json.Unmarshal([]byte(keyvalueconfig.Value), &siteConfig); err != nil {
+		fmt.Println(err.Error())
+		siteConfig["name"] = ""
+		siteConfig["icp"] = ""
+		siteConfig["title"] = ""
+		siteConfig["description"] = ""
+		siteConfig["keywords"] = ""
+		siteConfig["logoURL"] = "/images/logo.png"
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data": gin.H{
-			"siteConfig": gin.H{
-				"title":       "Golang中文社区 - 和地鼠们分享你的知识、经验和见解",
-				"description": "golang123 - 一个专业的Go语言技术社区，帮助你寻找答案，分享知识。",
-				"keywords":    "golang,go,go语言,golang社区,go社区,golang中国,go中国,golang中文社区,go中文社区,go语言中文网,golang123,社区",
-			},
+			"siteConfig": siteConfig,
 			"userCount":  userCount,
 			"topicCount": topicCount,
 			"replyCount": replyCount,

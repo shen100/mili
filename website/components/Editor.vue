@@ -88,7 +88,7 @@
                             content: res.msg
                         })
                     } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
-                        location.href = '/signin'
+                        location.href = '/signin?ref=' + encodeURIComponent(location.href)
                     }
                 }
             }

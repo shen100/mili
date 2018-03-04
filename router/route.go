@@ -11,6 +11,7 @@ import (
 	"github.com/shen100/golang123/controller/comment"
 	"github.com/shen100/golang123/controller/common"
 	"github.com/shen100/golang123/controller/crawler"
+	"github.com/shen100/golang123/controller/keyvalueconfig"
 	"github.com/shen100/golang123/controller/message"
 	"github.com/shen100/golang123/controller/user"
 	"github.com/shen100/golang123/controller/vote"
@@ -35,6 +36,7 @@ func Route(router *gin.Engine) {
 
 		api.POST("/active/sendmail", user.ActiveSendMail)
 		api.POST("/active/user/:id/:secret", user.ActiveAccount)
+
 		api.POST("/reset/sendmail", user.ResetPasswordMail)
 		api.GET("/reset/verify/:id/:secret", user.VerifyResetPasswordLink)
 		api.POST("/reset/password/:id/:secret", user.ResetPassword)
@@ -149,6 +151,8 @@ func Route(router *gin.Engine) {
 
 	adminAPI := router.Group(apiPrefix+"/admin", middleware.RefreshTokenCookie, middleware.AdminRequired)
 	{
+		adminAPI.POST("/keyvalueconfig", keyvalueconfig.SetKeyValue)
+
 		adminAPI.GET("/users", user.AllList)
 
 		adminAPI.GET("/categories", category.List)

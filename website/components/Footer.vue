@@ -2,10 +2,6 @@
     <div class="golang-footer">
         <div class="golang-footer-page-link">
             <a href="https://github.com/shen100/golang123" target="_blank"><div class="golang-footer-github"><Icon type="social-github" style="margin-right:1px;"></Icon></div><span style="margin-left: 2px;">Github</span></a>
-            <span>&nbsp;&nbsp;|&nbsp;</span>
-            <a href="https://github.com/shen100/golang123/issues" target="_blank">问题反馈</a>
-            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-            <a href="/vote">投票</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a href="/rank">积分榜</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
@@ -20,11 +16,22 @@
             <a href="/timeline">成长历史</a>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <a href="/about">关于我们</a>
+            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+            <span>{{siteConfig.icp}}</span>
         </div>
         <div class="golang-footer-copyright">
-            <span>©&nbsp;2017&nbsp;<a href="/">golang中文社区</a>&nbsp;版权所有</span>
-            <span>&nbsp;|&nbsp;</span>
-            <span>京ICP备12045181号-2</span>
+            <span>2017&nbsp;<a href="/">{{siteConfig.name}}</a>&nbsp;©版权所有</span>
+            <span>&nbsp;<a href="https://github.com/shen100/golang123">powerd by golang123</a>&nbsp;</span>
         </div>
     </div>
 </template>
+
+<script>
+    export default {
+        data () {
+            return {
+                siteConfig: this.$store.state.siteConfig
+            }
+        }
+    }
+</script>
