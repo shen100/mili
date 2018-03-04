@@ -1,7 +1,6 @@
 <template>
     <div>
         <div>
-            <div id="voteBanner"><a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=1kjxjjg7&productCode=qingcloud&utm_source=1kjxjjg7" target="_blank"><img src="/images/ad/aliyun/banner.900x64.jpg"/></a></div>
             <div class="home-categoties-box">
                 <a href="/vote" class="categoties-item" :class="{'categoties-select': !status}">全部</a>
                 <a class="categoties-item" :href="'/vote?status=' + voteStatus.VOTE_UNDERWAY" :class="{'categoties-select': status == voteStatus.VOTE_UNDERWAY}">投票中</a>

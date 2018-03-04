@@ -50,7 +50,6 @@
                         </div>
                     </div>
                 </div>
-                <div id="voteBanner"><a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=1kjxjjg7&productCode=qingcloud&utm_source=1kjxjjg7" target="_blank"><img src="/images/ad/aliyun/banner.900x64.jpg"></a></div>
                 <div class="golang-cell comment-box">
                     <div class="title total-reply-count">{{vote.commentCount > 0 ? vote.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
