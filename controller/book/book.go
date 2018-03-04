@@ -198,7 +198,7 @@ func Publish(c *gin.Context) {
 func List(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var books []model.Book
-	if err := model.DB.Model(&model.Book{}).Find(&books).Error; err != nil {
+	if err := model.DB.Model(&model.Book{}).Where("status != \"book_unpublish\"").Find(&books).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return

@@ -676,6 +676,14 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     white-space: unset!important;
 }
 
+.golang123-richtxt pre > code {
+    overflow-x: hidden;
+}
+
+.golang123-richtxt code {
+    display: inline;
+}
+
 #golang123-content-outter {
     line-height: 26px;
 }
