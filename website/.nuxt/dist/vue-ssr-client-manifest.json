@@ -41,7 +41,7 @@
     "pages/ac/_id/_key.9188f39191c914ad8c2d.js",
     "pages/ac/pwdModify.5c0e0622b3980d3b46a4.js",
     "pages/user/collect/_id.ddd6bdd1f928a69914c6.js",
-    "pages/book/_id.6c6a4c6873ac50d62dae.js",
+    "pages/book/_id.9c27f24dd23687709c27.js",
     "pages/admin/crawl/account.e7361b79e5fd9f3df600.js",
     "pages/active/_id/_key.a6ebd2c5489f21819e15.js",
     "layouts/onlyfooter.d72f7d9f4783b1eebd04.js",
@@ -60,7 +60,7 @@
     "layouts/nolayout.76687f258ab9e2dbb30d.js",
     "common.890df3a3757aa192f142.js",
     "app.a05712480d7435c7cd96.js",
-    "manifest.dc4c29df633bba22a560.js",
+    "manifest.19f9748673de27964a86.js",
     "img/logo.ca1f746.png",
     "pages/vote/_id.aca665e171be5b575353.js.map",
     "pages/topic/_id.e821b5fc856965fcd1f4.js.map",
@@ -99,7 +99,7 @@
     "pages/ac/_id/_key.9188f39191c914ad8c2d.js.map",
     "pages/ac/pwdModify.5c0e0622b3980d3b46a4.js.map",
     "pages/user/collect/_id.ddd6bdd1f928a69914c6.js.map",
-    "pages/book/_id.6c6a4c6873ac50d62dae.js.map",
+    "pages/book/_id.9c27f24dd23687709c27.js.map",
     "pages/admin/crawl/account.e7361b79e5fd9f3df600.js.map",
     "pages/active/_id/_key.a6ebd2c5489f21819e15.js.map",
     "layouts/onlyfooter.d72f7d9f4783b1eebd04.js.map",
@@ -118,12 +118,12 @@
     "layouts/nolayout.76687f258ab9e2dbb30d.js.map",
     "common.890df3a3757aa192f142.js.map",
     "app.a05712480d7435c7cd96.js.map",
-    "manifest.dc4c29df633bba22a560.js.map",
+    "manifest.19f9748673de27964a86.js.map",
     "index.spa.html",
     "index.ssr.html"
   ],
   "initial": [
-    "manifest.dc4c29df633bba22a560.js",
+    "manifest.19f9748673de27964a86.js",
     "common.890df3a3757aa192f142.js",
     "app.a05712480d7435c7cd96.js"
   ],
@@ -165,7 +165,7 @@
     "pages/ac/_id/_key.9188f39191c914ad8c2d.js",
     "pages/ac/pwdModify.5c0e0622b3980d3b46a4.js",
     "pages/user/collect/_id.ddd6bdd1f928a69914c6.js",
-    "pages/book/_id.6c6a4c6873ac50d62dae.js",
+    "pages/book/_id.9c27f24dd23687709c27.js",
     "pages/admin/crawl/account.e7361b79e5fd9f3df600.js",
     "pages/active/_id/_key.a6ebd2c5489f21819e15.js",
     "layouts/onlyfooter.d72f7d9f4783b1eebd04.js",
@@ -540,6 +540,10 @@
       27,
       85
     ],
+    "2b92e6c8": [
+      40,
+      98
+    ],
     "421402da": [
       57,
       115
@@ -726,6 +730,10 @@
     "30dfee59": [
       17,
       75
+    ],
+    "e8c9ec74": [
+      40,
+      98
     ],
     "1c5fd0c8": [
       58,
@@ -968,6 +976,10 @@
     "7f8fad65": [
       57,
       115
+    ],
+    "34a6cf98": [
+      40,
+      98
     ],
     "97c4ecfe": [
       57,
@@ -1272,10 +1284,6 @@
     "9e2b7208": [
       24,
       82
-    ],
-    "651648ca": [
-      40,
-      98
     ],
     "4671f7fa": [
       57,
@@ -1602,10 +1610,6 @@
       26,
       84
     ],
-    "7680a16d": [
-      40,
-      98
-    ],
     "e31ab3d4": [
       57,
       115
@@ -1790,10 +1794,6 @@
       57,
       115
     ],
-    "68b95cd3": [
-      40,
-      98
-    ],
     "13828d1f": [
       48,
       106
@@ -1891,6 +1891,10 @@
       22,
       80
     ],
+    "4a85a6d1": [
+      57,
+      115
+    ],
     "c281a87a": [
       4,
       62
@@ -1974,10 +1978,6 @@
     "3c3aa9a2": [
       58,
       116
-    ],
-    "4a85a6d1": [
-      57,
-      115
     ],
     "37fdc598": [
       57,

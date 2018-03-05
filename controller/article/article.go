@@ -611,6 +611,11 @@ func Info(c *gin.Context) {
 		return
 	}
 
+	if article.Status == model.ArticleVerifyFail {
+		SendErrJSON("错误的文章id.", c)
+		return
+	}
+
 	article.BrowseCount++
 	if err := model.DB.Save(&article).Error; err != nil {
 		SendErrJSON("error", c)

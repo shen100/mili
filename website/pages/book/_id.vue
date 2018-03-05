@@ -70,6 +70,9 @@
                     }
                 })
             }).then((res) => {
+                if (res.data.chapter.bookID !== book.id) {
+                    return context.error({ statusCode: 404, message: 'Page not found' })
+                }
                 return {
                     isMounted: false,
                     book: book,
