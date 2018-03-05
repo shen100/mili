@@ -35,7 +35,13 @@
                                 </div>
                             </Modal>
                         </Form-item>
-                        <Form-item label="图书格式" prop="contentType">
+                        <Form-item label="阅读权限" prop="readLimits">
+                            <RadioGroup v-if="isMounted" v-model="formValidate.readLimits">
+                                <Radio label="公开"></Radio>
+                                <Radio v-if="allowReadLimitsPrivate" label="私有"></Radio>
+                            </RadioGroup>
+                        </Form-item>
+                        <Form-item v-if="allowSelectContentType" label="图书格式" prop="contentType">
                             <div v-if="!bookID">
                                 <RadioGroup v-if="isMounted" v-model="formValidate.contentType">
                                     <Radio label="markdown"></Radio>
@@ -63,6 +69,7 @@
 <script>
     import axios from 'axios'
     import ErrorCode from '~/constant/ErrorCode'
+    import UserRole from '~/constant/UserRole'
     import Editor from '~/components/Editor'
     import HTMLEditor from '~/components/HTMLEditor'
     import request from '~/net/request'
@@ -74,6 +81,19 @@
             'user'
         ],
         data () {
+            let allowReadLimitsPrivate = false
+            let allowSelectContentType = false
+            let roles = [
+                UserRole.USER_ROLE_EDITOR,
+                UserRole.USER_ROLE_ADMIN,
+                UserRole.USER_ROLE_SUPER_ADMIN,
+                UserRole.USER_ROLE_CRAWLER_ADMIN
+            ]
+            if (roles.indexOf(this.user.role) >= 0) {
+                allowReadLimitsPrivate = true
+                allowSelectContentType = true
+            }
+            let readLimits = '公开'
             let contentType = 'markdown'
             let content = ''
             if (this.book) {
@@ -84,9 +104,16 @@
                     contentType = 'markdown'
                     content = this.book.content
                 }
+                if (this.book.readLimits === 'book_read_limits_public') {
+                    readLimits = '公开'
+                } else if (this.book.readLimits === 'book_read_limits_private') {
+                    readLimits = '私有'
+                }
             }
             return {
                 isMounted: false,
+                allowReadLimitsPrivate: allowReadLimitsPrivate,
+                allowSelectContentType: allowSelectContentType,
                 bookID: (this.book && this.book.id) || undefined,
                 coverURL: (this.book && this.book.coverURL) || '',
                 uploadURL: config.uploadURL,
@@ -98,11 +125,15 @@
                 formValidate: {
                     bookName: (this.book && this.book.name) || '',
                     contentType: contentType,
+                    readLimits: readLimits,
                     content: content || ''
                 },
                 ruleInline: {
                     bookName: [
                         { required: true, message: '请输入图书名称', trigger: 'blur' }
+                    ],
+                    readLimits: [
+                        { required: true, message: '' }
                     ],
                     contentType: [
                         { required: true, message: '' }
@@ -213,6 +244,11 @@
                             id: this.bookID,
                             name: this.formValidate.bookName,
                             coverURL: this.coverURL
+                        }
+                        if (this.formValidate.readLimits === '公开') {
+                            reqData.readLimits = 'book_read_limits_public'
+                        } else if (this.formValidate.readLimits === '私有') {
+                            reqData.readLimits = 'book_read_limits_private'
                         }
                         if (this.formValidate.contentType === 'html') {
                             type = 2

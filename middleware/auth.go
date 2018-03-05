@@ -42,6 +42,19 @@ func getUser(c *gin.Context) (model.User, error) {
 	return user, errors.New("未登录")
 }
 
+// SetContextUser 给 context 设置 user
+func SetContextUser(c *gin.Context) {
+	var user model.User
+	var err error
+	if user, err = getUser(c); err != nil {
+		c.Set("user", nil)
+		c.Next()
+		return
+	}
+	c.Set("user", user)
+	c.Next()
+}
+
 // SigninRequired 必须是登录用户
 func SigninRequired(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON

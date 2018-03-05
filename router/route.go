@@ -128,24 +128,26 @@ func Route(router *gin.Engine) {
 			vote.DeleteItem)
 
 		api.GET("/books", book.List)
-		api.GET("/books/info/:id", book.Info)
+		api.GET("/books/info/:id", middleware.SetContextUser,
+			book.Info)
 		api.GET("/books/chapters/:bookID", book.Chapters)
-		api.GET("/books/chapter/:chapterID", book.Chapter)
-		api.POST("/books", middleware.EditorRequired,
+		api.GET("/books/chapter/:chapterID", middleware.SetContextUser,
+			book.Chapter)
+		api.POST("/books", middleware.SigninRequired,
 			book.Create)
-		api.POST("/books/chapters", middleware.EditorRequired,
+		api.POST("/books/chapters", middleware.SigninRequired,
 			book.CreateChapter)
-		api.PUT("/books/update", middleware.EditorRequired,
+		api.PUT("/books/update", middleware.SigninRequired,
 			book.Update)
-		api.PUT("/books/updatename", middleware.EditorRequired,
+		api.PUT("/books/updatename", middleware.SigninRequired,
 			book.UpdateName)
-		api.PUT("/books/publish/:bookID", middleware.EditorRequired,
+		api.PUT("/books/publish/:bookID", middleware.SigninRequired,
 			book.Publish)
-		api.PUT("/books/chapters/content", middleware.EditorRequired,
+		api.PUT("/books/chapters/content", middleware.SigninRequired,
 			book.UpdateChapterContent)
-		api.PUT("/books/chapters/updatename", middleware.EditorRequired,
+		api.PUT("/books/chapters/updatename", middleware.SigninRequired,
 			book.UpdateChapterName)
-		api.DELETE("/books/chapters/:chapterID", middleware.EditorRequired,
+		api.DELETE("/books/chapters/:chapterID", middleware.SigninRequired,
 			book.DeleteChapter)
 	}
 

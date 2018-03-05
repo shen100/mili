@@ -25,6 +25,7 @@ type Book struct {
 	CommentCount   uint           `json:"commentCount"`
 	CollectCount   uint           `json:"collectCount"`
 	Status         string         `json:"status"`
+	ReadLimits     string         `json:"readLimits"`
 	Content        string         `json:"content"`
 	HTMLContent    string         `json:"htmlContent"`
 	ContentType    int            `json:"contentType"`
@@ -119,4 +120,15 @@ const (
 
 	// BookCommentVerifyFail 审核未通过
 	BookCommentVerifyFail = "book_comment_verify_fail"
+)
+
+const (
+	// BookReadLimitsPublic 公开
+	BookReadLimitsPublic = "book_read_limits_public"
+
+	// BookReadLimitsPrivate 私有
+	BookReadLimitsPrivate = "book_read_limits_private"
+
+	// BookReadLimitsPay 付费
+	BookReadLimitsPay = "book_read_limits_pay"
 )

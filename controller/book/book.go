@@ -48,6 +48,12 @@ func Save(c *gin.Context, isEdit bool) {
 		return
 	}
 
+	if bookData.ReadLimits != model.BookReadLimitsPublic && bookData.ReadLimits != model.BookReadLimitsPrivate &&
+		bookData.ReadLimits != model.BookReadLimitsPay {
+		SendErrJSON("无效的阅读权限", c)
+		return
+	}
+
 	var theContent string
 	if bookData.ContentType == model.ContentTypeHTML {
 		theContent = bookData.HTMLContent
@@ -83,6 +89,7 @@ func Save(c *gin.Context, isEdit bool) {
 	} else {
 		//更新图书
 		if err := model.DB.First(&updatedBook, bookData.ID).Error; err == nil {
+			updatedBook.ReadLimits = bookData.ReadLimits
 			updatedBook.Name = bookData.Name
 			updatedBook.CoverURL = bookData.CoverURL
 			updatedBook.Content = bookData.Content
@@ -198,7 +205,7 @@ func Publish(c *gin.Context) {
 func List(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var books []model.Book
-	if err := model.DB.Model(&model.Book{}).Where("status != \"book_unpublish\"").Find(&books).Error; err != nil {
+	if err := model.DB.Model(&model.Book{}).Where("status != \"book_unpublish\" AND read_limits != \"book_read_limits_private\"").Find(&books).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -232,6 +239,19 @@ func Info(c *gin.Context) {
 	if err := model.DB.First(&book, id).Error; err != nil {
 		SendErrJSON("错误的图书id", c)
 		return
+	}
+
+	if book.ReadLimits == model.BookReadLimitsPrivate {
+		userInter, _ := c.Get("user")
+		if userInter == nil {
+			SendErrJSON("没有权限", c)
+			return
+		}
+		user := userInter.(model.User)
+		if user.ID != book.UserID {
+			SendErrJSON("没有权限.", c)
+			return
+		}
 	}
 
 	if c.Query("f") != "md" {
@@ -290,6 +310,26 @@ func Chapter(c *gin.Context) {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
+	}
+	var book model.Book
+	if err := model.DB.First(&book, chapter.BookID).Error; err != nil {
+		// 如果图书被删除了，图书下的章节不让查询
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+
+	if book.ReadLimits == model.BookReadLimitsPrivate {
+		userInter, _ := c.Get("user")
+		if userInter == nil {
+			SendErrJSON("没有权限", c)
+			return
+		}
+		user := userInter.(model.User)
+		if user.ID != book.UserID {
+			SendErrJSON("没有权限.", c)
+			return
+		}
 	}
 
 	if c.Query("f") != "md" {
