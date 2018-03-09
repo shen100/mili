@@ -123,7 +123,8 @@ go run main.go
 密码: 123456 (**登陆后请修改密码**)
 
 ## ❓问题反馈   
-<img src="https://static.oschina.net/uploads/space/2018/0201/181259_75b3_1185257.jpg" width="300" />          
+<img src="https://static.oschina.net/uploads/space/2018/0201/181259_75b3_1185257.jpg" width="300" />      
+
 QQ群: 32550512       
 如果群里暂时没人回复消息, 请在[golang123](https://www.golang123.com/) 网站上创建话题，然后选择 **提问** 版块
 
