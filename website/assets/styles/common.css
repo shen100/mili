@@ -802,7 +802,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 .common-page {
     margin-top: 10px;
-    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 .common-page-inline {
