@@ -32,7 +32,9 @@
                     :show-elevator="true"/>
             </div>
         </div>
-        <div id="indexBanner">
+        <div v-if="allowBaiduAd" id="adBox">
+            <div id="banner"></div>
+            <div id="ad120x90"></div>
         </div>
     </div>
 </template>
@@ -41,10 +43,12 @@
     import request from '~/net/request'
     import dateTool from '~/utils/date'
     import htmlUtil from '~/utils/html'
+    import config from '~/config'
 
     export default {
         data () {
             return {
+                allowBaiduAd: config.allowBaiduAd
             }
         },
         asyncData (context) {
@@ -116,7 +120,15 @@
         },
         methods: {
             createAd () {
-                window.BAIDU_CLB_fillSlotAsync('u3382275', 'indexBanner')
+                if (this.allowBaiduAd) {
+                    let n = parseInt(Math.round(Math.random()) + 1)
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd['banner' + n], 'banner')
+                    window.slotbydup = window.slotbydup || []
+                    window.slotbydup.push({
+                        id: config.baiduAd.ad120x90,
+                        container: 'ad120x90'
+                    })
+                }
             },
             onPageChange (value) {
                 window.location.href = `/?cate=${this.cate}&pageNo=${value}`

@@ -947,7 +947,24 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     font-weight: 400;
 }
 
+/* ad start */
+#adBox {
+    height: 110px;
+    background-color: #fff;
+    margin-top: 20px;
+    padding: 10px;
+}
 
+#banner {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#ad120x90 {
+    display: inline-block;
+    vertical-align: top;
+}
+/* ad end */
 
 
 

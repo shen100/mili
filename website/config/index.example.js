@@ -15,6 +15,11 @@ var config = {
     sizeLimitTip: '3M',
     uploadURL: '/upload',
     uploadAvatar: '/user/uploadavatar',
+    baiduAd: {
+        banner1: '',
+        banner2: '',
+        ad120x90: ''
+    },
     proxy: {
         host: '127.0.0.1',
         port: 8881

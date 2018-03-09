@@ -122,10 +122,10 @@ go run main.go
 用户名: golang123  
 密码: 123456 (**登陆后请修改密码**)
 
-## ❓问题反馈
-QQ群: 32550512    
+## ❓问题反馈   
 <img src="https://static.oschina.net/uploads/space/2018/0201/181259_75b3_1185257.jpg" width="300" />    
-欢迎加入Golang123的QQ群反馈问题，也可以在Gihub上开issue。
+QQ群: 32550512  
+如果群里暂时没人回复消息，请在[golang123](https://www.golang123.com/)网站上创建话题，然后选择 **提问** 版块
 
 ## 💰 支持
 支持`golang123`最简单的方式就是点一下网站上面的广告啦, [立即点击](https://www.golang123.com/topic/create)😃 

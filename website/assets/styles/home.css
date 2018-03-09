@@ -2,6 +2,10 @@ body {
 	background-color: #e1e1e1;
 }
 
+.common-body-left {
+    background: none;
+}
+
 .home-categoties-box {
 	background-color: #f6f6f6;
 	padding: 10px;
@@ -26,6 +30,10 @@ body {
 
 .categoties-item:hover, .categoties-select {
 	color: #fff;
+}
+
+.home-articles-box {
+    background: #fff;
 }
 
 .articles-cell:nth-child(1) {
@@ -145,8 +153,10 @@ body {
     text-align: center;
 }
 
-#indexBanner {
-    width: 900px;
-    text-align: center;
-    padding: 20px;
-}
+
+
+
+
+
+
+

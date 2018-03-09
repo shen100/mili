@@ -38,7 +38,7 @@ module.exports = {
     plugins: [
         { src: '~plugins/iview.js', ssr: true },
         { src: '~plugins/bdStat.js', ssr: false },
-        { src: '~plugins/adsense.js', ssr: false },
+        // { src: '~plugins/adsense.js', ssr: false },
         { src: '~plugins/refreshToken.js', ssr: true }
     ]
 }

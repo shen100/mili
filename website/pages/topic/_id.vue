@@ -46,6 +46,10 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="allowBaiduAd" id="adBox">
+                    <div id="banner"></div>
+                    <div id="ad120x90"></div>
+                </div>
                 <div class="golang-cell comment-box">
                     <div class="title total-reply-count">{{article.commentCount > 0 ? article.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
@@ -119,7 +123,6 @@
                     </div>
                 </div>
             </div>
-            <div id="adBanner"></div>
         </div>
         <Modal
             v-model="collectShow"
@@ -182,6 +185,7 @@
     export default {
         data () {
             return {
+                allowBaiduAd: config.allowBaiduAd,
                 collectShowDir: false,
                 collectShow: false,
                 loading: false,
@@ -653,7 +657,15 @@
                 })
             },
             createAd () {
-                window.BAIDU_CLB_fillSlotAsync('u3382275', 'adBanner')
+                if (this.allowBaiduAd) {
+                    let n = parseInt(Math.round(Math.random()) + 1)
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd['banner' + n], 'banner')
+                    window.slotbydup = window.slotbydup || []
+                    window.slotbydup.push({
+                        id: config.baiduAd.ad120x90,
+                        container: 'ad120x90'
+                    })
+                }
             }
         },
         mounted () {
