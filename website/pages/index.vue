@@ -32,6 +32,8 @@
                     :show-elevator="true"/>
             </div>
         </div>
+        <div id="indexBanner">
+        </div>
     </div>
 </template>
 
@@ -107,7 +109,15 @@
             getReplyTime: dateTool.getReplyTime,
             entity2HTML: htmlUtil.entity2HTML
         },
+        mounted () {
+            this.$nextTick(function () {
+                this.createAd()
+            })
+        },
         methods: {
+            createAd () {
+                window.BAIDU_CLB_fillSlotAsync('u3382275', 'indexBanner')
+            },
             onPageChange (value) {
                 window.location.href = `/?cate=${this.cate}&pageNo=${value}`
             }

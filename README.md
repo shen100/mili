@@ -127,10 +127,8 @@ QQ群: 32550512
 <img src="https://static.oschina.net/uploads/space/2018/0201/181259_75b3_1185257.jpg" width="300" />    
 欢迎加入Golang123的QQ群反馈问题，也可以在Gihub上开issue。
 
-## 💰 赞助
-如果你觉得`golang123`这个项目还不错的话，可以通过扫描下面的二维码来赞助我, 金额任意，无上限😃 
-
-<img src="https://user-images.githubusercontent.com/2443162/30115315-f3ef9392-934c-11e7-8b62-edeb998d864c.png" width="700" alt=""/>
+## 💰 支持
+支持`golang123`最简单的方式就是点一下网站上面的广告啦, [立即点击](https://www.golang123.com/topic/create)😃 
 
 
 ## License

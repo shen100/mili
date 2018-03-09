@@ -119,6 +119,7 @@
                     </div>
                 </div>
             </div>
+            <div id="adBanner"></div>
         </div>
         <Modal
             v-model="collectShow"
@@ -650,9 +651,14 @@
                         content: err.message || err.msg
                     })
                 })
+            },
+            createAd () {
+                window.BAIDU_CLB_fillSlotAsync('u3382275', 'adBanner')
             }
         },
         mounted () {
+            this.createAd()
+
             if (window.location.search && window.location.search.indexOf('pushLink=1') >= 0) {
                 var bp = document.createElement('script')
                 var curProtocol = window.location.protocol.split(':')[0]

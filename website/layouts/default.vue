@@ -16,6 +16,7 @@
     import Header from '~/components/Header'
     import Footer from '~/components/Footer'
     import Sidebar from '~/components/Sidebar'
+    import config from '~/config'
 
     export default {
         data () {
@@ -30,6 +31,9 @@
                 meta: [
                     { hid: 'description', name: 'description', content: siteConfig.description },
                     { name: 'keywords', content: siteConfig.keywords }
+                ],
+                script: [
+                    config.allowBaiduAd ? { src: config.baiduAdURL } : null
                 ]
             }
         },

@@ -147,5 +147,6 @@ body {
 
 #indexBanner {
     width: 900px;
-    height: 64px;
+    text-align: center;
+    padding: 20px;
 }
