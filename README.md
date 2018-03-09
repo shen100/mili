@@ -126,7 +126,7 @@ go run main.go
 <img src="https://static.oschina.net/uploads/space/2018/0201/181259_75b3_1185257.jpg" width="300" />      
 
 QQ群: 32550512       
-如果群里暂时没人回复消息, 请在[golang123](https://www.golang123.com/) 网站上创建话题，然后选择 **提问** 版块
+如果群里暂时没人回复消息, 请在[golang123](https://www.golang123.com/topic/create) 网站上创建话题，然后选择 **提问** 版块
 
 ## 💰 支持
 支持`golang123`最简单的方式就是点一下网站上面的广告啦, [立即点击](https://www.golang123.com)😃 
