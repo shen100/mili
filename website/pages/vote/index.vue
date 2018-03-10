@@ -23,6 +23,10 @@
                     <a :href="`/user/${vote.lastUser.id}`" target="_blank" class="user-small-icon-box"><img :src="vote.lastUser.avatarURL" alt=""></a>
                 </div>
             </div>
+            <div v-if="allowBaiduAd" id="adBox">
+                <div id="banner"></div>
+                <div id="ad120x90"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -32,10 +36,12 @@
     import dateTool from '~/utils/date'
     import VoteStatus from '~/constant/VoteStatus'
     import htmlUtil from '~/utils/html'
+    import config from '~/config'
 
     export default {
         data () {
             return {
+                allowBaiduAd: config.allowBaiduAd,
                 voteStatus: VoteStatus
             }
         },
@@ -64,6 +70,17 @@
             }
         },
         mounted () {
+            this.$nextTick(function () {
+                this.createAd()
+            })
+        },
+        methods: {
+            createAd () {
+                if (this.allowBaiduAd) {
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.banner2, 'banner')
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.ad120x90, 'ad120x90')
+                }
+            }
         },
         filters: {
             getReplyTime: dateTool.getReplyTime,

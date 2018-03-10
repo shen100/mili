@@ -121,13 +121,8 @@
         methods: {
             createAd () {
                 if (this.allowBaiduAd) {
-                    let n = parseInt(Math.round(Math.random()) + 1)
-                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd['banner' + n], 'banner')
-                    window.slotbydup = window.slotbydup || []
-                    window.slotbydup.push({
-                        id: config.baiduAd.ad120x90,
-                        container: 'ad120x90'
-                    })
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.banner1, 'banner')
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.ad120x90, 'ad120x90')
                 }
             },
             onPageChange (value) {

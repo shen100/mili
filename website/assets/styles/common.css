@@ -964,6 +964,13 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     display: inline-block;
     vertical-align: top;
 }
+
+#ad250x250Box {
+    text-align: center;
+    background: #fff;
+    padding: 15px 0;
+    margin-bottom: 20px;
+}
 /* ad end */
 
 

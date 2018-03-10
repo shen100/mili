@@ -50,6 +50,10 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="allowBaiduAd" id="adBox">
+                    <div id="banner"></div>
+                    <div id="ad120x90"></div>
+                </div>
                 <div class="golang-cell comment-box">
                     <div class="title total-reply-count">{{vote.commentCount > 0 ? vote.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
@@ -186,6 +190,7 @@
     export default {
         data () {
             return {
+                allowBaiduAd: config.allowBaiduAd,
                 collectShowDir: false,
                 collectShow: false,
                 loading: false,
@@ -661,9 +666,17 @@
                         content: err.message
                     })
                 })
+            },
+            createAd () {
+                if (this.allowBaiduAd) {
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.banner2, 'banner')
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.ad120x90, 'ad120x90')
+                }
             }
         },
         mounted () {
+            this.createAd()
+
             if (window.location.search && window.location.search.indexOf('pushLink=1') >= 0) {
                 var bp = document.createElement('script')
                 var curProtocol = window.location.protocol.split(':')[0]

@@ -2,8 +2,13 @@ body {
     background-color: #e1e1e1;
 }
 
+.common-body-left {
+    background: none;
+}
+
 .book-list {
     padding: 20px;
+    background: #fff;
 }
 
 .book-item {

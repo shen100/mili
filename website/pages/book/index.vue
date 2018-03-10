@@ -11,16 +11,22 @@
                 <!-- <div class="book-item-producer">{{book.user.name}}</div> -->
             </li>
         </ul>
+        <div v-if="allowBaiduAd" id="adBox">
+            <div id="banner"></div>
+            <div id="ad120x90"></div>
+        </div>
     </div>
 </template>
 
 <script>
     import request from '~/net/request'
     import htmlUtil from '~/utils/html'
+    import config from '~/config'
 
     export default {
         data () {
             return {
+                allowBaiduAd: config.allowBaiduAd
             }
         },
         asyncData (context) {
@@ -43,7 +49,18 @@
         filters: {
             entity2HTML: htmlUtil.entity2HTML
         },
+        mounted () {
+            this.$nextTick(function () {
+                this.createAd()
+            })
+        },
         methods: {
+            createAd () {
+                if (this.allowBaiduAd) {
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.banner3, 'banner')
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.ad120x90, 'ad120x90')
+                }
+            }
         }
     }
 </script>

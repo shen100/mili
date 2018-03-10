@@ -41,6 +41,7 @@
 				</li>
 			</ul>
         </div>
+        <div v-if="allowBaiduAd" id="ad250x250Box"></div>
         <div v-if="maxBrowseVisible && maxBrowseArticles && maxBrowseArticles.length" class="golang-cell">
 			<div class="title">热门话题</div>
 			<ul>
@@ -84,9 +85,12 @@
 </template>
 
 <script>
+    import config from '~/config'
+
     export default {
         data () {
             return {
+                allowBaiduAd: config.allowBaiduAd,
                 user: this.$store.state.user,
                 userCount: this.$store.state.userCount,
                 topicCount: this.$store.state.topicCount,
@@ -107,7 +111,17 @@
                 statVisible: this.$store.state.statVisible
             }
         },
+        mounted () {
+            this.$nextTick(function () {
+                this.createAd()
+            })
+        },
         methods: {
+            createAd () {
+                if (this.allowBaiduAd) {
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.ad250x250, 'ad250x250Box')
+                }
+            },
             onSignin () {
                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
             }
