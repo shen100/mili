@@ -11,24 +11,16 @@
                 <!-- <div class="book-item-producer">{{book.user.name}}</div> -->
             </li>
         </ul>
-        <div v-if="allowBaiduAd" id="adBox">
-            <div id="banner"></div>
-            <div id="ad120x90"></div>
-        </div>
+        <baidu-banner />
     </div>
 </template>
 
 <script>
     import request from '~/net/request'
     import htmlUtil from '~/utils/html'
-    import config from '~/config'
+    import baiduBanner from '~/components/ad/baidu/banner1'
 
     export default {
-        data () {
-            return {
-                allowBaiduAd: config.allowBaiduAd
-            }
-        },
         asyncData (context) {
             return request.getBooks({
                 client: context.req
@@ -49,18 +41,8 @@
         filters: {
             entity2HTML: htmlUtil.entity2HTML
         },
-        mounted () {
-            this.$nextTick(function () {
-                this.createAd()
-            })
-        },
-        methods: {
-            createAd () {
-                if (this.allowBaiduAd) {
-                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.banner3, 'banner')
-                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.ad120x90, 'ad120x90')
-                }
-            }
+        components: {
+            'baidu-banner': baiduBanner
         }
     }
 </script>

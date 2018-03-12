@@ -14,6 +14,7 @@ export const parseTree = (nodes, options) => {
         id: 0,
         title: '无',
         depth: 0,
+        parentId: 0,
         children: []
     }
     let stores = []
@@ -27,13 +28,13 @@ export const parseTree = (nodes, options) => {
                     id: copyList[i].id,
                     title: copyList[i][options.titleKey],
                     depth: tree.depth + 1,
+                    parentId: tree.id,
                     children: []
                 }
                 if (options.dataKeys) {
                     for (let j = 0; j < options.dataKeys.length; j++) {
                         let key = options.dataKeys[j]
                         node[key] = copyList[i][key]
-                        console.log(copyList[i].id, key, copyList[i][key])
                     }
                 }
                 stores.push(node)
@@ -44,4 +45,86 @@ export const parseTree = (nodes, options) => {
         stores.splice(0, 1)
     }
     return root.children
+}
+
+export const getTreeNode = (id, treeData) => {
+    let nodes = treeData.slice(0)
+    while (nodes.length) {
+        let node = nodes[0]
+        if (node.id !== id) {
+            let children = node.children
+            if (children && children.length > 0) {
+                nodes = nodes.concat(children)
+            }
+            nodes.shift()
+        } else {
+            return node
+        }
+    }
+    return null
+}
+
+/**
+ * 返回node的最后一个叶子结点
+ */
+export const getLastLeafChild = (node) => {
+    if (!node.children || node.children.length <= 0) {
+        return null
+    }
+    while (node.children && node.children.length) {
+        node = node.children[node.children.length - 1]
+    }
+    return node
+}
+
+export const getPrevNode = (node, treeData) => {
+    let parent = getTreeNode(node.parentId, treeData)
+    if (parent) {
+        let index = parent.children.indexOf(node)
+        if (index > 0) {
+            let theNode = parent.children[index - 1]
+            let lastLeafChild = getLastLeafChild(theNode)
+            return lastLeafChild || theNode // lastLeafChild ? lastLeafChild : theNode
+        }
+        return parent
+    } else {
+        let index = treeData.indexOf(node)
+        let theNode = treeData[index - 1]
+        if (!theNode) {
+            return null
+        }
+        let lastLeafChild = getLastLeafChild(theNode)
+        return lastLeafChild || theNode // lastLeafChild ? lastLeafChild : theNode
+    }
+}
+
+export const getFirstParentBrother = (node, treeData) => {
+    let parent = getTreeNode(node.parentId, treeData)
+    while (parent) {
+        let index = parent.children.indexOf(node)
+        if (parent.children[index + 1]) {
+            return parent.children[index + 1]
+        }
+        node = parent
+        parent = getTreeNode(node.parentId, treeData)
+    }
+    let index = treeData.indexOf(node)
+    return treeData[index + 1] || null
+}
+
+export const getNextNode = (node, treeData) => {
+    if (node.children && node.children.length > 0) {
+        return node.children[0]
+    }
+    let parent = getTreeNode(node.parentId, treeData)
+    if (parent) {
+        let index = parent.children.indexOf(node)
+        if (parent.children[index + 1]) {
+            return parent.children[index + 1]
+        }
+        return getFirstParentBrother(parent, treeData)
+    } else {
+        let index = treeData.indexOf(node)
+        return treeData[index + 1] || null
+    }
 }

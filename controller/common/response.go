@@ -37,5 +37,6 @@ func SendErrJSON(msg string, args ...interface{}) {
 		"msg":   msg,
 		"data":  gin.H{},
 	})
+	// 终止请求链
 	c.Abort()
 }

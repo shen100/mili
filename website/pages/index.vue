@@ -32,10 +32,7 @@
                     :show-elevator="true"/>
             </div>
         </div>
-        <div v-if="allowBaiduAd" id="adBox">
-            <div id="banner"></div>
-            <div id="ad120x90"></div>
-        </div>
+        <baidu-banner />
     </div>
 </template>
 
@@ -43,14 +40,9 @@
     import request from '~/net/request'
     import dateTool from '~/utils/date'
     import htmlUtil from '~/utils/html'
-    import config from '~/config'
+    import baiduBanner from '~/components/ad/baidu/banner1'
 
     export default {
-        data () {
-            return {
-                allowBaiduAd: config.allowBaiduAd
-            }
-        },
         asyncData (context) {
             context.store.commit('top10Visible', true)
             context.store.commit('friendLinkVisible', true)
@@ -113,21 +105,13 @@
             getReplyTime: dateTool.getReplyTime,
             entity2HTML: htmlUtil.entity2HTML
         },
-        mounted () {
-            this.$nextTick(function () {
-                this.createAd()
-            })
-        },
         methods: {
-            createAd () {
-                if (this.allowBaiduAd) {
-                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.banner1, 'banner')
-                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.ad120x90, 'ad120x90')
-                }
-            },
             onPageChange (value) {
                 window.location.href = `/?cate=${this.cate}&pageNo=${value}`
             }
+        },
+        components: {
+            'baidu-banner': baiduBanner
         }
     }
 </script>

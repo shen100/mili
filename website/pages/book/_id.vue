@@ -10,6 +10,11 @@
             <div class="book-content-box">
                 <h2 class="book-chapter-name">{{chapter.name}}</h2>
                 <div class="golang123-editor golang123-richtxt" v-html="chapter.htmlContent"></div>
+                <div class="book-prev-next">
+                    <div v-if="prevChapter" class="book-prev">上一篇: <a :href="`/book/${book.id}?chapterID=${prevChapter.id}`">{{prevChapter.title}}</a></div>
+                    <div v-if="nextChapter" class="book-next">下一篇: <a :href="`/book/${book.id}?chapterID=${nextChapter.id}`">{{nextChapter.title}}</a></div>
+                </div>
+                <baidu-banner />
             </div>
         </div>
     </div>
@@ -18,16 +23,13 @@
 <script>
     import request from '~/net/request'
     import htmlUtil from '~/utils/html'
-    import { parseTree } from '~/utils/tree'
+    import { parseTree, getTreeNode, getPrevNode, getNextNode } from '~/utils/tree'
+    import baiduBanner from '~/components/ad/baidu/banner2'
 
     export default {
         validate ({ params }) {
             var hasId = !!params.id
             return hasId
-        },
-        data () {
-            return {
-            }
         },
         asyncData (context) {
             let query = context.query || {}
@@ -62,7 +64,7 @@
                     titleKey: 'name',
                     dataKeys: ['expand']
                 })
-                chapterID = chapterID || treeData[0].id
+                chapterID = parseInt(chapterID || treeData[0].id)
                 return request.getBookChapter({
                     client: context.req,
                     params: {
@@ -78,6 +80,8 @@
                     book: book,
                     treeData: treeData,
                     chapter: res.data.chapter,
+                    prevChapter: getPrevNode(getTreeNode(chapterID, treeData), treeData),
+                    nextChapter: getNextNode(getTreeNode(chapterID, treeData), treeData),
                     user: context.user
                 }
             }).catch(err => {
@@ -146,6 +150,9 @@
                     })
                 ])
             }
+        },
+        components: {
+            'baidu-banner': baiduBanner
         }
     }
 </script>

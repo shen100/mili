@@ -46,10 +46,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="allowBaiduAd" id="adBox">
-                    <div id="banner"></div>
-                    <div id="ad120x90"></div>
-                </div>
+                <baidu-banner />
                 <div class="golang-cell comment-box">
                     <div class="title total-reply-count">{{article.commentCount > 0 ? article.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
@@ -181,11 +178,11 @@
     import request from '~/net/request'
     import dateTool from '~/utils/date'
     import { trim } from '~/utils/tool'
+    import baiduBanner from '~/components/ad/baidu/banner1'
 
     export default {
         data () {
             return {
-                allowBaiduAd: config.allowBaiduAd,
                 collectShowDir: false,
                 collectShow: false,
                 loading: false,
@@ -655,22 +652,9 @@
                         content: err.message || err.msg
                     })
                 })
-            },
-            createAd () {
-                if (this.allowBaiduAd) {
-                    let n = parseInt(Math.round(Math.random()) + 1)
-                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd['banner' + n], 'banner')
-                    window.slotbydup = window.slotbydup || []
-                    window.slotbydup.push({
-                        id: config.baiduAd.ad120x90,
-                        container: 'ad120x90'
-                    })
-                }
             }
         },
         mounted () {
-            this.createAd()
-
             if (window.location.search && window.location.search.indexOf('pushLink=1') >= 0) {
                 var bp = document.createElement('script')
                 var curProtocol = window.location.protocol.split(':')[0]
@@ -698,7 +682,8 @@
             entity2HTML: htmlUtil.entity2HTML
         },
         components: {
-            'md-editor': Editor
+            'md-editor': Editor,
+            'baidu-banner': baiduBanner
         }
     }
 </script>

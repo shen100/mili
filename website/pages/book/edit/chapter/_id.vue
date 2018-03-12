@@ -90,7 +90,7 @@
     import Editor from '~/components/Editor'
     import ErrorCode from '~/constant/ErrorCode'
     import config from '~/config'
-    import { parseTree } from '~/utils/tree'
+    import { parseTree, getTreeNode } from '~/utils/tree'
 
     export default {
         validate ({ params }) {
@@ -192,39 +192,6 @@
             this.isMounted = true
         },
         methods: {
-            // getPrevChapter (node) {
-            //     if (node.children && node.children.length) {
-            //         return node.children[0]
-            //     }
-            //     let parent = node.parent
-            //     if (parent) {
-            //         let index = parent.children.indexOf(node)
-            //         if (index > 0) {
-            //             return parent.children[index - 1]
-            //         }
-            //         return parent
-            //     } else {
-            //         let index = this.treeData.indexOf(node)
-            //         return this.treeData[index - 1]
-            //     }
-            // },
-            // getNextChapter (node) {
-            //     if (node.children && node.children.length) {
-            //         return node.children[0]
-            //     }
-            //     let parent = node.parent
-            //     if (parent) {
-            //         let index = parent.children.indexOf(node)
-            //         if (parent.children[index + 1]) {
-            //             return parent.children[index + 1]
-            //         }
-            //         return this.nextChapter(parent)
-            //     } else {
-            //         let index = this.treeData.indexOf(node)
-            //         return this.treeData[index + 1]
-            //     }
-
-            // },
             showCrawlModal () {
                 this.crawlModalVisible = true
             },
@@ -401,19 +368,7 @@
                 this.createChapterName = ''
             },
             getNode (chapterID) {
-                let nodes = this.treeData.slice(0)
-                while (nodes.length) {
-                    let node = nodes[0]
-                    if (node.id !== chapterID) {
-                        let children = node.children
-                        if (children && children.length > 0) {
-                            nodes = nodes.concat(children)
-                        }
-                        nodes.shift()
-                    } else {
-                        return node
-                    }
-                }
+                return getTreeNode(chapterID, this.treeData)
             },
             onCreateChapter () {
                 let self = this

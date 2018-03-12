@@ -948,7 +948,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 /* ad start */
-#adBox {
+#bannerBox {
     height: 110px;
     background-color: #fff;
     margin-top: 20px;
@@ -970,6 +970,11 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     background: #fff;
     padding: 15px 0;
     margin-bottom: 20px;
+}
+
+#bookBannerBox {
+    padding-top: 15px;
+    text-align: center;
 }
 /* ad end */
 
