@@ -84,7 +84,7 @@ export const getPrevNode = (node, treeData) => {
         if (index > 0) {
             let theNode = parent.children[index - 1]
             let lastLeafChild = getLastLeafChild(theNode)
-            return lastLeafChild || theNode // lastLeafChild ? lastLeafChild : theNode
+            return lastLeafChild || theNode
         }
         return parent
     } else {
@@ -94,7 +94,7 @@ export const getPrevNode = (node, treeData) => {
             return null
         }
         let lastLeafChild = getLastLeafChild(theNode)
-        return lastLeafChild || theNode // lastLeafChild ? lastLeafChild : theNode
+        return lastLeafChild || theNode
     }
 }
 

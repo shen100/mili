@@ -205,7 +205,7 @@ func Publish(c *gin.Context) {
 func List(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var books []model.Book
-	if err := model.DB.Model(&model.Book{}).Where("status != \"book_unpublish\" AND read_limits != \"book_read_limits_private\"").Find(&books).Error; err != nil {
+	if err := model.DB.Model(&model.Book{}).Where("status != ? AND status != \"book_unpublish\" AND read_limits != \"book_read_limits_private\"", model.BookVerifyFail).Find(&books).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -236,7 +236,8 @@ func Info(c *gin.Context) {
 	}
 
 	var book model.Book
-	if err := model.DB.First(&book, id).Error; err != nil {
+
+	if err := model.DB.Where("status != ?", model.BookVerifyFail).First(&book, id).Error; err != nil {
 		SendErrJSON("错误的图书id", c)
 		return
 	}

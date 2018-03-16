@@ -157,7 +157,12 @@ func ActiveAccount(c *gin.Context) {
 		return
 	}
 
-	if err := model.DB.Model(&user).Update("status", model.UserStatusActived).Error; err != nil {
+	updatedData := map[string]interface{}{
+		"status":       model.UserStatusActived,
+		"activated_at": time.Now(),
+	}
+
+	if err := model.DB.Model(&user).Updates(updatedData).Error; err != nil {
 		SendErrJSON("error", c)
 		return
 	}

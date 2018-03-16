@@ -7,7 +7,7 @@
                         <img :src="book.coverURL">
                     </a>
                 </div>
-                <h3 class="book-item-title">{{book.name | entity2HTML}}</h3>
+                <h3 :title="book.name" class="book-item-title">{{book.name | entity2HTML}}</h3>
                 <!-- <div class="book-item-producer">{{book.user.name}}</div> -->
             </li>
         </ul>

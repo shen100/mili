@@ -52,7 +52,7 @@
                 })
             ]).then(function (arr) {
                 book = arr[0].data.book
-                if (!book) {
+                if (!book || book.status === 'book_unpublish') {
                     context.error({ statusCode: 404, message: 'Page not found' })
                     return
                 }

@@ -18,6 +18,7 @@ type User struct {
 	CreatedAt    time.Time  `json:"createdAt"`
 	UpdatedAt    time.Time  `json:"updatedAt"`
 	DeletedAt    *time.Time `sql:"index" json:"deletedAt"`
+	ActivatedAt  *time.Time `json:"activated_at"`
 	Name         string     `json:"name"`
 	Pass         string     `json:"-"`
 	Email        string     `json:"-"`

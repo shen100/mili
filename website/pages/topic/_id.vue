@@ -485,7 +485,7 @@
                         }).then((res) => {
                             this.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                location.href = `/topic/${this.article.id}`
+                                location.href = `/topic/${self.article.id}`
                                 setTimeout(() => {
                                     location.reload()
                                 }, 100)

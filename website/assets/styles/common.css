@@ -974,6 +974,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 
 #bookBannerBox {
     padding-top: 15px;
+    padding-bottom: 15px;
     text-align: center;
 }
 /* ad end */

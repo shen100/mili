@@ -5,7 +5,7 @@
     "img/round_check_fill.df1f30b.png",
     "img/mail.78006e5.png",
     "pages/vote/_id.8311d5285dff1ac554d5.js",
-    "pages/topic/_id.cf5845ec6e87ab353b13.js",
+    "pages/topic/_id.3bcf808a37714c1dc27b.js",
     "pages/vote/index.253e490ec4b1231d9177.js",
     "pages/admin/reply/yesterday.117175b6857f72e21668.js",
     "pages/admin/reply/today.e2e67311cad2b55c649f.js",
@@ -25,14 +25,14 @@
     "pages/topic/create.f7fa1dbd1f9a83cac321.js",
     "pages/signin.28d7e7d6e51843be7103.js",
     "layouts/nosidebar.089635b5a4923ff7b30a.js",
-    "pages/book/edit/chapter/_id.710230510d5e0456575d.js",
+    "pages/book/edit/chapter/_id.762a0e44b79e84679765.js",
     "pages/vote/edit/_id.6c7dd59d211563a1da4e.js",
     "pages/vote/create.5579987acb2d040e0c51.js",
     "layouts/admin.9c97ea1f5bd5bdc76c57.js",
     "pages/user/_id.3ba8a1c003cec87906ff.js",
     "pages/user/edit.5329b34bf6263111e557.js",
-    "pages/book/_id.00d60cf125edb64c3cce.js",
-    "pages/book/index.77d8048ceea6913eb91e.js",
+    "pages/book/_id.ac18d10b9aab3ff77cad.js",
+    "pages/book/index.b6c8848c28ed15209717.js",
     "pages/admin/crawl/zhihu.dc94e3a93605b16e4d8f.js",
     "pages/admin/crawl/jianshu.a02af2b69713a9a9ac3f.js",
     "pages/admin/crawl/huxiu.3a78a6f574059787c4c5.js",
@@ -59,11 +59,11 @@
     "pages/user/_id/index.0542465f61afc849dc1c.js",
     "layouts/nolayout.76687f258ab9e2dbb30d.js",
     "common.890df3a3757aa192f142.js",
-    "app.349af138bc142887271c.js",
-    "manifest.1c62761fd34da6087264.js",
+    "app.6568a5f7a09d5132c9cd.js",
+    "manifest.07437231abc695b46fc4.js",
     "img/logo.ca1f746.png",
     "pages/vote/_id.8311d5285dff1ac554d5.js.map",
-    "pages/topic/_id.cf5845ec6e87ab353b13.js.map",
+    "pages/topic/_id.3bcf808a37714c1dc27b.js.map",
     "pages/vote/index.253e490ec4b1231d9177.js.map",
     "pages/admin/reply/yesterday.117175b6857f72e21668.js.map",
     "pages/admin/reply/today.e2e67311cad2b55c649f.js.map",
@@ -83,14 +83,14 @@
     "pages/topic/create.f7fa1dbd1f9a83cac321.js.map",
     "pages/signin.28d7e7d6e51843be7103.js.map",
     "layouts/nosidebar.089635b5a4923ff7b30a.js.map",
-    "pages/book/edit/chapter/_id.710230510d5e0456575d.js.map",
+    "pages/book/edit/chapter/_id.762a0e44b79e84679765.js.map",
     "pages/vote/edit/_id.6c7dd59d211563a1da4e.js.map",
     "pages/vote/create.5579987acb2d040e0c51.js.map",
     "layouts/admin.9c97ea1f5bd5bdc76c57.js.map",
     "pages/user/_id.3ba8a1c003cec87906ff.js.map",
     "pages/user/edit.5329b34bf6263111e557.js.map",
-    "pages/book/_id.00d60cf125edb64c3cce.js.map",
-    "pages/book/index.77d8048ceea6913eb91e.js.map",
+    "pages/book/_id.ac18d10b9aab3ff77cad.js.map",
+    "pages/book/index.b6c8848c28ed15209717.js.map",
     "pages/admin/crawl/zhihu.dc94e3a93605b16e4d8f.js.map",
     "pages/admin/crawl/jianshu.a02af2b69713a9a9ac3f.js.map",
     "pages/admin/crawl/huxiu.3a78a6f574059787c4c5.js.map",
@@ -117,19 +117,19 @@
     "pages/user/_id/index.0542465f61afc849dc1c.js.map",
     "layouts/nolayout.76687f258ab9e2dbb30d.js.map",
     "common.890df3a3757aa192f142.js.map",
-    "app.349af138bc142887271c.js.map",
-    "manifest.1c62761fd34da6087264.js.map",
+    "app.6568a5f7a09d5132c9cd.js.map",
+    "manifest.07437231abc695b46fc4.js.map",
     "index.spa.html",
     "index.ssr.html"
   ],
   "initial": [
-    "manifest.1c62761fd34da6087264.js",
+    "manifest.07437231abc695b46fc4.js",
     "common.890df3a3757aa192f142.js",
-    "app.349af138bc142887271c.js"
+    "app.6568a5f7a09d5132c9cd.js"
   ],
   "async": [
     "pages/vote/_id.8311d5285dff1ac554d5.js",
-    "pages/topic/_id.cf5845ec6e87ab353b13.js",
+    "pages/topic/_id.3bcf808a37714c1dc27b.js",
     "pages/vote/index.253e490ec4b1231d9177.js",
     "pages/admin/reply/yesterday.117175b6857f72e21668.js",
     "pages/admin/reply/today.e2e67311cad2b55c649f.js",
@@ -149,14 +149,14 @@
     "pages/topic/create.f7fa1dbd1f9a83cac321.js",
     "pages/signin.28d7e7d6e51843be7103.js",
     "layouts/nosidebar.089635b5a4923ff7b30a.js",
-    "pages/book/edit/chapter/_id.710230510d5e0456575d.js",
+    "pages/book/edit/chapter/_id.762a0e44b79e84679765.js",
     "pages/vote/edit/_id.6c7dd59d211563a1da4e.js",
     "pages/vote/create.5579987acb2d040e0c51.js",
     "layouts/admin.9c97ea1f5bd5bdc76c57.js",
     "pages/user/_id.3ba8a1c003cec87906ff.js",
     "pages/user/edit.5329b34bf6263111e557.js",
-    "pages/book/_id.00d60cf125edb64c3cce.js",
-    "pages/book/index.77d8048ceea6913eb91e.js",
+    "pages/book/_id.ac18d10b9aab3ff77cad.js",
+    "pages/book/index.b6c8848c28ed15209717.js",
     "pages/admin/crawl/zhihu.dc94e3a93605b16e4d8f.js",
     "pages/admin/crawl/jianshu.a02af2b69713a9a9ac3f.js",
     "pages/admin/crawl/huxiu.3a78a6f574059787c4c5.js",
@@ -184,10 +184,6 @@
     "layouts/nolayout.76687f258ab9e2dbb30d.js"
   ],
   "modules": {
-    "13672923": [
-      4,
-      62
-    ],
     "17540776": [
       19,
       77
@@ -253,10 +249,6 @@
       57,
       115
     ],
-    "225c6080": [
-      30,
-      88
-    ],
     "e75f156e": [
       36,
       94,
@@ -304,10 +296,6 @@
       57,
       115
     ],
-    "287fab2a": [
-      4,
-      62
-    ],
     "3ccf055f": [
       57,
       115
@@ -336,10 +324,6 @@
       58,
       116
     ],
-    "247e2afa": [
-      31,
-      89
-    ],
     "1417638e": [
       3,
       61
@@ -347,10 +331,6 @@
     "1819d3c0": [
       58,
       116
-    ],
-    "79509aae": [
-      30,
-      88
     ],
     "d8953ca8": [
       32,
@@ -440,10 +420,6 @@
       58,
       116
     ],
-    "e857c4de": [
-      4,
-      62
-    ],
     "ecf01fde": [
       57,
       115
@@ -468,6 +444,10 @@
       57,
       115
     ],
+    "89fd3240": [
+      30,
+      88
+    ],
     "3484f0ad": [
       57,
       115
@@ -483,6 +463,10 @@
     "53bdb4af": [
       58,
       116
+    ],
+    "69b4a0fa": [
+      4,
+      62
     ],
     "124947aa": [
       29,
@@ -714,6 +698,10 @@
       17,
       75
     ],
+    "0a6c0f79": [
+      4,
+      62
+    ],
     "27b9c96a": [
       57,
       115
@@ -786,10 +774,6 @@
     "423fe37f": [
       57,
       115
-    ],
-    "3a832640": [
-      30,
-      88
     ],
     "4d16a530": [
       55,
@@ -909,6 +893,10 @@
       25,
       83
     ],
+    "45d03ea4": [
+      30,
+      88
+    ],
     "34a7e3d9": [
       57,
       115
@@ -944,6 +932,10 @@
     "0e890e5a": [
       42,
       100
+    ],
+    "f3b8b300": [
+      30,
+      88
     ],
     "4531b772": [
       34,
@@ -1135,10 +1127,6 @@
       21,
       79
     ],
-    "45ad4a2d": [
-      31,
-      89
-    ],
     "49c8335e": [
       58,
       116
@@ -1175,6 +1163,14 @@
     "2a36a3c8": [
       21,
       79
+    ],
+    "6d49e8da": [
+      24,
+      82
+    ],
+    "4a85a6d1": [
+      57,
+      115
     ],
     "752086ea": [
       57,
@@ -1294,6 +1290,10 @@
     "6f8638fa": [
       57,
       115
+    ],
+    "5f1bc1da": [
+      31,
+      89
     ],
     "2334c6db": [
       46,
@@ -1658,10 +1658,6 @@
       27,
       85
     ],
-    "6d49e8da": [
-      24,
-      82
-    ],
     "36936a53": [
       48,
       106
@@ -1806,6 +1802,10 @@
       57,
       115
     ],
+    "16ad4ca4": [
+      31,
+      89
+    ],
     "13828d1f": [
       48,
       106
@@ -1838,6 +1838,10 @@
     "2cdaf937": [
       58,
       116
+    ],
+    "dc01c9ea": [
+      4,
+      62
     ],
     "5511ecb8": [
       57,
@@ -1879,6 +1883,10 @@
       52,
       110
     ],
+    "a8423414": [
+      31,
+      89
+    ],
     "4d0fd5b6": [
       58,
       116
@@ -1886,10 +1894,6 @@
     "c9db9aba": [
       46,
       104
-    ],
-    "588f5131": [
-      31,
-      89
     ],
     "1dae11bb": [
       8,
@@ -1978,10 +1982,6 @@
     "c5f0c196": [
       54,
       112
-    ],
-    "4a85a6d1": [
-      57,
-      115
     ],
     "3c3aa9a2": [
       58,
