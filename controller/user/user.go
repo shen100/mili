@@ -753,12 +753,13 @@ func AllList(c *gin.Context) {
 	var results []interface{}
 	for i := 0; i < len(users); i++ {
 		results = append(results, gin.H{
-			"id":        users[i].ID,
-			"name":      users[i].Name,
-			"email":     users[i].Email,
-			"role":      users[i].Role,
-			"status":    users[i].Status,
-			"createdAt": users[i].CreatedAt,
+			"id":          users[i].ID,
+			"name":        users[i].Name,
+			"email":       users[i].Email,
+			"role":        users[i].Role,
+			"status":      users[i].Status,
+			"createdAt":   users[i].CreatedAt,
+			"activatedAt": users[i].ActivatedAt,
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{

@@ -14,9 +14,9 @@
     "pages/admin/topic/today.6bc4d4acfd28b4656db4.js",
     "pages/admin/topic/list.0de0a0a0cb7f0a417c83.js",
     "pages/index.da59d5f7ca4ba34b6e07.js",
-    "pages/admin/user/yesterday.0eca39fe7a30a2418d7f.js",
-    "pages/admin/user/today.2bb5a477e6259751cc60.js",
-    "pages/admin/user/list.c1a6b1bd5616cec41f78.js",
+    "pages/admin/user/yesterday.d94179e62dd5024f306f.js",
+    "pages/admin/user/today.85ca1bb6384b1756eb07.js",
+    "pages/admin/user/list.21b40f5efbc59fd71e4c.js",
     "pages/user/_id/collect.6cd94ee23a257f7a2918.js",
     "layouts/default.5dd65d6534ef90ee8753.js",
     "pages/book/edit/_id.fa8c9eab128a5daabff1.js",
@@ -59,8 +59,8 @@
     "pages/user/_id/index.0542465f61afc849dc1c.js",
     "layouts/nolayout.76687f258ab9e2dbb30d.js",
     "common.890df3a3757aa192f142.js",
-    "app.6568a5f7a09d5132c9cd.js",
-    "manifest.07437231abc695b46fc4.js",
+    "app.cd5bfd773780f6fee3ab.js",
+    "manifest.f3eeed052cd0e2e89f6f.js",
     "img/logo.ca1f746.png",
     "pages/vote/_id.8311d5285dff1ac554d5.js.map",
     "pages/topic/_id.3bcf808a37714c1dc27b.js.map",
@@ -72,9 +72,9 @@
     "pages/admin/topic/today.6bc4d4acfd28b4656db4.js.map",
     "pages/admin/topic/list.0de0a0a0cb7f0a417c83.js.map",
     "pages/index.da59d5f7ca4ba34b6e07.js.map",
-    "pages/admin/user/yesterday.0eca39fe7a30a2418d7f.js.map",
-    "pages/admin/user/today.2bb5a477e6259751cc60.js.map",
-    "pages/admin/user/list.c1a6b1bd5616cec41f78.js.map",
+    "pages/admin/user/yesterday.d94179e62dd5024f306f.js.map",
+    "pages/admin/user/today.85ca1bb6384b1756eb07.js.map",
+    "pages/admin/user/list.21b40f5efbc59fd71e4c.js.map",
     "pages/user/_id/collect.6cd94ee23a257f7a2918.js.map",
     "layouts/default.5dd65d6534ef90ee8753.js.map",
     "pages/book/edit/_id.fa8c9eab128a5daabff1.js.map",
@@ -117,15 +117,15 @@
     "pages/user/_id/index.0542465f61afc849dc1c.js.map",
     "layouts/nolayout.76687f258ab9e2dbb30d.js.map",
     "common.890df3a3757aa192f142.js.map",
-    "app.6568a5f7a09d5132c9cd.js.map",
-    "manifest.07437231abc695b46fc4.js.map",
+    "app.cd5bfd773780f6fee3ab.js.map",
+    "manifest.f3eeed052cd0e2e89f6f.js.map",
     "index.spa.html",
     "index.ssr.html"
   ],
   "initial": [
-    "manifest.07437231abc695b46fc4.js",
+    "manifest.f3eeed052cd0e2e89f6f.js",
     "common.890df3a3757aa192f142.js",
-    "app.6568a5f7a09d5132c9cd.js"
+    "app.cd5bfd773780f6fee3ab.js"
   ],
   "async": [
     "pages/vote/_id.8311d5285dff1ac554d5.js",
@@ -138,9 +138,9 @@
     "pages/admin/topic/today.6bc4d4acfd28b4656db4.js",
     "pages/admin/topic/list.0de0a0a0cb7f0a417c83.js",
     "pages/index.da59d5f7ca4ba34b6e07.js",
-    "pages/admin/user/yesterday.0eca39fe7a30a2418d7f.js",
-    "pages/admin/user/today.2bb5a477e6259751cc60.js",
-    "pages/admin/user/list.c1a6b1bd5616cec41f78.js",
+    "pages/admin/user/yesterday.d94179e62dd5024f306f.js",
+    "pages/admin/user/today.85ca1bb6384b1756eb07.js",
+    "pages/admin/user/list.21b40f5efbc59fd71e4c.js",
     "pages/user/_id/collect.6cd94ee23a257f7a2918.js",
     "layouts/default.5dd65d6534ef90ee8753.js",
     "pages/book/edit/_id.fa8c9eab128a5daabff1.js",
@@ -1164,14 +1164,6 @@
       21,
       79
     ],
-    "6d49e8da": [
-      24,
-      82
-    ],
-    "4a85a6d1": [
-      57,
-      115
-    ],
     "752086ea": [
       57,
       115
@@ -1658,6 +1650,10 @@
       27,
       85
     ],
+    "6d49e8da": [
+      24,
+      82
+    ],
     "36936a53": [
       48,
       106
@@ -1986,6 +1982,10 @@
     "3c3aa9a2": [
       58,
       116
+    ],
+    "4a85a6d1": [
+      57,
+      115
     ],
     "37fdc598": [
       57,

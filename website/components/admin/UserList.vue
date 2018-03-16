@@ -89,6 +89,14 @@
                         }
                     },
                     {
+                        title: '激活时间',
+                        key: 'activatedAt',
+                        render: (h, obj) => {
+                            console.log(obj.row.activatedAt)
+                            return (obj.row.activatedAt && DateUtil.formatYMDHMS(obj.row.activatedAt)) || ''
+                        }
+                    },
+                    {
                         title: '状态',
                         key: 'status',
                         render: (h, obj) => {
