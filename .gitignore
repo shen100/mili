@@ -2,12 +2,14 @@
 .idea
 *.swp
 
-#website/.nuxt
+debug
+golang123
+website/.nuxt
 config.json
 node_modules
 npm-debug.log
 website/config/index.js
 website/mysqlscripts
-website-mobile/config/index.js
+website/static/upload/img/*
 review.md
 build.md

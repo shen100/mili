@@ -110,6 +110,9 @@
                 window.location.href = `/?cate=${this.cate}&pageNo=${value}`
             }
         },
+        mounted () {
+            console.log('golang123')
+        },
         components: {
             'baidu-banner': baiduBanner
         }

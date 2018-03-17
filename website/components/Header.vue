@@ -28,7 +28,7 @@
                     <template v-if="user">
                         <li class="user-message-wrapbox">
                             <Tooltip v-if="userMessages.length" trigger="hover" title="提示标题" placement="bottom">
-                                <a href="" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon><span class="user-message-tip-count">{{messageCount}}</span></a>
+                                <a href="./" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon><span class="user-message-tip-count">{{messageCount}}</span></a>
                                 <ul slot="content" class="header-message-list">
                                     <li v-for="message in userMessages">
                                         <p v-if="message.type === 'messageTypeCommentArticle'" class="header-message-item"><a :href="`/user/${message.fromUser.id}`" target="_blank" class="header-message-user">{{message.fromUser.name}}</a>&nbsp;回复了你的话题&nbsp;<a @click="onReadMessage(message)" :href="`/topic/${message.sourceID}/#reply-${message.commentID}`" target="_blank" class="header-message-content" :style="{color: message.readed ? '#a0a3a4' : ''}">{{message.data.title}}</a></p>
@@ -37,7 +37,7 @@
                                     </li>
                                 </ul>
                             </Tooltip>
-                            <a v-else href="" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon></a>
+                            <a v-else href="./" class="user-message-box"><Icon class="user-message" type="ios-bell-outline"></Icon></a>
                         </li>
                         <li style="padding-right:0;">
                             <Tooltip v-if="user" trigger="hover" title="提示标题" placement="bottom">

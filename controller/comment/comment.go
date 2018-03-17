@@ -331,7 +331,14 @@ func Delete(c *gin.Context) {
 			return
 		}
 
-		if err := tx.Model(&article).Update("comment_count", article.CommentCount-1).Error; err != nil {
+		articleData := map[string]interface{}{
+			"comment_count": article.CommentCount - 1,
+		}
+		if article.LastUserID == user.ID {
+			articleData["last_user_id"] = 0
+		}
+
+		if err := tx.Model(&article).Updates(articleData).Error; err != nil {
 			tx.Rollback()
 			SendErrJSON("error", c)
 			return
@@ -344,7 +351,14 @@ func Delete(c *gin.Context) {
 			return
 		}
 
-		if err := tx.Model(&vote).Update("comment_count", vote.CommentCount-1).Error; err != nil {
+		voteData := map[string]interface{}{
+			"comment_count": vote.CommentCount - 1,
+		}
+		// if vote.LastUserID == user.ID {
+		// 	voteData["last_user_id"] = 0
+		// }
+
+		if err := tx.Model(&vote).Updates(voteData).Error; err != nil {
 			tx.Rollback()
 			SendErrJSON("error", c)
 			return
