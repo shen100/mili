@@ -337,9 +337,9 @@
                                 id: id
                             }
                         }).then((res) => {
-                            this.loading = false
+                            self.loading = false
                             if (res.errNo === ErrorCode.SUCCESS) {
-                                location.href = `/vote/${this.vote.id}`
+                                location.href = `/vote/${self.vote.id}`
                                 setTimeout(() => {
                                     location.reload()
                                 }, 100)

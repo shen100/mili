@@ -3,8 +3,6 @@
 *.swp
 
 debug
-golang123
-website/.nuxt
 config.json
 node_modules
 npm-debug.log

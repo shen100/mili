@@ -354,9 +354,9 @@ func Delete(c *gin.Context) {
 		voteData := map[string]interface{}{
 			"comment_count": vote.CommentCount - 1,
 		}
-		// if vote.LastUserID == user.ID {
-		// 	voteData["last_user_id"] = 0
-		// }
+		if vote.LastUserID == user.ID {
+			voteData["last_user_id"] = 0
+		}
 
 		if err := tx.Model(&vote).Updates(voteData).Error; err != nil {
 			tx.Rollback()
