@@ -18,7 +18,8 @@ var config = {
     baiduAd: {
         banner1: '',
         banner2: '',
-        ad120x90: ''
+        ad120x90: '',
+        ad250x250: ''
     },
     proxy: {
         host: '127.0.0.1',

@@ -1,7 +1,7 @@
 {
   "name": "golang123-pc",
   "version": "0.1.1",
-  "description": "golang123 pc project",
+  "description": "golang123",
   "author": "shen100 <liushen_shen@163.com>",
   "private": true,
   "config": {
@@ -22,7 +22,6 @@
     "axios": "0.16.2",
     "iview": "2.9.2",
     "moment": "2.18.1",
-    "mysql": "^2.15.0",
     "nuxt": "1.0.0-rc11",
     "trim-html": "^0.1.9"
   },

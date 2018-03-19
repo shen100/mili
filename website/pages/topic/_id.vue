@@ -430,6 +430,7 @@
                         }
                     })
                 }
+                return false
             },
             // 直接回复，或对回复进行回复
             onSubmitReply () {
@@ -467,6 +468,7 @@
                         }
                     })
                 }
+                return false
             },
             onCommentDelete (id) {
                 if (this.loading) {

@@ -3,6 +3,7 @@
 *.swp
 
 debug
+golang123
 config.json
 node_modules
 npm-debug.log

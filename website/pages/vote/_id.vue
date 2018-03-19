@@ -444,6 +444,7 @@
                         }
                     })
                 }
+                return false
             },
             // 直接回复，或对回复进行回复
             onSubmitReply () {
@@ -479,6 +480,7 @@
                         })
                     })
                 }
+                return false
             },
             onVoteSubmit (id) {
                 if (!this.loading) {
