@@ -230,6 +230,14 @@ const api = {
         url: url + '/messages/read/:id',
         method: 'GET'
     },
+    getMyBooks: { // 获取我的图书列表
+        url: url + '/books/my/:userID',
+        method: 'GET'
+    },
+    getUserPublicBooks: { // 获取用户公开的图书列表
+        url: url + '/books/user/public/:userID',
+        method: 'GET'
+    },
     getBooks: { // 获取图书列表
         url: url + '/books',
         method: 'GET'

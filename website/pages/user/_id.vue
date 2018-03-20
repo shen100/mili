@@ -47,6 +47,7 @@
                     <ul class="mine-menu-list">
                         <li class="mine-menu-item" style="padding-left: 0;"><a :class="{'mine-menu-item-active': isUserTopicMenu}" :href="`/user/${currentUser.id}`">话题<span class="mine-menu-meta">{{currentUser.articleCount}}</span></a></li>
                         <li class="mine-menu-item"><a :class="{'mine-menu-item-active': isUserReplyMenu}" :href="`/user/${currentUser.id}/reply`">回复<span class="mine-menu-meta">{{currentUser.commentCount}}</span></a></li>
+                        <li class="mine-menu-item"><a :class="{'mine-menu-item-active': isBookMenu}" :href="`/user/${currentUser.id}/book`">图书<span class="mine-menu-meta"></span></a></li>
                         <li class="mine-menu-item"><a :class="{'mine-menu-item-active': isUserVoteMenu}" :href="`/user/${currentUser.id}/vote`">参与的投票<span></span></a></li>
                         <li class="mine-menu-item"><a :class="{'mine-menu-item-active': isUserCollectMenu}" :href="`/user/${currentUser.id}/collect`">收藏<span class="mine-menu-meta"></span></a></li>
                     </ul>
@@ -102,12 +103,15 @@
             let pathname = myURL.pathname
             let isUserTopicMenu = false
             let isUserReplyMenu = false
+            let isBookMenu = false
             let isUserVoteMenu = false
             let isUserCollectMenu = false
             if (pathname.match(/^\/user\/[0-9]+$/)) {
                 isUserTopicMenu = true
             } else if (pathname.match(/^\/user\/[0-9]+\/reply$/)) {
                 isUserReplyMenu = true
+            } else if (pathname.match(/^\/user\/[0-9]+\/book$/)) {
+                isBookMenu = true
             } else if (pathname.match(/^\/user\/[0-9]+\/vote$/)) {
                 isUserVoteMenu = true
             } else if (pathname.match(/^\/user\/[0-9]+\/collect$/)) {
@@ -124,6 +128,7 @@
                     return {
                         isUserTopicMenu: isUserTopicMenu,
                         isUserReplyMenu: isUserReplyMenu,
+                        isBookMenu: isBookMenu,
                         isUserVoteMenu: isUserVoteMenu,
                         isUserCollectMenu: isUserCollectMenu,
                         isAuthor: context.user && context.user.id === currentUser.id,

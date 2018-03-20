@@ -205,7 +205,10 @@ func Publish(c *gin.Context) {
 func List(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var books []model.Book
-	if err := model.DB.Model(&model.Book{}).Where("status != ? AND status != \"book_unpublish\" AND read_limits != \"book_read_limits_private\"", model.BookVerifyFail).Find(&books).Error; err != nil {
+
+	if err := model.DB.Model(&model.Book{}).Where("read_limits <> ?", model.BookReadLimitsPrivate).
+		Where("status <> ?", model.BookVerifyFail).Where("status <> ?", model.BookUnpublish).
+		Find(&books).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -216,6 +219,54 @@ func List(c *gin.Context) {
 			SendErrJSON("error.", c)
 			return
 		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"books": books,
+		},
+	})
+}
+
+// MyBooks 获取我创建的图书列表
+func MyBooks(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	var books []model.Book
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
+	if err := model.DB.Model(&model.Book{}).Where("user_id = ?", user.ID).Find(&books).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"books": books,
+		},
+	})
+}
+
+// UserPublicBooks 用户公开的图书
+func UserPublicBooks(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+
+	userID, userIDErr := strconv.Atoi(c.Param("userID"))
+	if userIDErr != nil {
+		SendErrJSON("错误的userID", c)
+		return
+	}
+
+	var books []model.Book
+	if err := model.DB.Model(&model.Book{}).Where("read_limits <> ?", model.BookReadLimitsPrivate).
+		Where("status <> ?", model.BookVerifyFail).Where("status <> ?", model.BookUnpublish).
+		Where("user_id = ?", userID).Find(&books).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,

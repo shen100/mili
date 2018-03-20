@@ -128,6 +128,9 @@ func Route(router *gin.Engine) {
 			vote.DeleteItem)
 
 		api.GET("/books", book.List)
+		api.GET("/books/my/:userID", middleware.SigninRequired,
+			book.MyBooks)
+		api.GET("/books/user/public/:userID", book.UserPublicBooks)
 		api.GET("/books/info/:id", middleware.SetContextUser,
 			book.Info)
 		api.GET("/books/chapters/:bookID", book.Chapters)

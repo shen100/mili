@@ -492,3 +492,44 @@ body {
 .collect-article-title {
     line-height: 28px;
 }
+
+.book-title {
+    font-size: 18px;
+}
+
+.book-img-box {
+    display: inline-block;
+    vertical-align: top;
+    width: 188px;
+    height: 238px;
+    margin-right: 15px;
+}
+
+.book-intro {
+    display: inline-block;
+    vertical-align: top;
+    width: 650px;
+    height: 238px;
+    position: relative;
+}
+
+.book-actions {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.book-actions-btn {
+    color: #2d8cf0;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.book-actions-btn:hover {
+    color: #2d8cf0;
+    text-decoration: none;
+}
+
+
+
+
