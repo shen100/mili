@@ -51,7 +51,10 @@
                         <li class="mine-menu-item"><a :class="{'mine-menu-item-active': isUserVoteMenu}" :href="`/user/${currentUser.id}/vote`">参与的投票<span></span></a></li>
                         <li class="mine-menu-item"><a :class="{'mine-menu-item-active': isUserCollectMenu}" :href="`/user/${currentUser.id}/collect`">收藏<span class="mine-menu-meta"></span></a></li>
                     </ul>
-                    <nuxt-child/>
+                    <div class="mine-content-box">
+                        <nuxt-child/>
+                    </div>
+                    <baidu-banner />
                 </div>
                 <div class="mine-content-right">
                     <div class="mine-attention-box">
@@ -68,6 +71,7 @@
                             </a>
                         </div>
                     </div>
+                    <div v-if="allowBaiduAd" id="ad250x250Box"></div>
                 </div>
             </div>
         </div>
@@ -80,11 +84,13 @@
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
     import config from '~/config'
+    import baiduBanner from '~/components/ad/baidu/banner1'
 
     export default {
         name: 'userHome',
         data () {
             return {
+                allowBaiduAd: config.allowBaiduAd,
                 activeMenu: 'index',
                 uploaderVisible: false,
                 uploadURL: config.uploadAvatar,
@@ -161,9 +167,17 @@
             if (route[3]) {
                 this.activeMenu = route[3]
             }
+            this.$nextTick(function () {
+                this.createAd()
+            })
         },
         layout: 'nosidebar',
         methods: {
+            createAd () {
+                if (this.allowBaiduAd) {
+                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.ad250x250, 'ad250x250Box')
+                }
+            },
             onFormatError () {
                 this.$Message.error({
                     duration: config.messageDuration,
@@ -239,6 +253,9 @@
                     })
                 })
             }
+        },
+        components: {
+            'baidu-banner': baiduBanner
         }
     }
 </script>

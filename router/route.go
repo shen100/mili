@@ -150,6 +150,8 @@ func Route(router *gin.Engine) {
 			book.UpdateChapterContent)
 		api.PUT("/books/chapters/updatename", middleware.SigninRequired,
 			book.UpdateChapterName)
+		api.DELETE("/books/delete/:id", middleware.SigninRequired,
+			book.Delete)
 		api.DELETE("/books/chapters/:chapterID", middleware.SigninRequired,
 			book.DeleteChapter)
 	}

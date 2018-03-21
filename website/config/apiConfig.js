@@ -246,6 +246,10 @@ const api = {
         url: url + '/books/info/:id',
         method: 'GET'
     },
+    deleteBook: { // 删除图书
+        url: url + '/books/delete/:id',
+        method: 'DELETE'
+    },
     createBook: { // 创建图书
         url: url + '/books',
         method: 'POST'

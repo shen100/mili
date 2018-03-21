@@ -966,6 +966,7 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
 }
 
 #ad250x250Box {
+    min-height: 280px;
     text-align: center;
     background: #fff;
     padding: 15px 0;

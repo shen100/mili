@@ -10,16 +10,19 @@
                     <h2 class="book-title"><a :href="`/book/${book.id}`" target="_blank">{{book.name}}</a></h2>
                     <div class="golang123-digest" v-html="book.htmlContent"></div>
                     <div v-if="isAuthor" class="book-actions">
-                        <Dropdown>
+                        <Dropdown @on-click="onClickBookDropdown">
                             <a href="javascript:void(0)" class="book-actions-btn">
                                 操作
                                 <Icon type="arrow-down-b"></Icon>
                             </a>
                             <DropdownMenu slot="list">
-                                <DropdownItem>发布</DropdownItem>
-                                <DropdownItem><a :href="`/book/edit/${book.id}`">编辑图书</a></DropdownItem>
-                                <DropdownItem><a :href="`/book/edit/chapter/${book.id}`">编辑章节</a></DropdownItem>
-                                <DropdownItem>删除</DropdownItem>
+                                <DropdownItem v-if="book.status === 'book_unpublish'" :name="`book_unpublish-${book.id}`">发布</DropdownItem>
+                                <DropdownItem v-else-if="book.status === 'book_verifying'" :name="`book_verifying-${book.id}`" disabled>审核中</DropdownItem>
+                                <DropdownItem v-else-if="book.status === 'book_verify_success'" :name="`book_verify_success-${book.id}`" disabled>已发布</DropdownItem>
+                                <DropdownItem v-else-if="book.status === 'book_verify_fail'" :name="`book_verify_fail-${book.id}`" disabled>未通过审核</DropdownItem>
+                                <DropdownItem divided :name="`book_edit-${book.id}`"><a :href="`/book/edit/${book.id}`">编辑图书</a></DropdownItem>
+                                <DropdownItem :name="`book_chapter_edit-${book.id}`"><a :href="`/book/edit/chapter/${book.id}`">编辑章节</a></DropdownItem>
+                                <DropdownItem :name="`book_delete-${book.id}`">删除</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                     </div>
@@ -41,6 +44,8 @@
 </template>
 
 <script>
+    import config from '~/config'
+    import ErrorCode from '~/constant/ErrorCode'
     import trimHtml from 'trim-html'
     import request from '~/net/request'
     import htmlUtil from '~/utils/html'
@@ -86,6 +91,7 @@
                     }
                     books[i].htmlContent = content
                 }
+                console.log(res.data)
                 return {
                     pageNo: res.data.pageNo,
                     pageSize: res.data.pageSize,
@@ -104,6 +110,62 @@
             this.$data.sex = this.$parent.currentUser.sex
         },
         methods: {
+            onClickBookDropdown (name) {
+                let [status, bookID] = name.split('-')
+                let self = this
+                switch (status) {
+                case 'book_unpublish': {
+                    break
+                }
+                case 'book_chapter_edit': {
+                    break
+                }
+                case 'book_chapter': {
+                    break
+                }
+                case 'book_delete': {
+                    self.$Modal.confirm({
+                        title: '删除图书',
+                        content: '确定要删除这个图书?',
+                        onOk () {
+                            request.deleteBook({
+                                params: {
+                                    id: bookID
+                                }
+                            }).then(res => {
+                                if (res.errNo === ErrorCode.SUCCESS) {
+                                    self.$Message.success({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: '已删除'
+                                    })
+                                    setTimeout(function () {
+                                        location.reload()
+                                    }, 500)
+                                } else {
+                                    self.$Message.error({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: res.msg
+                                    })
+                                }
+                            }).catch(err => {
+                                err = '内部错误'
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: err
+                                })
+                            })
+                        },
+                        onCancel () {
+
+                        }
+                    })
+                    break
+                }
+                }
+            },
             onPageChange (value) {
                 let userId = this.currentId
                 window.location.href = `/user/${userId}/book?pageNo=${value}`

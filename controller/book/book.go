@@ -181,12 +181,13 @@ func Publish(c *gin.Context) {
 		SendErrJSON("错误的图书id", c)
 		return
 	}
+
 	var book model.Book
 	if err := model.DB.First(&book, id).Error; err != nil {
 		SendErrJSON("错误的图书id", c)
 		return
 	}
-	book.Status = model.BookVerifying
+	book.Status = model.BookVerifySuccess
 	if err := model.DB.Save(&book).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
@@ -197,6 +198,43 @@ func Publish(c *gin.Context) {
 		"msg":   "success",
 		"data": gin.H{
 			"book": book,
+		},
+	})
+}
+
+// Delete 删除图书
+func Delete(c *gin.Context) {
+	SendErrJSON := common.SendErrJSON
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
+	var bookID int
+	var bookIDError error
+	if bookID, bookIDError = strconv.Atoi(c.Param("id")); bookIDError != nil {
+		SendErrJSON("error", c)
+		return
+	}
+
+	var book model.Book
+	if err := model.DB.First(&book, bookID).Error; err != nil {
+		SendErrJSON("无效的id", c)
+		return
+	}
+	if book.UserID != user.ID {
+		SendErrJSON("没有权限", c)
+		return
+	}
+
+	if err := model.DB.Delete(&book).Error; err != nil {
+		SendErrJSON("error", c)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"errNo": model.ErrorCode.SUCCESS,
+		"msg":   "success",
+		"data": gin.H{
+			"id": book.ID,
 		},
 	})
 }
@@ -236,7 +274,26 @@ func MyBooks(c *gin.Context) {
 	userInter, _ := c.Get("user")
 	user := userInter.(model.User)
 
-	if err := model.DB.Model(&model.Book{}).Where("user_id = ?", user.ID).Find(&books).Error; err != nil {
+	var pageNoErr error
+	var pageNo int
+	if pageNo, pageNoErr = strconv.Atoi(c.Query("pageNo")); pageNoErr != nil {
+		pageNo = 1
+	}
+
+	if pageNo < 1 {
+		pageNo = 1
+	}
+
+	pageSize := 20
+	offset := (pageNo - 1) * pageSize
+
+	if err := model.DB.Model(&model.Book{}).Where("user_id = ?", user.ID).Offset(offset).Limit(pageSize).Find(&books).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+	var totalCount int
+	if err := model.DB.Model(&model.Book{}).Where("user_id = ?", user.ID).Count(&totalCount).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -245,7 +302,10 @@ func MyBooks(c *gin.Context) {
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data": gin.H{
-			"books": books,
+			"books":      books,
+			"pageNo":     pageNo,
+			"pageSize":   pageSize,
+			"totalCount": totalCount,
 		},
 	})
 }
@@ -260,19 +320,45 @@ func UserPublicBooks(c *gin.Context) {
 		return
 	}
 
+	var pageNoErr error
+	var pageNo int
+	if pageNo, pageNoErr = strconv.Atoi(c.Query("pageNo")); pageNoErr != nil {
+		pageNo = 1
+	}
+
+	if pageNo < 1 {
+		pageNo = 1
+	}
+
+	pageSize := 20
+	offset := (pageNo - 1) * pageSize
+
 	var books []model.Book
 	if err := model.DB.Model(&model.Book{}).Where("read_limits <> ?", model.BookReadLimitsPrivate).
 		Where("status <> ?", model.BookVerifyFail).Where("status <> ?", model.BookUnpublish).
-		Where("user_id = ?", userID).Find(&books).Error; err != nil {
+		Where("user_id = ?", userID).Offset(offset).Limit(pageSize).Find(&books).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
 	}
+
+	var totalCount int
+	if err := model.DB.Model(&model.Book{}).Where("read_limits <> ?", model.BookReadLimitsPrivate).
+		Where("status <> ?", model.BookVerifyFail).Where("status <> ?", model.BookUnpublish).
+		Where("user_id = ?", userID).Offset(offset).Limit(pageSize).Count(&totalCount).Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data": gin.H{
-			"books": books,
+			"books":      books,
+			"pageNo":     pageNo,
+			"pageSize":   pageSize,
+			"totalCount": totalCount,
 		},
 	})
 }
@@ -441,6 +527,14 @@ func CreateChapter(c *gin.Context) {
 	var book model.Book
 	if err := model.DB.First(&book, chapter.BookID).Error; err != nil {
 		SendErrJSON("无效的bookID", c)
+		return
+	}
+
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
+	if book.UserID != user.ID {
+		SendErrJSON("没有权限", c)
 		return
 	}
 
