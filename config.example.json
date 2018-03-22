@@ -13,7 +13,7 @@
 	"redis": {
 		"Host"      : "127.0.0.1",/*redis所在机器的ip*/
 		"Port"      : 6379,       /*redis的端口*/	
-		"Password"	: "",		  /*redis的密码*/
+		"Password"	: "",		  /*redis的密码，若无密码，可不填*/
 		"MaxIdle"   : 3,          /*最大的空闲连接数*/
 		"MaxActive" : 5           /*最大的激活连接数*/
 	},
