@@ -2,13 +2,14 @@
     <div>
         <ul class="book-list">
             <li v-for="(book, i) in books" class="book-item" :style="{'margin-right': (i + 1) % 5 == 0 ? 0 : '20px'}">
-                <div class="book-item-img">
-                    <a :href="`/book/${book.id}`" target="_blank">
-                        <img :src="book.coverURL">
-                    </a>
-                </div>
-                <h3 :title="book.name" class="book-item-title">{{book.name | entity2HTML}}</h3>
+                <a class="book-detial-link" :href="`/book/${book.id}`" target="_blank">
+                    <div class="book-item-img">
+                        <img v-if="book.coverURL" :src="book.coverURL">
+                        <div v-else class="book-no-img">无封面</div>
+                    </div>
+                    <h3 :title="book.name" class="book-item-title">{{book.name | entity2HTML}}</h3>
                 <!-- <div class="book-item-producer">{{book.user.name}}</div> -->
+                </a>
             </li>
         </ul>
         <baidu-banner />
@@ -22,6 +23,8 @@
 
     export default {
         asyncData (context) {
+            context.store.commit('publishTopicVisible', false)
+            context.store.commit('createBookVisible', true)
             return request.getBooks({
                 client: context.req
             }).then((res) => {

@@ -57,7 +57,8 @@
             return {
                 title: '账号激活'
             }
-        }
+        },
+        layout: 'nosidebar'
     }
 </script>
 

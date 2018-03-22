@@ -84,3 +84,12 @@ body {
     min-height: 294px;
 }
 
+.create-book-step {
+    min-height: 90px;
+    padding-top: 24px;
+    padding-left: 30px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #e2e2e2;
+    margin-bottom: 4px;
+}
+

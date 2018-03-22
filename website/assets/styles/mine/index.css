@@ -537,6 +537,11 @@ body {
     text-decoration: none;
 }
 
-
+.book-no-img {
+    color: #9b9b9b;
+    background: #e2e2e2;
+    text-align: center;
+    line-height: 238px;
+}
 
 

@@ -40,3 +40,14 @@ body {
 .book-item-producer {
     font-size: 12px;
 }
+
+.book-no-img {
+    color: #9b9b9b;
+    background: #e2e2e2;
+    text-align: center;
+    line-height: 198px;
+}
+
+.book-detial-link:hover {
+    text-decoration: none;
+}

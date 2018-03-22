@@ -9,6 +9,9 @@
         <div v-if="user && publishTopicVisible" class="golang-user-publish">
             <a href="/topic/create"><button class="signup-button ivu-btn ivu-btn-primary ivu-btn-large">发布话题</button></a>
         </div>
+        <div v-if="user && createBookVisible" class="golang-user-publish">
+            <a href="/book/create"><button class="signup-button ivu-btn ivu-btn-primary ivu-btn-large">创作图书</button></a>
+        </div>
         <div v-if="topicAuthor" class="golang-cell">
             <div class="title">作者信息</div>
             <div class="golang-user-info" style="padding-top:16px;">
@@ -104,6 +107,7 @@
                 authorRecentArticles: this.$store.state.authorRecentArticles,
                 userLoginVisible: this.$store.state.userLoginVisible,
                 publishTopicVisible: this.$store.state.publishTopicVisible,
+                createBookVisible: this.$store.state.createBookVisible,
                 top10Visible: this.$store.state.top10Visible,
                 maxBrowseVisible: this.$store.state.maxBrowseVisible,
                 maxCommentVisible: this.$store.state.maxCommentVisible,

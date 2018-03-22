@@ -1,85 +1,94 @@
 <template>
-    <div class="book-chapter-box">
-        <div>
-            <div class="book-chapter-tree-box">
-                <div class="book-name-edit-box">
-                    <div v-if="!isEditBookName">
-                        <h1 class="book-name">{{book.name}}</h1>
-                        <ButtonGroup shape="circle" class="book-name-btngroup">
-                            <Button @click="onEditBookNameClick" type="primary" icon="edit" size="small"></Button>
-                            <Button @click="onPublishBookClick" type="primary" icon="android-upload" size="small"></Button>
-                        </ButtonGroup>
+    <div>
+        <div class="create-book-step">
+            <Steps v-if="stepVisible" :current="1">
+                <Step title="基本信息" content="填写图书基本信息"></Step>
+                <Step title="添加章节" content="添加图书章节"></Step>
+                <Step title="发布图书" content="发布图书以便其他用户阅读"></Step>
+            </Steps>
+        </div>
+        <div class="book-chapter-box">
+            <div>
+                <div class="book-chapter-tree-box">
+                    <div class="book-name-edit-box">
+                        <div v-if="!isEditBookName">
+                            <h1 class="book-name">{{book.name}}</h1>
+                            <ButtonGroup shape="circle" class="book-name-btngroup">
+                                <Button @click="onEditBookNameClick" type="primary" icon="edit" size="small"></Button>
+                                <Button @click="onPublishBookClick" type="primary" icon="android-upload" size="small"></Button>
+                            </ButtonGroup>
+                        </div>
+                        <div v-else class="book-name-input-box">
+                            <Input v-model="inputBookName" style="width: 180px;" :value="book.name" placeholder="请输入图书名称" size="small"></Input>
+                            <Button @click="cancelEditBookNameClick" type="ghost" size="small" style="float:right;margin-right: 17px;">取消</Button>
+                            <Button @click="onEditBookName" type="primary" size="small" style="float:right;margin-right: 10px;">确定</Button>
+                        </div>
                     </div>
-                    <div v-else class="book-name-input-box">
-                        <Input v-model="inputBookName" style="width: 180px;" :value="book.name" placeholder="请输入图书名称" size="small"></Input>
-                        <Button @click="cancelEditBookNameClick" type="ghost" size="small" style="float:right;margin-right: 17px;">取消</Button>
-                        <Button @click="onEditBookName" type="primary" size="small" style="float:right;margin-right: 10px;">确定</Button>
+                    <div class="book-chapter-tree" :style="{padding: treeData.length ? '' : '12px 0 12px 20px'}">
+                        <Tree v-if="isMounted" :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
+                    </div>
+                    <div class="book-chapter-create">
+                        <Button size="large" v-if="isMounted" type="primary" @click="onCreateChapterClick">添加章节</Button>
+                    </div>
+                    <Modal v-model="createChapterModalVisible"
+                        :title="createChapterID ? '添加子章节' : '添加章节'"
+                        @on-cancel="cancelCreateChapter">
+                        <Input v-model="createChapterName" placeholder="章节名称" size="large"/>
+                        <Row style="margin-top: 14px;" type="flex" justify="space-between">
+                            <Button type="ghost" style="width:48%" @click="cancelCreateChapter">取消</Button>
+                            <Button type="primary" style="width:48%" @click="onCreateChapter">确定</Button>
+                        </Row>
+                        <div slot="footer"></div>
+                    </Modal>
+                    <Modal v-model="editChapterNameModalVisible"
+                        title="修改章节名称"
+                        @on-cancel="cancelEditChapterName">
+                        <Input v-model="tempChapterName" placeholder="章节名称" size="large"/>
+                        <Row style="margin-top: 14px;" type="flex" justify="space-between">
+                            <Button type="ghost" style="width:48%" @click="cancelEditChapterName">取消</Button>
+                            <Button type="primary" style="width:48%" @click="onEditChapterName">确定</Button>
+                        </Row>
+                        <div slot="footer"></div>
+                    </Modal>
+                </div>
+                <div class="book-chapter-editor">
+                    <h2 class="curchapter-name">{{curChapter ? '正在编辑: ' + curChapter.title : '暂无章节'}}</h2>
+                    <div v-if="contentType === 'html'" class="chapter-html-editor">
+                        <html-editor :value="content" :user="user" @save="onContentSave" @change="onContentChange" />
+                    </div>
+                    <md-editor v-else="contentType === 'markdown'" ref="mdEditor" :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
+                    <div>
+                        <Button size="large" v-if="isMounted" type="primary" @click="onSaveChapterContent">保存</Button>
+                        <span v-if="contentType === 'html'" @click="showCrawlModal" class="crawl-btn">抓取内容</span>
                     </div>
                 </div>
-                <div class="book-chapter-tree" :style="{padding: treeData.length ? '' : '12px 0 12px 20px'}">
-                    <Tree v-if="isMounted" :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
-                </div>
-                <div class="book-chapter-create">
-                    <Button size="large" v-if="isMounted" type="primary" @click="onCreateChapterClick">创建章节</Button>
-                </div>
-                <Modal v-model="createChapterModalVisible"
-                    :title="createChapterID ? '添加子章节' : '创建章节'"
-                    @on-cancel="cancelCreateChapter">
-                    <Input v-model="createChapterName" placeholder="章节名称" size="large"/>
+                <Modal v-model="crawlModalVisible" title="抓取内容"
+                        @on-cancel="cancelCrawl">
+                    <div>
+                        <Form ref="crawlerForm" :model="crawlerFormData" :rules="ruleCrawler" :label-width="120">
+                            <FormItem label="内容选择器" prop="contentSelector">
+                                <Row>
+                                    <Col span="12">
+                                        <Input v-model="crawlerFormData.contentSelector" placeholder="请输入内容选择器"></Input>
+                                    </Col>
+                                </Row>
+                            </FormItem>
+                            <FormItem label="url" prop="url">
+                                <Row>
+                                    <Col span="12">
+                                        <Input v-model="crawlerFormData.url" placeholder="请输入URL"></Input>
+                                    </Col>
+                                </Row>
+                            </FormItem>
+                        </Form>
+                    </div>
                     <Row style="margin-top: 14px;" type="flex" justify="space-between">
-                        <Button type="ghost" style="width:48%" @click="cancelCreateChapter">取消</Button>
-                        <Button type="primary" style="width:48%" @click="onCreateChapter">确定</Button>
-                    </Row>
-                    <div slot="footer"></div>
-                </Modal>
-                <Modal v-model="editChapterNameModalVisible"
-                    title="修改章节名称"
-                    @on-cancel="cancelEditChapterName">
-                    <Input v-model="tempChapterName" placeholder="章节名称" size="large"/>
-                    <Row style="margin-top: 14px;" type="flex" justify="space-between">
-                        <Button type="ghost" style="width:48%" @click="cancelEditChapterName">取消</Button>
-                        <Button type="primary" style="width:48%" @click="onEditChapterName">确定</Button>
+                        <Button type="ghost" style="width:48%" @click="cancelCrawl">取消</Button>
+                        <Button type="primary" style="width:48%" @click="onCrawl">确定</Button>
                     </Row>
                     <div slot="footer"></div>
                 </Modal>
             </div>
-            <div class="book-chapter-editor">
-                <h2 class="curchapter-name">正在编辑: {{curChapter ? curChapter.title : ''}}</h2>
-                <div v-if="contentType === 'html'" class="chapter-html-editor">
-                    <html-editor :value="content" :user="user" @save="onContentSave" @change="onContentChange" />
-                </div>
-                <md-editor v-else="contentType === 'markdown'" ref="mdEditor" :value="content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
-                <div>
-                    <Button size="large" v-if="isMounted" type="primary" @click="onSaveChapterContent">保存</Button>
-                    <span v-if="contentType === 'html'" @click="showCrawlModal" class="crawl-btn">抓取内容</span>
-                </div>
-            </div>
-            <Modal v-model="crawlModalVisible" title="抓取内容"
-                    @on-cancel="cancelCrawl">
-                <div>
-                    <Form ref="crawlerForm" :model="crawlerFormData" :rules="ruleCrawler" :label-width="120">
-                        <FormItem label="内容选择器" prop="contentSelector">
-                            <Row>
-                                <Col span="12">
-                                    <Input v-model="crawlerFormData.contentSelector" placeholder="请输入内容选择器"></Input>
-                                </Col>
-                            </Row>
-                        </FormItem>
-                        <FormItem label="url" prop="url">
-                            <Row>
-                                <Col span="12">
-                                    <Input v-model="crawlerFormData.url" placeholder="请输入URL"></Input>
-                                </Col>
-                            </Row>
-                        </FormItem>
-                    </Form>
-                </div>
-                <Row style="margin-top: 14px;" type="flex" justify="space-between">
-                    <Button type="ghost" style="width:48%" @click="cancelCrawl">取消</Button>
-                    <Button type="primary" style="width:48%" @click="onCrawl">确定</Button>
-                </Row>
-                <div slot="footer"></div>
-            </Modal>
         </div>
     </div>
 </template>
@@ -159,6 +168,7 @@
                     contentType = 'html'
                 }
                 return {
+                    stepVisible: false,
                     contentType: contentType,
                     maxDepth: 4,
                     crawlModalVisible: false,
@@ -190,6 +200,7 @@
         },
         mounted () {
             this.isMounted = true
+            this.stepVisible = true
         },
         methods: {
             showCrawlModal () {

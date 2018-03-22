@@ -5,7 +5,12 @@
         </div>
         <template v-if="books.length > 0">
             <div v-for="(book, index) in books" class="articles-item" :class="{'articles-item-no': index === 0}">
-                <div class="book-img-box"><img :src="book.coverURL"/></div>
+                <div class="book-img-box">
+                    <a :href="`/book/${book.id}`" target="_blank">
+                        <img v-if="book.coverURL" :src="book.coverURL"/>
+                        <div v-else class="book-no-img">无封面</div>
+                    </a>
+                </div>
                 <div class="book-intro">
                     <h2 class="book-title"><a :href="`/book/${book.id}`" target="_blank">{{book.name}}</a></h2>
                     <div class="golang123-digest" v-html="book.htmlContent"></div>
@@ -112,9 +117,46 @@
         methods: {
             onClickBookDropdown (name) {
                 let [status, bookID] = name.split('-')
+                bookID = parseInt(bookID)
                 let self = this
                 switch (status) {
                 case 'book_unpublish': {
+                    self.$Modal.confirm({
+                        title: '发布图书',
+                        content: '确定要发布图书?',
+                        onOk () {
+                            request.publishBook({
+                                params: {
+                                    bookID: bookID
+                                }
+                            }).then(res => {
+                                if (res.errNo === ErrorCode.SUCCESS) {
+                                    self.$Message.success({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: '发布成功'
+                                    })
+                                    self.onBookPublished(bookID)
+                                } else {
+                                    self.$Message.error({
+                                        duration: config.messageDuration,
+                                        closable: true,
+                                        content: res.msg
+                                    })
+                                }
+                            }).catch(err => {
+                                err = '内部错误'
+                                self.$Message.error({
+                                    duration: config.messageDuration,
+                                    closable: true,
+                                    content: err
+                                })
+                            })
+                        },
+                        onCancel () {
+
+                        }
+                    })
                     break
                 }
                 case 'book_chapter_edit': {
@@ -164,6 +206,15 @@
                     })
                     break
                 }
+                }
+            },
+            onBookPublished (bookID) {
+                for (let i = 0; i < this.books.length; i++) {
+                    if (this.books[i].id === bookID) {
+                        this.books[i].status = 'book_verify_success'
+                        console.log(this.books[i].status)
+                        break
+                    }
                 }
             },
             onPageChange (value) {

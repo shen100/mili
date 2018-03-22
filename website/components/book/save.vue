@@ -1,11 +1,6 @@
 <template>
     <div class="book-box">
         <div class="book-main">
-            <ul class="book-nav">
-                <li><a href="/"><span>主页</span></a></li>
-                <li class="book-nav-sep"><span>/</span></li>
-                <li><span class="book-label">{{bookID ? '编辑图书' : '创建图书'}}</span></li>
-            </ul>
             <div class="editor-box-wrap">
                 <div class="book-area">
                     <Form ref="formValidate" :model="formValidate" :rules="ruleInline" :label-width="80">
@@ -57,7 +52,7 @@
                             <md-editor v-show="formValidate.contentType === 'markdown'" :value="formValidate.content" :user="user" @save="onContentSave" @change="onContentChange"></md-editor>
                         </Form-item>
                         <Form-item :label-width="0">
-                            <Button size="large" v-if="isMounted" type="primary" @click="onSubmit">{{bookID ? '保存图书' : '创建图书'}}</Button>
+                            <Button size="large" v-if="isMounted" type="primary" @click="onSubmit">{{bookID ? '下一步' : '下一步'}}</Button>
                         </Form-item>
                     </Form>
                 </div>
@@ -270,10 +265,10 @@
                             } else if (res.errNo === ErrorCode.LOGIN_TIMEOUT) {
                                 location.href = '/signin?ref=' + encodeURIComponent(location.href)
                             } else if (res.errNo === ErrorCode.SUCCESS) {
-                                // setTimeout(function () {
-                                //     let userID = self.user.id
-                                //     location.href = `/user/${userID}/books/`
-                                // }, 500)
+                                let bookID = res.data.book.id
+                                setTimeout(function () {
+                                    location.href = `/book/edit/chapter/${bookID}`
+                                }, 500)
                             }
                         }).catch(err => {
                             self.$Message.error({
@@ -293,7 +288,3 @@
         }
     }
 </script>
-
-<style>
-    @import '../../assets/styles/book/edit.css'
-</style>

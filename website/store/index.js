@@ -23,6 +23,7 @@ const store = () => new Vuex.Store({
 
         userLoginVisible: true,
         publishTopicVisible: true,
+        createBookVisible: false,
         top10Visible: false,
         maxBrowseVisible: true,
         maxCommentVisible: true,
@@ -70,6 +71,9 @@ const store = () => new Vuex.Store({
         },
         publishTopicVisible (state, publishTopicVisible) {
             state.publishTopicVisible = publishTopicVisible
+        },
+        createBookVisible (state, createBookVisible) {
+            state.createBookVisible = createBookVisible
         },
         top10Visible (state, top10Visible) {
             state.top10Visible = top10Visible

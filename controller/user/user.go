@@ -398,6 +398,7 @@ func Signup(c *gin.Context) {
 
 	var userData UserReqData
 	if err := c.ShouldBindWith(&userData, binding.JSON); err != nil {
+		fmt.Println(err)
 		SendErrJSON("参数无效", c)
 		return
 	}
