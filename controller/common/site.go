@@ -26,35 +26,47 @@ func SiteInfo(c *gin.Context) {
 		SendErrJSON("error", c)
 		return
 	}
-	siteConfig := make(map[string]interface{})
+
 	var keyvalueconfig model.KeyValueConfig
+	siteConfig := make(map[string]interface{})
+	siteConfig["name"] = ""
+	siteConfig["icp"] = ""
+	siteConfig["title"] = ""
+	siteConfig["description"] = ""
+	siteConfig["keywords"] = ""
+	siteConfig["logoURL"] = "/images/logo.png"
+	siteConfig["bdStatsID"] = ""
+	siteConfig["luosimaoSiteKey"] = ""
 	if err := model.DB.Where("key_name = \"site_config\"").Find(&keyvalueconfig).Error; err != nil {
 		fmt.Println(err.Error())
-		siteConfig["name"] = ""
-		siteConfig["icp"] = ""
-		siteConfig["title"] = ""
-		siteConfig["description"] = ""
-		siteConfig["keywords"] = ""
-		siteConfig["logoURL"] = "/images/logo.png"
 	}
 	if err := json.Unmarshal([]byte(keyvalueconfig.Value), &siteConfig); err != nil {
 		fmt.Println(err.Error())
-		siteConfig["name"] = ""
-		siteConfig["icp"] = ""
-		siteConfig["title"] = ""
-		siteConfig["description"] = ""
-		siteConfig["keywords"] = ""
-		siteConfig["logoURL"] = "/images/logo.png"
+	}
+
+	var baiduAdKeyValue model.KeyValueConfig
+	baiduAdConfig := make(map[string]interface{})
+	baiduAdConfig["banner760x90"] = ""
+	baiduAdConfig["ad250x250"] = ""
+	baiduAdConfig["ad120x90"] = ""
+	baiduAdConfig["allowBaiduAd"] = false
+
+	if err := model.DB.Where("key_name = \"baidu_ad_config\"").Find(&baiduAdKeyValue).Error; err != nil {
+		fmt.Println(err.Error())
+	}
+	if err := json.Unmarshal([]byte(baiduAdKeyValue.Value), &baiduAdConfig); err != nil {
+		fmt.Println(err.Error())
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"errNo": model.ErrorCode.SUCCESS,
 		"msg":   "success",
 		"data": gin.H{
-			"siteConfig": siteConfig,
-			"userCount":  userCount,
-			"topicCount": topicCount,
-			"replyCount": replyCount,
+			"siteConfig":    siteConfig,
+			"baiduAdConfig": baiduAdConfig,
+			"userCount":     userCount,
+			"topicCount":    topicCount,
+			"replyCount":    replyCount,
 		},
 	})
 }

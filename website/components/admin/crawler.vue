@@ -1,7 +1,7 @@
 <template>
     <Row>
         <Form ref="crawlerForm" :model="formData" :rules="ruleCustom" :label-width="120">
-            <FormItem label="网页类型">
+            <FormItem v-if="isMounted" label="网页类型">
                 <Row>
                     <Col>
                         <RadioGroup v-model="formData.scope">
@@ -11,7 +11,7 @@
                     </Col>
                 </Row>
             </FormItem>
-            <FormItem label="强制抓取">
+            <FormItem v-if="isMounted" label="强制抓取">
                 <Row>
                     <Col>
                         <RadioGroup v-model="formData.crawlExist">
@@ -117,6 +117,7 @@
 
         data () {
             return {
+                isMounted: false,
                 isCustom: this.from === 10,
                 formData: {
                     scope: 'list', // 爬单篇文章，还是列表
@@ -155,6 +156,7 @@
             }
         },
         mounted () {
+            this.isMounted = true
             this.formData.articles.push({
                 url: this.defaultURL
             })

@@ -23,7 +23,7 @@ func SetKeyValue(c *gin.Context) {
 		return
 	}
 	var keyVauleConfig model.KeyValueConfig
-	if err := model.DB.Find(&keyVauleConfig).Error; err != nil {
+	if err := model.DB.Where("key_name = ?", reqData.KeyName).Find(&keyVauleConfig).Error; err != nil {
 		if err != gorm.ErrRecordNotFound {
 			fmt.Println(err.Error())
 			SendErrJSON("error", c)

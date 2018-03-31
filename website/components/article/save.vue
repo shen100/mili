@@ -42,7 +42,7 @@
                     <p>}</p>
                     <p>```</p>
                 </div>
-                <p><a href="/markdown" target="_blank">Markdown参考文档</a></p>
+                <p><a href="https://www.golang123.com/book/30" style="color: #08c;" target="_blank">Markdown参考文档</a></p>
             </li>
             <li class="topic-sidebar-item">
                 <div class="topic-sidebar-title">我的近期话题</div>

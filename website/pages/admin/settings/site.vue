@@ -54,6 +54,20 @@
                     </Col>
                 </Row>
             </FormItem>
+            <FormItem label="百度统计" prop="bdStatsID">
+                <Row>
+                    <Col span="12">
+                        <Input v-model.trim="formData.bdStatsID" placeholder="请输入百度统计id"></Input>
+                    </Col>
+                </Row>
+            </FormItem>
+            <FormItem label="Luosimao" prop="luosimaoSiteKey">
+                <Row>
+                    <Col span="12">
+                        <Input v-model.trim="formData.luosimaoSiteKey" placeholder="请输入Luosimao site key"></Input>
+                    </Col>
+                </Row>
+            </FormItem>
             <Form-item :label-width="0">
                 <Button size="large" type="primary" @click="onSubmit">提交</Button>
             </Form-item>
@@ -80,7 +94,9 @@
                         title: siteConfig.title,
                         keywords: siteConfig.keywords,
                         description: siteConfig.description,
-                        logoURL: siteConfig.logoURL
+                        logoURL: siteConfig.logoURL,
+                        bdStatsID: siteConfig.bdStatsID,
+                        luosimaoSiteKey: siteConfig.luosimaoSiteKey
                     },
                     formRule: {
                         name: [
@@ -100,6 +116,12 @@
                         ],
                         logoURL: [
                             { required: true, message: '请上传网站logo', trigger: 'blur' }
+                        ],
+                        bdStatsID: [
+                            { required: true, message: '请输入百度统计id', trigger: 'blur' }
+                        ],
+                        luosimaoSiteKey: [
+                            { required: true, message: '请输入Luosimao site key', trigger: 'blur' }
                         ]
                     }
                 }

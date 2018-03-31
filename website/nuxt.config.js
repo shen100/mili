@@ -6,7 +6,7 @@ module.exports = {
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-            { rel: 'stylesheet', href: '/styles/iview-2.9.2.css' }
+            { rel: 'stylesheet', href: '/styles/iview-2.11.0.css' }
         ]
     },
     css: [

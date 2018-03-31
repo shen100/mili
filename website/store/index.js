@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 const store = () => new Vuex.Store({
     state: {
-        siteConfig: null,
+        siteConfig: {},
+        baiduAdConfig: {},
         isAdminPage: false,
         user: null,
         messages: [],
@@ -33,6 +34,9 @@ const store = () => new Vuex.Store({
     mutations: {
         siteConfig (state, siteConfig) {
             state.siteConfig = siteConfig
+        },
+        baiduAdConfig (state, baiduAdConfig) {
+            state.baiduAdConfig = baiduAdConfig
         },
         isAdminPage (state, isAdminPage) {
             state.isAdminPage = isAdminPage

@@ -46,7 +46,7 @@
                         </div>
                     </div>
                 </div>
-                <baidu-banner />
+                <baidu-banner900x110 />
                 <div class="golang-cell comment-box">
                     <div class="title total-reply-count">{{article.commentCount > 0 ? article.commentCount : '暂无'}}回复</div>
                     <div class="comment-content">
@@ -178,7 +178,7 @@
     import request from '~/net/request'
     import dateTool from '~/utils/date'
     import { trim } from '~/utils/tool'
-    import baiduBanner from '~/components/ad/baidu/banner1'
+    import baiduBanner900x110 from '~/components/ad/baidu/banner900x110'
 
     export default {
         data () {
@@ -685,7 +685,7 @@
         },
         components: {
             'md-editor': Editor,
-            'baidu-banner': baiduBanner
+            'baidu-banner900x110': baiduBanner900x110
         }
     }
 </script>

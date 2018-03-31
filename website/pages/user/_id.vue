@@ -54,7 +54,7 @@
                     <div class="mine-content-box">
                         <nuxt-child/>
                     </div>
-                    <baidu-banner />
+                    <baidu-banner900x110 />
                 </div>
                 <div class="mine-content-right">
                     <div class="mine-attention-box">
@@ -71,7 +71,7 @@
                             </a>
                         </div>
                     </div>
-                    <div v-if="allowBaiduAd" id="ad250x250Box"></div>
+                    <baidu-ad250x250 />
                 </div>
             </div>
         </div>
@@ -84,13 +84,13 @@
     import ErrorCode from '~/constant/ErrorCode'
     import request from '~/net/request'
     import config from '~/config'
-    import baiduBanner from '~/components/ad/baidu/banner1'
+    import baiduBanner900x110 from '~/components/ad/baidu/banner900x110'
+    import baiduAd250x250 from '~/components/ad/baidu/ad250x250'
 
     export default {
         name: 'userHome',
         data () {
             return {
-                allowBaiduAd: config.allowBaiduAd,
                 activeMenu: 'index',
                 uploaderVisible: false,
                 uploadURL: config.uploadAvatar,
@@ -167,17 +167,9 @@
             if (route[3]) {
                 this.activeMenu = route[3]
             }
-            this.$nextTick(function () {
-                this.createAd()
-            })
         },
         layout: 'nosidebar',
         methods: {
-            createAd () {
-                if (this.allowBaiduAd) {
-                    window.BAIDU_CLB_fillSlotAsync(config.baiduAd.ad250x250, 'ad250x250Box')
-                }
-            },
             onFormatError () {
                 this.$Message.error({
                     duration: config.messageDuration,
@@ -255,7 +247,8 @@
             }
         },
         components: {
-            'baidu-banner': baiduBanner
+            'baidu-banner900x110': baiduBanner900x110,
+            'baidu-ad250x250': baiduAd250x250
         }
     }
 </script>

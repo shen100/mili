@@ -32,7 +32,7 @@
                     :show-elevator="true"/>
             </div>
         </div>
-        <baidu-banner />
+        <baidu-banner900x110 />
     </div>
 </template>
 
@@ -40,7 +40,7 @@
     import request from '~/net/request'
     import dateTool from '~/utils/date'
     import htmlUtil from '~/utils/html'
-    import baiduBanner from '~/components/ad/baidu/banner1'
+    import baiduBanner900x110 from '~/components/ad/baidu/banner900x110'
 
     export default {
         asyncData (context) {
@@ -114,7 +114,7 @@
             console.log('golang123')
         },
         components: {
-            'baidu-banner': baiduBanner
+            'baidu-banner900x110': baiduBanner900x110
         }
     }
 </script>

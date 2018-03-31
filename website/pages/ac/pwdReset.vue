@@ -42,7 +42,7 @@
         data () {
             return {
                 luosimaoRes: '',
-                luosimaoSiteKey: config.luosimaoSiteKey,
+                luosimaoSiteKey: this.$store.state.siteConfig.luosimaoSiteKey,
                 loading: false,
                 formCustom: {
                     email: ''

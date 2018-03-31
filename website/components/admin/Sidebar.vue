@@ -100,6 +100,9 @@
             <router-link to="/admin/settings/site">
                 <Menu-item name="/admin/settings/site">网站设置</Menu-item>
             </router-link>
+            <router-link to="/admin/settings/baiduad">
+                <Menu-item name="/admin/settings/baiduad">百度广告设置</Menu-item>
+            </router-link>
         </Submenu>
 
     </Menu>

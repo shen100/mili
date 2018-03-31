@@ -23,7 +23,7 @@
                     <a :href="`/user/${vote.lastUser.id}`" target="_blank" class="user-small-icon-box"><img :src="vote.lastUser.avatarURL" alt=""></a>
                 </div>
             </div>
-            <baidu-banner />
+            <baidu-banner900x110 />
         </div>
     </div>
 </template>
@@ -33,7 +33,7 @@
     import dateTool from '~/utils/date'
     import VoteStatus from '~/constant/VoteStatus'
     import htmlUtil from '~/utils/html'
-    import baiduBanner from '~/components/ad/baidu/banner1'
+    import baiduBanner900x110 from '~/components/ad/baidu/banner900x110'
 
     export default {
         data () {
@@ -70,7 +70,7 @@
             entity2HTML: htmlUtil.entity2HTML
         },
         components: {
-            'baidu-banner': baiduBanner
+            'baidu-banner900x110': baiduBanner900x110
         }
     }
 </script>

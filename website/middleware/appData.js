@@ -10,6 +10,7 @@ export default function (context, next) {
         request.getMaxBrowse({client: context.req})
     ]).then((arr) => {
         let siteConfig = arr[0].data.siteConfig
+        let baiduAdConfig = arr[0].data.baiduAdConfig
         let userCount = arr[0].data.userCount
         let topicCount = arr[0].data.topicCount
         let replyCount = arr[0].data.replyCount
@@ -20,6 +21,7 @@ export default function (context, next) {
         let maxCommentArticles = arr[4].data.articles || []
         let maxBrowseArticles = arr[5].data.articles || []
         context.store.commit('siteConfig', siteConfig)
+        context.store.commit('baiduAdConfig', baiduAdConfig)
         context.store.commit('userCount', userCount)
         context.store.commit('topicCount', topicCount)
         context.store.commit('replyCount', replyCount)

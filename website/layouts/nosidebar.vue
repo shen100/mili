@@ -26,15 +26,14 @@
         },
         head () {
             let siteConfig = this.siteConfig
+            let allowBaiduAd = this.$store.state.baiduAdConfig.allowBaiduAd
             return {
                 titleTemplate: '%s - ' + siteConfig.title,
                 meta: [
                     { hid: 'description', name: 'description', content: siteConfig.description },
                     { name: 'keywords', content: siteConfig.keywords }
                 ],
-                script: [
-                    config.allowBaiduAd ? { src: config.baiduAdURL } : null
-                ]
+                script: allowBaiduAd ? [ {src: config.baiduAdURL} ] : []
             }
         },
         middleware: 'appData',

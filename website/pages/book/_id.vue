@@ -5,7 +5,7 @@
         </div>
         <div>
             <div class="book-tree-box">
-                <Tree v-if="isMounted" :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
+                <Tree :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
             </div>
             <div class="book-content-box">
                 <h2 class="book-chapter-name">{{chapter.name}}</h2>
@@ -14,7 +14,7 @@
                     <div v-if="prevChapter" class="book-prev">上一篇: <a :href="`/book/${book.id}?chapterID=${prevChapter.id}`">{{prevChapter.title}}</a></div>
                     <div v-if="nextChapter" class="book-next">下一篇: <a :href="`/book/${book.id}?chapterID=${nextChapter.id}`">{{nextChapter.title}}</a></div>
                 </div>
-                <baidu-banner />
+                <baidu-banner760x90 />
             </div>
         </div>
     </div>
@@ -24,7 +24,7 @@
     import request from '~/net/request'
     import htmlUtil from '~/utils/html'
     import { parseTree, getTreeNode, getPrevNode, getNextNode } from '~/utils/tree'
-    import baiduBanner from '~/components/ad/baidu/banner2'
+    import baiduBanner760x90 from '~/components/ad/baidu/banner760x90'
 
     export default {
         validate ({ params }) {
@@ -152,7 +152,7 @@
             }
         },
         components: {
-            'baidu-banner': baiduBanner
+            'baidu-banner760x90': baiduBanner760x90
         }
     }
 </script>
