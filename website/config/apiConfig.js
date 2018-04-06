@@ -6,6 +6,10 @@ if (typeof window === 'undefined') {
 }
 
 const api = {
+    sendUserVisit: { // 发送用户访问记录
+        url: url + '/stats/visit',
+        method: 'GET'
+    },
     getSiteInfo: { // 网站信息
         url: url + '/siteinfo',
         method: 'GET'

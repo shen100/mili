@@ -17,6 +17,10 @@
 		"MaxIdle"   : 3,          /*最大的空闲连接数*/
 		"MaxActive" : 5           /*最大的激活连接数*/
 	},
+	"mongodb": {
+		"URL"      : "", /*mongodb连接地址, 可以不填，不填的话,就没有计划任务和数据统计功能*/	
+		"Database" : "golang123"
+	},
 	"go": {
 		"APIPoweredBy"        : "Golang123 API",/*后台go加的X-Powered-By*/
 		"SiteName"            : "Golang中文社区",      /*网站名称*/
@@ -31,6 +35,7 @@
 		"ImgPath"             : "/upload/img",        /*上传后的图片请求地址前缀*/
 		"MaxMultipartMemory"  : 3, /*上传的图片最大允许的大小，单位MB*/
 		"Port"                : 8023,                 /*go监听的端口*/
+		"CronEnabled"         : false, /*是否允许计划任务*/
 		"TokenSecret"         : "Jxa26iOirBiYX8iLCJuYm5iy", /*TokenSecret，请修改*/
 		"TokenMaxAge"         : 86400, /*token多久过期，单位秒*/
 		"PassSalt"            : "xrjoN1qR",           /*用户密码加盐，请修改*/

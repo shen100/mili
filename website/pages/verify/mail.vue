@@ -64,6 +64,7 @@
                 context.error({ message: 'Not Found', statusCode: 404 })
             })
         },
+        layout: 'onlyfooter',
         head () {
             return {
                 title: '邮箱验证'

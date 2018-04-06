@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/shen100/golang123/config"
+	"github.com/shen100/golang123/cron"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/router"
 )
@@ -42,6 +43,10 @@ func main() {
 	app.Use(gin.Recovery())
 
 	router.Route(app)
+
+	if config.ServerConfig.CronEnabled {
+		cron.New().Start()
+	}
 
 	app.Run(":" + fmt.Sprintf("%d", config.ServerConfig.Port))
 }

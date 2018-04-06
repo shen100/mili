@@ -74,6 +74,18 @@ func initRedis() {
 	RedisConfig.URL = url
 }
 
+type mongoConfig struct {
+	URL      string
+	Database string
+}
+
+// MongoConfig mongodb相关配置
+var MongoConfig mongoConfig
+
+func initMongo() {
+	utils.SetStructByJSON(&MongoConfig, jsonData["mongodb"].(map[string]interface{}))
+}
+
 type serverConfig struct {
 	APIPoweredBy       string
 	SiteName           string
@@ -87,6 +99,7 @@ type serverConfig struct {
 	ImgPath            string
 	MaxMultipartMemory int
 	Port               int
+	CronEnabled        bool
 	TokenSecret        string
 	TokenMaxAge        int
 	PassSalt           string
@@ -138,5 +151,6 @@ func init() {
 	initJSON()
 	initDB()
 	initRedis()
+	initMongo()
 	initServer()
 }

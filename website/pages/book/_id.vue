@@ -7,6 +7,7 @@
             <div class="book-tree-box">
                 <Tree :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
             </div>
+            <baidu-banner760x90 />
             <div class="book-content-box">
                 <h2 class="book-chapter-name">{{chapter.name}}</h2>
                 <div class="golang123-editor golang123-richtxt" v-html="chapter.htmlContent"></div>

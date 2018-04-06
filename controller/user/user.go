@@ -93,8 +93,9 @@ func verifyLink(cacheKey string, c *gin.Context) (model.User, error) {
 // ActiveSendMail 发送激活账号的邮件
 func ActiveSendMail(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
+	// 接收到的email参数是加密后的，不能加email验证规则
 	type ReqData struct {
-		Email string `json:"email" binding:"required,email"`
+		Email string `json:"email" binding:"required"`
 	}
 
 	var reqData ReqData

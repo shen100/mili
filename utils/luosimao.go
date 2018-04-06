@@ -44,9 +44,11 @@ func LuosimaoVerify(reqURL, apiKey, response string) error {
 	}
 	var luosimaoResult LuosimaoResult
 	if err := json.Unmarshal(resBody, &luosimaoResult); err != nil {
+		fmt.Println(err)
 		return errors.New("人机识别验证失败")
 	}
 	if luosimaoResult.Res != "success" {
+		fmt.Println("luosimaoResult.Res", luosimaoResult.Res)
 		return errors.New("人机识别验证失败")
 	}
 	return nil

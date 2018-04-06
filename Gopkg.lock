@@ -46,6 +46,18 @@
   revision = "a712f77d7aaec7eb4766a663924aaa4e54d3fe70"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/globalsign/mgo"
+  packages = [
+    ".",
+    "bson",
+    "internal/json",
+    "internal/sasl",
+    "internal/scram"
+  ]
+  revision = "f76e4f9da92ecd56e3be26f5ba92580af1ef97b4"
+
+[[projects]]
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
   revision = "a0583e0143b1624142adab07e0e97fe106d99561"
@@ -89,6 +101,12 @@
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
   revision = "542fd4642604d0d0c26112396ce5b1a9d01eee0b"
+
+[[projects]]
+  name = "github.com/robfig/cron"
+  packages = ["."]
+  revision = "b024fc5ea0e34bc3f83d9941c8d60b0622bfaca4"
+  version = "v1"
 
 [[projects]]
   branch = "master"
@@ -138,6 +156,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5a90a29c73942b4f9e24ded17510b0ec55802ed2518dd57b43a1e45a29445f50"
+  inputs-digest = "c374ff5df84f00713f5d86ceeea8009f57ba7655506f9666b202cf8155d38794"
   solver-name = "gps-cdcl"
   solver-version = 1

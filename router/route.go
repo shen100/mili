@@ -13,6 +13,7 @@ import (
 	"github.com/shen100/golang123/controller/crawler"
 	"github.com/shen100/golang123/controller/keyvalueconfig"
 	"github.com/shen100/golang123/controller/message"
+	"github.com/shen100/golang123/controller/stats"
 	"github.com/shen100/golang123/controller/user"
 	"github.com/shen100/golang123/controller/vote"
 	"github.com/shen100/golang123/middleware"
@@ -154,6 +155,8 @@ func Route(router *gin.Engine) {
 			book.Delete)
 		api.DELETE("/books/chapters/:chapterID", middleware.SigninRequired,
 			book.DeleteChapter)
+
+		api.GET("/stats/visit", stats.PV)
 	}
 
 	adminAPI := router.Group(apiPrefix+"/admin", middleware.RefreshTokenCookie, middleware.AdminRequired)

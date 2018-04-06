@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/garyburd/redigo/redis"
+	"github.com/globalsign/mgo"
 	"github.com/jinzhu/gorm"
 	"github.com/shen100/golang123/config"
 )
@@ -15,6 +16,9 @@ var DB *gorm.DB
 
 // RedisPool Redis连接池
 var RedisPool *redis.Pool
+
+// MongoDB 数据库连接
+var MongoDB *mgo.Database
 
 func initDB() {
 	db, err := gorm.Open(config.DBConfig.Dialect, config.DBConfig.URL)
@@ -46,7 +50,28 @@ func initRedis() {
 	}
 }
 
+/*
+ * mgo文档 http://labix.org/mgo
+ * https://godoc.org/gopkg.in/mgo.v2
+ * https://godoc.org/gopkg.in/mgo.v2/bson
+ * https://godoc.org/gopkg.in/mgo.v2/txn
+ */
+func initMongo() {
+	if config.MongoConfig.URL == "" {
+		return
+	}
+	session, err := mgo.Dial(config.MongoConfig.URL)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(-1)
+	}
+	// Optional. Switch the session to a monotonic behavior.
+	session.SetMode(mgo.Monotonic, true)
+	MongoDB = session.DB(config.MongoConfig.Database)
+}
+
 func init() {
 	initDB()
 	initRedis()
+	initMongo()
 }

@@ -3,7 +3,7 @@
 		<div class="golang-top-box">
 			<div class="golang-top-header-left">
 				<div class="golang-logo-container">
-                    <a href="/"><img src="/images/logo.png" /></a>
+                    <a href="/"><img :src="logoURL" /></a>
 				</div>
 				<div class="golang-header-search">
 					<form @submit.prevent="onSearch" action="" target="_blank" method="get" class="golang-top-search">
@@ -92,7 +92,8 @@
                 isInputFocus: false,
                 userMessages: [],
                 messages: this.$store.state.messages,
-                messageCount: this.$store.state.messageCount
+                messageCount: this.$store.state.messageCount,
+                logoURL: this.$store.state.siteConfig.logoURL || '/images/logo.png'
             }
         },
         methods: {
