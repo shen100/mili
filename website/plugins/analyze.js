@@ -40,6 +40,7 @@ function pv () {
 
     let params = {
         clientId: localData.clientId,
+        platform: 'web_pc',
         osName: ua.os.name,
         osVersion: ua.os.version,
         language: ua.language,

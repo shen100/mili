@@ -9,6 +9,7 @@ import (
 // UserVisit 访客记录
 type UserVisit struct {
 	ID             bson.ObjectId `bson:"_id"`
+	Platform       string        `bson:"platform"`
 	URL            string        `bson:"url"`
 	Referrer       string        `bson:"referrer"`
 	ClientID       string        `bson:"clientID"`

@@ -44,7 +44,7 @@ func main() {
 
 	router.Route(app)
 
-	if config.ServerConfig.CronEnabled {
+	if config.ServerConfig.StatsEnabled {
 		cron.New().Start()
 	}
 

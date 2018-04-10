@@ -19,6 +19,7 @@ func PV(c *gin.Context) {
 	var err error
 	var userVisit model.UserVisit
 	userVisit.ID = bson.NewObjectId()
+	userVisit.Platform = c.Query("platform")
 	userVisit.ClientID = c.Query("clientId")
 	userVisit.OSName = c.Query("osName")
 	userVisit.OSVersion = c.Query("osVersion")

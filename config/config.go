@@ -99,7 +99,7 @@ type serverConfig struct {
 	ImgPath            string
 	MaxMultipartMemory int
 	Port               int
-	CronEnabled        bool
+	StatsEnabled       bool
 	TokenSecret        string
 	TokenMaxAge        int
 	PassSalt           string
