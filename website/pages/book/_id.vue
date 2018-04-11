@@ -7,15 +7,17 @@
             <div class="book-tree-box">
                 <Tree :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
             </div>
-            <baidu-banner760x90 />
             <div class="book-content-box">
+                <div style="height: 18px;"></div>
+                <baidu-bannerTwo760x90 />
                 <h2 class="book-chapter-name">{{chapter.name}}</h2>
                 <div class="golang123-editor golang123-richtxt" v-html="chapter.htmlContent"></div>
                 <div class="book-prev-next">
                     <div v-if="prevChapter" class="book-prev">上一篇: <a :href="`/book/${book.id}?chapterID=${prevChapter.id}`">{{prevChapter.title}}</a></div>
                     <div v-if="nextChapter" class="book-next">下一篇: <a :href="`/book/${book.id}?chapterID=${nextChapter.id}`">{{nextChapter.title}}</a></div>
                 </div>
-                <baidu-banner760x90 />
+                <baidu-bannerThree760x90 />
+                <div style="height: 40px;"></div>
             </div>
         </div>
     </div>
@@ -25,7 +27,8 @@
     import request from '~/net/request'
     import htmlUtil from '~/utils/html'
     import { parseTree, getTreeNode, getPrevNode, getNextNode } from '~/utils/tree'
-    import baiduBanner760x90 from '~/components/ad/baidu/banner760x90'
+    import baiduBannerTwo760x90 from '~/components/ad/baidu/banner2_760x90'
+    import baiduBannerThree760x90 from '~/components/ad/baidu/banner3_760x90'
 
     export default {
         validate ({ params }) {
@@ -153,7 +156,8 @@
             }
         },
         components: {
-            'baidu-banner760x90': baiduBanner760x90
+            'baidu-bannerTwo760x90': baiduBannerTwo760x90,
+            'baidu-bannerThree760x90': baiduBannerThree760x90
         }
     }
 </script>

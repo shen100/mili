@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="allowBaiduAd" id="bookBannerBox">
-            <div id="banner760x90"></div>
+            <div id="banner2_760x90"></div>
         </div>
     </div>
 </template>
@@ -11,7 +11,7 @@
         data () {
             return {
                 allowBaiduAd: this.$store.state.baiduAdConfig.allowBaiduAd,
-                banner760x90: this.$store.state.baiduAdConfig.banner760x90
+                banner2_760x90: this.$store.state.baiduAdConfig.banner2_760x90
             }
         },
         mounted () {
@@ -22,7 +22,7 @@
         methods: {
             createAd () {
                 if (this.allowBaiduAd) {
-                    window.BAIDU_CLB_fillSlotAsync(this.banner760x90, 'banner760x90')
+                    window.BAIDU_CLB_fillSlotAsync(this.banner2_760x90, 'banner2_760x90')
                 }
             }
         }

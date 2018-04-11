@@ -47,6 +47,8 @@ func SiteInfo(c *gin.Context) {
 	var baiduAdKeyValue model.KeyValueConfig
 	baiduAdConfig := make(map[string]interface{})
 	baiduAdConfig["banner760x90"] = ""
+	baiduAdConfig["banner2_760x90"] = ""
+	baiduAdConfig["banner3_760x90"] = ""
 	baiduAdConfig["ad250x250"] = ""
 	baiduAdConfig["ad120x90"] = ""
 	baiduAdConfig["allowBaiduAd"] = false

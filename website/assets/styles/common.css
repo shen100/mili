@@ -960,6 +960,11 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     vertical-align: top;
 }
 
+.banner760x90 {
+    display: inline-block;
+    vertical-align: top;
+}
+
 #ad120x90 {
     display: inline-block;
     vertical-align: top;
@@ -973,7 +978,9 @@ input[name="topSearch"]:hover, input[name="topSearch"]:focus {
     margin-bottom: 20px;
 }
 
-#bookBannerBox {
+#bookBannerBox, .bookBannerBox {
+    background: #f2f2f2;
+    height: 120px;
     padding-top: 15px;
     padding-bottom: 15px;
     text-align: center;

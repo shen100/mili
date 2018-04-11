@@ -4,10 +4,24 @@
             百度广告设置
         </h1>
         <Form ref="adForm" :model="formData" :rules="formRule" :label-width="120">
-            <FormItem label="横幅(760x90)" prop="banner760x90">
+            <FormItem label="横幅1(760x90)" prop="banner760x90">
                 <Row>
                     <Col span="12">
                         <Input v-model.trim="formData.banner760x90" placeholder="请输入代码位ID"></Input>
+                    </Col>
+                </Row>
+            </FormItem>
+            <FormItem label="横幅2(760x90)" prop="banner2_760x90">
+                <Row>
+                    <Col span="12">
+                        <Input v-model.trim="formData.banner2_760x90" placeholder="请输入代码位ID"></Input>
+                    </Col>
+                </Row>
+            </FormItem>
+            <FormItem label="横幅3(760x90)" prop="banner3_760x90">
+                <Row>
+                    <Col span="12">
+                        <Input v-model.trim="formData.banner3_760x90" placeholder="请输入代码位ID"></Input>
                     </Col>
                 </Row>
             </FormItem>
@@ -57,12 +71,20 @@
                 return {
                     formData: {
                         banner760x90: baiduAdConfig.banner760x90,
+                        banner2_760x90: baiduAdConfig.banner2_760x90,
+                        banner3_760x90: baiduAdConfig.banner3_760x90,
                         ad250x250: baiduAdConfig.ad250x250,
                         ad120x90: baiduAdConfig.ad120x90,
                         allowBaiduAd: !!baiduAdConfig.allowBaiduAd
                     },
                     formRule: {
                         banner760x90: [
+                            { required: true, message: '请输入代码位ID', trigger: 'blur' }
+                        ],
+                        banner2_760x90: [
+                            { required: true, message: '请输入代码位ID', trigger: 'blur' }
+                        ],
+                        banner3_760x90: [
                             { required: true, message: '请输入代码位ID', trigger: 'blur' }
                         ],
                         ad250x250: [
