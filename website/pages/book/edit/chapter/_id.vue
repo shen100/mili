@@ -182,8 +182,6 @@
                     book: book,
                     content: content, // 用来设置编辑器的内容
                     curChapter: curChapter, // 当前选中的章节
-                    // nextChapter: this.getNextChapter(curChapter), // 下一节
-                    // prevChapter: this.getPrevChapter(curChapter), // 上一节
                     createChapterID: 0, // 创建章节时，用来记录父章节的id，若为0，表示无父章节
                     createChapterName: '',
                     createChapterModalVisible: false,
@@ -201,8 +199,24 @@
         mounted () {
             this.isMounted = true
             this.stepVisible = true
+            this.getBookChapterContent()
         },
         methods: {
+            getBookChapterContent () {
+                let self = this
+                request.getBookChapter({
+                    params: {
+                        chapterID: self.curChapter.id
+                    }
+                }).then((res) => {
+                    let chapter = res.data.chapter
+                    if (self.contentType === 'markdown') {
+                        self.content = chapter.content
+                    } else if (self.contentType === 'html') {
+                        self.content = chapter.htmlContent
+                    }
+                })
+            },
             showCrawlModal () {
                 this.crawlModalVisible = true
             },
@@ -551,12 +565,7 @@
             selectChapter (data) {
                 let node = this.getNode(data.id)
                 this.curChapter = node
-                console.log(this.contentType)
-                if (this.contentType === 'markdown') {
-                    this.content = node.content
-                } else if (this.contentType === 'html') {
-                    this.content = node.htmlContent
-                }
+                this.getBookChapterContent()
             },
             showEditChapterNameModal (data) {
                 this.tempChapterID = data.id

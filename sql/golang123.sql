@@ -1,42 +1,44 @@
--- MySQL dump 10.13  Distrib 5.6.35, for macos10.12 (x86_64)
---
--- Host: localhost    Database: golang123
--- ------------------------------------------------------
--- Server version	5.6.35
+# ************************************************************
+# Sequel Pro SQL dump
+# Version 4541
+#
+# http://www.sequelpro.com/
+# https://github.com/sequelpro/sequelpro
+#
+# Host: 127.0.0.1 (MySQL 5.6.35)
+# Database: golang123
+# Generation Time: 2018-04-12 15:52:36 +0000
+# ************************************************************
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40101 SET NAMES utf8 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `article_category`
---
+
+# Dump of table article_category
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `article_category`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `article_category` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `article_id` int(11) unsigned NOT NULL,
   `category_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2108 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `articles`
---
+
+
+# Dump of table articles
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `articles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -54,16 +56,15 @@ CREATE TABLE `articles` (
   `user_id` int(11) unsigned NOT NULL,
   `last_user_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1727 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `book_categories`
---
+
+
+# Dump of table book_categories
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `book_categories`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `book_categories` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -74,15 +75,14 @@ CREATE TABLE `book_categories` (
   `parent_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `book_chapter_comments`
---
+
+
+# Dump of table book_chapter_comments
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `book_chapter_comments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `book_chapter_comments` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -98,15 +98,14 @@ CREATE TABLE `book_chapter_comments` (
   `user_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `book_chapters`
---
+
+
+# Dump of table book_chapters
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `book_chapters`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `book_chapters` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -122,16 +121,15 @@ CREATE TABLE `book_chapters` (
   `parent_id` int(11) unsigned NOT NULL,
   `book_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `book_comments`
---
+
+
+# Dump of table book_comments
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `book_comments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `book_comments` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -147,15 +145,14 @@ CREATE TABLE `book_comments` (
   `user_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `books`
---
+
+
+# Dump of table books
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `books`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `books` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -167,6 +164,7 @@ CREATE TABLE `books` (
   `comment_count` int(11) unsigned NOT NULL,
   `collect_count` int(11) unsigned NOT NULL,
   `status` varchar(100) NOT NULL DEFAULT '',
+  `read_limits` varchar(100) NOT NULL DEFAULT '',
   `content` longtext,
   `html_content` longtext,
   `content_type` int(11) NOT NULL,
@@ -179,16 +177,15 @@ CREATE TABLE `books` (
   `five_star_count` int(11) unsigned NOT NULL,
   `total_star_count` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `careers`
---
+
+
+# Dump of table careers
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `careers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `careers` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -198,16 +195,15 @@ CREATE TABLE `careers` (
   `title` varchar(200) NOT NULL DEFAULT '',
   `user_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `categories`
---
+
+
+# Dump of table categories
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `categories`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `categories` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -217,16 +213,15 @@ CREATE TABLE `categories` (
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `collects`
---
+
+
+# Dump of table collects
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `collects`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `collects` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL,
@@ -237,16 +232,15 @@ CREATE TABLE `collects` (
   `source_name` varchar(100) NOT NULL DEFAULT '',
   `folder_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `comments`
---
+
+
+# Dump of table comments
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `comments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `comments` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `content` longtext,
@@ -262,16 +256,15 @@ CREATE TABLE `comments` (
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=153 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `crawler_articles`
---
+
+
+# Dump of table crawler_articles
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `crawler_articles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `crawler_articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(500) NOT NULL DEFAULT '',
@@ -283,16 +276,15 @@ CREATE TABLE `crawler_articles` (
   `deleted_at` datetime DEFAULT NULL,
   `article_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1606 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `folders`
---
+
+
+# Dump of table folders
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `folders`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `folders` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL,
@@ -302,16 +294,15 @@ CREATE TABLE `folders` (
   `name` varchar(200) NOT NULL DEFAULT '' COMMENT '收藏夹名称',
   `parent_id` int(11) unsigned NOT NULL COMMENT '父收藏夹, 0表示无父收藏夹',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `images`
---
+
+
+# Dump of table images
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `images`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `images` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `url` varchar(200) NOT NULL DEFAULT '',
@@ -321,16 +312,32 @@ CREATE TABLE `images` (
   `title` varchar(100) NOT NULL DEFAULT '',
   `orignal_title` varchar(500) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=199 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `messages`
---
+
+
+# Dump of table key_value_configs
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `key_value_configs`;
+
+CREATE TABLE `key_value_configs` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `key_name` varchar(100) NOT NULL DEFAULT '',
+  `value` varchar(500) NOT NULL DEFAULT '',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table messages
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `messages`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `messages` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `from_user_id` int(11) NOT NULL,
@@ -344,16 +351,15 @@ CREATE TABLE `messages` (
   `readed` tinyint(1) NOT NULL,
   `type` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `schools`
---
+
+
+# Dump of table schools
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `schools`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `schools` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -363,16 +369,15 @@ CREATE TABLE `schools` (
   `speciality` varchar(200) NOT NULL DEFAULT '',
   `user_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `top_articles`
---
+
+
+# Dump of table top_articles
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `top_articles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `top_articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `article_id` int(11) unsigned NOT NULL,
@@ -380,16 +385,15 @@ CREATE TABLE `top_articles` (
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `ups`
---
+
+
+# Dump of table ups
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `ups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `ups` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -400,15 +404,14 @@ CREATE TABLE `ups` (
   `user_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `user_votes`
---
+
+
+# Dump of table user_votes
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `user_votes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `user_votes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -418,21 +421,21 @@ CREATE TABLE `user_votes` (
   `vote_id` int(11) unsigned NOT NULL,
   `vote_item_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `users`
---
+
+
+# Dump of table users
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
+  `activated_at` datetime DEFAULT NULL,
   `name` varchar(100) NOT NULL DEFAULT '',
   `email` varchar(50) DEFAULT '',
   `phone` varchar(50) DEFAULT NULL,
@@ -450,16 +453,15 @@ CREATE TABLE `users` (
   `location` varchar(200) DEFAULT NULL,
   `introduce` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=187 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `vote_items`
---
+
+
+# Dump of table vote_items
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `vote_items`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `vote_items` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -469,35 +471,15 @@ CREATE TABLE `vote_items` (
   `deleted_at` datetime DEFAULT NULL,
   `vote_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
---
--- Table structure for table `key_value_configs`
---
 
-DROP TABLE IF EXISTS `key_value_configs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `key_value_configs` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `key_name` varchar(100) NOT NULL DEFAULT '',
-  `value` varchar(500) NOT NULL DEFAULT '',
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `deleted_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `votes`
---
+# Dump of table votes
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `votes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `votes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -516,17 +498,7 @@ CREATE TABLE `votes` (
   `user_id` int(11) unsigned NOT NULL,
   `last_user_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `users` (
   `created_at`,
@@ -553,7 +525,7 @@ INSERT INTO `users` (
   now(),
   NULL,
   'golang123',
-  '15200465163e745426e8bc5a90e2a1188efa22cae1',
+  '1520046516c8c86ea21899d7392ed8d21e47d501c7',
   '',
   '0',
   '',
@@ -570,4 +542,9 @@ INSERT INTO `users` (
   '2'
 );
 
--- Dump completed on 2018-03-02 23:13:22
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

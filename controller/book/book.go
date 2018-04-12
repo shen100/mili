@@ -420,8 +420,28 @@ func Chapters(c *gin.Context) {
 		SendErrJSON("错误的图书id", c)
 		return
 	}
+
+	var book model.Book
+	if err := model.DB.Where("status != ?", model.BookVerifyFail).First(&book, id).Error; err != nil {
+		SendErrJSON("错误的图书id", c)
+		return
+	}
+
+	if book.ReadLimits == model.BookReadLimitsPrivate {
+		userInter, _ := c.Get("user")
+		if userInter == nil {
+			SendErrJSON("没有权限", c)
+			return
+		}
+		user := userInter.(model.User)
+		if user.ID != book.UserID {
+			SendErrJSON("没有权限.", c)
+			return
+		}
+	}
+
 	var chapters []model.BookChapter
-	if err := model.DB.Model(&model.BookChapter{}).Where("book_id = ?", id).Order("created_at desc").Find(&chapters).Error; err != nil {
+	if err := model.DB.Model(&model.BookChapter{}).Where("book_id = ?", id).Select("id, name").Order("created_at desc").Find(&chapters).Error; err != nil {
 		fmt.Println(err)
 		SendErrJSON("error", c)
 		return

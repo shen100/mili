@@ -33,6 +33,10 @@ func Upload(c *gin.Context) (map[string]interface{}, error) {
 	}
 	var mimeType = mime.TypeByExtension(ext)
 
+	fmt.Printf("filename %s, index %d, ext %s, mimeType %s\n", filename, index, ext, mimeType)
+	if mimeType == "" && ext == ".jpeg" {
+		mimeType = "image/jpeg"
+	}
 	if mimeType == "" {
 		return nil, errors.New("无效的图片类型")
 	}
