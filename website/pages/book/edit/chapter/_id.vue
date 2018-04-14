@@ -205,6 +205,9 @@
             getBookChapterContent () {
                 let self = this
                 request.getBookChapter({
+                    query: {
+                        f: self.contentType === 'markdown' ? 'md' : ''
+                    },
                     params: {
                         chapterID: self.curChapter.id
                     }

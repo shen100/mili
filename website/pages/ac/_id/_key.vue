@@ -168,7 +168,8 @@
                     }
                 })
             }
-        }
+        },
+        layout: 'nosidebar'
     }
 </script>
 
