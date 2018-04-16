@@ -441,7 +441,7 @@ func Chapters(c *gin.Context) {
 	}
 
 	var chapters []model.BookChapter
-	if err := model.DB.Model(&model.BookChapter{}).Where("book_id = ?", id).Select("id, name").Order("created_at desc").Find(&chapters).Error; err != nil {
+	if err := model.DB.Model(&model.BookChapter{}).Where("book_id = ?", id).Select("id, name, parent_id").Order("created_at desc").Find(&chapters).Error; err != nil {
 		fmt.Println(err)
 		SendErrJSON("error", c)
 		return
