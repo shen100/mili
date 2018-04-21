@@ -9,6 +9,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/shen100/golang123/config"
 	"github.com/shen100/golang123/cron"
+	"github.com/shen100/golang123/middleware"
 	"github.com/shen100/golang123/model"
 	"github.com/shen100/golang123/router"
 )
@@ -42,6 +43,8 @@ func main() {
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	app.Use(gin.Recovery())
+
+	app.Use(middleware.APIStatsD())
 
 	router.Route(app)
 

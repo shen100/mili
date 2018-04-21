@@ -20,6 +20,10 @@
 	"mongodb": { /*mongodb连接地址, 可以不填，不填的话,就没有数据统计功能*/
 		"URL" : ""	
 	},
+	"statsd": {
+		"URL": "", /*statsd服务连接地址，如127.0.0.1:8125*/
+		"Prefix": "" /*statsd客户端前缀，可留空*/
+	},
 	"go": {
 		"APIPoweredBy"        : "Golang123 API",/*后台go加的X-Powered-By*/
 		"SiteName"            : "Golang中文社区",      /*网站名称*/

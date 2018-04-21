@@ -14,6 +14,12 @@
   revision = "349dd0209470eabd9514242c688c403c0926d266"
 
 [[projects]]
+  name = "github.com/cactus/go-statsd-client"
+  packages = ["statsd"]
+  revision = "138b925ccdf617776955904ba7759fce64406cec"
+  version = "v3.1.1"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
@@ -156,6 +162,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c374ff5df84f00713f5d86ceeea8009f57ba7655506f9666b202cf8155d38794"
+  inputs-digest = "8d195ec13c9ee9350fc8fd29dd45022972525e25745229aa47c3b4b4316c16c0"
   solver-name = "gps-cdcl"
   solver-version = 1

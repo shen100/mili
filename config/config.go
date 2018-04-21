@@ -147,10 +147,23 @@ func initServer() {
 	ServerConfig.LogFile = ServerConfig.LogDir + ymdStr + ".log"
 }
 
+type statsdConfig struct {
+	URL    string
+	Prefix string
+}
+
+// StatsDConfig statsd相关配置
+var StatsDConfig statsdConfig
+
+func initStatsd() {
+	utils.SetStructByJSON(&StatsDConfig, jsonData["statsd"].(map[string]interface{}))
+}
+
 func init() {
 	initJSON()
 	initDB()
 	initRedis()
 	initMongo()
 	initServer()
+	initStatsd()
 }
