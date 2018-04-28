@@ -582,6 +582,7 @@ func CreateChapter(c *gin.Context) {
 	}
 
 	chapter.ContentType = book.ContentType
+	chapter.UserID = user.ID
 
 	if err := model.DB.Create(&chapter).Error; err != nil {
 		SendErrJSON("error", c)
