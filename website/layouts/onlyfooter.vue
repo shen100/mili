@@ -11,8 +11,7 @@
     export default {
         data () {
             return {
-                siteConfig: this.$store.state.siteConfig,
-                user: this.$store.state.user
+                siteConfig: this.$store.state.siteConfig
             }
         },
         head () {

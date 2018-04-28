@@ -145,6 +145,10 @@
                     context.error({ statusCode: 404, message: 'Page not found' })
                     return
                 }
+                if (book.userID !== context.user.id) {
+                    context.error({ statusCode: 404, message: 'Page not found' })
+                    return
+                }
                 let chapters = arr[1].data.chapters || []
                 for (let i = 0; i < chapters.length; i++) {
                     chapters[i].expand = true

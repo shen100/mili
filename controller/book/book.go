@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
@@ -89,6 +90,10 @@ func Save(c *gin.Context, isEdit bool) {
 	} else {
 		//更新图书
 		if err := model.DB.First(&updatedBook, bookData.ID).Error; err == nil {
+			if updatedBook.UserID != user.ID {
+				SendErrJSON("您没有权限执行此操作", c)
+				return
+			}
 			updatedBook.ReadLimits = bookData.ReadLimits
 			updatedBook.Name = bookData.Name
 			updatedBook.CoverURL = bookData.CoverURL
@@ -158,6 +163,15 @@ func UpdateName(c *gin.Context) {
 		SendErrJSON("错误的图书id", c)
 		return
 	}
+
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
+	if book.UserID != user.ID {
+		SendErrJSON("您没有权限执行此操作", c)
+		return
+	}
+
 	book.Name = bookData.Name
 	if err := model.DB.Save(&book).Error; err != nil {
 		SendErrJSON("error", c)
@@ -187,6 +201,15 @@ func Publish(c *gin.Context) {
 		SendErrJSON("错误的图书id", c)
 		return
 	}
+
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
+	if book.UserID != user.ID {
+		SendErrJSON("您没有权限执行此操作", c)
+		return
+	}
+
 	book.Status = model.BookVerifySuccess
 	if err := model.DB.Save(&book).Error; err != nil {
 		fmt.Println(err.Error())
@@ -246,7 +269,7 @@ func List(c *gin.Context) {
 
 	if err := model.DB.Model(&model.Book{}).Where("read_limits <> ?", model.BookReadLimitsPrivate).
 		Where("status <> ?", model.BookVerifyFail).Where("status <> ?", model.BookUnpublish).
-		Find(&books).Error; err != nil {
+		Order("created_at desc").Find(&books).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -287,7 +310,7 @@ func MyBooks(c *gin.Context) {
 	pageSize := 20
 	offset := (pageNo - 1) * pageSize
 
-	if err := model.DB.Model(&model.Book{}).Where("user_id = ?", user.ID).Offset(offset).Limit(pageSize).Find(&books).Error; err != nil {
+	if err := model.DB.Model(&model.Book{}).Where("user_id = ?", user.ID).Offset(offset).Limit(pageSize).Order("created_at desc").Find(&books).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -310,7 +333,7 @@ func MyBooks(c *gin.Context) {
 	})
 }
 
-// UserPublicBooks 用户公开的图书
+// UserPublicBooks 用户公开的图书列表
 func UserPublicBooks(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 
@@ -363,7 +386,7 @@ func UserPublicBooks(c *gin.Context) {
 	})
 }
 
-// Info 获取图书信息
+// Info 获取图书信息, 若图书是私有的，那么只有作者本人才能查看
 func Info(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	id, err := strconv.Atoi(c.Param("id"))
@@ -412,7 +435,7 @@ func Info(c *gin.Context) {
 	})
 }
 
-// Chapters 获取图书的所有章节
+// Chapters 获取图书的所有章节, 若图书是私有的，那么只有作者本人才能查看
 func Chapters(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	id, err := strconv.Atoi(c.Param("bookID"))
@@ -455,7 +478,7 @@ func Chapters(c *gin.Context) {
 	})
 }
 
-// Chapter 查询章节
+// Chapter 查询章节, 若图书是私有的，那么只有作者本人才能查看
 func Chapter(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	id, err := strconv.Atoi(c.Param("chapterID"))
@@ -581,8 +604,23 @@ func DeleteChapter(c *gin.Context) {
 		SendErrJSON("错误的章节id", c)
 		return
 	}
-	var sql = "DELETE FROM book_chapters WHERE id = ? OR parent_id = ?"
-	if err := model.DB.Exec(sql, id, id).Error; err != nil {
+
+	var chapter model.BookChapter
+	if err := model.DB.First(&chapter, id).Error; err != nil {
+		SendErrJSON("错误的章节id", c)
+		return
+	}
+
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
+	if chapter.UserID != user.ID {
+		SendErrJSON("您没有权限执行此操作", c)
+		return
+	}
+
+	var sql = "UPDATE book_chapters SET deleted_at = ? WHERE id = ? OR parent_id = ?"
+	if err := model.DB.Exec(sql, time.Now(), id, id).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -623,6 +661,15 @@ func UpdateChapterContent(c *gin.Context) {
 		SendErrJSON("错误的章节id", c)
 		return
 	}
+
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
+	if chapter.UserID != user.ID {
+		SendErrJSON("您没有权限执行此操作", c)
+		return
+	}
+
 	chapter.Content = reqData.Content
 	chapter.HTMLContent = reqData.HTMLContent
 
@@ -666,6 +713,15 @@ func UpdateChapterName(c *gin.Context) {
 		SendErrJSON("无效的章节id", c)
 		return
 	}
+
+	userInter, _ := c.Get("user")
+	user := userInter.(model.User)
+
+	if chapter.UserID != user.ID {
+		SendErrJSON("您没有权限执行此操作", c)
+		return
+	}
+
 	chapter.Name = reqData.Name
 	if err := model.DB.Save(&chapter).Error; err != nil {
 		fmt.Println(err.Error())

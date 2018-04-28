@@ -35,6 +35,10 @@
                     context.error({ statusCode: 404, message: 'Page not found' })
                     return
                 }
+                if (book.userID !== context.user.id) {
+                    context.error({ statusCode: 404, message: 'Page not found' })
+                    return
+                }
                 return {
                     stepVisible: false,
                     book: book,

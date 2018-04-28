@@ -1,13 +1,15 @@
 <template>
     <div class="book-box">
-        <div class="book-header">
-            <h1>{{book.name | entity2HTML}}</h1>
-        </div>
-        <div>
-            <div class="book-tree-box">
-                <Tree :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
+        <div class="book-container">
+            <div class="book-tree-box" :class="{'book-tree-box-fixed': chapterTreeFixed}" :style="{'max-height': chapterTreeMaxHeight}">
+                <div class="book-header">
+                    <h1>{{book.name | entity2HTML}}</h1>
+                </div>
+                <div class="book-tree-container">
+                    <Tree :data="treeData" :render="renderContent" empty-text="暂无章节"></Tree>
+                </div>
             </div>
-            <div class="book-content-box">
+            <div class="book-content-box" :class="{'book-content-box-expand': chapterTreeFixed}">
                 <div style="height: 18px;"></div>
                 <baidu-bannerTwo760x90 />
                 <h2 class="book-chapter-name">{{chapter.name}}</h2>
@@ -17,7 +19,7 @@
                     <div v-if="nextChapter" class="book-next">下一篇: <a :href="`/book/${book.id}?chapterID=${nextChapter.id}`">{{nextChapter.title}}</a></div>
                 </div>
                 <baidu-bannerThree760x90 />
-                <div style="height: 40px;"></div>
+                <div style="height: 80px;"></div>
             </div>
         </div>
     </div>
@@ -27,6 +29,7 @@
     import request from '~/net/request'
     import htmlUtil from '~/utils/html'
     import { parseTree, getTreeNode, getPrevNode, getNextNode } from '~/utils/tree'
+    import { getPageHeight, getScrollTop } from '~/utils/dom'
     import baiduBannerTwo760x90 from '~/components/ad/baidu/banner2_760x90'
     import baiduBannerThree760x90 from '~/components/ad/baidu/banner3_760x90'
 
@@ -86,7 +89,9 @@
                     chapter: res.data.chapter,
                     prevChapter: getPrevNode(getTreeNode(chapterID, treeData), treeData),
                     nextChapter: getNextNode(getTreeNode(chapterID, treeData), treeData),
-                    user: context.user
+                    user: context.user,
+                    chapterTreeFixed: false,
+                    chapterTreeMaxHeight: '600px'
                 }
             }).catch(err => {
                 console.log(err)
@@ -96,6 +101,11 @@
         mounted () {
             this.isMounted = true
             window.hljs.initHighlightingOnLoad()
+
+            this.$nextTick(function () {
+                window.addEventListener('scroll', this.onScroll)
+                this.onScroll()
+            })
         },
         head () {
             return {
@@ -109,7 +119,7 @@
                 ]
             }
         },
-        layout: 'nosidebar',
+        layout: 'onlyheader',
         filters: {
             entity2HTML: htmlUtil.entity2HTML
         },
@@ -153,6 +163,18 @@
                         }
                     })
                 ])
+            },
+            onScroll () {
+                let pageHeight = getPageHeight()
+                let top = getScrollTop()
+                let height = 60 + 20 // 导航 + 间隔 + 图书标题高度
+                if (top > height) {
+                    this.chapterTreeFixed = true
+                    this.chapterTreeMaxHeight = pageHeight + 'px'
+                } else {
+                    this.chapterTreeFixed = false
+                    this.chapterTreeMaxHeight = (pageHeight - height + top) + 'px'
+                }
             }
         },
         components: {
