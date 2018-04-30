@@ -76,7 +76,14 @@ CREATE TABLE `book_categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `book_category`;
 
+CREATE TABLE `book_category` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `book_id` int(11) unsigned NOT NULL,
+  `book_category_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 # Dump of table book_chapter_comments
 # ------------------------------------------------------------
