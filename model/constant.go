@@ -25,6 +25,9 @@ const (
 
 	// MaxContentLen 最大的内容长度
 	MaxContentLen = 50000
+
+	// MaxCategoryCount 最多可以属于几个分类
+	MaxCategoryCount = 6
 )
 
 // 积分相关常量

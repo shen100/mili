@@ -10,6 +10,14 @@ const api = {
         url: url + '/admin/keyvalueconfig',
         method: 'POST'
     },
+    createBookCategory: { // 创建图书分类
+        url: url + '/admin/books/categories/create',
+        method: 'POST'
+    },
+    getAllBookCategories: { // 图书分类列表
+        url: url + '/admin/books/categories',
+        method: 'GET'
+    },
     categoryCreate: { // 新增分类
         url: url + '/admin/categories/create',
         method: 'POST'

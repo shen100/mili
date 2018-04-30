@@ -9,7 +9,7 @@ type BookCategory struct {
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `sql:"index" json:"deletedAt"`
 	Name      string     `json:"name"`
-	Sequence  uint       `json:"sequence"` //同级别的分类可根据sequence的值来排序
+	Sequence  int        `json:"sequence"` //同级别的分类可根据sequence的值来排序
 	ParentID  uint       `json:"parentId"` //直接父分类的ID
 }
 
@@ -29,7 +29,7 @@ type Book struct {
 	Content        string         `json:"content"`
 	HTMLContent    string         `json:"htmlContent"`
 	ContentType    int            `json:"contentType"`
-	Categories     []BookCategory `gorm:"many2many:book_categories;ForeignKey:ID;AssociationForeignKey:ID" json:"categories"`
+	Categories     []BookCategory `gorm:"many2many:book_category;ForeignKey:ID;AssociationForeignKey:ID" json:"categories"`
 	Comments       []BookComment  `json:"comments"`
 	UserID         uint           `json:"userID"`
 	User           User           `json:"user"`

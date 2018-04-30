@@ -25,9 +25,6 @@ type Article struct {
 	LastCommentAt *time.Time `json:"lastCommentAt"`
 }
 
-// MaxArticleCateCount 文章最多属于几个分类
-const MaxArticleCateCount = 6
-
 const (
 	// ArticleVerifying 审核中
 	ArticleVerifying = 1

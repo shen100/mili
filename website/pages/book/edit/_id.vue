@@ -7,7 +7,7 @@
                 <Step title="发布图书" content="发布图书以便其他用户阅读"></Step>
             </Steps>
         </div>
-        <book :book="book" :user="user"/>
+        <book :book="book" :categories="categories" :user="user"/>
     </div>
 </template>
 
@@ -21,16 +21,23 @@
             return hasId
         },
         asyncData (context) {
-            return request.getBook({
-                client: context.req,
-                query: {
-                    f: 'md'
-                },
-                params: {
-                    id: context.params.id
-                }
-            }).then(function (res) {
-                let book = res.data.book
+            return Promise.all([
+                request.getBook({
+                    client: context.req,
+                    query: {
+                        f: 'md'
+                    },
+                    params: {
+                        id: context.params.id
+                    }
+                }),
+                request.getBookCategories({
+                    client: context.req
+                })
+
+            ]).then(function (arr) {
+                let book = arr[0].data.book
+                let categories = arr[1].data.categories
                 if (!book) {
                     context.error({ statusCode: 404, message: 'Page not found' })
                     return
@@ -42,6 +49,7 @@
                 return {
                     stepVisible: false,
                     book: book,
+                    categories: categories,
                     user: context.user
                 }
             }).catch(err => {

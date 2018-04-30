@@ -208,6 +208,9 @@
         methods: {
             getBookChapterContent () {
                 let self = this
+                if (!self.curChapter) {
+                    return
+                }
                 request.getBookChapter({
                     query: {
                         f: self.contentType === 'markdown' ? 'md' : ''
@@ -242,7 +245,6 @@
                     request.crawlNotSaveContent({
                         body: reqData
                     }).then((res) => {
-                        console.log(res)
                         if (res.errNo === ErrorCode.ERROR) {
                             this.$Message.error({
                                 duration: config.messageDuration,
@@ -304,6 +306,14 @@
                 this.editChapterNameModalVisible = false
             },
             onPublishBookClick () {
+                if (!this.treeData || this.treeData.length <= 0) {
+                    this.$Message.error({
+                        duration: config.messageDuration,
+                        closable: true,
+                        content: '没有章节，发布失败'
+                    })
+                    return
+                }
                 let self = this
                 this.$Modal.confirm({
                     title: '发布图书',

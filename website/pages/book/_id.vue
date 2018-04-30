@@ -1,7 +1,7 @@
 <template>
     <div class="book-box">
         <div class="book-container">
-            <div class="book-tree-box" :class="{'book-tree-box-fixed': chapterTreeFixed}" :style="{'max-height': chapterTreeMaxHeight}">
+            <div class="book-tree-box" :class="{'book-tree-box-fixed': chapterTreeFixed}" :style="{'height': chapterTreeHeight}">
                 <div class="book-header">
                     <h1>{{book.name | entity2HTML}}</h1>
                 </div>
@@ -91,7 +91,7 @@
                     nextChapter: getNextNode(getTreeNode(chapterID, treeData), treeData),
                     user: context.user,
                     chapterTreeFixed: false,
-                    chapterTreeMaxHeight: '600px'
+                    chapterTreeHeight: '600px'
                 }
             }).catch(err => {
                 console.log(err)
@@ -170,10 +170,10 @@
                 let height = 60 + 20 // 导航 + 间隔 + 图书标题高度
                 if (top > height) {
                     this.chapterTreeFixed = true
-                    this.chapterTreeMaxHeight = pageHeight + 'px'
+                    this.chapterTreeHeight = pageHeight + 'px'
                 } else {
                     this.chapterTreeFixed = false
-                    this.chapterTreeMaxHeight = (pageHeight - height + top) + 'px'
+                    this.chapterTreeHeight = (pageHeight - height + top) + 'px'
                 }
             }
         },

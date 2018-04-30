@@ -17,8 +17,11 @@
                 <Icon type="folder"></Icon>
                 分类管理
             </template>
-            <router-link to="/admin/category/list">
-                <Menu-item name="/admin/category/list">分类列表</Menu-item>
+            <router-link to="/admin/category/topic">
+                <Menu-item name="/admin/category/topic">话题分类</Menu-item>
+            </router-link>
+            <router-link to="/admin/category/book">
+                <Menu-item name="/admin/category/book">图书分类</Menu-item>
             </router-link>
         </Submenu>
         <Submenu name="topic">

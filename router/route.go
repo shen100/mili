@@ -129,6 +129,7 @@ func Route(router *gin.Engine) {
 			vote.DeleteItem)
 
 		api.GET("/books", book.List)
+		api.GET("/books/categories", category.BookCategoryList)
 		api.GET("/books/my/:userID", middleware.SigninRequired,
 			book.MyBooks)
 		api.GET("/books/user/public/:userID", book.UserPublicBooks)
@@ -165,6 +166,9 @@ func Route(router *gin.Engine) {
 		adminAPI.POST("/keyvalueconfig", keyvalueconfig.SetKeyValue)
 
 		adminAPI.GET("/users", user.AllList)
+
+		adminAPI.GET("/books/categories", category.BookCategoryList)
+		adminAPI.POST("/books/categories/create", category.CreateBookCategory)
 
 		adminAPI.GET("/categories", category.List)
 		adminAPI.POST("/categories/create", category.Create)

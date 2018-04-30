@@ -234,6 +234,10 @@ const api = {
         url: url + '/messages/read/:id',
         method: 'GET'
     },
+    getBookCategories: { // 图书分类列表
+        url: url + '/books/categories',
+        method: 'GET'
+    },
     getMyBooks: { // 获取我的图书列表
         url: url + '/books/my/:userID',
         method: 'GET'

@@ -7,6 +7,11 @@
                         <Form-item label="图书名称" prop="bookName">
                             <Input v-model="formValidate.bookName" placeholder="请输入图书名称" style="width: 400px"></Input>
                         </Form-item>
+                        <Form-item label="选择分类" prop="selectedCategory">
+                            <Select v-model="formValidate.selectedCategory" style="width: 400px">
+                                <Option :key="item.id" v-for="item in formValidate.categories" :value="item.id + ''">{{item.name}}</Option>
+                            </Select>
+                        </Form-item>
                         <Form-item label="封面图片" prop="bookPic">
                             <div class="book-img" :style="{width: (imgWidth + 2) + 'px', height: (imgHeight + 2) + 'px'}">
                                 <img :src="coverURL">
@@ -73,6 +78,7 @@
     export default {
         props: [
             'book',
+            'categories',
             'user'
         ],
         data () {
@@ -119,6 +125,8 @@
                 imgHeight: 238,
                 formValidate: {
                     bookName: (this.book && this.book.name) || '',
+                    selectedCategory: (this.book && this.book.categories && this.book.categories.length && this.book.categories[0].id + '') || '',
+                    categories: this.categories,
                     contentType: contentType,
                     readLimits: readLimits,
                     content: content || ''
@@ -126,6 +134,9 @@
                 ruleInline: {
                     bookName: [
                         { required: true, message: '请输入图书名称', trigger: 'blur' }
+                    ],
+                    selectedCategory: [
+                        { required: true, message: '请选择分类', trigger: 'change' }
                     ],
                     readLimits: [
                         { required: true, message: '' }
@@ -238,6 +249,11 @@
                         let reqData = {
                             id: this.bookID,
                             name: this.formValidate.bookName,
+                            categories: [
+                                {
+                                    id: parseInt(this.formValidate.selectedCategory)
+                                }
+                            ],
                             coverURL: this.coverURL
                         }
                         if (this.formValidate.readLimits === '公开') {

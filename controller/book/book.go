@@ -74,6 +74,26 @@ func Save(c *gin.Context, isEdit bool) {
 		return
 	}
 
+	if bookData.Categories == nil || len(bookData.Categories) <= 0 {
+		SendErrJSON("请选择分类", c)
+		return
+	}
+
+	if len(bookData.Categories) > model.MaxCategoryCount {
+		msg := "图书最多属于" + strconv.Itoa(model.MaxCategoryCount) + "个分类"
+		SendErrJSON(msg, c)
+		return
+	}
+
+	for i := 0; i < len(bookData.Categories); i++ {
+		var category model.BookCategory
+		if err := model.DB.First(&category, bookData.Categories[i].ID).Error; err != nil {
+			SendErrJSON("无效的分类id", c)
+			return
+		}
+		bookData.Categories[i] = category
+	}
+
 	userInter, _ := c.Get("user")
 	user := userInter.(model.User)
 
@@ -88,6 +108,11 @@ func Save(c *gin.Context, isEdit bool) {
 			return
 		}
 	} else {
+		var sql = "DELETE FROM book_category WHERE book_id = ?"
+		if err := model.DB.Exec(sql, bookData.ID).Error; err != nil {
+			SendErrJSON("error", c)
+			return
+		}
 		//更新图书
 		if err := model.DB.First(&updatedBook, bookData.ID).Error; err == nil {
 			if updatedBook.UserID != user.ID {
@@ -96,6 +121,7 @@ func Save(c *gin.Context, isEdit bool) {
 			}
 			updatedBook.ReadLimits = bookData.ReadLimits
 			updatedBook.Name = bookData.Name
+			updatedBook.Categories = bookData.Categories
 			updatedBook.CoverURL = bookData.CoverURL
 			updatedBook.Content = bookData.Content
 			updatedBook.HTMLContent = bookData.HTMLContent
@@ -266,10 +292,29 @@ func Delete(c *gin.Context) {
 func List(c *gin.Context) {
 	SendErrJSON := common.SendErrJSON
 	var books []model.Book
+	var categoryID int
 
-	if err := model.DB.Model(&model.Book{}).Where("read_limits <> ?", model.BookReadLimitsPrivate).
-		Where("status <> ?", model.BookVerifyFail).Where("status <> ?", model.BookUnpublish).
-		Order("created_at desc").Find(&books).Error; err != nil {
+	cateIDStr := c.Query("cateId")
+	if cateIDStr == "" {
+		categoryID = 0
+	} else {
+		var err error
+		if categoryID, err = strconv.Atoi(cateIDStr); err != nil {
+			fmt.Println(err.Error())
+			SendErrJSON("分类ID不正确", c)
+			return
+		}
+	}
+
+	var queryCMD = model.DB.Model(&model.Book{}).Where("read_limits <> ?", model.BookReadLimitsPrivate).
+		Where("status <> ?", model.BookVerifyFail).Where("status <> ?", model.BookUnpublish)
+
+	if categoryID != 0 {
+		queryCMD = queryCMD.Joins("JOIN book_category on books.id = book_category.book_id").
+			Joins("JOIN book_categories ON book_category.book_category_id = book_categories.id AND book_categories.id = ?", categoryID)
+	}
+
+	if err := queryCMD.Order("created_at desc").Find(&books).Error; err != nil {
 		fmt.Println(err.Error())
 		SendErrJSON("error", c)
 		return
@@ -413,6 +458,12 @@ func Info(c *gin.Context) {
 			SendErrJSON("没有权限.", c)
 			return
 		}
+	}
+
+	if err := model.DB.Model(&book).Related(&book.Categories, "categories").Error; err != nil {
+		fmt.Println(err.Error())
+		SendErrJSON("error", c)
+		return
 	}
 
 	if c.Query("f") != "md" {

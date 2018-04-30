@@ -7,22 +7,28 @@
                 <Step title="发布图书" content="发布图书以便其他用户阅读"></Step>
             </Steps>
         </div>
-        <book :book="book" :user="user"/>
+        <book :book="book" :categories="categories" :user="user"/>
     </div>
 </template>
 
 <script>
+    import request from '~/net/request'
     import Book from '~/components/book/save'
 
     export default {
         asyncData (context) {
             context.store.commit('publishTopicVisible', false)
             context.store.commit('createBookVisible', true)
-            return {
-                book: null,
-                stepVisible: false,
-                user: context.user
-            }
+            return request.getBookCategories({
+                client: context.req
+            }).then((res) => {
+                return {
+                    book: null,
+                    categories: res.data.categories,
+                    stepVisible: false,
+                    user: context.user
+                }
+            })
         },
         middleware: 'userRequired',
         mounted () {

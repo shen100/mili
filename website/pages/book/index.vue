@@ -1,5 +1,9 @@
 <template>
     <div>
+        <div class="book-categoties-box">
+            <a href="/book" class="categoties-item" :class="{'categoties-select': !cate}">全部</a>
+            <a v-for="cateItem in categories" class="categoties-item" :href="'/book?cate=' + cateItem.id" :class="{'categoties-select': cateItem.id == cate}">{{cateItem.name}}</a>
+        </div>
         <ul class="book-list">
             <li v-for="(book, i) in books" class="book-item" :style="{'margin-right': (i + 1) % 5 == 0 ? 0 : '20px'}">
                 <a class="book-detial-link" :href="`/book/${book.id}`" target="_blank">
@@ -25,11 +29,24 @@
         asyncData (context) {
             context.store.commit('publishTopicVisible', false)
             context.store.commit('createBookVisible', true)
-            return request.getBooks({
-                client: context.req
-            }).then((res) => {
+            const query = context.query || {}
+            return Promise.all([
+                request.getBookCategories({
+                    client: context.req
+                }),
+                request.getBooks({
+                    client: context.req,
+                    query: {
+                        cateId: query.cate || ''
+                    }
+                })
+            ]).then((arr) => {
+                let categories = arr[0].data.categories
+                let books = arr[1].data.books
                 return {
-                    books: res.data.books
+                    categories: categories,
+                    books: books,
+                    cate: query.cate || ''
                 }
             }).catch(err => {
                 console.log(err)

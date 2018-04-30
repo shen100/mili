@@ -490,8 +490,8 @@ func save(c *gin.Context, isEdit bool) {
 		return
 	}
 
-	if len(article.Categories) > model.MaxArticleCateCount {
-		msg := "文章最多属于" + strconv.Itoa(model.MaxArticleCateCount) + "个版块"
+	if len(article.Categories) > model.MaxCategoryCount {
+		msg := "文章最多属于" + strconv.Itoa(model.MaxCategoryCount) + "个版块"
 		SendErrJSON(msg, c)
 		return
 	}
