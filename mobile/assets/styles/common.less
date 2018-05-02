@@ -1,0 +1,100 @@
+html, body, #__nuxt, .nuxt-box {
+    height: 100%;
+}
+
+li {
+    list-style-type: none;
+}
+
+@import './px2px.less';
+
+.header {
+    width: 7.5rem;
+    height: 52px;
+    position: fixed;
+    top: 0;
+}
+
+.header-bg {
+    z-index: -1;
+    position: absolute;
+    height: 52px;
+    width: 100%;
+    margin: 0 auto;
+    background: #0085F8 url(/images/header.png) no-repeat center;
+    background-size: cover;
+}
+
+.logo {
+    color: #fff;
+    margin-left: 0.28rem;
+    line-height: 52px;
+    float: left;
+    font-size: 22px;
+}
+
+.sub-title {
+    line-height: 52px;
+    font-size: 12px;
+    float: left;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+
+.golang123-richtxt {
+    .px2px(font-size, 16);
+    color: #2f2f2f;
+    -webkit-font-smoothing: auto;
+}
+
+.golang123-richtxt h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #eaecef;
+}
+
+.golang123-richtxt h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #eaecef;
+}
+
+.golang123-richtxt h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.golang123-richtxt h4 {
+    font-size: 20px;
+}
+
+.golang123-richtxt h5 {
+    font-size: 18px;
+}
+
+.golang123-richtxt h6 {
+    font-size: 16px;
+}
+
+.dot {
+    background-color: #999;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 6px;
+    margin-right: 6px;
+    width: 2px;
+    height: 2px;
+    border-radius: 1px;
+}
+
+.tabbar-icon-color {
+    fill: #999;
+}
+
+.tabbar-icon-selectcolor {
+    fill: #4285f4;
+}

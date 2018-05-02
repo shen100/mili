@@ -9,7 +9,15 @@ node_modules
 npm-debug.log
 website/.nuxt
 website/config/index.js
-website/mysqlscripts
 website/static/upload/img/*
+
+mobile/.nuxt
+mobile/config/index.js
+mobile/*.log
+mobile/.idea
+mobile/*.swp
+mobile/node_modules
+mobile/npm-debug.log
+
 review.md
 build.md

@@ -1,0 +1,49 @@
+.article-detail-title {
+    margin: 0.28rem;
+    font-size: 22px;
+    line-height: 30px;
+}
+
+.article-content-box {
+    margin: 0 0.28rem;
+    margin-bottom: 0.28rem;
+}
+
+.article-header {
+    display: flex;
+    margin-bottom: 0.28rem;
+}
+
+.user-avatar {
+    width: 0.56rem;
+    height: 0.56rem;
+    border-radius: 0.28rem;
+    margin-right: 0.12rem;
+}
+
+.user-name {
+    font-size: 16px;
+    margin-bottom: 0.06rem;
+}
+
+.article-create-time {
+    font-size: 12px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.article-comment-count {
+    font-size: 12px;
+    display: inline-block;
+    vertical-align: middle;
+    color: #5f9bff;
+}
+
+.golang123-richtxt {
+    font-size: 18px;
+    line-height: 28px;
+}
+
+.golang123-richtxt img {
+    margin-bottom: 0.28rem;
+}
