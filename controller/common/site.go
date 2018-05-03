@@ -51,6 +51,7 @@ func SiteInfo(c *gin.Context) {
 	baiduAdConfig["banner3_760x90"] = ""
 	baiduAdConfig["ad250x250"] = ""
 	baiduAdConfig["ad120x90"] = ""
+	baiduAdConfig["ad20_3"] = ""
 	baiduAdConfig["allowBaiduAd"] = false
 
 	if err := model.DB.Where("key_name = \"baidu_ad_config\"").Find(&baiduAdKeyValue).Error; err != nil {

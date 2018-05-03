@@ -38,6 +38,7 @@
                 FastClick.attach(document.body)
             })
         },
+        middleware: 'appData',
         components: {
             'app-header': Header,
             'app-tabbar': Tabbar

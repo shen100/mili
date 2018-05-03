@@ -12,8 +12,7 @@
             'user'
         ],
         data () {
-            return {
-            }
+            return {}
         },
         methods: {
         },

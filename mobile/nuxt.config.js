@@ -39,7 +39,7 @@ module.exports = {
                 },
                 plugins: ['vux-ui', {
                     name: 'less-theme',
-                    path: path.join(__dirname, './assets/styles/theme.less')
+                    path: path.join(__dirname, './assets/styles/vuxtheme.less')
                 }]
             })
             return configs

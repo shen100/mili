@@ -18,7 +18,10 @@
                     </a>
                 </li>
             </ul>
-            <div v-if="loadMoreVisible" class="articles-loading"><span class="articles-loading-txt">展开更多话题</span><x-icon class="articles-loading-color" type="ios-arrow-down" size="30"></x-icon></div>
+            <div v-if="loadMoreVisible" @click="loadArticles" class="articles-loading"><span class="articles-loading-txt">展开更多话题</span><x-icon class="articles-loading-color" type="ios-arrow-down" size="30"></x-icon></div>
+            <div id="topicAdBox">
+                <baiduAd20x3 />
+            </div>
         </div>
     </div>
 </template>
@@ -27,6 +30,7 @@
     import request from '~/net/request'
     import dateTool from '~/utils/date'
     import htmlUtil from '~/utils/html'
+    import baiduAd20x3 from '~/components/ad/baidu/ad20x3'
 
     export default {
         data () {
@@ -109,13 +113,18 @@
                     self.totalPage = Math.ceil(self.totalCount / self.pageSize)
                     if (self.pageNo >= self.totalPage) {
                         self.allLoaded = true
+                        self.loadMoreVisible = false
+                    } else {
+                        self.loadMoreVisible = true
                     }
-                    self.loadMoreVisible = false
                 }).catch((err) => {
                     console.log(err)
                     self.isLoading = false
                 })
             }
+        },
+        components: {
+            'baiduAd20x3': baiduAd20x3
         },
         filters: {
             getReplyTime: dateTool.getReplyTime,

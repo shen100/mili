@@ -6,8 +6,10 @@ export default function (context, next) {
         request.getUserInfo({client: context.req})
     ]).then((arr) => {
         let siteConfig = arr[0].data.siteConfig
+        let baiduAdConfig = arr[0].data.baiduAdConfig
         context.user = arr[1].data.user || null
         context.store.commit('siteConfig', siteConfig)
+        context.store.commit('baiduAdConfig', baiduAdConfig)
         context.store.commit('user', context.user)
         next()
     }).catch((err) => {

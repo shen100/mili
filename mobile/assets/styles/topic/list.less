@@ -1,7 +1,3 @@
-body {
-    overflow: hidden;
-}
-
 @import '../px2px.less';
 
 .category-nav {
@@ -31,7 +27,6 @@ body {
     color: #4285f4!important;
 }
 
-
 .article-list-box {
     height: 100%;
 }
@@ -46,7 +41,6 @@ body {
 }
 
 .article-item {
-    margin-top: .28rem;
     margin-left: 0.28rem;
     margin-right: 0.28rem;
     padding-bottom: 0.28rem;
@@ -58,25 +52,25 @@ body {
 }
 
 .article-title {
-    font-size: 17px;
+    .px2px(font-size, 12);
     font-weight: 400;
     color: #222;
-    line-height: 0.48rem;
-    padding: 0 0 0.2rem 0;
+    line-height: 0.5rem;
+    padding: 0.15rem 0 0.2rem 0;
 }
 
 .article-property-box {
-    height: 0.4rem;
     line-height: normal;
+    height: 14px;
 }
 
 .article-property {
-    font-size: 10px;
+    font-size: 12px;
+    line-height: 14px;
     display: inline-block;
     vertical-align: top;
     margin-right: 0.15rem;
     color: #666;
-    line-height: 12px;
 }
 
 .article-category {
@@ -84,14 +78,13 @@ body {
     border: 1px solid #5f9bff;
     color: #4285f4;
     padding: 0 0.02rem;
-    line-height: 10px;
+    line-height: 12px;
 }
 
 .articles-loading {
     height: 30px;
     text-align: center;
     padding: 0.2rem 0;
-    margin-bottom: 160px;
 }
 
 .articles-loading-txt {
@@ -99,12 +92,19 @@ body {
     vertical-align: top;
     color: #969696;
     line-height: 30px;
-    .px2px(font-size, 14);
+    font-size: 14px;
 }
 
 .articles-loading-color {
     fill: #969696;
+    display: inline-block;
+    vertical-align: top;
 }
 
+#topicAdBox {
+    height: 60px;
+    background: #333;
+    margin-bottom: 56px;
+}
 
 
