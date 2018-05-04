@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <div><h1 class="article-detail-title">{{article.name | entity2HTML}}</h1></div>
+    <div class="article-content-page">
+        <h1 class="article-detail-title">{{article.name | entity2HTML}}</h1>
         <div class="article-content-box">
             <div class="article-header">
-                <div><img class="user-avatar" :src="article.user.avatarURL" /></div>
+                <div class="user-avatar-box"><img class="user-avatar" :src="article.user.avatarURL" /></div>
                 <div class="article-info-box">
                     <div class="user-name">{{article.user.name}}</div>
                     <div>
@@ -13,7 +13,10 @@
                     </div>
                 </div>
             </div>
-            <div class="golang123-richtxt" v-html="article.htmlContent"></div>
+            <div class="golang123-editor golang123-richtxt" v-html="article.htmlContent"></div>
+        </div>
+        <div id="topicAdBox">
+            <baiduAd20x3A />
         </div>
     </div>
 </template>
@@ -22,6 +25,7 @@
     import htmlUtil from '~/utils/html'
     import request from '~/net/request'
     import dateTool from '~/utils/date'
+    import baiduAd20x3A from '~/components/ad/baidu/ad20x3A'
 
     export default {
         data () {
@@ -40,6 +44,7 @@
                 }
             }).then(function (data) {
                 let article = data.data.article
+                console.log(article)
                 if (!article) {
                     context.error({ statusCode: 404, message: 'Page not found' })
                     return
@@ -63,7 +68,9 @@
                 ]
             }
         },
-        middleware: 'userInfo',
+        components: {
+            'baiduAd20x3A': baiduAd20x3A
+        },
         filters: {
             getReplyTime: dateTool.getReplyTime,
             entity2HTML: htmlUtil.entity2HTML
@@ -71,6 +78,6 @@
     }
 </script>
 
-<style>
-    @import '../../assets/styles/topic/detail.css'
+<style lang="less">
+    @import '../../assets/styles/topic/detail.less';
 </style>

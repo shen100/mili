@@ -46,6 +46,13 @@
                     </Col>
                 </Row>
             </FormItem>
+            <FormItem label="移动广告2(20:3)" prop="ad20_3A">
+                <Row>
+                    <Col span="12">
+                        <Input v-model.trim="formData.ad20_3A" placeholder="请输入代码位ID"></Input>
+                    </Col>
+                </Row>
+            </FormItem>
             <FormItem label="开启广告" prop="allowBaiduAd">
                 <Row>
                     <Col span="12">
@@ -83,6 +90,7 @@
                         ad250x250: baiduAdConfig.ad250x250,
                         ad120x90: baiduAdConfig.ad120x90,
                         ad20_3: baiduAdConfig.ad20_3,
+                        ad20_3A: baiduAdConfig.ad20_3A,
                         allowBaiduAd: !!baiduAdConfig.allowBaiduAd
                     },
                     formRule: {
@@ -99,6 +107,12 @@
                             { required: true, message: '请输入代码位ID', trigger: 'blur' }
                         ],
                         ad120x90: [
+                            { required: true, message: '请输入代码位ID', trigger: 'blur' }
+                        ],
+                        ad20_3: [
+                            { required: true, message: '请输入代码位ID', trigger: 'blur' }
+                        ],
+                        ad20_3A: [
                             { required: true, message: '请输入代码位ID', trigger: 'blur' }
                         ]
                     }
