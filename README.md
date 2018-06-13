@@ -133,7 +133,7 @@ go run main.go
 密码: 123456 (**登陆后请修改密码**)
 
 ## ❓问题反馈    
-<img src="https://camo.githubusercontent.com/d2693adc06b379c9746110098dc6b8563304bb01/68747470733a2f2f7374617469632e6f736368696e612e6e65742f75706c6f6164732f73706163652f323031382f303230312f3138313235395f373562335f313138353235372e6a7067" height="344px">  <img src="https://user-images.githubusercontent.com/2443162/41326933-fef1d9b6-6ef3-11e8-83e8-c45b36ec5274.jpg" height="344px">
+<img src="https://camo.githubusercontent.com/d2693adc06b379c9746110098dc6b8563304bb01/68747470733a2f2f7374617469632e6f736368696e612e6e65742f75706c6f6164732f73706163652f323031382f303230312f3138313235395f373562335f313138353235372e6a7067" height="344px">  <img src="https://user-images.githubusercontent.com/2443162/41326933-fef1d9b6-6ef3-11e8-83e8-c45b36ec5274.jpg" width="252px">
 
 QQ群: 32550512       
 如果群里暂时没人回复消息, 请在[golang123](https://www.golang123.com/topic/create) 网站上创建话题，然后选择 **提问** 版块
