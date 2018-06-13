@@ -132,11 +132,10 @@ go run main.go
 用户名: golang123  
 密码: 123456 (**登陆后请修改密码**)
 
-## ❓问题反馈    
+## 👥技术交流    
 <img src="https://user-images.githubusercontent.com/2443162/41331006-399f8648-6f09-11e8-988d-7fa5a7527765.png" width="600"/>
-
-QQ群: 32550512       
-如果群里暂时没人回复消息, 请在[golang123](https://www.golang123.com/topic/create) 网站上创建话题，然后选择 **提问** 版块
+      
+遇到问题, 请在[golang123](https://www.golang123.com/topic/create) 网站上创建话题，然后选择 **提问** 版块，也可以在Github上开issue。
 
 ## 💰 支持
 支持`golang123`最简单的方式就是点一下网站上面的广告啦, [立即点击](https://www.golang123.com)😃 
