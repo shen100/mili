@@ -74,6 +74,7 @@
             <ul style="text-align: center;">
                 <li class="golang-cell-item"><a href="https://cnodejs.org" target="_blank" class="sidebar-articles-title"><img style="width: 150px;" src="https://cnodejs.org/public/images/cnodejs.svg"/></a></li>
                 <li class="golang-cell-item"><a href="https://ruby-china.org/" target="_blank" class="sidebar-articles-title"><img style="width: 150px;" src="https://dn-phphub.qbox.me/assets/images/friends/ruby-china.png"/></a></li>
+                <li class="golang-cell-item"><a href="http://ruster.xyz" target="_blank" class="sidebar-articles-title"><img style="width: 150px;" src="https://raw.githubusercontent.com/ruster-xyz/sundries/master/imgs/ruster-logo.png"/></a></li>
             </ul>
         </div>
         <div v-if="statVisible" class="golang-cell">
