@@ -6,6 +6,8 @@ golang123 是一个开源的社区系统，界面优雅，功能丰富，小巧�
 
 golang123的技术架构是前后端分离的, 前端使用**vue**、**iview**、**node.js**、**nuxt**等技术来开发, 后端使用**go**、**gin**、**gorm**等技术来开发。golang123的技术选型也是超前的, 我们大胆得使用**nuxt**来做**前后端同构渲染**。    
 
+> 很多同学反馈技术栈过多，环境搭建过于复杂，golang123计划使用nest.js来重构，最终前后端都使用node.js来开发。
+
 ## 💎系统截图
 ### 社区首页
 <img src="https://user-images.githubusercontent.com/2443162/39399126-d98295ac-4b4a-11e8-8a4a-d44a01a8dfc3.png" width="1000" alt=""/>
