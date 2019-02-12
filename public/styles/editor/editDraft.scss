@@ -1,0 +1,310 @@
+@import '../variable.scss';
+
+body {
+    display: block!important;
+    box-sizing: border-box;
+}
+
+html, body, #app, #editorBox {
+    height: 100%;
+    font-family: $fontFamily;
+}
+
+.editor-header {
+    position: relative;
+    height: 56px;
+    background: #fff;
+}
+
+.editor-logo-box {
+    float: left;
+    height: 30px;
+}
+
+.editor-title-input {
+    border: none;
+    width: 700px;
+    float: left;
+    color: #000;
+    font-size: 24px;
+    line-height: 24px;
+    margin-top: 16px;
+    font-family: $fontFamily;
+    font-weight: 700;
+    padding-left: 12px;
+}
+
+.editor-title-input2 {
+    width: 450px;
+}
+
+.editor-title-input::-webkit-input-placeholder {
+    color: #999;
+}
+
+.write-btn {
+    margin-left: 30px;
+}
+
+.auto-save {
+    float: right;
+    font-size: 16px;
+    height: 26px;
+    line-height: 26px;
+    margin-top: 15px;
+    white-space: nowrap;
+    cursor: default;
+    color: #ddd;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.auto-save a {
+    cursor: pointer;
+    margin: 0;
+    margin-left: 6px;
+    padding: 0 8px;
+    font-size: 16px;
+    line-height: 24px;
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+}
+
+.auto-save a:hover {
+    color: #ccc;
+}
+
+.upload-cover {
+    margin-left: 20px;
+    float: right;
+    padding: 4px 8px;
+    width: 44px;
+    height: 36px;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+.upload-cover div {
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    background-image: url(../../images/editor/uploadcover.svg);
+}
+
+.upload-cover div:hover {
+    opacity: .8;
+}
+
+.editor-more-btn {
+    margin-left: 20px;
+    float: left;
+    height: 56px;
+    line-height: 56px;
+    float: right;
+}
+
+.editor-more-btn i {
+    cursor: pointer;
+    color: #909090;
+    font-size: 24px;
+}
+
+.editor-more-btn i:before {
+    content: "\E633";
+}
+
+.user .dropdown-menu {
+    right: 2px;
+}
+
+.editor-body {
+    height: calc(100% - 98px);
+}
+
+.editor-footer {
+    height: 42px;
+    background: #fff;
+}
+
+.editor-footer-left, .editor-footer-right {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+}
+
+.editor-footer-right {
+    border-left: 1px solid #ddd;
+    right: 0;
+}
+
+
+.editor-footer-preview {
+    color: #ddd;
+    font-size: 14px;
+    line-height: 16px;
+    margin-top: 13px;
+    margin-left: 12px;
+    font-family: $fontFamily;
+    float: left;
+}
+
+.editor-footer-wordcount {
+    float: right;
+    color: #ddd;
+    font-size: 14px;
+    margin-top: 13px;
+    margin-right: 12px;
+}
+
+.markdown-btn {
+    cursor: pointer;
+    padding: 4px;
+    float: left;
+    font-size: 0;
+    margin-top: 10px;
+    margin-left: 8px;
+    margin-right: 15px;
+    position: relative;
+}
+
+.markdown-btn:hover img {
+    opacity: .8;
+}
+
+.uploadimg-btn {
+    cursor: pointer;
+    padding: 4px;
+    float: left;
+    font-size: 0;
+    margin-top: 10px;
+}
+
+.uploadimg-btn:hover img {
+    opacity: .8;
+}
+
+.togglelayout-btn {
+    float: right;
+    margin: 14px 10px 0 0;
+    cursor: pointer;
+}
+
+.togglelayout-btn:hover img {
+    opacity: .8;
+}
+
+.CodeMirror, .CodeMirror-scroll {
+    min-height: 1px;
+}
+
+.CodeMirror-fullscreen, .editor-preview-side {
+    top: 58px!important;
+    bottom: 40px;
+}
+
+.md-editor-expand .CodeMirror-sizer {
+    width: 850px;
+    margin-left: auto!important;
+    margin-right: auto;
+}
+
+.CodeMirror-fullscreen {
+    box-sizing: border-box;
+    background: #fafafa;
+}
+
+.editor-preview-side {
+    border-left: none;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+
+.markdown-btn:hover .shotcut-panel {
+    display: block;
+}
+
+.shotcut-panel {
+    display: none;
+    cursor: default;
+    border: 1px solid #ddd;
+    position: absolute;
+    background: #fff;
+    bottom: 36px;
+    z-index: 10;
+    padding: 32px;
+    width: 400px;
+    font-size: 0;
+    box-sizing: border-box;
+}
+
+.shotcut-panel:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 30px;
+    height: 20px;
+}
+
+.panel-title {
+    font-size: 24px;
+    color: hsla(218, 9%, 51%, .8);
+}
+
+.more-link {
+    float: right;
+    margin: .5rem 0;
+    font-size: 14px;
+    color: #08c;
+    text-decoration: none;
+}
+
+.shotcut-table {
+    width: 100%;
+}
+
+.shotcut-row {
+    width: 100%;
+    padding-top: 20px;
+}
+
+.shotcut-col0 {
+    width: 100px;
+    font-size: 13px;
+    display: inline-block;
+    color: #666;
+}
+
+.shotcut-col1 {
+    width: 100px;
+    font-size: 13px;
+    display: inline-block;
+    color: #666;
+}
+
+.shotcut-col2 {
+    width: 120px;
+    font-size: 13px;
+    display: inline-block;
+    color: #666;
+}
+
+.shotcut-col1 pre, .shotcut-col1 code {
+    color: #4e5980;
+    background-color: #f8f8f8;
+    padding: 2px 6px;
+    display: inline-block;
+    border-radius: 3px;
+}
+
+.shotcut-col1 a {
+    cursor: default;
+    text-decoration: none;
+    color: #0796de;
+}

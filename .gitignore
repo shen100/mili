@@ -1,23 +1,16 @@
-*.log
-.idea
-*.swp
+# dependencies
+node_modules/
+dist
 
-debug
-golang123
-config.json
-node_modules
-npm-debug.log
-website/.nuxt
-website/config/index.js
-website/static/upload/img/*
+# IDE
+/.idea
+/.awcache
+/.vscode
 
-mobile/.nuxt
-mobile/config/index.js
-mobile/*.log
-mobile/.idea
-mobile/*.swp
-mobile/node_modules
-mobile/npm-debug.log
+# Log files
+npm-debug.log*
 
-review.md
-build.md
+src/config/json.development.ts
+src/config/json.staging.ts
+src/config/json.test.ts
+src/config/json.production.ts

@@ -1,7 +1,0 @@
-.nuxt
-node_modules
-static
-plugins/bdStat.js
-plugins/adsense.js
-utils/fastclick.js
-

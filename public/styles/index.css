@@ -1,0 +1,259 @@
+.navbar-nav-home a {
+    color: #ea6f5a!important;
+}
+
+.navbar-nav-home:hover {
+    background: #fff!important;
+}
+
+.container {
+    width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+}
+
+.index-container {
+    margin: 0 auto;
+    width: 960px;
+    background: #fff;
+    margin-top: 86px;
+}
+
+.content-box {
+    float: left;
+    padding-left: 15px;
+    padding-bottom: 30px;
+}
+
+.slide-box {
+    width: 625px;
+    height: 270px;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.slide-box img {
+    width: 100%;
+    height: 100%;
+}
+
+.home-sidebar {
+    width: 280px;
+    float: right;
+    font-size: 0;
+}
+
+.home-sidebar-hot {
+    margin-top: -5px;
+}
+
+.home-sidebar li {
+    margin-bottom: 6px;
+}
+
+.home-sidebar img {
+    width: 100%;
+    height: 50px;
+}
+
+.home-sidebar-weixin {
+    box-sizing: border-box;
+    margin-bottom: 30px;
+    padding: 10px 22px;
+    width: 100%;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    background-color: #fff;
+    display: block;
+}
+
+.home-sidebar-qrcode {
+    width: 60px!important;
+    height: 60px!important;
+    display: inline-block;
+    vertical-align: middle;
+    opacity: .85;
+}
+
+.home-sidebar-info {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 7px;
+}
+
+.home-sidebar-weixintitle {
+    font-size: 15px;
+    color: #333;
+}
+
+.ic-link:before {
+    content: "\E616";
+}
+
+.home-sidebar-desc {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #999;
+}
+
+.recommended-authors {
+    margin-bottom: 20px;
+    padding-top: 0;
+    font-size: 13px;
+    text-align: center;
+}
+
+.recommended-authors .title {
+    text-align: left;
+}
+
+.recommended-authors .title span {
+    font-size: 14px;
+    color: #969696;
+}
+
+.recommended-authors .title .page-change {
+    float: right;
+    font-size: 14px;
+    color: #969696;
+}
+
+.recommended-authors .title .page-change i {
+    display: inline-block;
+    line-height: 1;
+    transition: .5s ease;
+}
+
+.ic-search-change:before {
+    content: "\E6E6";
+}
+
+.recommended-authors .list {
+    margin: 0 0 20px;
+    text-align: left;
+    list-style: none;
+}
+
+.recommended-authors .list li {
+    margin-top: 15px;
+}
+
+.recommended-authors .list .avatar {
+    float: left;
+    width: 48px;
+    height: 48px;
+    margin-right: 10px;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+}
+
+.recommended-authors .list .name {
+    padding-top: 5px;
+    margin-right: 60px;
+    font-size: 14px;
+    display: block;
+}
+
+.recommended-authors .list p {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #969696;
+    line-height: 20px;
+}
+
+.recommended-authors .follow {
+    float: right;
+    margin-top: 5px;
+    padding: 0;
+    font-size: 13px;
+    color: #42c02e;
+}
+
+.ic-follow:before {
+    content: "\E611";
+}
+
+.recommended-authors .find-more {
+    box-sizing: border-box;
+    display: block;
+    padding: 7px 7px 7px 12px;
+    left: 0;
+    width: 100%;
+    font-size: 13px;
+    color: #787878;
+    background-color: #f7f7f7;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+}
+
+.recommended-authors .find-more:hover {
+    text-decoration: none;
+}
+
+.category-list {
+    width: 625px;
+    margin-top: 35px;
+    padding-bottom: 15px;
+}
+
+.category {
+    display: inline-block;
+    margin: 0 18px 18px 0;
+    min-height: 32px;
+    background-color: #f7f7f7;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    vertical-align: top;
+    overflow: hidden;
+}
+
+.category:hover {
+    text-decoration: none;
+}
+
+.category div {
+    display: inline-block;
+    padding: 0 11px 0 6px;
+    font-size: 14px;
+    line-height: 32px;
+}
+
+.category-more {
+    display: inline-block;
+    margin-top: 7px;
+    font-size: 14px;
+    color: #787878;
+    line-height: 20px;
+}
+
+.ic-link:before { content: "\E616"; }
+
+.split-line {
+    border-top: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+.load-more {
+    display: none;
+    width: 100%;
+    height: 40px;
+    margin: 30px auto 60px;
+    padding: 10px 15px;
+    text-align: center;
+    font-size: 15px;
+    border-radius: 20px;
+    color: #fff;
+    background-color: #a5a5a5;
+    box-sizing: border-box;
+}
+
+.load-more:hover {
+    background-color: #9b9b9b;
+    color: #fff;
+    text-decoration: none;
+}

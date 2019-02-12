@@ -1,0 +1,98 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="search">
+  <div class="row">
+
+    {% include '../../component/cms/search/sidebar.njk' %}
+
+    <div class="content">
+      <div class="search-content">
+        <div class="sort-type">
+          <a class="active">
+            综合排序
+            ·
+          </a>
+          <a class="">
+            最新更新
+            ·
+          </a>
+          <a class="">
+            热门专题
+          </a>
+          <span>
+            &nbsp;&nbsp;|&nbsp;
+          </span>
+          <div class="v-select-wrap">
+            <div class="v-select-submit-wrap">
+              <svg viewBox="0 0 10 6" aria-hidden="true">
+                <path d="M8.716.217L5.002 4 1.285.218C.99-.072.514-.072.22.218c-.294.29-.294.76 0 1.052l4.25 4.512c.292.29.77.29 1.063 0L9.78 1.27c.293-.29.293-.76 0-1.052-.295-.29-.77-.29-1.063 0z"></path>
+              </svg>
+            </div>
+            <div class="v-select-text-area-wrap">
+              <div class="v-select-input-wrap">
+                <ul class="v-select-selected-item-wrap">
+                  <li class="v-select-selected-item">
+                    <!---->
+                    时间不限
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <ul class="v-select-options-wrap" style="display:none;">
+              <li class="v-select-options-item selected">
+                时间不限
+              </li>
+              <li class="v-select-options-item">
+                最近一周
+              </li>
+              <li class="v-select-options-item">
+                最近一天
+              </li>
+              <li class="v-select-options-item">
+                最近三月
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="result">193255 个结果</div>
+
+        <div class="user-list">
+          {% for i in range(0, 5) -%}
+          <li>
+            <a href="" target="_blank" class="avatar-collection">
+              <img src="//upload.jianshu.io/collections/images/30374/%E6%9C%AA%E6%A0%87%E9%A2%98-1.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/144/h/144/format/webp">
+            </a> 
+            <div class="info">
+              <a href="/c/c7634b78294d" target="_blank" class="name">Go语言</a> 
+              <div class="meta">
+                <span>收录了 529 篇文章，3144 人关注</span>
+              </div>
+            </div> 
+            <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+          </li>
+          {%- endfor %}
+        </div>
+        <div>
+          {% include '../../component/cms/pagination.njk' %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{cssPath}}/search/search.css">
+{% endblock %}
+
+{% block js %}
+<script src="{{jsPath}}/search/article.js"></script>
+{% endblock %}

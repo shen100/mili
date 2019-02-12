@@ -1,0 +1,134 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="container collection">
+  <div class="main">
+    <div class="main-top">
+      <a href="" class="avatar">
+        <img src="{{collection.coverURL}}"
+          alt="">
+      </a>
+      <button id="followed-{{collection.id}}" {% if not isFollowed %}style="display: none;"{% endif %} class="user-follow-button-on user-follow-button followed followedbtn"><i class="iconfont"></i><span >已关注</span></button>
+      <button id="follow-{{collection.id}}"  {% if isFollowed %}style="display: none;"{% endif %} class="off user-follow-button followbtn">
+        <i class="iconfont"></i><span>关注</span>
+      </button>
+      {% if isCreator %}
+      <a id="includedBtn" class="btn btn-follow" href="javascript:void(0)">收录</a>
+      {% else %}
+      <a id="postToCollection" class="btn btn-follow" href="javascript:void(0)">投稿</a>
+      {% endif %}
+      <div class="title">
+        <a class="name" href="">{{collection.name}}</a>
+      </div>
+      <div class="info">
+      收录了{{collection.articleCount}}篇文章 · {{collection.followerCount}}人关注
+      </div>
+    </div>
+
+    <ul class="trigger-menu">
+      <li id="article-commentcount" class="active"><a href="javascript:void(0)"><i class="iconfont ic-latestcomments"></i> 最新评论</a></li>
+      <li id="article-createdat" class=""><a href="javascript:void(0)"><i class="iconfont ic-articles"></i> 最新收录</a></li>
+      <li id="article-hot" class=""><a href="javascript:void(0)"><i class="iconfont ic-hot"></i> 热门</a></li>
+    </ul>
+
+    <div id="list-container">
+      <div id="articleList">
+        {% include '../../component/cms/articles.njk' %}
+      </div>
+      <div class="article-placeholder index">
+        <div class="img"></div>
+        <div class="content">
+          <div class="title"></div>
+          <div class="text"></div>
+          <div class="text animation-delay"></div>
+          <div class="meta">
+            <div class="read"></div><i class="iconfont ic-list-comments"></i>
+            <div class="small"></div><i class="iconfont ic-list-like"></i>
+            <div class="small"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="user-sidebar">
+    <div class="title">专题公告</div>
+    <div class="description">
+      <div class="js-intro">{{collection.announcement}}</div>
+    </div>
+    <div class="share">
+      <span>分享到</span>
+      <a href="" class="option">
+        <i class="iconfont ic-share-weibo"></i>
+      </a>
+      <a href="" class="option">
+        <i class="iconfont ic-share-wechat"></i>
+      </a>
+      <a href="" class="option">
+        <i class="iconfont ic-share-more"></i>
+      </a>
+    </div>
+
+    <div>
+      <div>
+        <p class="title">管理员</p>
+        <ul class="list collection-editor">
+          {% for u in collection.admins %}
+          <li>
+            <a href="/u/{{u.id}}.html" target="_blank" class="avatar">
+              <img src="{{u.avatarURL}}">
+            </a> 
+            <a href="/u/{{u.id}}.html" target="_blank" class="name">{{u.username}}</a> 
+            {% if u.id === collection.creatorID %}
+            <span class="tag">创建者</span>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    {% if followers and followers.length %}
+    <div>
+      <div class="title">关注的人(11578)</div>
+      <ul class="list collection-follower">
+        {% for follower in followers %}
+        <li>
+          <a href="/u/{{follower.id}}.html" target="_blank" class="avatar hint--bottom hint--rounded hint--no-animate" aria-label="{{follower.username}} · {{follower.date | recentTime }} 关注">
+            <img src="{{follower.avatarURL}}">
+          </a>
+        </li>
+        {% endfor %}
+        <li>
+          <a class="function-btn more-follower"><i class="iconfont ic-others"></i></a>
+        </li>
+      </ul>
+
+    </div>
+    {% endif %}
+
+    {% if isCreator %}
+    <div class="user-action">
+      <a href="/collections/{{collection.id}}/edit.html">编辑专题</a> · <a id="deleteCollectionBtn" class="delete-href" href="javascript:void(0)">删除专题</a>
+    </div>
+    {% endif %}
+    <div id="app"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block pageData %}
+<script>
+  var collectionID = {{ collection.id }};
+  var creatorID = {{ collection.creatorID }};
+  var collectionTitle = '{{ collection.name }}';
+  var isCollectionAdmin = {{ isCollectionAdmin }};
+  var articleCount = {{ articleCount }};
+</script>
+{% endblock %}
+
+{% block devjs %}
+  {{ loadjs('entry/collection/collection.js') }}
+{% endblock %}

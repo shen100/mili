@@ -1,0 +1,202 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="container">
+  <div class="main">
+    <div class="main-top">
+      <a href="" class="avatar">
+        <img src="{{author.avatarURL}}"
+          alt="">
+      </a>
+      <button id="followed-{{user.id}}" {% if not followed %}style="display: none;"{% endif %} class="user-follow-button-on user-follow-button followed followedbtn"><i class="iconfont"></i><span >已关注</span></button>
+      <button id="follow-{{user.id}}"  {% if followed %}style="display: none;"{% endif %} class="off user-follow-button followbtn">
+        <i class="iconfont"></i><span>关注</span>
+      </button>
+      <a class="btn btn-follow" href="">发简信</a>
+      <div class="title">
+        <a class="name" href="">{{author.username}}</a>
+      </div>
+      <div class="info">
+        <ul>
+          <li>
+            <div class="meta-block">
+              <a href="">
+                <p>49</p>
+                关注 <i class="iconfont ic-arrow"></i>
+              </a>
+            </div>
+          </li>
+          <li>
+            <div class="meta-block">
+              <a href="">
+                <p>50503</p>
+                粉丝 <i class="iconfont ic-arrow"></i>
+              </a>
+            </div>
+          </li>
+          <li>
+            <div class="meta-block">
+              <a href="">
+                <p>{{author.articleCount}}</p>
+                文章 <i class="iconfont ic-arrow"></i>
+              </a>
+            </div>
+          </li>
+          <li>
+            <div class="meta-block">
+              <p>331457</p>
+              <div>字数</div>
+            </div>
+          </li>
+          <li>
+            <div class="meta-block">
+              <p>1130</p>
+              <div>收获喜欢</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <ul class="trigger-menu">
+      <li id="article-createdat" class="active"><a href="javascript:void(0)"><i class="iconfont ic-articles"></i> 文章</a></li>
+      <li class=""><a href="javascript:void(0)"><i class="iconfont ic-feed"></i> 动态</a></li>
+      <li id="article-commentcount" class=""><a href="javascript:void(0)"><i class="iconfont ic-latestcomments"></i> 最新评论</a></li>
+      <li id="article-hot" class=""><a href="javascript:void(0)"><i class="iconfont ic-hot"></i> 热门</a></li>
+    </ul>
+
+    <div id="list-container">
+      <div id="articleList">
+        {% include '../../component/cms/timeline.njk' %}
+      </div>
+      <div class="article-placeholder index">
+        <div class="img"></div>
+        <div class="content">
+          <div class="title"></div>
+          <div class="text"></div>
+          <div class="text animation-delay"></div>
+          <div class="meta">
+            <div class="read"></div><i class="iconfont ic-list-comments"></i>
+            <div class="small"></div><i class="iconfont ic-list-like"></i>
+            <div class="small"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="user-sidebar">
+    <div class="title">个人介绍</div>
+    <div class="description">
+      <div class="js-intro">{{author.introduce}}</div>
+      <a href="" class="social-index"></a>
+      <a href="" class="social-icon-weibo"></a>
+      <a href="" class="social-icon-weixin"></a>
+    </div>
+
+    <ul class="user-dynamic">
+      <li>
+        <a href="">
+          <i class="iconfont ic-collection"></i> <span>他关注的专题/文集/连载</span>
+        </a>
+      </li>
+      <li>
+        <a href="">
+          <i class="iconfont ic-like"></i> <span>{{salutation}}喜欢的文章</span>
+        </a>
+      </li>
+    </ul>
+
+    <div>
+      <div>
+        <div class="title">
+          {{salutation}}创建的专题
+        </div>
+        {% if createCollections and createCollections.length %}
+        <a href="/collections/new" target="_blank" class="function-btn new-collection-btn"><i class="iconfont ic-follow"></i><span>新建专题</span></a>
+        <ul class="list">
+          {% for c in createCollections %}
+          <li>
+            <a href="/collections/{{c.id}}.html" target="_blank" class="avatar-collection">
+              <img src="{{c.coverURL}}"></a>
+            <a href="/collections/{{c.id}}.html" target="_blank" class="name">{{c.name}}</a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <div class="new-collection-block">
+          <a href="/collections/new" class="new-collection-btn">
+            <i class="iconfont ic-follow"></i><span>创建一个新专题</span>
+          </a>
+        </div>
+        {% endif %}
+
+        <!---->
+      </div>
+
+      {% if manageCollections and manageCollections.length %}
+      <div>
+        <div class="title">
+          {{salutation}}管理的专题
+        </div>
+        <ul class="list">
+          {% for c in manageCollections %}
+          <li>
+            <a href="" target="_blank" class="avatar-collection">
+              <img src="{{c.coverURL}}"></a>
+            <a href="" target="_blank" class="name">{{c.name}}</a>
+          </li>
+          {% endfor %}
+        </ul>
+        <!---->
+      </div>
+      {% endif %}
+
+      <div>
+        <div class="title">
+          {{salutation}}的小书
+        </div>
+        <ul class="list">
+          <li>
+            <a href="" target="_blank">
+              <i class="iconfont ic-search-notebook"></i>
+            </a>
+            <a href="/nb/4541715" target="_blank" class="name">Android程序员日记</a>
+          </li>
+          <li>
+            <a href="" target="_blank">
+              <i class="iconfont ic-search-notebook"></i>
+            </a>
+            <a href="/nb/4541715" target="_blank" class="name">Golang</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="user-action">
+      <a class="js-block-button">加入黑名单</a>
+       ·
+      <a class="js-report-button">举报用户</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{cssPath}}/user/index.css">
+{% endblock %}
+
+{% block pageData %}
+<script>
+  var pageData = {
+    userID: {{ user.id }}
+  };
+</script>
+{% endblock %}
+
+{% block devjs %}
+  {{ loadjs('entry/user/user.js') }}
+{% endblock %}

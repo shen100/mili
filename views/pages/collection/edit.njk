@@ -1,0 +1,71 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="container">
+  <div id="app" class="main">
+    <h3>{% if collection.id %}编辑专题{% else %}新建专题{% endif %}</h3>
+    <div class="avatar-collection-box">
+      <div class="avatar-collection">
+        {% if collection.id  %}
+        <img src="{{collection.coverURL}}">
+        {% else %}
+        <img src="{{imgPath}}/collection/cover.png">
+        {% endif %}
+      </div>
+      <div class="avatar-upload-btn">上传专题封面</div>
+    </div>
+    <div class="form-item">
+      <label>名称</label>
+      {% if collection %}
+      <input type="text" name="nick-name" value="{{collection.name}}" placeholder="填写名称，不超过50字">
+      {% else %}
+      <input type="text" name="nick-name" value="" placeholder="填写名称，不超过50字">
+      {% endif %}
+    </div>
+    <div class="form-item">
+      <label>描述</label>
+      {% if collection %}
+      <textarea placeholder="填写描述" value="{{collection.announcement}}"></textarea>
+      {% else %}
+      <textarea placeholder="填写描述"></textarea>
+      {% endif %}
+    </div>
+    <div class="form-item" style="margin-bottom: 20px;">
+      <label>其他管理员</label>
+      <div class="user-add">
+        <input type="text" name="nick-name" placeholder="输入用户名">
+      </div>
+    </div>
+    <div class="form-item" style="margin-bottom: 5px;">
+      <label>是否允许投稿</label>
+      <div class="radio-btn"><input type="radio" name="post" value="true" checked><span>允许</span></div>
+      <div class="radio-btn"><input type="radio" name="post" value="false"><span>允许</span></div>
+    </div>
+    <div class="form-item">
+      <label>投稿是否需要审核</label>
+      <div class="radio-btn"><input type="radio" name="must" value="true" checked><span>需要</span></div>
+      <div class="radio-btn"><input type="radio" name="must" value="false"><span>不需要</span></div>
+    </div>
+    <div class="btn btn-success follow create">{% if collection.id %}保存专题{% else %}创建专题{% endif %}</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{cssPath}}/collection/new.css">
+{% endblock %}
+
+{% block pageData %}
+<script>
+var uploadPolicy = {{ uploadPolicy | dump | safe }};
+var collection = {{ collection | dump | safe }};
+var userID = {{ user.id }};
+</script>
+{% endblock %}
+
+{% block js %}
+<script src="{{jsPath}}/entry/collection/edit.js"></script>
+{% endblock %}

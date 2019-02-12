@@ -1,0 +1,81 @@
+{% extends '../layout/empty.njk' %}
+
+{% block headjs %}
+<script src="{{jsPath}}/libs/geetest.js"></script>
+{% endblock %}
+
+{% block main %}
+<div class="sign">
+    <div class="logo">
+        <a href="/">
+            <img src="{{imgPath}}/logo2.png" alt="Logo">
+        </a>
+    </div>
+    <div id="app" class="main">
+        <h4 class="title">
+            <div class="normal-title">
+                <a class="active" href="/signin.html">登录</a>
+                <b>·</b>
+                <a id="js-sign-up-btn" href="/signup.html">注册</a>
+            </div>
+        </h4>
+
+        <div class="js-sign-in-container">
+            <form method="post">
+                <div class="input-prepend restyle js-normal">
+                    <input placeholder="手机号或邮箱" type="text">
+                    <i class="iconfont ic-user"></i>
+                </div>
+                <div class="input-prepend">
+                    <input placeholder="密码" type="password">
+                    <i class="iconfont ic-password"></i>
+                </div>
+                <div class="remember-btn">
+                    <input type="checkbox" value="true" checked="checked"><span>记住我</span>
+                </div>
+                <div class="forget-btn">
+                    <a class="" data-toggle="dropdown" href="">登录遇到问题?</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="">用手机号重置密码</a></li>
+                        <li><a href="">用邮箱重置密码</a></li>
+                        <li><a target="_blank" href="">无法用海外手机号登录</a></li>
+                        <li><a target="_blank" href="">无法用 Google 帐号登录</a></li>
+                    </ul>
+                </div>
+                <button class="sign-in-button" type="button">
+                    <span id="sign-in-loading"></span>
+                    登录
+                </button>
+            </form>
+            <div class="more-sign">
+                <h6>社交帐号登录</h6>
+                <ul>
+                    <li>
+                        <a class="github" href="/users/signup/github.html">
+                            <div class="github-icon">
+                                <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+                            </div>
+                        </a>
+                    </li>
+                    <li><a class="weixin" target="_blank" href=""><i class="iconfont ic-wechat"></i></a></li>
+                    <li><a class="qq" target="_blank" href=""><i class="iconfont ic-qq_connect"></i></a></li>
+                    <li class=""><a class="weibo" href="/users/signup/weibo.html"><i class="iconfont ic-weibo"></i></a></li>
+                    <li class="js-more-method"><a href="javascript:void(0);"><i class="iconfont ic-more"></i></a></li>
+                </ul>
+                <div class="weibo-geetest-captcha"></div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}
+
+{% block pageData %}
+<script>
+</script>
+{% endblock %}
+
+{% block devjs %}
+  {{ loadjs('entry/signin.js') }}
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="search">
+  <div class="row">
+
+    {% include '../../component/cms/search/sidebar.njk' %}
+
+    <div class="content">
+      <div class="search-content">
+        <div class="sort-type">
+          <a class="active" style="cursor: default;">
+            综合排序
+          </a>
+          <span>
+            &nbsp;&nbsp;|&nbsp;
+          </span>
+          <div class="v-select-wrap">
+            <div class="v-select-submit-wrap">
+              <svg viewBox="0 0 10 6" aria-hidden="true">
+                <path d="M8.716.217L5.002 4 1.285.218C.99-.072.514-.072.22.218c-.294.29-.294.76 0 1.052l4.25 4.512c.292.29.77.29 1.063 0L9.78 1.27c.293-.29.293-.76 0-1.052-.295-.29-.77-.29-1.063 0z"></path>
+              </svg>
+            </div>
+            <div class="v-select-text-area-wrap">
+              <div class="v-select-input-wrap">
+                <ul class="v-select-selected-item-wrap">
+                  <li class="v-select-selected-item">
+                    <!---->
+                    时间不限
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <ul class="v-select-options-wrap" style="display:none;">
+              <li class="v-select-options-item selected">
+                时间不限
+              </li>
+              <li class="v-select-options-item">
+                最近一周
+              </li>
+              <li class="v-select-options-item">
+                最近一天
+              </li>
+              <li class="v-select-options-item">
+                最近三月
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="result">193255 个结果</div>
+
+        <ul class="user-list">
+          {% for i in range(0, 5) -%}
+          <li>
+            <a href="" target="_blank" class="avatar">
+              <img src="//upload.jianshu.io/users/upload_avatars/10931711/69bbdde1-0247-4b6b-93f1-949cc4890872?imageMogr2/auto-orient/strip|imageView2/1/w/144/h/144/format/webp">
+            </a>
+            <div class="info">
+              <a href="" target="_blank" class="name">
+                golang_nil
+              </a>
+              <div class="meta">
+                <span>关注 14</span> <span>粉丝 0</span> <span>文章 0</span>
+              </div>
+              <div class="meta"><span>写了 0 字，获得了 0 个喜欢</span></div>
+            </div> 
+            <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+          </li>
+          {%- endfor %}
+        </ul>
+
+
+        <div>
+          {% include '../../component/cms/pagination.njk' %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{cssPath}}/search/search.css">
+{% endblock %}
+
+{% block js %}
+<script src="{{jsPath}}/search/article.js"></script>
+{% endblock %}

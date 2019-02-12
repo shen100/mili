@@ -1,0 +1,26 @@
+{
+    "root": true,
+    "env": {
+        "node": true
+    },
+    "parserOptions": {
+        "parser": "babel-eslint",
+        "sourceMap": "module"
+    },
+    "extends": [
+        "plugin:vue/essential",
+        "standard"
+    ],
+    "rules": {
+        "semi": [2, "always"],
+        "comma-dangle": ["error", "always"],
+        "indent": "off",
+        "vue/script-indent": [
+            "error",
+            4,
+            {
+                "baseIndent": 1
+            }
+        ]
+    }
+}
