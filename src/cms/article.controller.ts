@@ -46,7 +46,6 @@ export class ArticleController {
     @Post('/api/v1/articles')
     @UseGuards(ActiveGuard)
     async create(@CurUser() user, @Body() createArticleDto: CreateArticleDto) {
-        user.score += UserScore.CreateArticle;
         user.articleCount++;
         const [ createResult ] = await Promise.all([
             this.articleService.create(createArticleDto, user.id),

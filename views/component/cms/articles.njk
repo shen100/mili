@@ -1,6 +1,6 @@
-{% if data.articles and data.articles.length %}
+{% if articles and articles.length %}
 <ul class="article-list">
-    {% for article in data.articles %}
+    {% for article in articles %}
     <li>
         <div class="article-content" {% if article.image %} style="padding-right: 140px;" {% endif %}>
             <a href="/p/{{article.id}}.html" class="article-title">{{article.name}}</a>

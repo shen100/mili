@@ -1,9 +1,10 @@
 <template>
     <div id="app">
+        <ErrorTip ref="errorTip" />
         <div v-if="!isNewPublish" id="editorBox">
             <div class="editor-header">
                 <div class="editor-logo-box" :style="{width: `${logoBoxWidth}px` }"></div>
-                <input class="editor-title-input" :class="{'editor-title-input2': !mdEditorSideBySide}" type="text" placeholder="输入文章标题..." />
+                <input v-model="articleTitle" class="editor-title-input" :class="{'editor-title-input2': !mdEditorSideBySide}" type="text" placeholder="输入文章标题..." />
                 <div class="navbar-user">
                     <div class="user">
                         <div data-hover="dropdown">
@@ -21,7 +22,7 @@
                         </ul>
                     </div>
                 </div>
-                <a class="btn write-btn">
+                <a class="btn write-btn" @click="onPublish">
                     <i class="iconfont ic-write"></i>发布
                 </a>
                 <div class="editor-more-btn"><i class="iconfont ic-others"></i></div>
@@ -29,7 +30,7 @@
                 <div class="auto-save">文章将会自动保存至<a href="/editor/drafts">草稿</a></div>
             </div>
             <div class="editor-body" :class="{'md-editor-expand': !mdEditorSideBySide}">
-                <MarkdownEditor :isSideBySide="mdEditorSideBySide" @input="onEditorInput"/>
+                <MarkdownEditor :isSideBySide="mdEditorSideBySide" @input="onEditorInput" @change="onEditorContentChange"/>
             </div>
             <div class="editor-footer">
                 <div class="editor-footer-left" :style="{width: mdEditorSideBySide ? '50%' : '100%'}">
@@ -51,8 +52,11 @@
                         </div>
                     </div>
                     <div class="uploadimg-btn"><img src="../../../images/editor/uploadimg.svg"></div>
-                    <div class="togglelayout-btn" @click="onToggleSideBySide">
+                    <div v-if="mdEditorSideBySide" class="togglelayout-btn" @click="onToggleSideBySide">
                         <img src="../../../images/editor/togglelayout.svg" />
+                    </div>
+                    <div v-else class="togglelayout-btn" @click="onToggleSideBySide">
+                        <img src="../../../images/editor/togglelayout2.svg" />
                     </div>
                 </div>
                 <div v-if="mdEditorSideBySide" class="editor-footer-right">
@@ -69,6 +73,8 @@
 import $ from 'jquery';
 import MarkdownEditor from '~/js/components/common/MarkdownEditor.vue';
 import ArticleDone from '~/js/components/article/ArticleDone.vue';
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
+import { trim } from '~/js/utils/utils.js';
 
 export default {
     data () {
@@ -89,12 +95,24 @@ export default {
             ],
             mdEditorSideBySide: true,
             logoBoxWidth: 0,
-            isNewPublish: true,
+            isNewPublish: false,
+            articleTitle: '',
+            articleContent: ''
         }
     },
     methods: {
+        onPublish() {
+            this.articleTitle = trim(this.articleTitle);
+            if (!this.articleTitle) {
+                this.$refs.errorTip.show('请输入文章标题');
+                return;
+            }
+        },
         onEditorInput(wordCount) {
             this.wordCount = wordCount;
+        },
+        onEditorContentChange(content) {
+            this.articleContent = content;
         },
         onToggleSideBySide() {
             this.mdEditorSideBySide = !this.mdEditorSideBySide;
@@ -118,6 +136,7 @@ export default {
     components: {
         MarkdownEditor,
         ArticleDone,
+        ErrorTip,
     }
 }
 </script>
