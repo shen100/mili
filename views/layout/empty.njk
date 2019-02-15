@@ -5,18 +5,17 @@
   <meta charset="utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-  
-  {% block libcss %}{% endblock %}
+  {% block libcss %}
+  {% endblock %}
+
+  {% block css %}
+  {% endblock %}
 </head>
 
-<body {% if env === 'development'%} style="display: none;"{% endif %}>
-  {% from '../macros/js.njk' import loadjs  %}
+<body {% if env === 'development' %} style="display: none;"{% endif %}>
+  {% from '../macros/js.njk' import loadjs %}
 
   {% block main %}
-  {% endblock %}
-  
-  {% block jqueryjs %}
-  <script src="{{jsPath}}/libs/jquery-1.11.3.min.js"></script>
   {% endblock %}
   
   <script>
@@ -25,6 +24,10 @@
   </script>
   
   {% block pageData %}
+  {% endblock %}
+
+  {% block jquery %}
+    <script src="{{jsPath}}/libs/jquery-1.11.3.min.js"></script>
   {% endblock %}
 
   {% block libjs %}

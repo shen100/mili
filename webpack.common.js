@@ -20,7 +20,8 @@ module.exports = {
         'entry/article/articleDetail': './public/js/entry/article/articleDetail.js',
         'entry/collection/collection': './public/js/entry/collection/collection.js',
         'entry/collection/edit': './public/js/entry/collection/edit.js',
-        'entry/editor/createDraft': './public/js/entry/editor/createDraft.js',
+        'entry/editor/editMarkdownDraft': './public/js/entry/editor/editMarkdownDraft.js',
+        'entry/editor/editRichDraft': './public/js/entry/editor/editRichDraft.js',
         'entry/admin/app': './public/js/entry/admin/app.js',
     },
     output: {

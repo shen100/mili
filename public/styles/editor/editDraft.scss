@@ -11,7 +11,8 @@ html, body, #app, #editorBox {
 }
 
 .editor-header {
-    position: relative;
+    width: 100%;
+    position: fixed;
     height: 56px;
     background: #fff;
 }
@@ -123,10 +124,16 @@ html, body, #app, #editorBox {
 }
 
 .editor-body {
-    height: calc(100% - 98px);
+    height: 100%;
+    padding-top: 56px;
+    padding-bottom: 42px;
+    box-sizing: border-box;
 }
 
 .editor-footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
     height: 42px;
     background: #fff;
 }

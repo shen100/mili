@@ -1,0 +1,28 @@
+{% extends '../../layout/empty.njk' %}
+
+{% block main %}
+<div id="app">
+</div>
+{% endblock %}
+
+{% block pageData %}
+<script>
+  var userID = {{ user.id }};
+  var avatarURL = '{{ user.avatarURL }}';
+</script>
+{% endblock %}
+
+{% block libcss %}
+<link charset="utf-8" href="{{cssPath}}/libs/highlight.min.css" rel="stylesheet">
+<link charset="utf-8" href="{{cssPath}}/libs/quill.snow.css" rel="stylesheet">
+{% endblock %}
+
+{% block libjs %}
+<script src="{{jsPath}}/libs/jquery-1.11.3.min.js"></script>
+<script src="{{jsPath}}/libs/highlight.min.js"></script>
+<script src="{{jsPath}}/libs/quill.min.js"></script>
+{% endblock %}
+
+{% block devjs %}
+  {{ loadjs('entry/editor/editRichDraft.js') }}
+{% endblock %}

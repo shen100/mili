@@ -5,9 +5,6 @@
 </div>
 {% endblock %}
 
-{% block footer %}
-{% endblock %}
-
 {% block pageData %}
 <script>
   var userID = {{ user.id }};
@@ -20,10 +17,9 @@
 {% endblock %}
 
 {% block libjs %}
-<script src="{{jsPath}}/libs/jquery-1.11.3.min.js"></script>
 <script src="{{jsPath}}/libs/simplemde.min.js"></script>
 {% endblock %}
 
 {% block devjs %}
-  {{ loadjs('entry/editor/createDraft.js') }}
+  {{ loadjs('entry/editor/editMarkdownDraft.js') }}
 {% endblock %}

@@ -1,6 +1,6 @@
 <template>
     <div class="mili-editor">
-        <textarea v-if="isMounted" ref="textarea"></textarea>
+        <textarea style="border: none;" ref="textarea"></textarea>
     </div>
 </template>
 
@@ -15,7 +15,6 @@ export default {
     ],
     data () {
         return {
-            isMounted: false,
             SimpleMDE: null,
             simplemde: null
         }
@@ -68,7 +67,6 @@ export default {
         }
     },
     mounted() {
-        this.isMounted = true;
         this.$nextTick(() => {
             this.initSimplemde();
         })

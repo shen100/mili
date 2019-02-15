@@ -22,8 +22,14 @@ export class EditorController {
 
     @Get('/editor/drafts/new')
     @UseGuards(ActiveGuard)
-    async createDraft(@CurUser() user, @Res() res) {
-        res.render('pages/editor/createDraft', {
+    async createDraft(@CurUser() user, @Query() query, @Res() res) {
+        if (query.editor === 'rich') {
+            res.render('pages/editor/editRichDraft', {
+                user,
+            });
+            return;
+        }
+        res.render('pages/editor/editMarkdownDraft', {
             user,
         });
     }

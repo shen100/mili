@@ -2,33 +2,7 @@
     <div id="app">
         <ErrorTip ref="errorTip" />
         <div v-if="!isNewPublish" id="editorBox">
-            <div class="editor-header">
-                <div class="editor-logo-box" :style="{width: `${logoBoxWidth}px` }"></div>
-                <input v-model="articleTitle" class="editor-title-input" :class="{'editor-title-input2': !mdEditorSideBySide}" type="text" placeholder="输入文章标题..." />
-                <div class="navbar-user">
-                    <div class="user">
-                        <div data-hover="dropdown">
-                            <a class="avatar" :href="`/u/${userID}.html`"><img :src="avatarURL"></a>
-                        </div>
-                        <ul class="dropdown-menu">
-                            <li><a :href="`/u/${userID}.html`"><i class="iconfont ic-navigation-profile"></i><span>我的主页</span></a></li>
-                            <li><a href="/bookmarks"><i class="iconfont ic-navigation-mark"></i><span>收藏的文章</span></a> </li>
-                            <li><a href="/"><i class="iconfont ic-navigation-like"></i><span>喜欢的文章</span></a> </li>
-                            <li><a href="/my/paid_notes"><i class="iconfont ic-paid"></i><span>已购内容</span></a> </li>
-                            <li><a href="/wallet"><i class="iconfont ic-navigation-wallet"></i><span>我的钱包</span></a> </li>
-                            <li><a href="/settings"><i class="iconfont ic-navigation-settings"></i><span>设置</span></a> </li>
-                            <li><a href="/faqs"><i class="iconfont ic-navigation-feedback"></i><span>帮助与反馈</span></a> </li>
-                            <li><a rel="nofollow" data-method="delete" href="/sign_out"><i class="iconfont ic-navigation-signout"></i><span>退出</span></a> </li>
-                        </ul>
-                    </div>
-                </div>
-                <a class="btn write-btn" @click="onPublish">
-                    <i class="iconfont ic-write"></i>发布
-                </a>
-                <div class="editor-more-btn"><i class="iconfont ic-others"></i></div>
-                <div class="upload-cover"><div></div></div>
-                <div class="auto-save">文章将会自动保存至<a href="/editor/drafts">草稿</a></div>
-            </div>
+            <EditorHeader :userID="userID" :avatarURL="avatarURL" :mdEditorSideBySide="mdEditorSideBySide" />
             <div class="editor-body" :class="{'md-editor-expand': !mdEditorSideBySide}">
                 <MarkdownEditor :isSideBySide="mdEditorSideBySide" @input="onEditorInput" @change="onEditorContentChange"/>
             </div>
@@ -65,14 +39,15 @@
                 </div>
             </div>
         </div>
-        <ArticleDone v-else />
+        <ArticlePublished v-else />
     </div>
 </template>
 
 <script>
 import $ from 'jquery';
+import EditorHeader from '~/js/components/editor/EditorHeader.vue';
 import MarkdownEditor from '~/js/components/common/MarkdownEditor.vue';
-import ArticleDone from '~/js/components/article/ArticleDone.vue';
+import ArticlePublished from '~/js/components/article/ArticlePublished.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import { trim } from '~/js/utils/utils.js';
 
@@ -134,8 +109,9 @@ export default {
         });
     },
     components: {
+        EditorHeader,
         MarkdownEditor,
-        ArticleDone,
+        ArticlePublished,
         ErrorTip,
     }
 }
