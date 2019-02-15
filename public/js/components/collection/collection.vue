@@ -50,6 +50,58 @@
 </template>
 
 <style>
+    .included-modal-header {
+        padding: 20px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .included-modal-header .close {
+        margin-top: -2px;
+    }
+
+    .included-modal-title {
+        margin: 0;
+        line-height: 1.42857;
+        font-size: 17px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 4px;
+    }
+
+    .included-modal-header .new-note-btn {
+        padding-left: 10px;
+        font-size: 13px;
+        font-weight: 400;
+        color: #42c02e;
+        vertical-align: middle;
+    }
+
+    .included-modal-header .close {
+        font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+        float: right;
+        line-height: 1;
+        color: #000;
+        opacity: .2;
+        filter: alpha(opacity=20);
+        font-weight: 200;
+        font-size: 26px;
+        outline: none;
+        text-shadow: none;
+        padding: 0;
+        cursor: pointer;
+        background: transparent;
+        border: 0;
+        -webkit-appearance: none;
+    }
+
+    .included-modal-header .close:focus, .included-modal-header .close:hover {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+        opacity: .5;
+        filter: alpha(opacity=50);
+    }
+
     .ivu-modal-mask {
         background-color: hsla(0, 0%, 100%, .7);
     }

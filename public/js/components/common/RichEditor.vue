@@ -11,7 +11,7 @@
 
 
 <script>
-import { Editor, EditorContent } from 'tiptap'
+import { Editor, EditorContent } from 'tiptap';
 import {
     Blockquote,
     CodeBlock,
@@ -24,6 +24,7 @@ import {
     Bold,
     Code,
     Italic,
+    Image,
     Link,
     Strike,
     Underline,
@@ -50,6 +51,7 @@ export default {
                     new Code(),
                     new Italic(),
                     new Link(),
+                    new Image(),
                     new Strike(),
                     new Underline(),
                     new Placeholder({
