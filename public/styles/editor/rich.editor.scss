@@ -12,31 +12,6 @@ $miliRichEditorWidth: 680px;
     height: 100%;
 }
 
-.mili-editor-content {
-    height: 100%;
-    margin-bottom: 100px;
-    word-wrap: break-word;
-}
-
-.mili-editor-content * {
-    caret-color: currentColor;
-    outline: none;
-}
-
-.mili-editor-content p.is-empty:first-child::before {
-    content: attr(data-empty-text);
-    float: left;
-    color: #aaa;
-    pointer-events: none;
-    height: 0;
-}
-
-.rich-title-input {
-    margin: 70px 0 20px 0;
-    width: $miliRichEditorWidth - 30px;
-    padding: 15px;
-}
-
 .mili-editor-menubar {
     z-index: 1;
     background: #fff;
@@ -44,7 +19,7 @@ $miliRichEditorWidth: 680px;
     position: fixed;
     width: $miliRichEditorWidth;
     top: 56px;
-    margin-left: -8px;
+    margin-left: -15px;
 }
 
 .mili-editor-menubar button {
@@ -113,4 +88,35 @@ $miliRichEditorWidth: 680px;
 
 .mili-editor-icon-image {
     background-image: url(../../images/editor/rich.image.png)!important;
+}
+
+.rich-title-input {
+    margin: 70px 0 24px 0;
+    width: $miliRichEditorWidth - 30px;
+    padding: 0;
+    border: none;
+    font-size: 32px;
+    height: 40px;
+    line-height: 40px;
+    color: #000;
+    font-weight: 700;
+}
+
+.mili-editor-content {
+    height: 100%;
+    margin-bottom: 100px;
+    word-wrap: break-word;
+}
+
+.mili-editor-content * {
+    caret-color: currentColor;
+    outline: none;
+}
+
+.mili-editor-content p.is-empty:first-child::before {
+    content: attr(data-empty-text);
+    float: left;
+    color: #aaa;
+    pointer-events: none;
+    height: 0;
 }

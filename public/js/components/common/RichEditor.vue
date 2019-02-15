@@ -2,7 +2,8 @@
     <div id="scrolling-container">
         <div class="mili-editor">
             <RichEditorMenubar :editor="editor" />
-            <textarea ref="titleDOM" @input="onTitleInput" class="rich-title-input" type="text" placeholder="输入标题" ></textarea>
+            <textarea ref="titleDOM" @keydown.enter.stop.prevent="onTitleInputEnter" @input="onTitleInput($event)" 
+                v-model="articleTitle" class="rich-title-input" type="text" placeholder="输入标题" ></textarea>
             <editor-content class="mili-editor-content" :editor="editor" />
         </div>
     </div>
@@ -34,6 +35,7 @@ export default {
     name: 'RichEditor',
     data () {
         return {
+            articleTitle: '',
             editor: new Editor({
                 extensions: [
                     new Blockquote(),
@@ -64,8 +66,14 @@ export default {
         this.editor.destroy();
     },
     methods: {
-        onTitleInput() {
-            this.$refs.titleDOM.style.height = (this.$refs.titleDOM.scrollHeight - 30) + 'px';
+        onTitleInputEnter(event) {
+            console.log('onTitleInputEnter');
+            this.articleTitle = this.articleTitle.replace('\n', '');
+            this.editor.focus();
+        },
+        onTitleInput(event) {
+            console.log('onTitleInput', event);
+            this.$refs.titleDOM.style.height = this.$refs.titleDOM.scrollHeight + 'px';
         }
     },
     mounted() {
