@@ -66,10 +66,12 @@ body {
 .content-box {
     float: left;
     padding-bottom: 30px;
-    background: #fff;
+    background: #f4f5f5;
 }
 
 .user-action-nav {
+    overflow: hidden;
+    border-radius: 2px;
     height: 50px;
     background: #fff;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -112,9 +114,11 @@ body {
 }
 
 #articleBox {
+    background: #fff;
     padding: 20px;
     padding-top: 12px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
 }
 
 .article-list {
@@ -137,6 +141,7 @@ body {
 }
 
 .home-sidebar-weixin {
+    border-radius: 2px;
     box-sizing: border-box;
     margin-bottom: 20px;
     padding: 16px;
@@ -177,6 +182,7 @@ body {
 }
 
 .recommended-books, .recommended-authors {
+    border-radius: 2px;
     overflow: hidden;
     background: #fff;
     margin-bottom: 20px;

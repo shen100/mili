@@ -2,10 +2,7 @@
 
 $miliRichEditorWidth: 680px;
 
-.editor-body {
-    padding-bottom: 0;
-}
-
+// mili-editor 在编辑器、文章浏览页面中都存在的类
 .mili-editor {
     width: $miliRichEditorWidth;
     margin: 0 auto;
@@ -92,8 +89,8 @@ $miliRichEditorWidth: 680px;
 }
 
 .rich-title-input {
-    margin: 70px 0 24px 0;
-    width: $miliRichEditorWidth - 30px;
+    margin: 128px 0 24px 0;
+    width: $miliRichEditorWidth;
     padding: 0;
     border: none;
     font-size: 32px;
@@ -101,6 +98,7 @@ $miliRichEditorWidth: 680px;
     line-height: 40px;
     color: #000;
     font-weight: 700;
+    resize: none;
 }
 
 .mili-editor-content {
@@ -120,4 +118,8 @@ $miliRichEditorWidth: 680px;
     color: #aaa;
     pointer-events: none;
     height: 0;
+}
+
+.mili-editor-content a {
+    cursor: text;
 }

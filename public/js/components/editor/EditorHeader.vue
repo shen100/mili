@@ -2,6 +2,7 @@
     <div class="editor-header">
         <div class="editor-logo-box" :style="{width: `${logoBoxWidth}px` }"></div>
         <input v-if="!isRich" v-model="articleTitle" class="editor-title-input" type="text" placeholder="输入标题..." />
+        <div v-else class="editor-no-header-title"></div>
         <div class="user-actions-box">
             <NavUser :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
             <a class="btn write-btn" @click="onPublish">

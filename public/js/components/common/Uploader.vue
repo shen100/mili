@@ -30,11 +30,13 @@ export default {
             imgMaxSize: window.uploadPolicy.imgMaxSize,
             imgMaxSizeError: window.uploadPolicy.imgMaxSizeError,
             uploadData: window.uploadPolicy.uploadData,
-            uploadImgURL: window.uploadPolicy.uploadImgURL
+            uploadImgURL: window.uploadPolicy.uploadImgURL,
+            lastImageURL: '', // 最后一次上传成功的图片URL
         }
     },
     methods: {
         beforeUpload(file) {
+            this.lastImageURL = '';
             if (file.size > this.imgMaxSize) {
                 this.$emit('error', this.imgMaxSizeError);
                 return false;
@@ -49,15 +51,21 @@ export default {
         },
         onUploadCallback (res, file) {
             let imgURL = ossResponseParse(res, this.uploadImgURL);
+            this.lastImageURL = '';
             if (imgURL) {
+                this.lastImageURL = imgURL;
                 this.$emit('success', imgURL);
                 return;
             }
             this.$emit('error', '上传凭证过期，请刷新浏览器重试');
         },
         onUploadError() {
+            this.lastImageURL = '';
             this.$emit('error', '上传凭证过期，请刷新浏览器重试');
         },
+        getImageURL() {
+            return this.lastImageURL;
+        }
     },
 }
 </script>

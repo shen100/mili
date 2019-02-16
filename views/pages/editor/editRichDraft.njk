@@ -9,6 +9,7 @@
 <script>
   var userID = {{ user.id }};
   var avatarURL = '{{ user.avatarURL }}';
+  var uploadPolicy = {{ uploadPolicy | dump | safe }};
 </script>
 {% endblock %}
 

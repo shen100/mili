@@ -108,7 +108,7 @@ export default {
                 indentWithTabs: false,
                 initialValue: this.value || '',
                 // Custom placeholder that should be displayed
-                placeholder: '请输入正文',
+                placeholder: '输入正文...',
                 promptURLs: false,
                 codeSyntaxHighlighting: true,
                 spellChecker: false,

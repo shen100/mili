@@ -50,7 +50,12 @@ $miliEditorCodeSize: 12px;
 }
 
 .mili-editor em {
-	font-style: italic;
+    font-style: italic;
+    font-weight: 400;
+}
+
+.mili-editor u {
+    text-decoration: underline;
 }
 
 .mili-editor ul {
@@ -116,10 +121,12 @@ $miliEditorCodeSize: 12px;
     border-radius: 3px;
     background-color: #f6f6f6;
     border: none;
-    color: #657b83;
+    color: #e96900;
     font-size: $miliEditorCodeSize;
     white-space: pre-wrap;
     border-radius: 4px;
+    vertical-align: middle;
+    margin: 0 4px;
 }
 
 .mili-editor blockquote {
