@@ -14,7 +14,7 @@ $miliRichEditorWidth: 680px;
     background: #fff;
     border: none!important;
     position: fixed;
-    width: $miliRichEditorWidth;
+    width: $miliRichEditorWidth + 15px;
     top: 56px;
     margin-left: -15px;
 }
