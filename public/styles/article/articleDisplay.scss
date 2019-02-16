@@ -7,6 +7,7 @@ $miliEditorSizeH6: 16px;
 $miliEditorDefaultSize: 16px;
 $miliEditorCodeSize: 12px;
 
+// mili-editor 在编辑器、文章浏览页面中都存在的类
 .mili-editor {
     height: 100%;
 	font-size: $miliEditorDefaultSize;
@@ -127,30 +128,6 @@ $miliEditorCodeSize: 12px;
     margin-bottom: 20px;
 }
 
-.mili-editor .cm-header-1 {
-    font-size: $miliEditorSizeH1!important;
-}
-
-.mili-editor .cm-header-2 {
-    font-size: $miliEditorSizeH2!important;
-}
-
-.mili-editor .cm-header-3 {
-    font-size: $miliEditorSizeH3!important;
-}
-
-.mili-editor .cm-header-4 {
-    font-size: $miliEditorSizeH4!important;
-}
-
-.mili-editor .cm-header-5 {
-    font-size: $miliEditorSizeH5!important;
-}
-
-.mili-editor .cm-header-6 {
-    font-size: $miliEditorSizeH6!important;
-}
-
 .mili-editor table {
 	margin-bottom: 20px;
 }
@@ -206,6 +183,22 @@ $miliEditorCodeSize: 12px;
     padding: 0!important;
     border: none!important;
     margin-bottom: 0!important;
+}
+
+.mili-editor-preview, .editor-preview-side {
+    white-space: unset!important;
+}
+
+.mili-editor-preview pre > code, .editor-preview-side pre > code {
+    overflow-x: hidden;
+}
+
+.mili-editor-preview code, .editor-preview-side code {
+    display: inline;
+}
+
+.mili-editor-preview .CodeMirror, .mili-editor-preview .CodeMirror-scroll, .editor-preview-side .CodeMirror, .editor-preview-side .CodeMirror-scroll {
+    min-height: 200px;
 }
 
 /* 以下为老版golang123文章来源(转载)的样式*/

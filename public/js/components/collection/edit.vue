@@ -88,14 +88,7 @@ export default {
             inputingUser: false,
             coverURL: window.collection.coverURL || '',
             errorTipLabel: '',
-            imgFormat: window.uploadPolicy.imgFormat,
-            uploadActionURL: window.uploadPolicy.uploadActionURL,
-            uploadFieldName: window.uploadPolicy.uploadFieldName,
-            uploadPrefix: window.uploadPolicy.uploadPrefix,
-            imgMaxSize: window.uploadPolicy.imgMaxSize,
-            imgMaxSizeError: window.uploadPolicy.imgMaxSizeError,
-            uploadData: window.uploadPolicy.uploadData,
-            uploadImgURL: window.uploadPolicy.uploadImgURL
+            
         };
         for (let i = 0; i < data.selectUsers.length; i++) {
             if (data.selectUsers[i].id === data.userID) {
@@ -158,6 +151,10 @@ export default {
                 }
             }
         },
+
+
+
+
         beforeUpload(file) {
             if (file.size > this.imgMaxSize) {
                 this.errorTipLabel = this.imgMaxSizeError;
@@ -182,6 +179,8 @@ export default {
         onUploadError() {
             this.errorTipLabel = '上传凭证过期，请刷新浏览器重试';
         },
+
+        
         onCreateCollection() {
             const name = trim(this.name);
             if (!name) {

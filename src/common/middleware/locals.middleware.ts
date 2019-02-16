@@ -20,6 +20,8 @@ export class LocalsMiddleware implements NestMiddleware {
                 csrfToken: configService.server.csrfProtect ? req.csrfToken() : '',
                 apiPrefix: configService.server.apiPrefix,
                 imgPath: configService.static.imgPath,
+                jsPath: configService.static.jsPath,
+                cssPath: configService.static.cssPath,
             };
             next();
         };

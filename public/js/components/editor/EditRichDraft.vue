@@ -2,7 +2,7 @@
     <div id="app">
         <ErrorTip ref="errorTip" />
         <div v-if="!isNewPublish" id="editorBox">
-            <EditorHeader :userID="userID" :avatarURL="avatarURL" :mdEditorSideBySide="false" />
+            <EditorHeader :isRich="true" :userID="userID" :avatarURL="avatarURL" :mdEditorSideBySide="false" />
             <div class="editor-body" :class="{'md-editor-expand': true}">
                 <RichEditor />
             </div>
