@@ -125,7 +125,6 @@ html, body, #app, #editorBox {
 
 .switch-editor {
     position: absolute;
-    display: none;
     margin-top: -6px;
     left: 50%;
     padding: 10px 24px;
@@ -145,6 +144,10 @@ html, body, #app, #editorBox {
     line-height: normal;
 }
 
+.switch-editor:hover {
+    color: #333;
+}
+
 .switch-editor:before {
     content: "";
     position: absolute;
@@ -160,10 +163,6 @@ html, body, #app, #editorBox {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
-}
-
-.editor-more-btn:hover .switch-editor {
-    display: block;
 }
 
 .publish-popup {
@@ -212,6 +211,10 @@ html, body, #app, #editorBox {
     -ms-user-select: none;
     user-select: none;
     z-index: 100;
+}
+
+.publish-popup:hover .panel {
+    display: block;
 }
 
 .publish-popup .panel:before {
@@ -275,7 +278,7 @@ html, body, #app, #editorBox {
 .publish-popup .panel .user-category-list .item.active, .publish-popup .panel .user-category-list .item:hover {
     color: #ea6f5a;
     border-color: #f3b7ad;
-    background-color: rgba(234, 111, 90, 0.09);
+    background-color: rgba(234, 111, 90, 0.08);
 }
 
 .publish-popup .panel .publish-btn {

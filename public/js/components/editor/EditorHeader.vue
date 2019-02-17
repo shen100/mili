@@ -5,13 +5,13 @@
         <div v-else class="editor-no-header-title"></div>
         <div class="user-actions-box">
             <NavUser :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
-            <div class="publish-popup">
-                <div class="toggle-btn">
+            <div v-clickoutside="onClickOutsidePublishToggle" class="publish-popup">
+                <div @click="onPublishToggle" class="toggle-btn">
                     <span class="publish-popup-btn">发布</span>
-                    <i class="fa fa-caret-down"></i>
-                    <i class="fa fa-caret-up"></i>
+                    <i v-if="!publishToggled" class="fa fa-caret-down"></i>
+                    <i v-else class="fa fa-caret-up"></i>
                 </div>
-                <div class="panel">
+                <div v-if="publishToggled" class="panel">
                     <div class="title">发布文章</div>
                     <div class="category-box">
                         <div class="sub-title">分类</div>
@@ -29,9 +29,9 @@
                     <button class="publish-btn">确定并发布</button>
                 </div>
             </div>
-            <div class="editor-more-btn">
-                <i class="iconfont ic-others"></i>
-                <div class="switch-editor">切换为 Markdown 编辑器</div>
+            <div v-clickoutside="onClickOutsideMarkdownToggle" class="editor-more-btn">
+                <i @click="onMarkdownToggle" class="iconfont ic-others"></i>
+                <div v-if="markdownToggled" class="switch-editor">切换为 Markdown 编辑器</div>
             </div>
             <div class="upload-cover"><div></div></div>
             <div class="auto-save">文章将会自动保存至<a href="/editor/drafts">草稿</a></div>
@@ -52,6 +52,8 @@ export default {
     data () {
         return {
             articleTitle: '',
+            publishToggled: false,
+            markdownToggled: false,
             selectCategoryIndex: 0,
             hotCategories: [
                 {
@@ -101,6 +103,18 @@ export default {
         onPublish() {
             
         },
+        onMarkdownToggle() {
+            this.markdownToggled = !this.markdownToggled;
+        },
+        onClickOutsideMarkdownToggle() {
+            this.markdownToggled = false;
+        },
+        onPublishToggle() {
+            this.publishToggled = !this.publishToggled;
+        },
+        onClickOutsidePublishToggle() {
+            this.publishToggled = false;
+        }
     },
     components: {
         NavUser,
