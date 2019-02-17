@@ -5,6 +5,11 @@ import '~/styles/editor/rich.editor.scss';
 import Vue from 'vue';
 import App from '~/js/components/editor/EditRichDraft.vue';
 import { Modal } from 'iview';
+import {
+    registerDirective,
+} from '~/js/utils/vue.js';
+
+registerDirective(Vue);
 
 Vue.component('Modal', Modal);
 
