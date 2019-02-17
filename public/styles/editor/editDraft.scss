@@ -46,7 +46,6 @@ html, body, #app, #editorBox {
 
 .user-actions-box {
     width: 560px;
-    padding-right: 10px;
 }
 
 .auto-save {
@@ -90,17 +89,115 @@ html, body, #app, #editorBox {
     height: 36px;
     margin-top: 10px;
     box-sizing: border-box;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-.upload-cover div {
+.upload-cover-img {
     cursor: pointer;
     width: 28px;
     height: 28px;
     background-image: url(../../images/editor/uploadcover.svg);
 }
 
-.upload-cover div:hover {
+.upload-cover-img:hover {
     opacity: .8;
+}
+
+.upload-cover .panel {
+    position: absolute;
+    margin: 0;
+    margin-right: -125px;
+    margin-top: 10px;
+    padding: 24px;
+    top: 100%;
+    right: 0;
+    width: 290px;
+    font-size: 14px;
+    white-space: nowrap;
+    color: #909090;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px #f1f1f1;
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 100;
+}
+
+.upload-cover .panel:before {
+    content: "";
+    position: absolute;
+    margin-left: 0;
+    top: -8px;
+    right: 137px;
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-right: none;
+    border-bottom: none;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.upload-cover .panel .title {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(119, 127, 141, 0.8);
+}
+
+.upload-cover .cover-area {
+    color: rgba(51, 51, 51, .4);
+    background-color: hsla(0, 0%, 87%, .6);
+    height: 96px;
+    line-height: 96px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.upload-cover .cover-area:hover:not(:disabled) {
+    background-color: hsla(0, 0%, 87%, .8);
+}
+
+.cover-img-area {
+    position: relative;
+    min-height: 64px;
+    background: #fff;
+}
+
+.cover-img-area img {
+    max-width: 100%;
+}
+
+.upload-cover .delete-cover-btn {
+    background: none;
+    position: absolute;
+    margin: 6px;
+    padding: 2px 6px;
+    top: 0;
+    right: 0;
+    font-size: 14px;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.upload-cover .delete-cover-btn i {
+    font-size: 16px;
 }
 
 .editor-more-btn {
@@ -301,4 +398,10 @@ html, body, #app, #editorBox {
 
 .navbar-user {
     float: right;
+    margin-left: 30px;
+    margin-right: 12px;
+}
+
+.navbar-user .avatar {
+    width: 40px;
 }

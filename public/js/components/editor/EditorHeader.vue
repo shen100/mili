@@ -1,5 +1,6 @@
 <template>
     <div class="editor-header">
+        <ErrorTip ref="errorTip" />
         <div class="editor-logo-box" :style="{width: `${logoBoxWidth}px` }"></div>
         <input v-if="!isRich" v-model="articleTitle" class="editor-title-input" type="text" placeholder="输入标题..." />
         <div v-else class="editor-no-header-title"></div>
@@ -33,7 +34,21 @@
                 <i @click="onMarkdownToggle" class="iconfont ic-others"></i>
                 <div v-if="markdownToggled" class="switch-editor">切换为 Markdown 编辑器</div>
             </div>
-            <div class="upload-cover"><div></div></div>
+            <div v-clickoutside="onClickOutsideCoverToggle" class="upload-cover">
+                <div @click="onCoverToggle" class="upload-cover-img"></div>
+                <div v-if="coverToggled" class="panel">
+                    <div class="title">添加封面大图</div>
+                    <Uploader v-if="!coverURL" style="width: 100%;" @success="onImgUploadSuccess" @error="onImgUploadFail">
+                        <div class="cover-area">点击此处添加图片</div>
+                    </Uploader>
+                    <div v-else class="cover-img-area">
+                        <img :src="coverURL" />
+                        <button @click="onRemoveCover" title="移除这张图片" class="delete-cover-btn">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div class="auto-save">文章将会自动保存至<a href="/editor/drafts">草稿</a></div>
         </div>
     </div>
@@ -41,6 +56,8 @@
 
 <script>
 import NavUser from '~/js/components/common/NavUser.vue';
+import Uploader from '~/js/components/common/Uploader.vue';
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
 
 export default {
     props: [
@@ -52,6 +69,8 @@ export default {
     data () {
         return {
             articleTitle: '',
+            coverURL: '',
+            coverToggled: false,
             publishToggled: false,
             markdownToggled: false,
             selectCategoryIndex: 0,
@@ -103,6 +122,21 @@ export default {
         onPublish() {
             
         },
+        onRemoveCover() {
+            this.coverURL = '';
+        },
+        onImgUploadSuccess(imgURL) {
+            this.coverURL = imgURL;
+        },
+        onImgUploadFail(message) {
+            this.$refs.errorTip.show(message);
+        },
+        onCoverToggle() {
+            this.coverToggled = !this.coverToggled;
+        },
+        onClickOutsideCoverToggle() {
+            this.coverToggled = false;
+        },
         onMarkdownToggle() {
             this.markdownToggled = !this.markdownToggled;
         },
@@ -118,6 +152,8 @@ export default {
     },
     components: {
         NavUser,
+        Uploader,
+        ErrorTip,
     }
 }
 </script>

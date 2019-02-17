@@ -70,9 +70,13 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .uploader-box {
     display: inline-block;
+}
+
+.ivu-upload-select {
+    width: 100%;
 }
 </style>
 

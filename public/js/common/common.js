@@ -2,20 +2,37 @@ import '~/styles/main.scss';
 import Vue from 'vue';
 import TopNavSearch from '~/js/components/TopNavSearch.vue';
 import {
+    addClass,
+    removeClass,
+    hasClass,
+} from '~/js/utils/dom.js';
+
+import {
     registerDirective,
 } from '~/js/utils/vue.js';
 
 registerDirective(Vue);
 
-// $('.navbar-user').mouseenter(function() {
-//     $('.navbar-user .user').addClass('open');
-// });
+const navbarUser = document.getElementsByClassName('navbar-user')[0];
 
-// $('.navbar-user').mouseleave(function() {
-//     $('.navbar-user .user').removeClass('open');
-// });
+document.addEventListener('click', (event) => {
+    if (navbarUser.contains(event.target)) {
+        return;
+    }
+    const userDropdownBox = document.getElementById('userDropdownBox');
+    removeClass(userDropdownBox, 'open');
+});
 
-if ($('#topnavsearch').length) {
+navbarUser.addEventListener('click', () => {
+    const userDropdownBox = document.getElementById('userDropdownBox');
+    if (hasClass(userDropdownBox, 'open')) {
+        removeClass(userDropdownBox, 'open');
+    } else {
+        addClass(userDropdownBox, 'open');
+    }
+});
+
+if (document.getElementById('topnavsearch')) {
     new Vue({
         render: h => h(TopNavSearch),
     }).$mount('#topnavsearch');

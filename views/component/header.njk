@@ -17,14 +17,16 @@
         </form>
       </li>
     </ul>
-    <a class="btn write-btn" href="/editor/drafts/new" target="_blank">
-      <i class="iconfont ic-write"></i>写文章
-    </a>
     <div class="navbar-user">
       {% if user %}
-      <div class="user">
+      <div id="userDropdownBox" class="user">
         <div data-hover="dropdown">
-          <a class="avatar" href="/u/{{user.id}}.html"><img src="{{user.avatarURL}}"></a>
+          <a class="avatar" href="javascript:void(0);">
+            <img src="{{user.avatarURL}}">
+            <div class="avatar-img-sep"></div>
+            <i class="fa fa-caret-down"></i>
+            <i class="fa fa-caret-up"></i>
+          </a>
         </div>
         <ul class="dropdown-menu">
           <li><a href="/u/{{user.id}}.html"><i class="iconfont ic-navigation-profile"></i><span>我的主页</span></a></li>
@@ -42,5 +44,8 @@
       <a href="/signup.html" class="btn navbar-signup">注册</a>
       {% endif %}
     </div>
+    <a class="btn write-btn" href="/editor/drafts/new" target="_blank">
+      <i class="iconfont ic-write"></i>写文章
+    </a>
   </div>
 </nav>

@@ -1,8 +1,10 @@
 <template>
     <div class="navbar-user">
-        <div class="user">
+        <div id="userDropdownBox" class="user">
             <div data-hover="dropdown">
-                <a class="avatar" :href="`/u/${userID}.html`"><img :src="avatarURL"></a>
+                <a class="avatar" href="javascript:void(0);">
+                    <img :src="avatarURL">
+                </a>
             </div>
             <ul class="dropdown-menu" :style="menuStyle[menuAlign]">
                 <li><a :href="`/u/${userID}.html`"><i class="iconfont ic-navigation-profile"></i><span>我的主页</span></a></li>
@@ -20,6 +22,12 @@
 
 
 <script>
+import {
+    addClass,
+    removeClass,
+    hasClass,
+} from '~/js/utils/dom.js';
+
 export default {
     props: [
         'menuAlign',
@@ -38,12 +46,23 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
-            $('.navbar-user').mouseenter(function() {
-                $('.navbar-user .user').addClass('open');
+            const navbarUser = document.getElementsByClassName('navbar-user')[0];
+
+            document.addEventListener('click', (event) => {
+                if (navbarUser.contains(event.target)) {
+                    return;
+                }
+                const userDropdownBox = document.getElementById('userDropdownBox');
+                removeClass(userDropdownBox, 'open');
             });
 
-            $('.navbar-user').mouseleave(function() {
-                $('.navbar-user .user').removeClass('open');
+            navbarUser.addEventListener('click', () => {
+                const userDropdownBox = document.getElementById('userDropdownBox');
+                if (hasClass(userDropdownBox, 'open')) {
+                    removeClass(userDropdownBox, 'open');
+                } else {
+                    addClass(userDropdownBox, 'open');
+                }
             });
         });
     }
