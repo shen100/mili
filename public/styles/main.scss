@@ -3,8 +3,9 @@
 @import './libs/animate.css';
 @import './libs/font-awesome.css';
 @import './iconfont.scss';
+@import './variable.scss';
 
-html,body {
+html, body {
     height: 100%;
 }
 
@@ -1123,4 +1124,83 @@ nav .width-limit {
     font-weight: 700;
     border: none;
     pointer-events: none;
+}
+
+.alert-modal-header {
+    padding: 30px;
+}
+
+.alert-modal-header h4 {
+    margin: 0;
+    color: #333;
+    text-align: left;
+    font-size: 18px;
+}
+
+.alert-modal-header .close {
+    font-family: $fontFamily;
+    float: right;
+    line-height: 1;
+    color: #000;
+    opacity: .2;
+    filter: alpha(opacity=20);
+    font-weight: 200;
+    font-size: 26px;
+    outline: none;
+    text-shadow: none;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    margin-top: -4px;
+}
+
+.alert-modal-body {
+    padding: 0 30px;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+}
+
+.alert-modal-footer {
+    padding: 20px;
+    height: 80px;
+    background-color: #fff;
+}
+
+.alert-modal-footer button {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: 0;
+    float: right;
+    font-size: 13px;
+}
+
+.alert-modal-footer .submit {
+    margin-left: 30px;
+    color: #ea6f5a;
+    border-color: rgba(236, 97, 73, 0.7);
+    padding: 5px 22px;
+    border: 1px solid;
+    border-radius: 3px;
+    height: 32px;
+    line-height: 20px;
+    box-sizing: border-box;
+}
+
+.alert-modal-footer .submit:hover {
+    border-color: #ea6f5a;
+    background-color: rgba(236, 97, 73, .05);
+}
+
+.alert-modal-footer .cancel {
+    color: #969696;
+    height: 32px;
+    line-height: 32px;
+}
+
+.alert-modal-footer .cancel:hover {
+    color: #333;
 }

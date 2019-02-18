@@ -1,6 +1,9 @@
 <template>
     <div class="editor-header">
         <ErrorTip ref="errorTip" />
+        <Alert ref="switchEditorAlert" width="450" 
+            @ok="onSwitchEditorAlertOk" @cancel="onSwitchEditorAlertCancel"
+            :title="`切换为${editorTypeLabel}编辑器`" :text="switchEditorAlertText" />
         <div class="editor-logo-box" :style="{width: `${logoBoxWidth}px` }"></div>
         <input v-if="!isRich" v-model="articleTitle" class="editor-title-input" type="text" placeholder="输入标题..." />
         <div v-else class="editor-no-header-title"></div>
@@ -32,16 +35,20 @@
             </div>
             <div v-clickoutside="onClickOutsideMarkdownToggle" class="editor-more-btn">
                 <i @click="onMarkdownToggle" class="iconfont ic-others"></i>
-                <div v-if="markdownToggled" class="switch-editor">切换为 Markdown 编辑器</div>
+                <div v-if="markdownToggled" @click="switchEditor" class="switch-editor">切换为 {{editorTypeLabel}} 编辑器</div>
             </div>
             <div v-clickoutside="onClickOutsideCoverToggle" class="upload-cover">
-                <div @click="onCoverToggle" class="upload-cover-img"></div>
+                <div v-if="!coverURL" @click="onCoverToggle" class="upload-cover-img"></div>
+                <div v-else @click="onCoverToggle" class="upload-cover-img2"></div>
                 <div v-if="coverToggled" class="panel">
                     <div class="title">添加封面大图</div>
-                    <Uploader v-if="!coverURL" style="width: 100%;" @success="onImgUploadSuccess" @error="onImgUploadFail">
+                    <div v-if="isCoverUploading" class="cover-area-uploading">封面设置中...</div>
+                    <Uploader v-show="!isCoverUploading && !coverURL" style="width: 100%;" 
+                        @uploading="onImgUploading"
+                        @success="onImgUploadSuccess" @error="onImgUploadFail">
                         <div class="cover-area">点击此处添加图片</div>
                     </Uploader>
-                    <div v-else class="cover-img-area">
+                    <div v-show="!isCoverUploading && coverURL" class="cover-img-area">
                         <img :src="coverURL" />
                         <button @click="onRemoveCover" title="移除这张图片" class="delete-cover-btn">
                             <i class="fa fa-trash"></i>
@@ -58,6 +65,7 @@
 import NavUser from '~/js/components/common/NavUser.vue';
 import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
+import Alert from '~/js/components/common/Alert.vue';
 
 export default {
     props: [
@@ -70,6 +78,7 @@ export default {
         return {
             articleTitle: '',
             coverURL: '',
+            isCoverUploading: false,
             coverToggled: false,
             publishToggled: false,
             markdownToggled: false,
@@ -115,21 +124,41 @@ export default {
                     id: 10,
                     name: '运维'
                 }
-            ]
+            ],
+            switchEditorAlertVisible: false,
+            editorTypeLabel: '富文本',
+            switchEditorAlertText: '切换编辑器后，当前内容不会迁移，但会自动保存为草稿。',
         }
     },
     methods: {
         onPublish() {
             
         },
+        switchEditor() {
+            this.$refs.switchEditorAlert.show();
+            this.markdownToggled = false;
+        },
+        onSwitchEditorAlertOk() {
+            console.log('onSwitchEditorAlertOk');
+        },
+        onSwitchEditorAlertCancel() {
+            console.log('onSwitchEditorAlertCancel');
+        },
         onRemoveCover() {
             this.coverURL = '';
         },
+        onImgUploading() {
+            this.coverURL = '';
+            this.isCoverUploading = true;
+        },
         onImgUploadSuccess(imgURL) {
             this.coverURL = imgURL;
+            this.isCoverUploading = false;
         },
         onImgUploadFail(message) {
+            this.coverURL = '';
             this.$refs.errorTip.show(message);
+            this.isCoverUploading = false;
         },
         onCoverToggle() {
             this.coverToggled = !this.coverToggled;
@@ -154,6 +183,7 @@ export default {
         NavUser,
         Uploader,
         ErrorTip,
+        Alert,
     }
 }
 </script>

@@ -47,7 +47,8 @@ export default {
                 ext = file.name.substr(index);
             }
             this.uploadData.key = this.uploadPrefix + '/' + uuid() + ext;
-            return true
+            this.$emit('uploading');
+            return true;
         },
         onUploadCallback (res, file) {
             let imgURL = ossResponseParse(res, this.uploadImgURL);

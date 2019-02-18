@@ -103,6 +103,13 @@ html, body, #app, #editorBox {
     background-image: url(../../images/editor/uploadcover.svg);
 }
 
+.upload-cover-img2 {
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    background-image: url(../../images/editor/uploadcover2.svg);
+}
+
 .upload-cover-img:hover {
     opacity: .8;
 }
@@ -155,7 +162,7 @@ html, body, #app, #editorBox {
     color: rgba(119, 127, 141, 0.8);
 }
 
-.upload-cover .cover-area {
+.upload-cover .cover-area, .upload-cover .cover-area-uploading {
     color: rgba(51, 51, 51, .4);
     background-color: hsla(0, 0%, 87%, .6);
     height: 96px;
@@ -239,6 +246,7 @@ html, body, #app, #editorBox {
     box-sizing: border-box;
     font-size: 14px;
     line-height: normal;
+    user-select: none;
 }
 
 .switch-editor:hover {
