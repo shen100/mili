@@ -15,22 +15,24 @@ registerDirective(Vue);
 
 const navbarUser = document.getElementsByClassName('navbar-user')[0];
 
-document.addEventListener('click', (event) => {
-    if (navbarUser.contains(event.target)) {
-        return;
-    }
-    const userDropdownBox = document.getElementById('userDropdownBox');
-    removeClass(userDropdownBox, 'open');
-});
-
-navbarUser.addEventListener('click', () => {
-    const userDropdownBox = document.getElementById('userDropdownBox');
-    if (hasClass(userDropdownBox, 'open')) {
+if (navbarUser) {
+    document.addEventListener('click', (event) => {
+        if (navbarUser.contains(event.target)) {
+            return;
+        }
+        const userDropdownBox = document.getElementById('userDropdownBox');
         removeClass(userDropdownBox, 'open');
-    } else {
-        addClass(userDropdownBox, 'open');
-    }
-});
+    });
+
+    navbarUser.addEventListener('click', () => {
+        const userDropdownBox = document.getElementById('userDropdownBox');
+        if (hasClass(userDropdownBox, 'open')) {
+            removeClass(userDropdownBox, 'open');
+        } else {
+            addClass(userDropdownBox, 'open');
+        }
+    });
+}
 
 if (document.getElementById('topnavsearch')) {
     new Vue({

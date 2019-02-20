@@ -33,6 +33,7 @@
     "@nestjs/websockets": "^5.3.11",
     "ali-oss": "^6.0.1",
     "axios": "^0.18.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "bluebird": "^3.5.2",
     "cache-manager": "^2.9.0",
     "class-transformer": "^0.1.9",

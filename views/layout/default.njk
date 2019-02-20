@@ -33,16 +33,19 @@
   {% include '../component/footer.njk' %}
   {% endblock %}
 
-  {% block jqueryjs %}
-  <script src="{{jsPath}}/libs/jquery-1.11.3.min.js"></script>
-  {% endblock %}
-
   <script>
     {# dump 在一个对象上调用JSON.stringify，并将结果输出到模板上 #}
     var globalConfig = {{ globalConfig | dump | safe }};
   </script>
 
   {% block pageData %}
+  {% endblock %}
+
+  {% block jqueryjs %}
+  <script src="{{jsPath}}/libs/jquery-1.11.3.min.js"></script>
+  {% endblock %}
+  
+  {% block libjs %}
   {% endblock %}
 
   {% block devjs %}

@@ -18,17 +18,19 @@ export default {
     props: [
         'width',
         'value',
-        'title',
-        'text',
     ],
     data () {
         return {
-            modalVisible: false
+            modalVisible: false,
+            title: '',
+            text: '',
         };
     },
     methods: {
-        show() {
+        show(title, text) {
             this.modalVisible = true;
+            this.title = title;
+            this.text = text;
         },
         onOk() {
             this.$emit('ok');

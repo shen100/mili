@@ -63,15 +63,16 @@ module.exports = {
                         // cacheDirectory: true,
                         plugins: [
                             'syntax-dynamic-import',
+                            'transform-object-rest-spread',
                             [
                                 'import', {
                                     libraryName: 'iview',
-                                    libraryDirectory: 'src/components'
-                                }
-                            ]
-                        ]
-                    }
-                }
+                                    libraryDirectory: 'src/components',
+                                },
+                            ],
+                        ],
+                    },
+                },
             },
             {
                 test: /\.(sc|sa|c)ss$/,

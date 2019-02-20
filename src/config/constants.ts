@@ -6,6 +6,11 @@ export class UserConstants {
     static readonly CAPTCHA_LENGTH: number = 6;
 }
 
+export class CategoryConstants {
+    static readonly CATEGORY_MIN_LENGTH: number = 1;
+    static readonly CATEGORY_MAX_LENGTH: number = 20;
+}
+
 export class CollectionConstants {
     static readonly NAME_MIN_LENGTH: number = 1; // 专题名称最小长度
     static readonly NAME_MAX_LENGTH: number = 50; // 专题名称最大长度

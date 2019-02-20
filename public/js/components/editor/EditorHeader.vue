@@ -2,8 +2,7 @@
     <div class="editor-header">
         <ErrorTip ref="errorTip" />
         <Alert ref="switchEditorAlert" width="450" 
-            @ok="onSwitchEditorAlertOk" @cancel="onSwitchEditorAlertCancel"
-            :title="`切换为${editorTypeLabel}编辑器`" :text="switchEditorAlertText" />
+            @ok="onSwitchEditorAlertOk" @cancel="onSwitchEditorAlertCancel" />
         <div class="editor-logo-box" :style="{width: `${logoBoxWidth}px` }"></div>
         <input v-if="!isRich" v-model="articleTitle" class="editor-title-input" type="text" placeholder="输入标题..." />
         <div v-else class="editor-no-header-title"></div>
@@ -27,7 +26,11 @@
                         <div class="sub-title">标签</div>
                         <div class="user-category-list"></div>
                         <div class="tag-input tag-input">
-                            <input type="text" placeholder="添加1个标签" class="input">
+                            <Select v-model="selectCategoryID" placeholder="添加1个标签"
+                                filterable remote :remote-method="requestCategories" :loading="isLoadingCategory">
+                                <Option v-for="(c, i) in categories" :value="c.id" :key="i">{{c.name}}</Option>
+                            </Select>
+
                         </div>
                     </div>
                     <button class="publish-btn">确定并发布</button>
@@ -66,6 +69,8 @@ import NavUser from '~/js/components/common/NavUser.vue';
 import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import Alert from '~/js/components/common/Alert.vue';
+import { ErrorCode } from '~/js/constants/error.js';
+import { myHTTP } from '~/js/common/net.js';
 
 export default {
     props: [
@@ -125,6 +130,14 @@ export default {
                     name: '运维'
                 }
             ],
+            categories: [
+                {
+                    id: 1,
+                    name: 'test'
+                }
+            ],
+            isLoadingCategory: false,
+            selectCategoryID: undefined,
             switchEditorAlertVisible: false,
             editorTypeLabel: '富文本',
             switchEditorAlertText: '切换编辑器后，当前内容不会迁移，但会自动保存为草稿。',
@@ -134,8 +147,37 @@ export default {
         onPublish() {
             
         },
+        requestCategories(queryText) {
+            this.categories = [];
+            if (!queryText) {
+                this.categories = [];
+                return;
+            }
+            this.isLoadingCategory = true;
+            const url = `/categories/search?name=${encodeURIComponent(queryText)}`;
+            // myHTTP.get(url).then((result) => {
+            //     this.categories = result.data.data;
+            //     this.isLoadingCategory = false;
+            //     console.log('-------------------');
+            //     console.log(this);
+            //     console.log(this.categories);
+            // });
+
+            console.log(this.categories);
+            setTimeout(() => {
+                this.isLoadingCategory = false;
+                console.log('-------------------123');
+                console.log(this);
+                this.categories = [
+                    {
+                        id: 1,
+                        name: 'test'
+                    }
+                ];
+            }, 20000);
+        },
         switchEditor() {
-            this.$refs.switchEditorAlert.show();
+            this.$refs.switchEditorAlert.show(`切换为${this.editorTypeLabel}编辑器`, this.switchEditorAlertText);
             this.markdownToggled = false;
         },
         onSwitchEditorAlertOk() {

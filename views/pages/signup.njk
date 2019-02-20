@@ -1,9 +1,5 @@
 {% extends '../layout/empty.njk' %}
 
-{% block headjs %}
-<script src="{{jsPath}}/libs/geetest.js"></script>
-{% endblock %}
-
 {% block main %}
 <div class="sign">
   <div class="logo">
@@ -61,6 +57,10 @@
 <script>
   var siteName = '{{siteName}}';
 </script>
+{% endblock %}
+
+{% block libjs %}
+<script src="{{jsPath}}/libs/geetest.js"></script>
 {% endblock %}
 
 {% block devjs %}
