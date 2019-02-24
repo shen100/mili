@@ -3,7 +3,8 @@
         <ErrorTip ref="errorTip" />
         <div v-if="!isNewPublish" id="editorBox">
             <EditorHeader :userID="userID" :avatarURL="avatarURL" 
-                :logoBoxWidth="logoBoxWidth" />
+                :logoBoxWidth="logoBoxWidth"
+                @on-publish="onPublish" />
             <MarkdownEditor @togglesidebyside="onToggleSideBySide" @input="onEditorInput"/>
         </div>
         <ArticlePublished v-else />
@@ -16,6 +17,8 @@ import EditorHeader from '~/js/components/editor/EditorHeader.vue';
 import MarkdownEditor from '~/js/components/common/MarkdownEditor.vue';
 import ArticlePublished from '~/js/components/article/ArticlePublished.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
+import { ArticleContentType } from '~/js/constants/article.js';
+import { myHTTP } from '~/js/common/net.js';
 import { trim } from '~/js/utils/utils.js';
 
 export default {
@@ -25,17 +28,36 @@ export default {
             avatarURL: window.avatarURL,
             logoBoxWidth: 0,
             isNewPublish: false,
+            articleID: '',
             articleTitle: '',
             articleContent: ''
         }
     },
     methods: {
-        onPublish() {
-            this.articleTitle = trim(this.articleTitle);
+        onPublish(categoryID, title) {
+            this.articleTitle = trim(title);
             if (!this.articleTitle) {
                 this.$refs.errorTip.show('请输入标题');
                 return;
             }
+            const url = '/articles';
+            myHTTP.post(url, {
+                name: this.articleTitle,
+                content: this.articleContent,
+                contentType: ArticleContentType.Markdown,
+                categories: [
+                    { id: categoryID }
+                ]
+            }).then((res) => {
+                const result = res.data;
+                if (result.errorCode) {
+                    this.$refs.errorTip.show(result.message);
+                    return;
+                }
+                if (!this.articleID) {
+                    this.isNewPublish = true;
+                }
+            });
         },
         onEditorInput(content) {
             this.articleContent = content;

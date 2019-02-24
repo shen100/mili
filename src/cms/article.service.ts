@@ -1,6 +1,9 @@
 import * as _ from 'lodash';
+import * as marked from 'marked';
+import * as striptags from 'striptags';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Article, ArticleStatus, ArticleContentType } from '../entity/article.entity';
+import { ArticleConstants } from '../config/constants';
 import { Repository, Not, Like } from 'typeorm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -152,10 +155,16 @@ export class ArticleService {
         article.contentType = createArticleDto.contentType;
         if (article.contentType === ArticleContentType.Markdown) {
             article.content = createArticleDto.content;
+            article.htmlContent = marked(createArticleDto.content);
         } else {
             article.htmlContent = createArticleDto.content;
         }
-        article.content = createArticleDto.content;
+        let summary = striptags(article.htmlContent);
+        summary = summary.replace(/^\s+|\s+$/g, '');
+        summary = summary.replace(/\s+|\n$/g, ' ');
+        article.wordCount = summary.length;
+        summary = summary.substr(0, ArticleConstants.SUMMARY_LENGTH);
+        article.summary = summary;
         article.status = ArticleStatus.Verifying;
         article.userID = userID;
         article.createdAt = new Date();

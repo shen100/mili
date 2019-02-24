@@ -17,23 +17,24 @@
                 <div v-if="publishToggled" class="panel">
                     <div class="title">发布文章</div>
                     <div class="category-box">
-                        <div class="sub-title">分类</div>
+                        <div class="sub-title">热门分类</div>
                         <div class="category-list">
-                            <div :key="i" v-for="(c, i) in hotCategories" :class="{active: selectCategoryIndex === i}" class="item">{{c.name}}</div>
+                            <div @click="onSelectHotCategory(c.id)" :key="i" v-for="(c, i) in hotCategories" :class="{active: selectHotCategoryID === c.id}" class="item">{{c.name}}</div>
                         </div>
                     </div>
                     <div class="category-box">
-                        <div class="sub-title">标签</div>
-                        <div class="user-category-list"></div>
-                        <div class="tag-input tag-input">
-                            <Select v-model="selectCategoryID" placeholder="添加1个标签"
+                        <div class="sub-title" :style="{'margin-bottom': selectCategory ? '10px' : '2px'}">输入分类</div>
+                        <div v-show="selectCategory" class="user-category-list">
+                            <div @click="onCancelSelectCategory" class="item">{{selectCategory && selectCategory.name}}</div>
+                        </div>
+                        <div v-show="!selectCategory" class="tag-input tag-input">
+                            <Select @on-change="onSelectCategoryChange" v-model="selectCategoryID" placeholder="输入1个分类"
                                 filterable remote :remote-method="requestCategories" :loading="isLoadingCategory">
                                 <Option v-for="(c, i) in categories" :value="c.id" :key="i">{{c.name}}</Option>
                             </Select>
-
                         </div>
                     </div>
-                    <button class="publish-btn">确定并发布</button>
+                    <button @click="onPublish" class="publish-btn">确定并发布</button>
                 </div>
             </div>
             <div v-clickoutside="onClickOutsideMarkdownToggle" class="editor-more-btn">
@@ -87,55 +88,9 @@ export default {
             coverToggled: false,
             publishToggled: false,
             markdownToggled: false,
-            selectCategoryIndex: 0,
-            hotCategories: [
-                {
-                    id: 1,
-                    name: 'Android'
-                },
-                {
-                    id: 2,
-                    name: '前端'
-                },
-                {
-                    id: 3,
-                    name: 'iOS'
-                },
-                {
-                    id: 4,
-                    name: '产品'
-                },
-                {
-                    id: 5,
-                    name: '设计'
-                },
-                {
-                    id: 6,
-                    name: '工具资源'
-                },
-                {
-                    id: 7,
-                    name: '阅读'
-                },
-                {
-                    id: 8,
-                    name: '后端'
-                },
-                {
-                    id: 9,
-                    name: '人工智能'
-                },
-                {
-                    id: 10,
-                    name: '运维'
-                }
-            ],
-            categories: [
-                {
-                    id: 1,
-                    name: 'test'
-                }
-            ],
+            selectHotCategoryID: undefined,
+            hotCategories: [],
+            categories: [],
             isLoadingCategory: false,
             selectCategoryID: undefined,
             switchEditorAlertVisible: false,
@@ -143,48 +98,68 @@ export default {
             switchEditorAlertText: '切换编辑器后，当前内容不会迁移，但会自动保存为草稿。',
         }
     },
+    mounted() {
+        const url = '/categories/hot';
+        myHTTP.get(url).then((result) => {
+            this.hotCategories = result.data.data;
+        });
+    },
+    computed: {
+        selectCategory: function() {
+            if (!this.selectCategoryID) {
+                return null;
+            }
+            for (let i = 0; i < this.categories.length; i++) {
+                if (this.categories[i].id === this.selectCategoryID) {
+                    return this.categories[i];
+                }
+            }
+            return null;
+        }
+    },
     methods: {
         onPublish() {
-            
+            const cID = this.selectHotCategoryID || this.selectCategoryID;
+            if (!cID) {
+                this.$refs.errorTip.show('请至少选择一个分类');
+                return;
+            }
+            this.$emit('on-publish', cID, this.articleTitle);
+        },
+        onCancelSelectCategory() {
+            this.selectCategoryID = undefined;
+        },
+        onSelectHotCategory(id) {
+            this.selectHotCategoryID = id;
+            this.selectCategoryID = undefined;
+            this.$nextTick(() => {
+                this.selectHotCategoryID = id;
+            });
+        },
+        onSelectCategoryChange() {
+            this.selectHotCategoryID = undefined;
         },
         requestCategories(queryText) {
-            this.categories = [];
             if (!queryText) {
                 this.categories = [];
+                this.selectCategoryID = undefined;
                 return;
             }
             this.isLoadingCategory = true;
             const url = `/categories/search?name=${encodeURIComponent(queryText)}`;
-            // myHTTP.get(url).then((result) => {
-            //     this.categories = result.data.data;
-            //     this.isLoadingCategory = false;
-            //     console.log('-------------------');
-            //     console.log(this);
-            //     console.log(this.categories);
-            // });
-
-            console.log(this.categories);
-            setTimeout(() => {
+            myHTTP.get(url).then((result) => {
+                this.categories = result.data.data;
+                this.selectCategoryID = undefined;
                 this.isLoadingCategory = false;
-                console.log('-------------------123');
-                console.log(this);
-                this.categories = [
-                    {
-                        id: 1,
-                        name: 'test'
-                    }
-                ];
-            }, 20000);
+            });
         },
         switchEditor() {
             this.$refs.switchEditorAlert.show(`切换为${this.editorTypeLabel}编辑器`, this.switchEditorAlertText);
             this.markdownToggled = false;
         },
         onSwitchEditorAlertOk() {
-            console.log('onSwitchEditorAlertOk');
         },
         onSwitchEditorAlertCancel() {
-            console.log('onSwitchEditorAlertCancel');
         },
         onRemoveCover() {
             this.coverURL = '';
@@ -229,3 +204,34 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+.category-box .ivu-select-selection {
+    border-left: none!important;
+    border-right: none!important;
+    border-top: none!important;
+    border-color: #ddd;
+}
+
+.ivu-select-visible .ivu-select-selection {
+    box-shadow: none!important;
+    border-color: #ddd;
+}
+
+.ivu-select-selection-focused, .ivu-select-selection:hover {
+    border-color: #ddd;
+}
+
+.ivu-select-item-selected, .ivu-select-item-selected:hover {
+    color: #ea6f5a;
+}
+
+.ivu-select-single .ivu-select-input {
+    padding-left: 0;
+    cursor: text;
+}
+
+.tag-input {
+    padding-bottom: 10px;
+}
+</style>

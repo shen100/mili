@@ -94,6 +94,12 @@ export default {
         },
         onTitleInput(event) {
             this.$refs.titleDOM.style.height = this.$refs.titleDOM.scrollHeight + 'px';
+        },
+        getArticleTitle() {
+            return this.articleTitle;
+        },
+        getHTML() {
+            return this.editor.getHTML();
         }
     },
     mounted() {

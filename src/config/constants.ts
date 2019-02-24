@@ -6,6 +6,10 @@ export class UserConstants {
     static readonly CAPTCHA_LENGTH: number = 6;
 }
 
+export class ArticleConstants {
+    static readonly SUMMARY_LENGTH: number = 100;
+}
+
 export class CategoryConstants {
     static readonly CATEGORY_MIN_LENGTH: number = 1;
     static readonly CATEGORY_MAX_LENGTH: number = 20;

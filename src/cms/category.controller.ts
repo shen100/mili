@@ -12,6 +12,12 @@ export class CategoryController {
         private readonly categoryService: CategoryService,
     ) {}
 
+    @Get('/api/v1/categories/hot')
+    async hot() {
+        const categories: Array<Category> = await this.categoryService.hot();
+        return categories;
+    }
+
     @Get('/api/v1/categories/search')
     async search(@Query('name') name: string) {
         if (!name || name.length > CategoryConstants.CATEGORY_MAX_LENGTH) {
