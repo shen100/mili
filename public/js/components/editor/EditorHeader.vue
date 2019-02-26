@@ -23,11 +23,11 @@
                         </div>
                     </div>
                     <div class="category-box">
-                        <div class="sub-title" :style="{'margin-bottom': selectCategory ? '10px' : '2px'}">输入分类</div>
-                        <div v-show="selectCategory" class="user-category-list">
-                            <div @click="onCancelSelectCategory" class="item">{{selectCategory && selectCategory.name}}</div>
+                        <div class="sub-title" :style="{'margin-bottom': curSelectCategory ? '10px' : '2px'}">输入分类</div>
+                        <div v-show="curSelectCategory" class="user-category-list">
+                            <div @click="onCancelSelectCategory" class="item">{{curSelectCategory && curSelectCategory.name}}</div>
                         </div>
-                        <div v-show="!selectCategory" class="tag-input tag-input">
+                        <div v-show="!curSelectCategory" class="tag-input tag-input">
                             <Select @on-change="onSelectCategoryChange" v-model="selectCategoryID" placeholder="输入1个分类"
                                 filterable remote :remote-method="requestCategories" :loading="isLoadingCategory">
                                 <Option v-for="(c, i) in categories" :value="c.id" :key="i">{{c.name}}</Option>
@@ -72,6 +72,7 @@ import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import Alert from '~/js/components/common/Alert.vue';
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
+import { trim } from '~/js/utils/utils.js';
 
 export default {
     props: [
@@ -96,6 +97,7 @@ export default {
             switchEditorAlertVisible: false,
             editorTypeLabel: '富文本',
             switchEditorAlertText: '切换编辑器后，当前内容不会迁移，但会自动保存为草稿。',
+            lastQueryText: ''
         }
     },
     mounted() {
@@ -103,9 +105,13 @@ export default {
         myHTTP.get(url).then((result) => {
             this.hotCategories = result.data.data;
         });
+        setInterval(() => {
+            console.log(this.selectCategoryID);
+        }, 2000);
     },
     computed: {
-        selectCategory: function() {
+        curSelectCategory: function() {
+            console.log('selectCategory', this.selectCategoryID);
             if (!this.selectCategoryID) {
                 return null;
             }
@@ -134,22 +140,27 @@ export default {
             this.selectCategoryID = undefined;
             this.$nextTick(() => {
                 this.selectHotCategoryID = id;
+                this.$emit('on-category-change', this.selectHotCategoryID);
             });
         },
         onSelectCategoryChange() {
+            console.log('onSelectCategoryChange', this.selectCategoryID);
             this.selectHotCategoryID = undefined;
+            this.$emit('on-category-change', this.selectCategoryID);
         },
         requestCategories(queryText) {
+            queryText = trim(queryText);
+            if (this.lastQueryText === queryText) {
+                return;
+            }
+            this.lastQueryText = queryText;
             if (!queryText) {
-                this.categories = [];
-                this.selectCategoryID = undefined;
                 return;
             }
             this.isLoadingCategory = true;
             const url = `/categories/search?name=${encodeURIComponent(queryText)}`;
             myHTTP.get(url).then((result) => {
                 this.categories = result.data.data;
-                this.selectCategoryID = undefined;
                 this.isLoadingCategory = false;
             });
         },

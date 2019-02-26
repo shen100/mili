@@ -12,7 +12,7 @@ import {
 import { ArticleContentType } from '../../entity/article.entity';
 import { Type } from 'class-transformer';
 
-export class CategoryDto {
+class CategoryDto {
     @IsInt({
         message: '无效的分类id',
     })

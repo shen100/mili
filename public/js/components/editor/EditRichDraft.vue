@@ -30,6 +30,9 @@ export default {
         };
     },
     methods: {
+        autoSaveDraft() {
+
+        },
         onPublish(categoryID) {
             this.articleTitle = trim(this.$refs.richEditor.getArticleTitle());
             if (!this.articleTitle) {
@@ -56,6 +59,11 @@ export default {
                 }
             });
         }
+    },
+    mounted () {
+        this.$nextTick(function() {
+        });
+        this.autoSaveDraft();
     },
     components: {
         EditorHeader,

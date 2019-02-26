@@ -17,6 +17,9 @@ import { Collection } from '../entity/collection.entity';
 import { CollectionService } from './collection.service';
 import { EditorController } from './editor.controller';
 import { Category } from '../entity/category.entity';
+import { Draft } from '../entity/draft.entity';
+import { DraftController } from './draft.controller';
+import { DraftService } from './draft.service';
 
 @Module({
     imports: [
@@ -25,12 +28,14 @@ import { Category } from '../entity/category.entity';
             Article,
             Collection,
             Category,
+            Draft,
         ]),
         UserModule,
     ],
     controllers: [
         IndexController,
         ArticleController,
+        DraftController,
         CategoryController,
         UCController,
         CollectionController,
@@ -38,6 +43,12 @@ import { Category } from '../entity/category.entity';
         SearchController,
         AdminController,
     ],
-    providers: [ArticleService, UploadService, CollectionService, CategoryService],
+    providers: [
+        ArticleService,
+        DraftService,
+        CategoryService,
+        UploadService,
+        CollectionService,
+    ],
 })
 export class CMSModule {}

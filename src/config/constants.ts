@@ -1,3 +1,5 @@
+export const APIPrefix: string = '/api/v1';
+
 export class UserConstants {
     static readonly USERNAME_MIN_LENGTH: number = 4;
     static readonly USERNAME_MAX_LENGTH: number = 16;
@@ -8,6 +10,7 @@ export class UserConstants {
 
 export class ArticleConstants {
     static readonly SUMMARY_LENGTH: number = 100;
+    static readonly MAX_CATEGORY_COUNT: number = 3;
 }
 
 export class CategoryConstants {

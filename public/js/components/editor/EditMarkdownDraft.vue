@@ -4,6 +4,7 @@
         <div v-if="!isNewPublish" id="editorBox">
             <EditorHeader :userID="userID" :avatarURL="avatarURL" 
                 :logoBoxWidth="logoBoxWidth"
+                @on-category-change="onCategoryChange"
                 @on-publish="onPublish" />
             <MarkdownEditor @togglesidebyside="onToggleSideBySide" @input="onEditorInput"/>
         </div>
@@ -30,10 +31,30 @@ export default {
             isNewPublish: false,
             articleID: '',
             articleTitle: '',
-            articleContent: ''
-        }
+            articleContent: '',
+            categoryID: undefined,
+            autoSaveDraftIntervalID: undefined
+        };
     },
     methods: {
+        autoSaveDraft() {
+            this.autoSaveDraftIntervalID = setInterval(() => {
+                if (!trim(this.articleTitle) && !trim(this.articleContent)) {
+                    return;
+                }
+                const url = '/drafts';
+                myHTTP.post(url, {
+                    name: this.articleTitle,
+                    content: this.articleContent,
+                    contentType: ArticleContentType.Markdown,
+                    categories: this.categoryID ? [ { id: this.categoryID + 'a' } ] : null
+                }).then((res) => {
+                });
+            }, window.autoSaveTime);
+        },
+        onCategoryChange(categoryID) {
+            this.categoryID = categoryID;
+        },
         onPublish(categoryID, title) {
             this.articleTitle = trim(title);
             if (!this.articleTitle) {
@@ -56,6 +77,7 @@ export default {
                 }
                 if (!this.articleID) {
                     this.isNewPublish = true;
+                    clearInterval(this.autoSaveDraftIntervalID);
                 }
             });
         },
@@ -73,6 +95,7 @@ export default {
     mounted () {
         this.$nextTick(function() {
         });
+        this.autoSaveDraft();
     },
     components: {
         EditorHeader,
