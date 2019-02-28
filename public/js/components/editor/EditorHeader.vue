@@ -60,7 +60,7 @@
                     </div>
                 </div>
             </div>
-            <div class="auto-save">文章将会自动保存至<a href="/editor/drafts">草稿</a></div>
+            <div class="auto-save">{{autoSaveDraftTip}}<a @click="autoSaveDraft">存草稿</a></div>
         </div>
     </div>
 </template>
@@ -70,6 +70,7 @@ import NavUser from '~/js/components/common/NavUser.vue';
 import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import Alert from '~/js/components/common/Alert.vue';
+import { ArticleContentType } from '~/js/constants/article.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
 import { trim } from '~/js/utils/utils.js';
@@ -79,7 +80,12 @@ export default {
         'isRich',
         'logoBoxWidth',
         'userID',
-        'avatarURL'
+        'avatarURL',
+        'editorTypeLabel',
+        'getArticleTitle',
+        'getEditorHTML',
+        'getEditorMarkdown',
+        'articleID'
     ],
     data () {
         return {
@@ -91,13 +97,17 @@ export default {
             markdownToggled: false,
             selectHotCategoryID: undefined,
             hotCategories: [],
+            selectCategoryID: undefined,
             categories: [],
             isLoadingCategory: false,
-            selectCategoryID: undefined,
             switchEditorAlertVisible: false,
-            editorTypeLabel: '富文本',
             switchEditorAlertText: '切换编辑器后，当前内容不会迁移，但会自动保存为草稿。',
-            lastQueryText: ''
+            lastQueryText: '',
+            autoSaveDraftTip: '文章将自动保存至草稿',
+            autoSaveTime: window.env === 'development' ? 10 * 1000 : 5 * 60 * 1000,
+            isDraftSaving: false,
+            autoSaveDraftIntervalID: 0,
+            lastSaveDraftContent: ''
         }
     },
     mounted() {
@@ -105,13 +115,10 @@ export default {
         myHTTP.get(url).then((result) => {
             this.hotCategories = result.data.data;
         });
-        setInterval(() => {
-            console.log(this.selectCategoryID);
-        }, 2000);
+        this.autoSaveDraftIntervalID = setInterval(this.autoSaveDraft, this.autoSaveTime);
     },
     computed: {
         curSelectCategory: function() {
-            console.log('selectCategory', this.selectCategoryID);
             if (!this.selectCategoryID) {
                 return null;
             }
@@ -124,13 +131,96 @@ export default {
         }
     },
     methods: {
+        autoSaveDraft() {
+            if (this.isDraftSaving) {
+                return;
+            }
+            const articleTitle = trim(this.getTitle());
+            const articleContent = this.getContent();
+            if (!articleTitle && this.isContentEmpty(articleContent)) {
+                return;
+            }
+            if (this.lastSaveDraftContent === articleContent) {
+                return;
+            }
+            const cID = this.selectHotCategoryID || this.selectCategoryID;
+            const url = '/drafts';
+            this.autoSaveDraftTip = '正自动保存至草稿...';
+            this.isDraftSaving = true;
+            myHTTP.post(url, {
+                name: articleTitle,
+                content: articleContent,
+                contentType: this.isRich ? ArticleContentType.Markdown : ArticleContentType.HTML,
+                categories: cID ? [ { id: cID } ] : null
+            }).then((res) => {
+                this.isDraftSaving = false;
+                if (!res.data.errorCode) {
+                    this.autoSaveDraftTip = '已保存至草稿';
+                }
+                this.lastSaveDraftContent = articleContent;
+            }).catch((err) => {
+                this.isDraftSaving = false;
+            });
+        },
+        getTitle() {
+            if (this.isRich) {
+                return this.getArticleTitle();
+            }
+            return this.articleTitle;
+        },
+        getContent() {
+            if (this.isRich) {
+                return this.getEditorHTML();
+            }
+            return this.getEditorMarkdown();
+        },
+        isContentEmpty(articleContent) {
+            if (this.isRich) {
+                if (!articleContent || articleContent === '<p></p>') {
+                    return true;
+                }
+            } else {
+                if (!articleContent) {
+                    return true;
+                }
+            }
+            return false;
+        },
         onPublish() {
             const cID = this.selectHotCategoryID || this.selectCategoryID;
             if (!cID) {
                 this.$refs.errorTip.show('请至少选择一个分类');
                 return;
             }
-            this.$emit('on-publish', cID, this.articleTitle);
+            this.articleTitle = trim(this.getTitle());
+            this.articleContent = this.getContent();
+
+            if (!this.articleTitle) {
+                this.$refs.errorTip.show('请输入标题');
+                return;
+            }
+            if (this.isContentEmpty(this.articleContent)) {
+                this.$refs.errorTip.show('请输入正文');
+                return;
+            }
+            
+            const url = '/articles';
+            myHTTP.post(url, {
+                name: this.articleTitle,
+                content: this.articleContent,
+                contentType: this.isRich ? ArticleContentType.Markdown : ArticleContentType.HTML,
+                categories: [ { id: cID } ]
+            }).then((res) => {
+                const result = res.data;
+                if (result.errorCode) {
+                    this.$refs.errorTip.show(result.message);
+                    return;
+                }
+                clearInterval(this.autoSaveDraftIntervalID);
+                if (!this.articleID) {
+                    this.$emit('newpublished');
+                }
+            });
         },
         onCancelSelectCategory() {
             this.selectCategoryID = undefined;
@@ -139,14 +229,13 @@ export default {
             this.selectHotCategoryID = id;
             this.selectCategoryID = undefined;
             this.$nextTick(() => {
+                // 下面这行代码不能去掉，对this.selectCategoryID赋值时，会调用onSelectCategoryChange
+                // 然后又对 this.selectHotCategoryID 进行赋值
                 this.selectHotCategoryID = id;
-                this.$emit('on-category-change', this.selectHotCategoryID);
             });
         },
         onSelectCategoryChange() {
-            console.log('onSelectCategoryChange', this.selectCategoryID);
             this.selectHotCategoryID = undefined;
-            this.$emit('on-category-change', this.selectCategoryID);
         },
         requestCategories(queryText) {
             queryText = trim(queryText);
@@ -161,6 +250,8 @@ export default {
             const url = `/categories/search?name=${encodeURIComponent(queryText)}`;
             myHTTP.get(url).then((result) => {
                 this.categories = result.data.data;
+                this.isLoadingCategory = false;
+            }).catch((err) => {
                 this.isLoadingCategory = false;
             });
         },
@@ -215,34 +306,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss">
-.category-box .ivu-select-selection {
-    border-left: none!important;
-    border-right: none!important;
-    border-top: none!important;
-    border-color: #ddd;
-}
-
-.ivu-select-visible .ivu-select-selection {
-    box-shadow: none!important;
-    border-color: #ddd;
-}
-
-.ivu-select-selection-focused, .ivu-select-selection:hover {
-    border-color: #ddd;
-}
-
-.ivu-select-item-selected, .ivu-select-item-selected:hover {
-    color: #ea6f5a;
-}
-
-.ivu-select-single .ivu-select-input {
-    padding-left: 0;
-    cursor: text;
-}
-
-.tag-input {
-    padding-bottom: 10px;
-}
-</style>

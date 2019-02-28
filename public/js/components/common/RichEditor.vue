@@ -93,7 +93,8 @@ export default {
             this.editor.focus();
         },
         onTitleInput(event) {
-            this.$refs.titleDOM.style.height = this.$refs.titleDOM.scrollHeight + 'px';
+            const scrollHeight = Math.min(this.$refs.titleDOM.scrollHeight, 80);
+            this.$refs.titleDOM.style.height = scrollHeight + 'px';
         },
         getArticleTitle() {
             return this.articleTitle;

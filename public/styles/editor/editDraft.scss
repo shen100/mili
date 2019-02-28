@@ -413,3 +413,32 @@ html, body, #app, #editorBox {
 .navbar-user .avatar {
     width: 40px;
 }
+
+.category-box .ivu-select-selection {
+    border-left: none!important;
+    border-right: none!important;
+    border-top: none!important;
+    border-color: #ddd;
+}
+
+.ivu-select-visible .ivu-select-selection {
+    box-shadow: none!important;
+    border-color: #ddd;
+}
+
+.ivu-select-selection-focused, .ivu-select-selection:hover {
+    border-color: #ddd;
+}
+
+.ivu-select-item-selected, .ivu-select-item-selected:hover {
+    color: #ea6f5a;
+}
+
+.ivu-select-single .ivu-select-input {
+    padding-left: 0;
+    cursor: text;
+}
+
+.tag-input {
+    padding-bottom: 10px;
+}

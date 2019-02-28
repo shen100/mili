@@ -7,10 +7,10 @@
 
 {% block pageData %}
 <script>
+  var env = '{{ env }}';
   var userID = {{ user.id }};
   var avatarURL = '{{ user.avatarURL }}';
   var uploadPolicy = {{ uploadPolicy | dump | safe }};
-  var autoSaveTime = {% if env === 'development' %}10000{% else %}5 * 60 * 1000{% endif %};
 </script>
 {% endblock %}
 
