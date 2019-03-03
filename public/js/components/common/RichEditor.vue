@@ -8,6 +8,10 @@
 </template>
 
 <script>
+// https://www.npmjs.com/package/tiptap
+// https://github.com/scrumpy/tiptap
+// https://tiptap.scrumpy.io/
+
 import { Editor, EditorContent } from 'tiptap';
 import {
     Blockquote,
@@ -53,9 +57,13 @@ class MyHardBreak extends HardBreak {
 
 export default {
     name: 'RichEditor',
+    props: [
+        'title',
+        'content',
+    ],
     data () {
         return {
-            articleTitle: '',
+            articleTitle: this.title || '',
             editor: new Editor({
                 extensions: [
                     new Blockquote(),
@@ -105,6 +113,7 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
+            this.editor.setContent(this.content);
         })
     },
     components: {

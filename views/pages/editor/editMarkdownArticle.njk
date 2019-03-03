@@ -10,6 +10,15 @@
   var env = '{{ env }}';
   var userID = {{ user.id }};
   var avatarURL = '{{ user.avatarURL }}';
+  
+  {% if draft %}
+  var draft = {{ draft | dump | safe }};
+  {% endif %}
+
+  {% if article %}
+  var article = {{ article | dump | safe }};
+  {% endif %}
+
   var uploadPolicy = {{ uploadPolicy | dump | safe }};
 </script>
 {% endblock %}

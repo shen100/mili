@@ -68,3 +68,9 @@ export default {
     }
 }
 </script>
+
+<style>
+.navbar-user .avatar {
+    width: 40px;
+}
+</style>

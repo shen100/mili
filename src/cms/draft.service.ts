@@ -42,4 +42,43 @@ export class DraftService {
         draft.updatedAt = draft.createdAt;
         return await this.draftRepository.save(draft);
     }
+
+    async list(page: number, limit: number) {
+        return await this.draftRepository.find({
+            select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                wordCount: true,
+                contentType: true,
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: (page - 1) * limit,
+            take: limit,
+        });
+    }
+
+    async detail(id: number) {
+        return await this.draftRepository.findOne({
+            select: {
+                id: true,
+                name: true,
+                content: true,
+                htmlContent: true,
+                createdAt: true,
+                wordCount: true,
+                contentType: true,
+            },
+            relations: ['categories'],
+            where: {
+                id,
+            },
+        });
+    }
+
+    async count(): Promise<number> {
+        return await this.draftRepository.count({});
+    }
 }

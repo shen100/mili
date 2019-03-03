@@ -7,15 +7,15 @@
         <input v-if="!isRich" v-model="articleTitle" class="editor-title-input" type="text" placeholder="输入标题..." />
         <div v-else class="editor-no-header-title"></div>
         <div class="user-actions-box">
-            <NavUser :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
+            <UserDropdown :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
             <div v-clickoutside="onClickOutsidePublishToggle" class="publish-popup">
                 <div @click="onPublishToggle" class="toggle-btn">
-                    <span class="publish-popup-btn">发布</span>
+                    <span class="publish-popup-btn">{{isEditArticle ? '更新' : '发布'}}</span>
                     <i v-if="!publishToggled" class="fa fa-caret-down"></i>
                     <i v-else class="fa fa-caret-up"></i>
                 </div>
                 <div v-if="publishToggled" class="panel">
-                    <div class="title">发布文章</div>
+                    <div class="title">{{isEditArticle ? '更新': '发布'}}文章</div>
                     <div class="category-box">
                         <div class="sub-title">热门分类</div>
                         <div class="category-list">
@@ -34,7 +34,7 @@
                             </Select>
                         </div>
                     </div>
-                    <button @click="onPublish" class="publish-btn">确定并发布</button>
+                    <button @click="onPublish" class="publish-btn">确定并{{isEditArticle ? '更新' : '发布'}}</button>
                 </div>
             </div>
             <div v-clickoutside="onClickOutsideMarkdownToggle" class="editor-more-btn">
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import NavUser from '~/js/components/common/NavUser.vue';
+import UserDropdown from '~/js/components/common/UserDropdown.vue';
 import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import Alert from '~/js/components/common/Alert.vue';
@@ -85,16 +85,21 @@ export default {
         'getArticleTitle',
         'getEditorHTML',
         'getEditorMarkdown',
-        'articleID'
+        'articleID',
+        'initialCategories'
     ],
     data () {
         return {
+            isEditArticle: !!this.articleID,
             articleTitle: '',
             coverURL: '',
             isCoverUploading: false,
             coverToggled: false,
             publishToggled: false,
             markdownToggled: false,
+            // 如果是编辑文章，或编辑草稿，那么可能会传分类(initialCategories)，用户选择分类后,
+            // 再使用用户选择的分类，而不使用 initialCategories
+            notUseInitialCategories: false,
             selectHotCategoryID: undefined,
             hotCategories: [],
             selectCategoryID: undefined,
@@ -113,7 +118,17 @@ export default {
     mounted() {
         const url = '/categories/hot';
         myHTTP.get(url).then((result) => {
-            this.hotCategories = result.data.data;
+            this.hotCategories = result.data.data || [];
+            if (this.isEditArticle && this.initialCategories && this.initialCategories.length) {
+                const category = this.initialCategories[0];
+                for (let i = 0; i < this.hotCategories.length; i++) {
+                    if (this.hotCategories[i].id === category.id) {
+                        this.selectHotCategoryID = category.id;
+                        return;
+                    }
+                }
+                this.selectCategoryID = category.id;
+            }
         });
         this.autoSaveDraftIntervalID = setInterval(this.autoSaveDraft, this.autoSaveTime);
     },
@@ -121,6 +136,9 @@ export default {
         curSelectCategory: function() {
             if (!this.selectCategoryID) {
                 return null;
+            }
+            if (!this.notUseInitialCategories && this.initialCategories && this.initialCategories.length) {
+                return this.initialCategories[0];
             }
             for (let i = 0; i < this.categories.length; i++) {
                 if (this.categories[i].id === this.selectCategoryID) {
@@ -144,13 +162,13 @@ export default {
                 return;
             }
             const cID = this.selectHotCategoryID || this.selectCategoryID;
-            const url = '/drafts';
+            const url = '/editor/drafts';
             this.autoSaveDraftTip = '正自动保存至草稿...';
             this.isDraftSaving = true;
             myHTTP.post(url, {
                 name: articleTitle,
                 content: articleContent,
-                contentType: this.isRich ? ArticleContentType.Markdown : ArticleContentType.HTML,
+                contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
                 categories: cID ? [ { id: cID } ] : null
             }).then((res) => {
                 this.isDraftSaving = false;
@@ -205,27 +223,37 @@ export default {
             }
             
             const url = '/articles';
-            myHTTP.post(url, {
+            let reqMethod = myHTTP.post;
+            const reqData = {
                 name: this.articleTitle,
                 content: this.articleContent,
-                contentType: this.isRich ? ArticleContentType.Markdown : ArticleContentType.HTML,
+                contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
                 categories: [ { id: cID } ]
-            }).then((res) => {
+            };
+            if (this.isEditArticle) {
+                reqMethod = myHTTP.put;
+                reqData.id = this.articleID;
+            }
+            reqMethod(url, reqData).then((res) => {
                 const result = res.data;
                 if (result.errorCode) {
                     this.$refs.errorTip.show(result.message);
                     return;
                 }
                 clearInterval(this.autoSaveDraftIntervalID);
-                if (!this.articleID) {
+                if (!this.isEditArticle) {
                     this.$emit('newpublished');
+                    return;
                 }
+                location.href = `/p/${this.articleID}.html`;
             });
         },
         onCancelSelectCategory() {
+            this.notUseInitialCategories = true;
             this.selectCategoryID = undefined;
         },
         onSelectHotCategory(id) {
+            this.notUseInitialCategories = true;
             this.selectHotCategoryID = id;
             this.selectCategoryID = undefined;
             this.$nextTick(() => {
@@ -235,6 +263,7 @@ export default {
             });
         },
         onSelectCategoryChange() {
+            this.notUseInitialCategories = true;
             this.selectHotCategoryID = undefined;
         },
         requestCategories(queryText) {
@@ -299,7 +328,7 @@ export default {
         }
     },
     components: {
-        NavUser,
+        UserDropdown,
         Uploader,
         ErrorTip,
         Alert,

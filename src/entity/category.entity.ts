@@ -2,13 +2,9 @@ import {
     Entity,
     Column,
     PrimaryGeneratedColumn,
-    TreeParent,
-    Tree,
-    TreeChildren,
 } from 'typeorm';
 
 @Entity({name: 'categories'})
-@Tree('closure-table')
 export class Category {
     @PrimaryGeneratedColumn()
     id: number;
@@ -30,10 +26,4 @@ export class Category {
 
     @Column('int', { name: 'parent_id' })
     parentID: number;
-
-    @TreeParent()
-    parent: Category;
-
-    @TreeChildren()
-    children: Category[];
 }

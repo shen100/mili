@@ -18,13 +18,14 @@ import { CollectionService } from './collection.service';
 import { EditorController } from './editor.controller';
 import { Category } from '../entity/category.entity';
 import { Draft } from '../entity/draft.entity';
-import { DraftController } from './draft.controller';
 import { DraftService } from './draft.service';
+import { Settings } from '../entity/settings.entity';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
             User,
+            Settings,
             Article,
             Collection,
             Category,
@@ -35,7 +36,6 @@ import { DraftService } from './draft.service';
     controllers: [
         IndexController,
         ArticleController,
-        DraftController,
         CategoryController,
         UCController,
         CollectionController,

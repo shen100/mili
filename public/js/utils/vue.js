@@ -7,7 +7,7 @@ export const registerDirective = (Vue) => {
                         return false;
                     }
                     if (binding.expression) {
-                        binding.value(event);
+                        binding.value(event, el.dataset);
                     }
                 }
                 el.__vueClickOutside__ = documentHandler;

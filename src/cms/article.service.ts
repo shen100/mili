@@ -52,6 +52,29 @@ export class ArticleService {
         });
     }
 
+    async detailForEditor(id: number) {
+        return await this.articleRepository.findOne({
+            select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                wordCount: true,
+                browseCount: true,
+                commentCount: true,
+                likeCount: true,
+                contentType: true,
+                content: true,
+                htmlContent: true,
+            },
+            relations: ['categories'],
+            where: {
+                id,
+                deletedAt: null,
+                status: Not(ArticleStatus.VerifyFail),
+            },
+        });
+    }
+
     async list(page: number) {
         return await this.articleRepository.find({
             select: {

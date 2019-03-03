@@ -1,0 +1,16 @@
+{% extends '../../layout/empty.njk' %}
+
+{% block main %}
+<div id="app"></div>
+{% endblock %}
+
+{% block pageData %}
+<script>
+    var userID = {{ user.id }};
+    var avatarURL = '{{ user.avatarURL }}';
+</script>
+{% endblock %}
+
+{% block devjs %}
+  {{ loadjs('entry/editor/draft.js') }}
+{% endblock %}

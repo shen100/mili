@@ -12,6 +12,7 @@ import * as crypto from 'crypto';
 import { SMSDto } from './dto/sms.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { RedisService } from '../redis/redis.service';
+import { Settings } from '../entity/settings.entity';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,8 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        @InjectRepository(Settings)
+        private readonly settingsRepository: Repository<Settings>,
         private readonly configService: ConfigService,
         private readonly redisService: RedisService,
     ) {
@@ -387,5 +390,24 @@ export class UserService {
             return users;
         }
         return _.unionWith(users, [user], _.isEqual);
+    }
+
+    async findSettings(id: number) {
+        const settings = await this.settingsRepository.findOne({
+            where: { id },
+        });
+        return settings;
+    }
+
+    async updateSettings(userID: number, settingsKey: string, settingsValue) {
+        await this.settingsRepository.createQueryBuilder()
+            .insert()
+            .into(Settings)
+            .values({
+                [settingsKey]: settingsValue,
+            })
+            .onConflict(`("user_id") DO UPDATE SET "${settingsKey}" = :${settingsKey}`)
+            .setParameter(`${settingsKey}`, settingsValue)
+            .execute();
     }
 }

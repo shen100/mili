@@ -3,6 +3,8 @@
         <ArticlePublished v-if="displayNewPublish" />
         <div v-else id="editorBox">
             <EditorHeader 
+                :articleID="articleID" 
+                :initialCategories="initialCategories"
                 @newpublished="onNewPublished"
                 :getArticleTitle="getArticleTitle"
                 :getEditorHTML="getEditorHTML" 
@@ -10,7 +12,7 @@
                 :userID="userID" 
                 :avatarURL="avatarURL"
                 editorTypeLabel="富文本" />
-            <RichEditor ref="richEditor" />
+            <RichEditor :title="initialTitle" :content="initialContent" ref="richEditor" />
         </div>
     </div>
 </template>
@@ -22,10 +24,29 @@ import ArticlePublished from '~/js/components/article/ArticlePublished.vue';
 
 export default {
     data () {
+        let initialTitle = '';
+        let initialContent = '';
+        let initialCategories;
+        let articleID;
+        if (window.draft) {
+            initialTitle = window.draft.name;
+            initialContent = window.draft.htmlContent;
+            initialCategories = window.draft.categories || [];
+        }
+        if (window.article) {
+            initialTitle = window.article.name;
+            initialContent = window.article.htmlContent;
+            articleID = window.article.id;
+            initialCategories = window.article.categories || [];
+        }
         return {
             userID: window.userID,
             avatarURL: window.avatarURL,
-            displayNewPublish: false
+            displayNewPublish: false,
+            initialTitle,
+            initialContent,
+            articleID,
+            initialCategories,
         };
     },
     methods: {
