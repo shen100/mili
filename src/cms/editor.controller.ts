@@ -1,13 +1,9 @@
 import {
-    Controller, Post, Body, Req, Put, UseGuards, Get, Query, Param, Render, Res,
+    Controller, Post, Body, UseGuards, Get, Query, Param, Render, Res,
 } from '@nestjs/common';
+import moment = require('moment');
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
-import { RedisService } from '../redis/redis.service';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
-import { UserScore } from '../entity/user.entity';
-import { ConfigService } from '../config/config.service';
 import { ActiveGuard } from '../common/guards/active.guard';
 import { CurUser } from '../common/decorators/user.decorator';
 import { strToPage } from '../utils/common';
@@ -17,9 +13,10 @@ import { UploadService } from './upload.service';
 import { DraftService } from './draft.service';
 import { APIPrefix } from '../config/constants';
 import { CreateDraftDto } from './dto/create-draft.dto';
-import moment = require('moment');
 import { ArticleContentType } from '../entity/article.entity';
 import { SwitchEditorDto } from './dto/switch-editor.dto';
+import { Draft } from '../entity/draft.entity';
+import { MyHttpException } from '../common/exception/my-http.exception';
 
 @Controller()
 export class EditorController {
@@ -36,15 +33,39 @@ export class EditorController {
         res.render('pages/editor/draft', {});
     }
 
+    @Get('/editor/drafts/new')
+    @UseGuards(ActiveGuard)
+    async createDraft(@CurUser() user, @Query() query, @Res() res) {
+        const [settings, uploadPolicy] = await Promise.all([
+            this.userService.findSettings(user.id),
+            this.uploadService.requestPolicy(),
+        ]);
+        if (settings.editorType === ArticleContentType.HTML) {
+            res.render('pages/editor/editRichArticle', {
+                user,
+                uploadPolicy,
+            });
+            return;
+        }
+        res.render('pages/editor/editMarkdownArticle', {
+            user,
+            uploadPolicy,
+        });
+    }
+
     @Get('/editor/drafts/:id.html')
     @UseGuards(ActiveGuard)
     async editDraftView(@Param('id', ParseIntPipe) id: number, @CurUser() user, @Res() res) {
-        const [settings, draft, uploadPolicy] = await Promise.all([
-            this.userService.findSettings(user.id),
+        const [draft, uploadPolicy] = await Promise.all([
             this.draftService.detail(id),
             this.uploadService.requestPolicy(),
         ]);
-        if (settings && settings.editorType === ArticleContentType.HTML) {
+        if (!draft) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        if (draft.contentType === ArticleContentType.HTML) {
             res.render('pages/editor/editRichArticle', {
                 user,
                 draft,
@@ -81,23 +102,6 @@ export class EditorController {
         });
     }
 
-    @Get('/editor/drafts/new')
-    @UseGuards(ActiveGuard)
-    async createDraft(@CurUser() user, @Query() query, @Res() res) {
-        const uploadPolicy = await this.uploadService.requestPolicy();
-        if (query.editor === 'rich') {
-            res.render('pages/editor/editRichArticle', {
-                user,
-                uploadPolicy,
-            });
-            return;
-        }
-        res.render('pages/editor/editMarkdownArticle', {
-            user,
-            uploadPolicy,
-        });
-    }
-
     @Get(`${APIPrefix}/editor/drafts`)
     @UseGuards(ActiveGuard)
     async list(@Query('page') pageStr) {
@@ -130,12 +134,11 @@ export class EditorController {
     @Post(`${APIPrefix}/editor/switch`)
     @UseGuards(ActiveGuard)
     async switchEditor(@CurUser() user, @Body() switchEditorDto: SwitchEditorDto) {
-        await this.userService.updateSettings(user.id, 'editor_type', switchEditorDto.editorType);
-
-        if (!switchEditorDto.name && !switchEditorDto.content) {
-            return {};
+        let createResult: Draft;
+        if (switchEditorDto.name || switchEditorDto.content) {
+            createResult = await this.draftService.create(switchEditorDto, user.id);
         }
-        const createResult = await this.draftService.create(switchEditorDto, user.id);
-        return createResult;
+        await this.userService.updateEditorSettings(user.id, switchEditorDto.editorType);
+        return createResult && { id: createResult.id } || {};
     }
 }

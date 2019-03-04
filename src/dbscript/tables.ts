@@ -9,7 +9,9 @@ const config = new ConfigService();
         const sql = `CREATE TABLE settings (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             editor_type int(11) NOT NULL,
-            PRIMARY KEY (id)
+            user_id int(11) unsigned NOT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY user_id (user_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);
 

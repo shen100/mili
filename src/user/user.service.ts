@@ -13,6 +13,7 @@ import { SMSDto } from './dto/sms.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { RedisService } from '../redis/redis.service';
 import { Settings } from '../entity/settings.entity';
+import { ArticleContentType } from 'entity/article.entity';
 
 @Injectable()
 export class UserService {
@@ -392,22 +393,18 @@ export class UserService {
         return _.unionWith(users, [user], _.isEqual);
     }
 
-    async findSettings(id: number) {
+    async findSettings(userID: number) {
         const settings = await this.settingsRepository.findOne({
-            where: { id },
+            where: { userID },
         });
         return settings;
     }
 
-    async updateSettings(userID: number, settingsKey: string, settingsValue) {
-        await this.settingsRepository.createQueryBuilder()
-            .insert()
-            .into(Settings)
-            .values({
-                [settingsKey]: settingsValue,
-            })
-            .onConflict(`("user_id") DO UPDATE SET "${settingsKey}" = :${settingsKey}`)
-            .setParameter(`${settingsKey}`, settingsValue)
-            .execute();
+    async updateEditorSettings(userID: number, editorType: ArticleContentType) {
+        return await this.settingsRepository.query(
+            `INSERT INTO settings (user_id, editor_type)
+            VALUES (${userID}, ${editorType})
+            ON DUPLICATE KEY UPDATE editor_type = ${editorType}`,
+        );
     }
 }

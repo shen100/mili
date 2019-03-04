@@ -6,7 +6,7 @@ import { CreateDraftDto } from './create-draft.dto';
 
 export class SwitchEditorDto extends CreateDraftDto {
     @IsEnum(ArticleContentType, {
-        message: '无效的内容格式',
+        message: '无效的编辑器',
     })
     readonly editorType: number;
 }

@@ -39,7 +39,7 @@
             </div>
             <div v-clickoutside="onClickOutsideMarkdownToggle" class="editor-more-btn">
                 <i @click="onMarkdownToggle" class="iconfont ic-others"></i>
-                <div v-if="markdownToggled" @click="switchEditor" class="switch-editor">切换为 {{editorTypeLabel}} 编辑器</div>
+                <div v-if="markdownToggled" @click="switchEditor" class="switch-editor">切换为 {{switchEditorLabel}} 编辑器</div>
             </div>
             <div v-clickoutside="onClickOutsideCoverToggle" class="upload-cover">
                 <div v-if="!coverURL" @click="onCoverToggle" class="upload-cover-img"></div>
@@ -81,10 +81,11 @@ export default {
         'logoBoxWidth',
         'userID',
         'avatarURL',
-        'editorTypeLabel',
+        'switchEditorLabel',
         'getArticleTitle',
         'getEditorHTML',
         'getEditorMarkdown',
+        'draftID',
         'articleID',
         'initialCategories'
     ],
@@ -172,7 +173,7 @@ export default {
                 categories: cID ? [ { id: cID } ] : null
             }).then((res) => {
                 this.isDraftSaving = false;
-                if (!res.data.errorCode) {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.autoSaveDraftTip = '已保存至草稿';
                 }
                 this.lastSaveDraftContent = articleContent;
@@ -285,10 +286,27 @@ export default {
             });
         },
         switchEditor() {
-            this.$refs.switchEditorAlert.show(`切换为${this.editorTypeLabel}编辑器`, this.switchEditorAlertText);
+            this.$refs.switchEditorAlert.show(`切换为${this.switchEditorLabel}编辑器`, this.switchEditorAlertText);
             this.markdownToggled = false;
         },
         onSwitchEditorAlertOk() {
+            const articleTitle = trim(this.getTitle());
+            const articleContent = this.getContent();
+            const cID = this.selectHotCategoryID || this.selectCategoryID;
+            const url = '/editor/switch';
+            myHTTP.post(url, {
+                name: articleTitle,
+                content: articleContent,
+                contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
+                categories: cID ? [ { id: cID } ] : null,
+                editorType: this.isRich ? ArticleContentType.Markdown : ArticleContentType.HTML,
+            }).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    location.href = '/editor/drafts/new';
+                }
+            }).catch((err) => {
+
+            });
         },
         onSwitchEditorAlertCancel() {
         },

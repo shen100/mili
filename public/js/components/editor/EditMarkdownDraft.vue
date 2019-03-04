@@ -6,7 +6,7 @@
                 @newpublished="onNewPublished"
                 :userID="userID" 
                 :avatarURL="avatarURL" 
-                editorTypeLabel="Markdown"
+                switchEditorLabel="富文本"
                 :logoBoxWidth="logoBoxWidth"
                 :getEditorMarkdown="getEditorMarkdown" />
             <MarkdownEditor @togglesidebyside="onToggleSideBySide" @input="onEditorInput"/>

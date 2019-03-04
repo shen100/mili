@@ -3,6 +3,7 @@
         <ArticlePublished v-if="displayNewPublish" />
         <div v-else id="editorBox">
             <EditorHeader 
+                :draftID="draftID"
                 :articleID="articleID" 
                 :initialCategories="initialCategories"
                 @newpublished="onNewPublished"
@@ -11,7 +12,7 @@
                 :isRich="true" 
                 :userID="userID" 
                 :avatarURL="avatarURL"
-                editorTypeLabel="富文本" />
+                switchEditorLabel="Markdown" />
             <RichEditor :title="initialTitle" :content="initialContent" ref="richEditor" />
         </div>
     </div>
@@ -27,8 +28,10 @@ export default {
         let initialTitle = '';
         let initialContent = '';
         let initialCategories;
+        let draftID;
         let articleID;
         if (window.draft) {
+            draftID = window.draft.id;
             initialTitle = window.draft.name;
             initialContent = window.draft.htmlContent;
             initialCategories = window.draft.categories || [];
@@ -45,6 +48,7 @@ export default {
             displayNewPublish: false,
             initialTitle,
             initialContent,
+            draftID,
             articleID,
             initialCategories,
         };
