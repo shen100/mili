@@ -14,7 +14,9 @@
             </div>
         </nav>
         <ul class="draft-list">
-            <li><h3 class="draft-count" v-if="count !== undefined">草稿 {{count}} 篇</h3></li>
+            <li>
+                <h3 class="draft-count" v-if="count !== undefined">草稿 {{count}} 篇<i class="fa fa-caret-down"></i></h3>
+            </li>
             <li :key="draft.id" v-for="(draft, i) in list">
                 <div class="draft-item">
                     <a :href="`/editor/drafts/${draft.id}.html`" class="title">{{draft.name || '无标题'}}</a>

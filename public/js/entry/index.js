@@ -1,3 +1,4 @@
+import '~/styles/main.scss';
 import '~/styles/index.css';
 import $ from 'jquery';
 import '~/js/common/default.js';

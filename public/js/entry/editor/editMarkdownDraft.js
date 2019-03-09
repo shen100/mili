@@ -4,12 +4,12 @@ import '~/styles/editor/editDraft.scss';
 import '~/styles/editor/md.editor.scss';
 
 import Vue from 'vue';
-import App from '~/js/components/editor/EditMarkdownDraft.vue';
 import {
     Modal,
     Select,
     Option,
 } from 'iview';
+import App from '~/js/components/editor/EditMarkdownDraft.vue';
 
 import {
     registerDirective,

@@ -1,3 +1,4 @@
+import '~/styles/main.scss';
 import '~/styles/article/articleDetail.scss';
 import '~/js/common/default.js';
 

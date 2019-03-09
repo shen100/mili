@@ -1,6 +1,6 @@
 import '~/styles/main.scss';
-import '~/js/common/default.js';
 import Vue from 'vue';
+import '~/js/common/default.js';
 import App from '~/js/components/editor/Published.vue';
 
 new Vue({
