@@ -6,21 +6,22 @@ const config = new ConfigService();
 (async function run() {
     const connection = await createConnection(config.db);
     try {
-        const sql = `CREATE TABLE settings (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            editor_type int(11) NOT NULL,
-            user_id int(11) unsigned NOT NULL,
-            PRIMARY KEY (id),
-            UNIQUE KEY user_id (user_id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
-        await connection.manager.query(sql);
+        // const sql = `CREATE TABLE settings (
+        //     id int(11) unsigned NOT NULL AUTO_INCREMENT,
+        //     editor_type int(11) NOT NULL,
+        //     user_id int(11) unsigned NOT NULL,
+        //     PRIMARY KEY (id),
+        //     UNIQUE KEY user_id (user_id)
+        // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        // await connection.manager.query(sql);
 
-        // let sql = `CREATE TABLE drafts (
+        // const sql = `CREATE TABLE drafts (
         //     id int(11) unsigned NOT NULL AUTO_INCREMENT,
         //     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         //     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         //     deleted_at datetime DEFAULT NULL,
         //     name varchar(200) NOT NULL,
+        //     cover_url varchar(500) DEFAULT NULL,
         //     word_count int(11) unsigned NOT NULL DEFAULT '0',
         //     content text,
         //     html_content text,

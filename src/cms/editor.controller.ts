@@ -102,6 +102,18 @@ export class EditorController {
         });
     }
 
+    @Get('/editor/published/:id.html')
+    @UseGuards(ActiveGuard)
+    async publishedView(@Param('id', ParseIntPipe) id: number, @CurUser() user, @Res() res) {
+        const [article] = await Promise.all([
+            this.articleService.detailForEditor(id),
+        ]);
+        res.render('pages/editor/published', {
+            user,
+            article,
+        });
+    }
+
     @Get(`${APIPrefix}/editor/drafts`)
     @UseGuards(ActiveGuard)
     async list(@Query('page') pageStr) {

@@ -31,6 +31,7 @@ export class ArticleService {
             select: {
                 id: true,
                 name: true,
+                coverURL: true,
                 createdAt: true,
                 wordCount: true,
                 browseCount: true,
@@ -176,6 +177,9 @@ export class ArticleService {
         article.commentCount = 0;
         article.browseCount = 0;
         article.contentType = createArticleDto.contentType;
+        if (createArticleDto.coverURL) {
+            article.coverURL = createArticleDto.coverURL;
+        }
         if (article.contentType === ArticleContentType.Markdown) {
             article.content = createArticleDto.content;
             article.htmlContent = marked(createArticleDto.content);
@@ -215,6 +219,9 @@ export class ArticleService {
         newArticle.id = updateArticleDto.id;
         newArticle.name = updateArticleDto.name;
         newArticle.categories = categories;
+        if (updateArticleDto.coverURL) {
+            newArticle.coverURL = updateArticleDto.coverURL;
+        }
         if (updateArticleDto.contentType === ArticleContentType.Markdown) {
             newArticle.content = updateArticleDto.content;
         } else {

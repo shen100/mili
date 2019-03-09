@@ -19,7 +19,7 @@
                     <div class="category-box">
                         <div class="sub-title">热门分类</div>
                         <div class="category-list">
-                            <div @click="onSelectHotCategory(c.id)" :key="i" v-for="(c, i) in hotCategories" :class="{active: selectHotCategoryID === c.id}" class="item">{{c.name}}</div>
+                            <div @click="onSelectHotCategory(c.id)" :key="c.id" v-for="c in hotCategories" :class="{active: selectHotCategoryID === c.id}" class="item">{{c.name}}</div>
                         </div>
                     </div>
                     <div class="category-box">
@@ -30,7 +30,7 @@
                         <div v-show="!curSelectCategory" class="tag-input tag-input">
                             <Select @on-change="onSelectCategoryChange" v-model="selectCategoryID" placeholder="输入1个分类"
                                 filterable remote :remote-method="requestCategories" :loading="isLoadingCategory">
-                                <Option v-for="(c, i) in categories" :value="c.id" :key="i">{{c.name}}</Option>
+                                <Option v-for="c in categories" :value="c.id" :key="c.id">{{c.name}}</Option>
                             </Select>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                     </div>
                 </div>
             </div>
-            <div class="auto-save">{{autoSaveDraftTip}}<a @click="autoSaveDraft">存草稿</a></div>
+            <div class="auto-save">{{autoSaveDraftTip}}<a @click="saveDraft">存草稿</a></div>
         </div>
     </div>
 </template>
@@ -116,8 +116,11 @@ export default {
             autoSaveTimeArr: window.env === 'development' ? [10] : [10, 30, 60, 3 * 60, 5 * 60],
             isDraftSaving: false, // 是否正在保存文章草稿
             autoSaveDraftTimeoutID: 0,
+            autoSaveCount: 0, // 第几次自动保存
             lastSaveDraftTitle: '',
-            lastSaveDraftContent: ''
+            lastSaveDraftContent: '',
+            lastSaveCategoryID: undefined,
+            lastSaveCoverURL: ''
         }
     },
     mounted() {
@@ -137,14 +140,16 @@ export default {
                 this.selectCategoryID = category.id;
             }
         });
-        this.autoSaveDraftIntervalID = setInterval(this.autoSaveDraft, this.autoSaveTime);
+        this.autoSaveDraftTimeoutID = setTimeout(this.autoSaveDraft, 1000 * this.getAutoSaveTime());
     },
     computed: {
         curSelectCategory: function() {
             if (!this.selectCategoryID) {
                 return null;
             }
+            // 编辑文章或编辑草稿时，会传initialCategories
             if (!this.notUseInitialCategories && this.initialCategories && this.initialCategories.length) {
+                // 目前只支持选择一个分类
                 return this.initialCategories[0];
             }
             for (let i = 0; i < this.categories.length; i++) {
@@ -156,36 +161,54 @@ export default {
         }
     },
     methods: {
-        autoSaveDraft() {
+        getAutoSaveTime() {
+            return this.autoSaveTimeArr[this.autoSaveCount] || this.defaultAutoSaveTime;
+        },
+        saveDraft() {
             if (this.isDraftSaving) {
                 return;
             }
-            const articleTitle = trim(this.getTitle());
-            const articleContent = this.getContent();
+            const articleTitle = trim(this.getTitle()) || '';
+            const articleContent = this.getContent() || '';
+            const cID = this.selectHotCategoryID || this.selectCategoryID || undefined;
+            const coverURL = this.coverURL || '';
             if (!articleTitle && this.isContentEmpty(articleContent)) {
                 return;
             }
-            if (this.lastSaveDraftContent === articleContent) {
+            if (this.lastSaveDraftTitle === articleTitle && this.lastSaveDraftContent === articleContent
+                && this.lastSaveCategoryID === cID && this.lastSaveCoverURL === coverURL) {
                 return;
             }
-            const cID = this.selectHotCategoryID || this.selectCategoryID;
+            
             const url = '/editor/drafts';
             this.autoSaveDraftTip = '正自动保存至草稿...';
             this.isDraftSaving = true;
-            myHTTP.post(url, {
+            const reqData = {
                 name: articleTitle,
                 content: articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
                 categories: cID ? [ { id: cID } ] : null
-            }).then((res) => {
+            };
+            if (coverURL) {
+                reqData.coverURL = coverURL;
+            }
+            myHTTP.post(url, reqData).then((res) => {
                 this.isDraftSaving = false;
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.autoSaveDraftTip = '已保存至草稿';
+                    this.lastSaveDraftTitle = articleTitle;
+                    this.lastSaveDraftContent = articleContent;
+                    this.lastSaveCategoryID = cID;
+                    this.lastSaveCoverURL = coverURL;
                 }
-                this.lastSaveDraftContent = articleContent;
             }).catch((err) => {
                 this.isDraftSaving = false;
             });
+        },
+        autoSaveDraft() {
+            this.saveDraft();
+            this.autoSaveCount++;
+            this.autoSaveDraftTimeoutID = setTimeout(this.autoSaveDraft, 1000 * this.getAutoSaveTime());
         },
         getTitle() {
             if (this.isRich) {
@@ -212,12 +235,7 @@ export default {
             return false;
         },
         onPublish() {
-            const cID = this.selectHotCategoryID || this.selectCategoryID;
-            if (!cID) {
-                this.$refs.errorTip.show('请至少选择一个分类');
-                return;
-            }
-            this.articleTitle = trim(this.getTitle());
+            this.articleTitle = trim(this.getTitle()) || '';
             this.articleContent = this.getContent();
 
             if (!this.articleTitle) {
@@ -228,15 +246,23 @@ export default {
                 this.$refs.errorTip.show('请输入正文');
                 return;
             }
-            
-            const url = '/articles';
+            const cID = this.selectHotCategoryID || this.selectCategoryID;
+            if (!cID) {
+                this.$refs.errorTip.show('请至少选择一个分类');
+                return;
+            }
+            // 编辑草稿，点击发布，会创建文章
+            let url = '/articles';
             let reqMethod = myHTTP.post;
             const reqData = {
                 name: this.articleTitle,
                 content: this.articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
-                categories: [ { id: cID } ]
+                categories: [ { id: cID } ],
             };
+            if (this.coverURL) {
+                reqData.coverURL = this.coverURL;
+            }
             if (this.isEditArticle) {
                 reqMethod = myHTTP.put;
                 reqData.id = this.articleID;
@@ -247,9 +273,10 @@ export default {
                     this.$refs.errorTip.show(result.message);
                     return;
                 }
-                clearInterval(this.autoSaveDraftIntervalID);
+                clearTimeout(this.autoSaveDraftTimeoutID);
+                // 新建文章、编辑草稿时发布，都是创建了新的文章
                 if (!this.isEditArticle) {
-                    this.$emit('newpublished');
+                    location.href = `/editor/published/${this.articleID}.html`;
                     return;
                 }
                 location.href = `/p/${this.articleID}.html`;
@@ -299,14 +326,19 @@ export default {
             const articleTitle = trim(this.getTitle());
             const articleContent = this.getContent();
             const cID = this.selectHotCategoryID || this.selectCategoryID;
+            const coverURL = this.coverURL;
             const url = '/editor/switch';
-            myHTTP.post(url, {
+            const reqData = {
                 name: articleTitle,
                 content: articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
                 categories: cID ? [ { id: cID } ] : null,
                 editorType: this.isRich ? ArticleContentType.Markdown : ArticleContentType.HTML,
-            }).then((res) => {
+            };
+            if (coverURL) {
+                reqData.coverURL = coverURL;
+            }
+            myHTTP.post(url, reqData).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     location.href = '/editor/drafts/new';
                 }

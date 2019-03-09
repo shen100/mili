@@ -92,6 +92,8 @@ export default {
                 [ '![alt](http://)', '图片', shortcut[os].img ],
                 [ '* item', '列表', shortcut[os].ul ],
             ],
+            initialContent: this.content || '',
+            mdContent: '',
         }
     },
     methods: {
@@ -106,7 +108,9 @@ export default {
                 },
                 // If set to false, indent using spaces instead of tabs. Defaults to true.
                 indentWithTabs: false,
-                initialValue: this.content || '',
+                // 在这设初始文本有样式问题，改为实例化后
+                // 通过value方法传simplemde.value(this.mdContent);
+                initialValue: '',
                 // Custom placeholder that should be displayed
                 placeholder: '输入正文...',
                 promptURLs: false,
@@ -115,7 +119,7 @@ export default {
                 status: false,
                 toolbar: false,
                 previewRender: this.previewRender.bind(this)
-            })
+            });
             this.simplemde = simplemde;
             const pt = SimpleMDE.prototype;
             if (!pt.getImageURL) {
@@ -130,6 +134,10 @@ export default {
             // 初始时，编辑区会抖动一下，延时100ms显示编辑器，避免抖动
             setTimeout(() => {
                 this.inited = true;
+                this.$nextTick(() => {
+                    this.simplemde.value(this.initialContent);
+                    this.mdContent = this.initialContent;
+                });
             }, 100);
         },
         onImgUploadSuccess(imgURL) {
@@ -143,10 +151,10 @@ export default {
             // this.simplemde.codemirror.on('change', function () {
             //     self.$emit('change', self.simplemde.value())
             // });
+            this.mdContent = plainText;
             const html = marked(plainText || '');
             const txt = trim(striptags(html));
             this.wordCount = txt.length || 0;
-            this.$emit('input', plainText);
             return html;
         },
         onToggleSideBySide() {
@@ -157,7 +165,7 @@ export default {
             });
         },
         getContent() {
-
+            return this.mdContent;
         }
     },
     mounted() {

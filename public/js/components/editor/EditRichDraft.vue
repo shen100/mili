@@ -1,12 +1,10 @@
 <template>
     <div id="app">
-        <ArticlePublished v-if="displayNewPublish" />
-        <div v-else id="editorBox">
+        <div id="editorBox">
             <EditorHeader 
                 :draftID="draftID"
                 :articleID="articleID" 
                 :initialCategories="initialCategories"
-                @newpublished="onNewPublished"
                 :getArticleTitle="getArticleTitle"
                 :getEditorHTML="getEditorHTML" 
                 :isRich="true" 
@@ -21,7 +19,6 @@
 <script>
 import EditorHeader from '~/js/components/editor/EditorHeader.vue';
 import RichEditor from '~/js/components/common/RichEditor.vue';
-import ArticlePublished from '~/js/components/article/ArticlePublished.vue';
 
 export default {
     data () {
@@ -47,7 +44,6 @@ export default {
         return {
             userID: window.userID,
             avatarURL: window.avatarURL,
-            displayNewPublish: false,
             initialTitle,
             initialContent,
             draftID,
@@ -56,9 +52,6 @@ export default {
         };
     },
     methods: {
-        onNewPublished() {
-            this.displayNewPublish = true;
-        },
         getEditorHTML() {
             return this.$refs.richEditor.getHTML();
         },
@@ -69,7 +62,6 @@ export default {
     components: {
         EditorHeader,
         RichEditor,
-        ArticlePublished,
     }
 }
 </script>

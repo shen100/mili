@@ -1,13 +1,11 @@
 <template>
     <div id="app">
-        <ArticlePublished v-if="displayNewPublish" />
-        <div v-else id="editorBox">
+        <div id="editorBox">
             <EditorHeader 
                 :draftID="draftID"
                 :articleID="articleID" 
                 :title="initialTitle"
                 :initialCategories="initialCategories"
-                @newpublished="onNewPublished"
                 :getEditorMarkdown="getEditorMarkdown"
                 :isRich="false" 
                 :userID="userID" 
@@ -26,7 +24,6 @@
 import dom from '~/js/utils/dom.js';
 import EditorHeader from '~/js/components/editor/EditorHeader.vue';
 import MarkdownEditor from '~/js/components/common/MarkdownEditor.vue';
-import ArticlePublished from '~/js/components/article/ArticlePublished.vue';
 
 export default {
     data () {
@@ -52,7 +49,6 @@ export default {
         return {
             userID: window.userID,
             avatarURL: window.avatarURL,
-            displayNewPublish: false,
             logoBoxWidth: 0,
             initialContent,
             initialTitle,
@@ -62,9 +58,6 @@ export default {
         };
     },
     methods: {
-        onNewPublished() {
-            this.displayNewPublish = true;  
-        },
         getEditorMarkdown() {
             return this.$refs.mdEditor.getContent();
         },

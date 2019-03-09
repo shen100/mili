@@ -16,10 +16,13 @@ const summaryStripLenth = 100;
     const articleRepository = connection.getRepository(Article);
 
     try {
-        await connection.manager.query(`alter table articles add column summary varchar(${summaryLenth})`);
-        await connection.manager.query(`alter table articles add column like_count int default 0`);
-        await connection.manager.query(`alter table articles add column word_count int default 0`);
-        await connection.manager.query(`alter table articles add column hot int default 0`);
+        // await connection.manager.query(`alter table articles add column summary varchar(${summaryLenth})`);
+        // await connection.manager.query(`alter table articles add column like_count int default 0`);
+        // await connection.manager.query(`alter table articles add column word_count int default 0`);
+        // await connection.manager.query(`alter table articles add column hot int default 0`);
+        await connection.manager.query(`alter table articles add column cover_url varchar(500) DEFAULT NULL`);
+
+        return ;
 
         const articles = await articleRepository.find({
             select: {

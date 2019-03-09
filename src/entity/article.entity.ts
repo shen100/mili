@@ -74,6 +74,9 @@ export class Article {
     @Column('varchar', { length: 500, nullable: true, default: null })
     summary: string;
 
+    @Column('varchar', { name: 'cover_url', length: 500, nullable: true, default: null })
+    coverURL: string;
+
     @Column('int', { name: 'content_type' })
     contentType: ArticleContentType;
 

@@ -54,8 +54,7 @@ export class ArticleController {
             // this.redisService.delCache(this.redisService.cacheKeys.articles),
         ]);
         return {
-            errorCode: ErrorCode.SUCCESS.CODE,
-            data: { id: createResult.id },
+            id: createResult.id,
         };
     }
 
@@ -66,8 +65,7 @@ export class ArticleController {
             this.articleService.update(updateArticleDto, user.id),
         ]);
         return {
-            errorCode: ErrorCode.SUCCESS.CODE,
-            data: { id: updateResult.id },
+            id: updateResult.id,
         };
     }
 }

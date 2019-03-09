@@ -8,6 +8,9 @@ import {
     ArrayMinSize,
     ArrayMaxSize,
     ValidateNested,
+    Validator,
+    ValidateIf,
+    IsUrl,
 } from 'class-validator';
 import { ArticleContentType } from '../../entity/article.entity';
 import { Type } from 'class-transformer';
@@ -37,6 +40,16 @@ export class CreateArticleDto {
     })
     @IsString()
     readonly content: string;
+
+    // 传了coverURL字段的话，才对coverURL进行检验
+    @ValidateIf(obj => {
+        return obj && typeof obj.coverURL !== 'undefined';
+    })
+    @IsUrl({
+        protocols: ['https'],
+        require_protocol: true,
+    })
+    readonly coverURL: string;
 
     @IsEnum(ArticleContentType, {
         message: '无效的内容格式',
