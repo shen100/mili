@@ -1,8 +1,8 @@
-import '~/js/common/common.js';
 import '~/styles/collection/collection.css';
 import Vue from 'vue';
 import 'iview/dist/styles/iview.css';
 import { Modal } from 'iview';
+import '~/js/common/default.js';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 

@@ -1,6 +1,6 @@
-import '~/js/common/common.js';
 import '~/styles/index.css';
 import $ from 'jquery';
+import '~/js/common/default.js';
 import { myHTTP } from '~/js/common/net.js';
 
 (function() {

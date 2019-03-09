@@ -1,5 +1,5 @@
-import '~/js/common/common.js';
 import '~/styles/signup.css';
+import '~/js/common/default.js';
 import Vue from 'vue';
 import App from '~/js/components/SignupApp.vue';
 

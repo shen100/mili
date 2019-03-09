@@ -1,6 +1,5 @@
 <template>
     <div>
-        <div class="done-close">×</div>
         <div class="done-header">
             <div class="done-title">
                 <a href="" class="main-title">Node.js性能优化之CPU篇-test</a><br>
@@ -200,6 +199,7 @@ export default {
 
     .done-title {
         padding: 80px 0 40px;
+        padding-top: 115px;
         text-align: center;
     }
 

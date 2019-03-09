@@ -1,5 +1,5 @@
-import '~/js/common/common.js';
 import '~/styles/article/articleDetail.scss';
+import '~/js/common/default.js';
 
 (function() {
     $('.meta-bottom .more-share').click(function() {

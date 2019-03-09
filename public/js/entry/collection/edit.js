@@ -1,4 +1,4 @@
-import '~/js/common/common.js';
+import '~/js/common/default.js';
 import Vue from 'vue';
 import App from '~/js/components/collection/edit.vue';
 import 'iview/dist/styles/iview.css';

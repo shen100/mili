@@ -1,7 +1,7 @@
 import '~/styles/main.scss';
-import '~/styles/editor/editDraft.scss';
+import '~/js/common/default.js';
 import Vue from 'vue';
-import App from '~/js/components/editor/EditRichDraft.vue';
+import App from '~/js/components/editor/Published.vue';
 
 new Vue({
     render: h => h(App),

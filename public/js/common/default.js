@@ -1,4 +1,3 @@
-import '~/styles/main.scss';
 import Vue from 'vue';
 import TopNavSearch from '~/js/components/TopNavSearch.vue';
 import {

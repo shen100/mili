@@ -1,5 +1,5 @@
-import '~/js/common/common.js';
 import '~/styles/user/user.css';
+import '~/js/common/default.js';
 import { Pinterest } from '~/js/common/pinterest';
 
 let articlesPinterest;

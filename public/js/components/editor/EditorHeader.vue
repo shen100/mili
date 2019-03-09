@@ -274,12 +274,13 @@ export default {
                     return;
                 }
                 clearTimeout(this.autoSaveDraftTimeoutID);
-                // 新建文章、编辑草稿时发布，都是创建了新的文章
-                if (!this.isEditArticle) {
-                    location.href = `/editor/published/${this.articleID}.html`;
+                if (this.isEditArticle) {
+                    location.href = `/p/${this.articleID}.html`;
                     return;
                 }
-                location.href = `/p/${this.articleID}.html`;
+                // 非编辑文章，那么就是直接创建文章，或编辑草稿，
+                // 编辑草稿时，点击发布，同样是创建文章
+                location.href = `/editor/published/${result.data.id}.html`;
             });
         },
         onCancelSelectCategory() {

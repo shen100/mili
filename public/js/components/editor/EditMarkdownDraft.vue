@@ -74,7 +74,6 @@ export default {
     components: {
         EditorHeader,
         MarkdownEditor,
-        ArticlePublished,
     }
 }
 </script>

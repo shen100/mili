@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router'
+import VueRouter from 'vue-router';
 import App from '~/js/components/admin/app.vue';
 
 Vue.use(VueRouter);
