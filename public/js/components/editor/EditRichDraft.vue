@@ -30,6 +30,8 @@ export default {
         let initialCategories;
         let draftID;
         let articleID;
+        // draft 和 article 不会同时存在，有draft时是编辑草稿, 有article时是编辑文章
+        // draft 和 article都没有时，是新建草稿
         if (window.draft) {
             draftID = window.draft.id;
             initialTitle = window.draft.name;

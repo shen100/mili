@@ -1,7 +1,9 @@
-import '~/styles/main.scss';
 import 'iview/dist/styles/iview.css';
+import '~/styles/main.scss';
 import '~/styles/editor/editDraft.scss';
+import '~/styles/editor/articleDisplay.scss';
 import '~/styles/editor/rich.editor.scss';
+
 import Vue from 'vue';
 import App from '~/js/components/editor/EditRichDraft.vue';
 import {

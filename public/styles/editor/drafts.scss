@@ -2,10 +2,18 @@ body {
     background-color: #f4f5f5;
 }
 
+.draft-count {
+    padding: 20px;
+    padding-left: 15px;
+    font-size: 16px;
+    color: #000;
+}
+
 .draft-list {
     width: 640px;
     margin: 0 auto;
     margin-top: 80px;
+    margin-bottom: 50px;
     padding: 10px;
     background: #fff;
 }

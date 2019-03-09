@@ -1,5 +1,5 @@
 import {
-    Controller, Post, Body, UseGuards, Get, Query, Param, Render, Res,
+    Controller, Post, Body, UseGuards, Get, Query, Param, Render, Res, Delete,
 } from '@nestjs/common';
 import moment = require('moment');
 import { ArticleService } from './article.service';
@@ -30,7 +30,7 @@ export class EditorController {
     @Get('/editor/drafts.html')
     @UseGuards(ActiveGuard)
     async listView(@Res() res) {
-        res.render('pages/editor/draft', {});
+        res.render('pages/editor/drafts', {});
     }
 
     @Get('/editor/drafts/new')
@@ -129,6 +129,13 @@ export class EditorController {
         }
         const createResult = await this.draftService.create(createDraftDto, user.id);
         return createResult;
+    }
+
+    @Delete(`${APIPrefix}/editor/drafts/:id`)
+    @UseGuards(ActiveGuard)
+    async deleteDraft(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+        await this.draftService.delete(id, user.id);
+        return {};
     }
 
     @Post(`${APIPrefix}/editor/switch`)

@@ -82,6 +82,7 @@ export default {
         'userID',
         'avatarURL',
         'switchEditorLabel',
+        'title',
         'getArticleTitle',
         'getEditorHTML',
         'getEditorMarkdown',
@@ -91,14 +92,15 @@ export default {
     ],
     data () {
         return {
-            isEditArticle: !!this.articleID,
-            articleTitle: '',
+            isEditDraft: !!this.draftID, // 有draftID时，是编辑草稿(draftID和articleID不会同时存在)
+            isEditArticle: !!this.articleID, // 有articleID时，是编辑文章(draftID和articleID不会同时存在)
+            articleTitle: !this.isRich ? this.title : '',
             coverURL: '',
-            isCoverUploading: false,
+            isCoverUploading: false, // 是否正在上传文章封面图片
             coverToggled: false,
             publishToggled: false,
             markdownToggled: false,
-            // 如果是编辑文章，或编辑草稿，那么可能会传分类(initialCategories)，用户选择分类后,
+            // 如果是编辑文章，或编辑草稿，那么会传分类(initialCategories)，用户选择分类后,
             // 再使用用户选择的分类，而不使用 initialCategories
             notUseInitialCategories: false,
             selectHotCategoryID: undefined,
@@ -110,9 +112,11 @@ export default {
             switchEditorAlertText: '切换编辑器后，当前内容不会迁移，但会自动保存为草稿。',
             lastQueryText: '',
             autoSaveDraftTip: '文章将自动保存至草稿',
-            autoSaveTime: window.env === 'development' ? 10 * 1000 : 5 * 60 * 1000,
-            isDraftSaving: false,
-            autoSaveDraftIntervalID: 0,
+            defaultAutoSaveTime: window.env === 'development' ? 10 : 5 * 60,
+            autoSaveTimeArr: window.env === 'development' ? [10] : [10, 30, 60, 3 * 60, 5 * 60],
+            isDraftSaving: false, // 是否正在保存文章草稿
+            autoSaveDraftTimeoutID: 0,
+            lastSaveDraftTitle: '',
             lastSaveDraftContent: ''
         }
     },
@@ -120,7 +124,9 @@ export default {
         const url = '/categories/hot';
         myHTTP.get(url).then((result) => {
             this.hotCategories = result.data.data || [];
-            if (this.isEditArticle && this.initialCategories && this.initialCategories.length) {
+            const initialCategories = this.initialCategories;
+            if ((this.isEditArticle || this.isEditDraft) && initialCategories && initialCategories.length) {
+                // 目前只支持选择一个分类
                 const category = this.initialCategories[0];
                 for (let i = 0; i < this.hotCategories.length; i++) {
                     if (this.hotCategories[i].id === category.id) {

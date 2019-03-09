@@ -22,7 +22,7 @@ module.exports = {
         'entry/collection/edit': './public/js/entry/collection/edit.js',
         'entry/editor/editMarkdownDraft': './public/js/entry/editor/editMarkdownDraft.js',
         'entry/editor/editRichDraft': './public/js/entry/editor/editRichDraft.js',
-        'entry/editor/draft': './public/js/entry/editor/draft.js',
+        'entry/editor/drafts': './public/js/entry/editor/drafts.js',
         'entry/admin/app': './public/js/entry/admin/app.js',
     },
     output: {

@@ -43,6 +43,22 @@ export class DraftService {
         return await this.draftRepository.save(draft);
     }
 
+    async delete(id: number, userID: number) {
+        await this.draftRepository.manager.connection.transaction(async manager => {
+            await manager.createQueryBuilder()
+                .delete()
+                .from('drafts')
+                .where('id = :id and user_id = :userID', { id, userID })
+                .execute();
+
+            await manager.createQueryBuilder()
+                .delete()
+                .from('draft_category')
+                .where('draft_id = :id', { id })
+                .execute();
+        });
+    }
+
     async list(page: number, limit: number) {
         return await this.draftRepository.find({
             select: {

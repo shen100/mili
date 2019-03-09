@@ -22,3 +22,30 @@ export const hasClass = (obj, className) => {
     }
     return false;
 };
+
+export const getWindowSize = (function () {
+    let func;
+    if (window.innerHeight !== undefined) {
+        func = () => {
+            return {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            };
+        };
+    } else if (document.compatMode === 'CSS1Compat') {
+        func = () => {
+            return {
+                width: document.documentElement.clientWidth,
+                height: document.documentElement.clientHeight,
+            };
+        };
+    } else {
+        func = () => {
+            return {
+                width: document.body.clientWidth,
+                height: document.body.clientHeight,
+            };
+        };
+    }
+    return func;
+}());

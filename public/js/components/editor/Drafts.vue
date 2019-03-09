@@ -1,5 +1,7 @@
 <template>
     <div id="app">
+        <Alert ref="delDraftAlert" width="450" 
+            @ok="onDeleteDraftOk" @cancel="onDeleteDraftCancel" />
         <nav class="top-nav">
             <div class="width-limit">
                 <a class="logo" href="/">
@@ -12,7 +14,8 @@
             </div>
         </nav>
         <ul class="draft-list">
-            <li :key="i" v-for="(draft, i) in list">
+            <li><h3 class="draft-count" v-if="count !== undefined">草稿 {{count}} 篇</h3></li>
+            <li :key="draft.id" v-for="(draft, i) in list">
                 <div class="draft-item">
                     <a :href="`/editor/drafts/${draft.id}.html`" class="title">{{draft.name || '无标题'}}</a>
                     <div class="info-box">
@@ -35,6 +38,8 @@
 </template>
 
 <script>
+import Alert from '~/js/components/common/Alert.vue';
+import { ErrorCode } from '~/js/constants/error.js';
 import UserDropdown from '~/js/components/common/UserDropdown.vue';
 import { ArticleContentType } from '~/js/constants/article.js';
 import { myHTTP } from '~/js/common/net.js';
@@ -45,11 +50,10 @@ export default {
             userID: window.userID,
             avatarURL: window.avatarURL,
             imgPath: window.globalConfig.imgPath,
-            page: 1,
-            count: 0,
-            limit: 0,
             list: [],
-            listToggled: []
+            count: undefined,
+            listToggled: [],
+            deleteDraftID: undefined
         };
     },
     methods: {
@@ -57,7 +61,20 @@ export default {
             location.href = `/editor/drafts/${id}.html`;
         },
         onDeleteDraft(id) {
+            this.deleteDraftID = id;
+            this.$refs.delDraftAlert.show('删除草稿', '删除后不可恢复，确认删除此草稿吗？');
+        },
+        onDeleteDraftOk() {
+            const url = `/editor/drafts/${this.deleteDraftID}`;
+            myHTTP.delete(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.count--;
+                }
+            }).catch((err) => {
 
+            });  
+        },
+        onDeleteDraftCancel() {
         },
         onMenuToggle(index) {
             this.listToggled[index].toggled = !this.listToggled[index].toggled;
@@ -70,12 +87,9 @@ export default {
         const url = '/editor/drafts';
         myHTTP.get(url).then((result) => {
             const data = result.data.data;
-            this.page = data.page;
             this.count = data.count;
-            this.limit = data.limit;
-            const list = data.list || [];
-            this.list = this.list.concat(list);
-            list.forEach(item => {
+            this.list = data.list || [];
+            this.list.forEach(item => {
                 item.isMarkdown = item.contentType === ArticleContentType.Markdown;
                 this.listToggled.push({toggled: false});
             });
@@ -83,6 +97,7 @@ export default {
     },
     components: {
         UserDropdown,
+        Alert,
     }
 }
 </script>

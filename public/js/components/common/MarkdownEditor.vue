@@ -54,7 +54,7 @@ import { trim } from '~/js/utils/utils.js';
 
 export default {
     props: [
-        'value',
+        'content',
     ],
     data () {
         const os = 'mac';
@@ -106,7 +106,7 @@ export default {
                 },
                 // If set to false, indent using spaces instead of tabs. Defaults to true.
                 indentWithTabs: false,
-                initialValue: this.value || '',
+                initialValue: this.content || '',
                 // Custom placeholder that should be displayed
                 placeholder: '输入正文...',
                 promptURLs: false,
@@ -155,6 +155,9 @@ export default {
                 this.simplemde.toggleSideBySide();
                 this.$emit('togglesidebyside', this.isSideBySide);
             });
+        },
+        getContent() {
+
         }
     },
     mounted() {
@@ -162,23 +165,10 @@ export default {
             this.initSimplemde();
         });
     },
-    watch: {
-        value: function (newVal, oldVal) {
-            newVal = newVal || ''
-            if (newVal !== this.simplemde.value()) {
-                this.simplemde.value(newVal)
-            }
-        },
-    },
     components: {
         Uploader,
         ErrorTip,
     }
 }
 </script>
-
-<style lang="scss">
-@import '../../../styles/article/articleDisplay.scss';
-@import '../../../styles/editor/md.editor.scss';
-</style>
 
