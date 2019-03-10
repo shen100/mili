@@ -1,3 +1,4 @@
+import '~/styles/main.scss';
 import '~/styles/user/user.css';
 import '~/js/common/default.js';
 import { Pinterest } from '~/js/common/pinterest';
@@ -8,7 +9,7 @@ function createArticlesPinterest(sort, page) {
     articlesPinterest = new Pinterest('/u/articles/', $('#articleList'), {
         page: page,
         query: {
-            userID: jsonData.userID,
+            userID: window.userID,
             sort: sort
         },
         loadComplete: function() {

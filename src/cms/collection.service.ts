@@ -21,6 +21,20 @@ export class CollectionService {
         private readonly logger: MyLoggerService,
     ) {}
 
+    // 不用的用户，推荐不同的专题, 且推荐的专题中，不包括自己创建或管理的专题
+    async recommends(userID: number) {
+        return await this.collectionRepository.find({
+            select: {
+                id: true,
+                name: true,
+                coverURL: true,
+                articleCount: true,
+                followerCount: true,
+            },
+            take: 20,
+        });
+    }
+
     async create(createCollectionDto: CreateCollectionDto, userID: number) {
         const collection = new Collection();
         collection.creatorID = userID;
@@ -82,9 +96,14 @@ export class CollectionService {
         return parseInt(result[0].count, 10) || 0;
     }
 
-    async collectArticle(collectionID: number, articleID: number, status: number): Promise<boolean> {
-        const sql = `INSERT INTO article_collection (collection_id, article_id, status) VALUES (${collectionID}, ${articleID}, ${status})`;
-        return await this.collectionRepository.manager.query(sql);
+    // 向专题投稿
+    async addArticle(userID: number, collectionID: number, articleID: number, status: number) {
+        await this.collectionRepository.manager.connection.transaction(async manager => {
+            const sql2 = `INSERT INTO article_collection (collection_id, article_id, status) VALUES (${collectionID}, ${articleID}, ${status})`;
+            const sql3 = `INSERT INTO contributor_collection (collection_id, user_id) VALUES (${collectionID}, ${userID})`;
+            await manager.query(sql2);
+            await manager.query(sql3);
+        });
     }
 
     async removeArticle(collectionID: number, articleID: number): Promise<boolean> {
@@ -150,6 +169,44 @@ export class CollectionService {
         const results = await this.collectionRepository.manager.query(sql);
         return results.map(data => {
             return new Follower(data.id, data.username, data.avatarURL, data.date);
+        });
+    }
+
+    // 最近投稿的专题, 不包括自己创建或管理的专题
+    async contributeCollections(userID: number, page: number): Promise<Collection[]> {
+        const limit: number = 20;
+        const offset: number = (page - 1) * limit;
+        const sql = `SELECT collection.id as id, collection.name as name,
+                collection.cover_url as coverURL
+            FROM collections collection, contributor_collection cc
+            WHERE collection.id = cc.collection_id AND cc.user_id = ${userID}
+            LIMIT ${offset}, ${limit}`;
+        const results = await this.collectionRepository.manager.query(sql);
+        return results.map(data => {
+            const collection = new Collection();
+            collection.id = data.id;
+            collection.name = data.name;
+            collection.coverURL = data.coverURL;
+            return collection;
+        });
+    }
+
+    // 创建/管理的专题
+    async createOrMangeCollections(userID: number, page: number): Promise<Collection[]> {
+        const limit: number = 20;
+        const offset: number = (page - 1) * limit;
+        const sql = `SELECT collection.id as id, collection.name as name,
+                collection.cover_url as coverURL
+            FROM collections collection, user_collection uc
+            WHERE collection.id = uc.collection_id AND uc.user_id = ${userID}
+            LIMIT ${offset}, ${limit}`;
+        const results = await this.collectionRepository.manager.query(sql);
+        return results.map(data => {
+            const collection = new Collection();
+            collection.id = data.id;
+            collection.name = data.name;
+            collection.coverURL = data.coverURL;
+            return collection;
         });
     }
 }

@@ -117,10 +117,11 @@ export class CollectionController {
         return await this.collectionService.updateOne(createCollectionDto, id, user.id);
     }
 
+    // 投稿
     @Post('/api/v1/collections/:collectionID/articles/:articleID')
     @UseGuards(ActiveGuard)
-    async collectArticle(@CurUser() user, @Param('collectionID', ParseIntPipe) collectionID: number,
-                         @Param('articleID', ParseIntPipe) articleID: number) {
+    async addArticle(@CurUser() user, @Param('collectionID', ParseIntPipe) collectionID: number,
+                     @Param('articleID', ParseIntPipe) articleID: number) {
         const [collection, article] = await Promise.all([
             this.collectionService.findById(collectionID),
             this.articleService.detail(articleID),
@@ -148,8 +149,10 @@ export class CollectionController {
         if (index >= 0) {
             status = CollectionStatus.Collected;
         }
-        await this.collectionService.collectArticle(collectionID, articleID, status);
-        return {};
+        await this.collectionService.addArticle(user.id, collectionID, articleID, status);
+        return {
+            status,
+        };
     }
 
     @Delete('/api/v1/collections/:collectionID/articles/:articleID')

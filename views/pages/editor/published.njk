@@ -8,10 +8,10 @@
 {% block pageData %}
 <script>
   var userID = {{ user.id }};
-  
-  {% if article %}
   var article = {{ article | dump | safe }};
-  {% endif %}
+  var collections = {{ collections | dump | safe }};
+  var contributeCollections = {{ contributeCollections | dump | safe }};
+  var recommendCollections = {{ recommendCollections | dump | safe }};
 </script>
 {% endblock %}
 

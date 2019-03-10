@@ -1,3 +1,4 @@
+import '~/styles/main.scss';
 import '~/js/common/default.js';
 import Vue from 'vue';
 import App from '~/js/components/collection/edit.vue';

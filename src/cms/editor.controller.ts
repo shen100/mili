@@ -17,6 +17,7 @@ import { ArticleContentType } from '../entity/article.entity';
 import { SwitchEditorDto } from './dto/switch-editor.dto';
 import { Draft } from '../entity/draft.entity';
 import { MyHttpException } from '../common/exception/my-http.exception';
+import { CollectionService } from './collection.service';
 
 @Controller()
 export class EditorController {
@@ -25,6 +26,7 @@ export class EditorController {
         private readonly articleService: ArticleService,
         private readonly draftService: DraftService,
         private readonly uploadService: UploadService,
+        private readonly collectionService: CollectionService,
     ) {}
 
     @Get('/editor/drafts.html')
@@ -105,12 +107,18 @@ export class EditorController {
     @Get('/editor/published/:id.html')
     @UseGuards(ActiveGuard)
     async publishedView(@Param('id', ParseIntPipe) id: number, @CurUser() user, @Res() res) {
-        const [article] = await Promise.all([
+        const [article, recommendCollections, collections, contributeCollections] = await Promise.all([
             this.articleService.detailForEditor(id),
+            this.collectionService.recommends(user.id),
+            this.collectionService.createOrMangeCollections(user.id, 1),
+            this.collectionService.contributeCollections(user.id, 1),
         ]);
         res.render('pages/editor/published', {
             user,
             article,
+            collections: collections || [],
+            recommendCollections: recommendCollections || [],
+            contributeCollections: contributeCollections || [],
         });
     }
 

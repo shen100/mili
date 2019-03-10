@@ -2,8 +2,8 @@
     <div>
         <div class="done-header">
             <div class="done-title">
-                <a href="" class="main-title">Node.js性能优化之CPU篇-test</a><br>
-                <a href="" class="sub-title">发布成功，点击查看文章</a>
+                <a :href="`/p/${article.id}.html`" class="main-title">{{article.name}}</a><br>
+                <a :href="`/p/${article.id}.html`" class="sub-title">发布成功，点击查看文章</a>
             </div>
             <ul class="article-share">
                 <li class="weibo"><i class="fa fa-weibo"></i>微博</li>
@@ -48,13 +48,13 @@
             </div>
             <div class="collection-box my-collection-box">
                 <h3 class="collection-box-title my-collection-box-title">
-                    我管理的专题<a class="my-collection-box-new" href="">新建</a>
+                    创建/管理的专题<a class="my-collection-box-new" href="">新建</a>
                 </h3>
                 <ul class="collection-list">
-                    <li :key="i" v-for="(c, i) in myCollections" class="collection-item">
-                        <span class="my-collection-name">{{c.title}}</span>
-                        <img :src="c.imgURL" />
-                        <a href="">已收录</a>
+                    <li :key="c.id" v-for="c in collections" class="collection-item">
+                        <span class="my-collection-name">{{c.name}}</span>
+                        <img :src="c.coverURL" />
+                        <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c, true)">{{c.statusLabel}}</a>
                     </li>
                 </ul>
             </div>
@@ -63,20 +63,20 @@
                     最近投稿
                 </h3>
                 <ul class="collection-list">
-                    <li :key="i" v-for="(c, i) in recentPostCollections" class="collection-item">
-                        <span class="my-collection-name">{{c.title}}</span>
-                        <img :src="c.imgURL" />
-                        <a href="">投稿</a>
+                    <li :key="c.id" v-for="c in contributeCollections" class="collection-item">
+                        <span class="my-collection-name">{{c.name}}</span>
+                        <img :src="c.coverURL" />
+                        <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
                     </li>
                 </ul>
             </div>
             <div class="collection-box" style="margin-bottom: 30px;">
                 <h3 class="collection-box-title">推荐专题</h3>
                 <ul class="collection-list">
-                    <li :key="i" v-for="(c, i) in recommendCollections" class="collection-item" style="width: 50%;">
-                        <img :src="c.imgURL" />
-                        <a href="">投稿</a>
-                        <span class="recommend-name">{{c.title}}<em>{{c.text}}</em></span>
+                    <li :key="c.id" v-for="c in recommendCollections" class="collection-item" style="width: 50%;">
+                        <img :src="c.coverURL" />
+                        <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
+                        <span class="recommend-name">{{c.name}}<em>{{c.articleCount | countToK}}篇文章，{{c.followerCount | countToK}}人关注</em></span>
                     </li>
                 </ul>
             </div>
@@ -86,88 +86,34 @@
 </template>
 
 <script>
+import { CollectionStatus } from '~/js/constants/entity.js';
+import { countToK } from '~/js/utils/utils.js';
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
+
 export default {
     data () {
+        const collections = window.collections;
+        const contributeCollections = window.contributeCollections;
+        const recommendCollections = window.recommendCollections;
+        collections.forEach(c => {
+            c.statusLabel = '收录';
+            c.buttonMode = true;
+        });
+        contributeCollections.forEach(c => {
+            c.statusLabel = '投稿';
+            c.buttonMode = true;
+        });
+        recommendCollections.forEach(c => {
+            c.statusLabel = '投稿';
+            c.buttonMode = true;
+        });
         return {
+            article: window.article,
             sharePopupVisible: false,
-            myCollections: [
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                }
-            ],
-            recentPostCollections: [
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                }
-            ],
-            recommendCollections: [
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                    text: '216.8K篇文章，3987.0K人关注'    
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                    text: '216.8K篇文章，3987.0K人关注'    
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                    text: '216.8K篇文章，3987.0K人关注'    
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                    text: '216.8K篇文章，3987.0K人关注'    
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                    text: '216.8K篇文章，3987.0K人关注'    
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                    text: '216.8K篇文章，3987.0K人关注'    
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                    text: '216.8K篇文章，3987.0K人关注'    
-                },
-                {
-                    title: 'Node.js全栈开发',
-                    imgURL: 'https://upload.jianshu.io/collections/images/1699940/timg.jpeg',
-                    text: '216.8K篇文章，3987.0K人关注'    
-                },
-            ]
+            collections: collections, // 创建/管理的专题
+            contributeCollections: contributeCollections, // 最近投稿的专题
+            recommendCollections: recommendCollections, // 推荐专题
         }
     },
     methods: {
@@ -176,7 +122,35 @@ export default {
         },
         onMoreShareMouseEnter() {
             this.sharePopupVisible = true;
+        },
+        onContribute(collection, isManager) {
+            if (!collection.buttonMode) {
+                return;
+            }
+            collection.statusLabel = isManager ? '收录中' : '投稿中';
+            collection.buttonMode = false;
+            const url = `/collections/${collection.id}/articles/${article.id}`;
+            myHTTP.post(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    if (res.data.data.status === CollectionStatus.Collected) {
+                        collection.statusLabel = '已收录';
+                        collection.buttonMode = false;
+                    } else if (res.data.data.status === CollectionStatus.Auditing) {
+                        collection.statusLabel = '等待审核';
+                        collection.buttonMode = false;
+                    }
+                } else {
+                    collection.statusLabel = isManager ? '收录' : '投稿';
+                    collection.buttonMode = true;
+                }
+            }).catch((err) => {
+                collection.statusLabel = isManager ? '收录' : '投稿';
+                collection.buttonMode = true;
+            });
         }
+    },
+    filters: {
+        countToK,
     }
 }
 </script>
@@ -490,6 +464,7 @@ export default {
         top: 24px;
         right: 15px;
         color: #42c02e;
+        text-decoration: none;
     }
 
     .collection-item .recommend-name {

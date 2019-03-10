@@ -3,7 +3,7 @@ export const trim = (str) => {
         return '';
     }
     return str.replace(/^\s+|\s+$/g, '');
-}
+};
 
 export const ossResponseParse = (res, uploadImgURL) => {
     let xmlDOM = (new DOMParser()).parseFromString(res, 'text/xml');
@@ -16,4 +16,16 @@ export const ossResponseParse = (res, uploadImgURL) => {
         }
     }
     return '';
-}
+};
+
+export const countToK = (count) => {
+    if (!count) {
+        return 0;
+    }
+    if (count < 1000) {
+        return count;
+    }
+    let k = count / 100;
+    k = (parseInt(k) + Math.ceil(k - parseInt(k))) / 10;
+    return k;
+};

@@ -185,15 +185,9 @@
 {% block footer %}
 {% endblock %}
 
-{% block css %}
-<link rel="stylesheet" href="{{cssPath}}/user/index.css">
-{% endblock %}
-
 {% block pageData %}
 <script>
-  var pageData = {
-    userID: {{ user.id }}
-  };
+  var userID = {{ user.id }};
 </script>
 {% endblock %}
 

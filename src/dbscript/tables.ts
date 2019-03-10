@@ -78,6 +78,13 @@ const config = new ConfigService();
         //   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         // await connection.manager.query(sql);
 
+        const sql = `CREATE TABLE contributor_collection (
+            user_id int(11) unsigned NOT NULL,
+            collection_id int(11) unsigned NOT NULL,
+            PRIMARY KEY (user_id, collection_id)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        await connection.manager.query(sql);
+
         // tslint:disable-next-line:no-console
         console.log('done');
     } catch (error) {

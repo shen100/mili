@@ -66,4 +66,7 @@ export class Collection {
 
     @ManyToMany(type => User, user => user.followedCollections)
     followers: User[];
+
+    @ManyToMany(type => User, user => user.contributeCollections)
+    contributors: User[];
 }

@@ -132,7 +132,7 @@ export class User {
             referencedColumnName: 'id',
         },
     })
-    collections: Collection[];
+    collections: Collection[]; // 创建的专题
 
     @ManyToMany(type => Collection, collection => collection.followers)
     @JoinTable({
@@ -146,5 +146,19 @@ export class User {
             referencedColumnName: 'id',
         },
     })
-    followedCollections: Collection[];
+    followedCollections: Collection[]; // 关注的专题
+
+    @ManyToMany(type => Collection, collection => collection.contributors)
+    @JoinTable({
+        name: 'contributor_collection',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'collection_id',
+            referencedColumnName: 'id',
+        },
+    })
+    contributeCollections: Collection[]; // 投稿的专题
 }

@@ -1,3 +1,4 @@
+import '~/styles/main.scss';
 import '~/styles/signin.css';
 import '~/js/common/default.js';
 import Vue from 'vue';
