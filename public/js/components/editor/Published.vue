@@ -52,7 +52,7 @@
                 </h3>
                 <ul class="collection-list">
                     <li :key="c.id" v-for="c in collections" class="collection-item">
-                        <span class="my-collection-name">{{c.name}}</span>
+                        <span :title="c.name" class="my-collection-name">{{c.name}}</span>
                         <img :src="c.coverURL" />
                         <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c, true)">{{c.statusLabel}}</a>
                     </li>
@@ -64,7 +64,7 @@
                 </h3>
                 <ul class="collection-list">
                     <li :key="c.id" v-for="c in contributeCollections" class="collection-item">
-                        <span class="my-collection-name">{{c.name}}</span>
+                        <span :title="c.name" class="my-collection-name">{{c.name}}</span>
                         <img :src="c.coverURL" />
                         <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
                     </li>
@@ -76,7 +76,7 @@
                     <li :key="c.id" v-for="c in recommendCollections" class="collection-item" style="width: 50%;">
                         <img :src="c.coverURL" />
                         <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
-                        <span class="recommend-name">{{c.name}}<em>{{c.articleCount | countToK}}篇文章，{{c.followerCount | countToK}}人关注</em></span>
+                        <span :title="c.name" class="recommend-name">{{c.name}}<em>{{c.articleCount | countToK}}篇文章，{{c.followerCount | countToK}}人关注</em></span>
                     </li>
                 </ul>
             </div>
