@@ -99,6 +99,8 @@ export class CollectionService {
     // 向专题投稿
     async addArticle(userID: number, collectionID: number, articleID: number, status: number) {
         await this.collectionRepository.manager.connection.transaction(async manager => {
+            // article_collection 中存在相同的记录的话，就更新 status 字段， 还可以在article_collection表中增加投稿时间字段，审核时间字段
+            // contributor_collection 中存在相同的记录的话，更新date字段（目前表中还无date字段）
             const sql2 = `INSERT INTO article_collection (collection_id, article_id, status) VALUES (${collectionID}, ${articleID}, ${status})`;
             const sql3 = `INSERT INTO contributor_collection (collection_id, user_id) VALUES (${collectionID}, ${userID})`;
             await manager.query(sql2);
