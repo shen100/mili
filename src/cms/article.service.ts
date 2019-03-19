@@ -64,6 +64,7 @@ export class ArticleService {
                 commentCount: true,
                 likeCount: true,
                 contentType: true,
+                summary: true,
                 content: true,
                 htmlContent: true,
             },

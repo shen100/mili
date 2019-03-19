@@ -1,35 +1,48 @@
 <template>
     <div>
+        <SuccessTip ref="successTip" :width="200" />
         <div class="done-header">
             <div class="done-title">
                 <a :href="`/p/${article.id}.html`" class="main-title">{{article.name}}</a><br>
                 <a :href="`/p/${article.id}.html`" class="sub-title">发布成功，点击查看文章</a>
             </div>
             <ul class="article-share">
-                <li class="weibo"><i class="fa fa-weibo"></i>微博</li>
+                <li class="weibo">
+                    <a :href="`${shareURL}&platform=weibo`" target="_blank"><i class="fa fa-weibo"></i>微博</a>
+                </li>
                 <li class="weixin"><i class="fa fa-wechat"></i>微信</li>
-                <li class="link" ><i class="fa fa-link"></i>复制链接</li>
-                <li @mouseleave="onMoreShareMouseLeave" @mouseenter="onMoreShareMouseEnter" class="more" title="">
+                <li class="link" :data-clipboard-text="`https://${hostname}/p/${article.id}.html`" @click="onCopyLink"><i class="fa fa-link"></i>复制链接</li>
+                <li @mouseleave="onMoreShareMouseLeave" @mouseenter="onMoreShareMouseEnter" class="more">
                     <span class="more">更多分享
                         <div v-if="sharePopupVisible" class="popup">
                             <ul>
-                                <li>
+                                <li style="padding: 4px 12px;">
                                     <span class="social-item"><i class="social-icon-weixin"></i><span class="social-title">微信</span></span>
                                 </li>
                                 <li>
-                                    <span class="social-item"><i class="social-icon-zone"></i><span class="social-title">QQ空间</span></span>
+                                    <a :href="`${shareURL}&platform=qzone`" target="_blank">
+                                        <span class="social-item"><i class="social-icon-zone"></i><span class="social-title">QQ空间</span></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <span class="social-item"><i class="social-icon-douban"></i><span class="social-title">豆瓣</span></span>
+                                    <a :href="`${shareURL}&platform=douban`" target="_blank">
+                                        <span class="social-item"><i class="social-icon-douban"></i><span class="social-title">豆瓣</span></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <span class="social-item"><i class="social-icon-facebook"></i><span class="social-title">Facebook</span></span>
+                                    <a :href="`${shareURL}&platform=facebook`" target="_blank">
+                                        <span class="social-item"><i class="social-icon-facebook"></i><span class="social-title">Facebook</span></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <span class="social-item"><i class="social-icon-twitter"></i><span class="social-title">Twitter</span></span>
+                                    <a :href="`${shareURL}&platform=twitter`" target="_blank">
+                                        <span class="social-item"><i class="social-icon-twitter"></i><span class="social-title">Twitter</span></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <span class="social-item"><i class="social-icon-google"></i><span class="social-title">Google+</span></span>
+                                    <a :href="`${shareURL}&platform=google`" target="_blank">
+                                        <span class="social-item"><i class="social-icon-google"></i><span class="social-title">Google+</span></span>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -86,16 +99,18 @@
 </template>
 
 <script>
+import ClipboardJS from 'clipboard';
 import { CollectionStatus } from '~/js/constants/entity.js';
 import { countToK } from '~/js/utils/utils.js';
 import { myHTTP } from '~/js/common/net.js';
+import SuccessTip from '~/js/components/common/SuccessTip.vue';
 import { ErrorCode } from '~/js/constants/error.js';
 
 export default {
     data () {
-        const collections = window.collections;
-        const contributeCollections = window.contributeCollections;
-        const recommendCollections = window.recommendCollections;
+        const collections = window.collections; // 创建/管理的专题
+        const contributeCollections = window.contributeCollections; // 最近投稿的专题
+        const recommendCollections = window.recommendCollections; // 推荐专题
         collections.forEach(c => {
             c.statusLabel = '收录';
             c.buttonMode = true;
@@ -108,13 +123,27 @@ export default {
             c.statusLabel = '投稿';
             c.buttonMode = true;
         });
+        let url = `${window.globalConfig.apiPrefix}`;
+        const article = window.article;
+        const title = article.name;
+        const summary = article.summary;
+        const coverURL = article.coverURL || '';
+
+        const shareURL = `${url}/share?title=${title}&content=${summary}&imgurl=${coverURL}`;
         return {
-            article: window.article,
+            hostname: window.globalConfig.hostname,
+            article: article,
             sharePopupVisible: false,
+            shareURL: shareURL,
             collections: collections, // 创建/管理的专题
             contributeCollections: contributeCollections, // 最近投稿的专题
             recommendCollections: recommendCollections, // 推荐专题
-        }
+        };
+    },
+    mounted() {
+        this.$nextTick(() => {
+            new ClipboardJS('.link');
+        });
     },
     methods: {
         onMoreShareMouseLeave() {
@@ -122,6 +151,9 @@ export default {
         },
         onMoreShareMouseEnter() {
             this.sharePopupVisible = true;
+        },
+        onCopyLink() {
+            this.$refs.successTip.show('已复制到剪贴板中');
         },
         onContribute(collection, isManager) {
             if (!collection.buttonMode) {
@@ -151,6 +183,9 @@ export default {
     },
     filters: {
         countToK,
+    },
+    components: {
+        SuccessTip,
     }
 }
 </script>
@@ -232,6 +267,12 @@ export default {
         text-align: center;
     }
 
+    .article-share>li a {
+        display: block;
+        text-decoration: none;
+        color: #fff;
+    }
+
     .article-share>li i {
         margin-right: 5px;
     }
@@ -281,14 +322,23 @@ export default {
 
     .article-share .popup ul li {
         text-align: left;
-        padding: 4px 12px;
+        padding: 0;
         line-height: 24px;
         overflow: hidden;
         border-bottom: 1px solid #d9d9d9;
     }
 
+    .article-share .popup ul a {
+        padding: 4px 12px;
+        color: #595959;
+    }
+
     .article-share .popup ul li:hover {
         background-color: #666;
+        color: #fff;
+    }
+
+    .article-share .popup ul li:hover a {
         color: #fff;
     }
 
@@ -310,6 +360,10 @@ export default {
         padding: 0;
         width: 18px;
         height: 18px;
+    }
+
+    .social-icon-weixin {
+        background-position: -20px 0
     }
 
     .social-icon-zone {

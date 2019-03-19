@@ -39,6 +39,24 @@ body {
     z-index: 2000;
 }
 
+.successtip-msg {
+    border: 1px #2ece42 solid;
+    color: #1db030;
+    line-height: 36px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 5px;
+    box-shadow: 0 0 8px rgba(0,0,0,.1);
+    position: fixed;
+    width: 300px;
+    margin-left: -150px;
+    left: 50%;
+    top: 60px;
+    background: #fff;
+    text-align: center;
+    z-index: 2000;
+}
+
 .clearfix:after, .clearfix:before {
     content: " ";
     display: table;

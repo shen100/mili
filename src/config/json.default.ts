@@ -1,5 +1,7 @@
 import * as path from 'path';
 
+const hostname = 'dev.golang123.com';
+
 export default {
     db: {
         type: 'mysql',
@@ -30,6 +32,7 @@ export default {
     },
     server: {
         siteName: '米粒',
+        hostname,
         port: 8884,
         apiPrefix: '/api/v1',
         passSalt: 'u5o2law8xi',
