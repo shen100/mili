@@ -7,12 +7,10 @@
                 <img v-if="!coverURL" :src="`${imgPath}/collection/cover.png`">
                 <img v-else :src="coverURL">
             </div>
-            <Upload :action="uploadActionURL"
-                :on-success="onUploadCallback" :on-error="onUploadError" :name="uploadFieldName"
-                :data="uploadData" :format="imgFormat" :before-upload="beforeUpload"
-                :show-upload-list="false">
+            <Uploader @uploading="onImgUploading" @success="onImgUploadSuccess" 
+                    @error="onImgUploadFail">
                 <div class="avatar-upload-btn">上传专题封面</div>
-            </Upload>
+            </Uploader>
         </div>
         <div class="form-item">
             <label>名称</label>
@@ -67,6 +65,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { trim, ossResponseParse } from '~/js/utils/utils.js';
+import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import uuid from 'uuid/v4';
 
@@ -151,36 +150,19 @@ export default {
                 }
             }
         },
-
-
-
-
-        beforeUpload(file) {
-            if (file.size > this.imgMaxSize) {
-                this.errorTipLabel = this.imgMaxSizeError;
-                return false;
-            }
-            let ext = '';
-            let index = file.name.lastIndexOf('.');
-            if (index >= 0) {
-                ext = file.name.substr(index);
-            }
-            this.uploadData.key = this.uploadPrefix + '/' + uuid() + ext;
-            return true
+        onImgUploading() {
+            this.coverURL = '';
         },
-        onUploadCallback (res, file) {
-            let coverURL = ossResponseParse(res, this.uploadImgURL);
-            if (coverURL) {
-                this.coverURL = coverURL;
-            } else {
-                this.errorTipLabel = '上传凭证过期，请刷新浏览器重试';
-            }
+        onImgUploadSuccess(imgURL) {
+            this.coverURL = imgURL;
         },
-        onUploadError() {
-            this.errorTipLabel = '上传凭证过期，请刷新浏览器重试';
+        onImgUploadFail(message) {
+            this.coverURL = '';
+            this.$refs.errorTip.show(message);
         },
-
-        
+        onUploadError(message) {
+            this.$refs.errorTip.show(message);
+        },
         onCreateCollection() {
             const name = trim(this.name);
             if (!name) {
@@ -224,6 +206,7 @@ export default {
     },
     components: {
         ErrorTip,
+        Uploader,
     }
 };
 </script>

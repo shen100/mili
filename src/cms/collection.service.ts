@@ -102,7 +102,8 @@ export class CollectionService {
             // article_collection 中存在相同的记录的话，就更新 status 字段， 还可以在article_collection表中增加投稿时间字段，审核时间字段
             // contributor_collection 中存在相同的记录的话，更新date字段（目前表中还无date字段）
             const sql2 = `INSERT INTO article_collection (collection_id, article_id, status) VALUES (${collectionID}, ${articleID}, ${status})`;
-            const sql3 = `INSERT INTO contributor_collection (collection_id, user_id) VALUES (${collectionID}, ${userID})`;
+            const sql3 = `INSERT INTO contributor_collection (collection_id, user_id) VALUES (${collectionID}, ${userID})
+                            ON DUPLICATE KEY UPDATE user_id = ${userID}`;
             await manager.query(sql2);
             await manager.query(sql3);
         });
@@ -210,5 +211,11 @@ export class CollectionService {
             collection.coverURL = data.coverURL;
             return collection;
         });
+    }
+
+    async searchByPublishedArticle(name: string, userID: number): Promise<Collection[]> {
+        // 和name做匹配，找出不是自己创建或管理的专题
+        // 自己创建或管理的专题会在 user_collection 表中插入一条记录
+        return [];
     }
 }

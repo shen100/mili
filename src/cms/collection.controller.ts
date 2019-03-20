@@ -103,6 +103,13 @@ export class CollectionController {
         });
     }
 
+    @Get('/api/v1/collections/searchbypublish')
+    @UseGuards(ActiveGuard)
+    async searchByPublish(@CurUser() user, @Query('q') keyword: string) {
+        const collections = await this.collectionService.searchByPublishedArticle(keyword, user.id);
+        return collections;
+    }
+
     @Post('/api/v1/collections')
     @UseGuards(ActiveGuard)
     async create(@CurUser() user, @Body() createCollectionDto: CreateCollectionDto) {

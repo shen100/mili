@@ -55,45 +55,74 @@
             <div class="done-search">
                 <div class="done-search-input">
                     <i class="fa fa-search fa-2x"></i>
-                    <input type="text" placeholder="搜索专题">
+                    <input v-model="searchCollectionName" @keyup.enter="onSearchCollection" type="text" placeholder="搜索专题">
                 </div>
                 <div class="done-search-label">向专题投稿，让文章被更多人发现</div>
             </div>
-            <div class="collection-box my-collection-box">
-                <h3 class="collection-box-title my-collection-box-title">
-                    创建/管理的专题<a class="my-collection-box-new" href="">新建</a>
-                </h3>
-                <ul class="collection-list">
-                    <li :key="c.id" v-for="c in collections" class="collection-item">
-                        <span :title="c.name" class="my-collection-name">{{c.name}}</span>
-                        <img :src="c.coverURL" />
-                        <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c, true)">{{c.statusLabel}}</a>
-                    </li>
-                </ul>
+            <div v-if="isSearch">
+                <div class="search-collection-box">
+                    <div v-if="isSearchLoading" class="loading-collection-box">
+                        <div class="loading-rect">
+                            <svg class="loading-collection" viewBox="25 25 50 50">
+                                <circle class="loading-collection-circle" cx="50" cy="50" r="20" fill="none"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div v-if="searchCollections && searchCollections.length" class="collection-box">
+                            <ul class="collection-list">
+                                <li :key="c.id" v-for="c in searchCollections" class="collection-item" style="width: 50%;">
+                                    <img @click="jumpToCollection(c.id)" :src="c.coverURL" />
+                                    <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
+                                    <span :title="c.name" class="recommend-name"><span @click="jumpToCollection(c.id)">{{c.name}}</span><em>{{c.articleCount | countToK}}篇文章，{{c.followerCount | countToK}}人关注</em></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div v-else>暂无数据</div>
+                    </div>
+                </div>
             </div>
-            <div class="collection-box my-collection-box">
-                <h3 class="collection-box-title my-collection-box-title">
-                    最近投稿
-                </h3>
-                <ul class="collection-list">
-                    <li :key="c.id" v-for="c in contributeCollections" class="collection-item">
-                        <span :title="c.name" class="my-collection-name">{{c.name}}</span>
-                        <img :src="c.coverURL" />
-                        <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="collection-box" style="margin-bottom: 30px;">
-                <h3 class="collection-box-title">推荐专题</h3>
-                <ul class="collection-list">
-                    <li :key="c.id" v-for="c in recommendCollections" class="collection-item" style="width: 50%;">
-                        <img :src="c.coverURL" />
-                        <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
-                        <span :title="c.name" class="recommend-name">{{c.name}}<em>{{c.articleCount | countToK}}篇文章，{{c.followerCount | countToK}}人关注</em></span>
-                    </li>
-                </ul>
-            </div>
-            <div class="no-more">没有更多了 </div>
+            <template v-else>
+                <div class="collection-box my-collection-box">
+                    <h3 class="collection-box-title my-collection-box-title">
+                        创建/管理的专题<a class="my-collection-box-new" href="/collections/new">新建</a>
+                    </h3>
+                    <ul class="collection-list">
+                        <li :key="c.id" v-for="c in collections" class="collection-item">
+                            <span :title="c.name" class="my-collection-name">
+                                <span @click="jumpToCollection(c.id)" style="cursor: pointer;">{{c.name}}</span>
+                            </span>
+                            <img @click="jumpToCollection(c.id)" :src="c.coverURL" />
+                            <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c, true)">{{c.statusLabel}}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="collection-box my-collection-box">
+                    <h3 class="collection-box-title my-collection-box-title">
+                        最近投稿
+                    </h3>
+                    <ul class="collection-list">
+                        <li :key="c.id" v-for="c in contributeCollections" class="collection-item">
+                            <span :title="c.name" class="my-collection-name">
+                                <span @click="jumpToCollection(c.id)" style="cursor: pointer;">{{c.name}}</span>
+                            </span>
+                            <img @click="jumpToCollection(c.id)" :src="c.coverURL" />
+                            <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="collection-box" style="margin-bottom: 30px;">
+                    <h3 class="collection-box-title">推荐专题</h3>
+                    <ul class="collection-list">
+                        <li :key="c.id" v-for="c in recommendCollections" class="collection-item" style="width: 50%;">
+                            <img @click="jumpToCollection(c.id)" :src="c.coverURL" />
+                            <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
+                            <span :title="c.name" class="recommend-name"><span @click="jumpToCollection(c.id)">{{c.name}}</span><em>{{c.articleCount | countToK}}篇文章，{{c.followerCount | countToK}}人关注</em></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="no-more">没有更多了 </div>
+            </template>
         </div>
     </div>
 </template>
@@ -138,6 +167,10 @@ export default {
             collections: collections, // 创建/管理的专题
             contributeCollections: contributeCollections, // 最近投稿的专题
             recommendCollections: recommendCollections, // 推荐专题
+            // isSearch为true时，显示搜索的专题，否则显示创建/管理的专题、最近投稿的专题、推荐专题
+            isSearch: false,
+            isSearchLoading: false, // 是否正在搜索专题
+            searchCollectionName: ''
         };
     },
     mounted() {
@@ -178,6 +211,25 @@ export default {
             }).catch((err) => {
                 collection.statusLabel = isManager ? '收录' : '投稿';
                 collection.buttonMode = true;
+            });
+        },
+        jumpToCollection(id) {
+            location.href = `/collections/${id}.html`;
+        },
+        onSearchCollection() {
+            const url = `/collections/${collection.id}/articles/${article.id}`;
+            myHTTP.post(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    if (res.data.data.status === CollectionStatus.Collected) {
+                        
+                    } else if (res.data.data.status === CollectionStatus.Auditing) {
+                        
+                    }
+                } else {
+                    
+                }
+            }).catch((err) => {
+                
             });
         }
     },
@@ -497,6 +549,7 @@ export default {
         left: 15px;
         top: 15px;
         border-radius: 10%;
+        cursor: pointer;
     }
 
     .collection-item .my-collection-name {
@@ -527,6 +580,13 @@ export default {
         line-height: 1;
     }
 
+    .collection-item .recommend-name span {
+        color: #595959;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
     .collection-item .recommend-name em {
         font-weight: 400;
         font-style: normal;
@@ -540,6 +600,96 @@ export default {
         padding-bottom: 80px;
         text-align: center;
         color: rgba(0, 0, 0, 0.65);
+    }
+
+    @-webkit-keyframes oneturn {
+        to {
+            -webkit-transform: rotate(1turn);
+            transform: rotate(1turn);
+        }
+    }
+    
+    @keyframes oneturn {
+        to {
+            -webkit-transform: rotate(1turn);
+            transform: rotate(1turn);
+        }
+    }
+
+    @-webkit-keyframes strokedash {
+        0% {
+            stroke-dasharray: 1, 151;
+            stroke-dashoffset: 0;
+        }
+
+        50% {
+            stroke-dasharray: 89, 151;
+            stroke-dashoffset: -35px;
+        }
+
+        to {
+            stroke-dasharray: 89, 151;
+            stroke-dashoffset: -124px;
+        }
+    }
+    
+    @keyframes strokedash {
+        0% {
+            stroke-dasharray: 1, 151;
+            stroke-dashoffset: 0;
+        }
+
+        50% {
+            stroke-dasharray: 89, 151;
+            stroke-dashoffset: -35px;
+        }
+
+        to {
+            stroke-dasharray: 89, 151;
+            stroke-dashoffset: -124px;
+        }
+    }
+
+    .search-collection-box {
+        position: relative;
+        min-height: 200px;
+    }
+
+    .loading-collection-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+
+    .loading-rect {
+        width: 48px;
+        height: 48px;
+    }
+
+    .loading-collection {
+        -webkit-animation: oneturn 2s linear infinite;
+        animation: oneturn 2s linear infinite;
+        height: 100%;
+        -webkit-transform-origin: center center;
+        -ms-transform-origin: center center;
+        transform-origin: center center;
+        width: 100%;
+        will-change: transfrom;
+    }
+
+    .loading-collection-circle {
+        stroke-width: 5;
+        stroke-miterlimit: 10;
+        stroke-dasharray: 1, 151;
+        stroke-dashoffset: 0;
+        stroke-linecap: round;
+        stroke: #ec7259;
+        -webkit-animation: strokedash 1.5s cubic-bezier(.645, .045, .355, 1) infinite;
+        animation: strokedash 1.5s cubic-bezier(.645, .045, .355, 1) infinite;
+        will-change: stroke-dasharray, stroke-dashoffset;
     }
 </style>
 

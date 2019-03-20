@@ -9,7 +9,7 @@ import {
     Select,
     Option,
 } from 'iview';
-import App from '~/js/components/editor/EditMarkdownDraft.vue';
+import App from '~/js/pages/editor/EditMarkdownDraft.vue';
 
 import {
     registerDirective,

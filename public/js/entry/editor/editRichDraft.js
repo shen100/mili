@@ -9,7 +9,7 @@ import {
     Select,
     Option,
 } from 'iview';
-import App from '~/js/components/editor/EditRichDraft.vue';
+import App from '~/js/pages/editor/EditRichDraft.vue';
 
 import {
     registerDirective,

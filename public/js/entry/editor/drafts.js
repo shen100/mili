@@ -5,7 +5,7 @@ import Vue from 'vue';
 import {
     Modal,
 } from 'iview';
-import App from '~/js/components/editor/Drafts.vue';
+import App from '~/js/pages/editor/Drafts.vue';
 
 import {
     registerDirective,
