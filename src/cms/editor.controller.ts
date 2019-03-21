@@ -109,8 +109,10 @@ export class EditorController {
     async publishedView(@Param('id', ParseIntPipe) id: number, @CurUser() user, @Res() res) {
         const [article, recommendCollections, collections, contributeCollections] = await Promise.all([
             this.articleService.detailForEditor(id),
+            // 排除掉自己创建或管理的专题
             this.collectionService.recommends(user.id),
             this.collectionService.createOrMangeCollections(user.id, 1),
+            // 排除掉自己创建或管理的专题
             this.collectionService.contributeCollections(user.id, 1),
         ]);
         res.render('pages/editor/published', {

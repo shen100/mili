@@ -213,9 +213,23 @@ export class CollectionService {
         });
     }
 
-    async searchByPublishedArticle(name: string, userID: number): Promise<Collection[]> {
+    async searchByPublish(name: string, userID: number): Promise<Collection[]> {
         // 和name做匹配，找出不是自己创建或管理的专题
         // 自己创建或管理的专题会在 user_collection 表中插入一条记录
-        return [];
+        const limit: number = 20;
+        const offset: number = 0;
+        const sql = `SELECT DISTINCT(collection.id) as id, collection.name as name,
+                collection.cover_url as coverURL
+            FROM collections collection, user_collection uc
+            WHERE collection.id = uc.collection_id AND uc.user_id != ${userID}
+            LIMIT ${offset}, ${limit}`;
+        const results = await this.collectionRepository.manager.query(sql);
+        return results.map(data => {
+            const collection = new Collection();
+            collection.id = data.id;
+            collection.name = data.name;
+            collection.coverURL = data.coverURL;
+            return collection;
+        });
     }
 }

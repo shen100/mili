@@ -106,7 +106,8 @@ export class CollectionController {
     @Get('/api/v1/collections/searchbypublish')
     @UseGuards(ActiveGuard)
     async searchByPublish(@CurUser() user, @Query('q') keyword: string) {
-        const collections = await this.collectionService.searchByPublishedArticle(keyword, user.id);
+        // 排除掉自己创建或管理的专题
+        const collections = await this.collectionService.searchByPublish(keyword, user.id);
         return collections;
     }
 

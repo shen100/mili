@@ -55,7 +55,7 @@
             <div class="done-search">
                 <div class="done-search-input">
                     <i class="fa fa-search fa-2x"></i>
-                    <input v-model="searchCollectionName" @keyup.enter="onSearchCollection" type="text" placeholder="搜索专题">
+                    <input v-model="searchCollectionName" @input="onSearchInput" @keyup.enter="onSearchCollection" type="text" placeholder="搜索专题">
                 </div>
                 <div class="done-search-label">向专题投稿，让文章被更多人发现</div>
             </div>
@@ -70,7 +70,7 @@
                     </div>
                     <div v-else>
                         <div v-if="searchCollections && searchCollections.length" class="collection-box">
-                            <ul class="collection-list">
+                            <ul class="collection-list" style="border-top: 1px solid #f2f2f2;">
                                 <li :key="c.id" v-for="c in searchCollections" class="collection-item" style="width: 50%;">
                                     <img @click="jumpToCollection(c.id)" :src="c.coverURL" />
                                     <a :style="{cursor: c.buttonMode ? 'pointer' : 'default'}" @click="onContribute(c)">{{c.statusLabel}}</a>
@@ -78,7 +78,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div v-else>暂无数据</div>
+                        <div v-else class="no-search-result">暂无数据</div>
                     </div>
                 </div>
             </div>
@@ -130,7 +130,7 @@
 <script>
 import ClipboardJS from 'clipboard';
 import { CollectionStatus } from '~/js/constants/entity.js';
-import { countToK } from '~/js/utils/utils.js';
+import { trim, countToK } from '~/js/utils/utils.js';
 import { myHTTP } from '~/js/common/net.js';
 import SuccessTip from '~/js/components/common/SuccessTip.vue';
 import { ErrorCode } from '~/js/constants/error.js';
@@ -170,7 +170,9 @@ export default {
             // isSearch为true时，显示搜索的专题，否则显示创建/管理的专题、最近投稿的专题、推荐专题
             isSearch: false,
             isSearchLoading: false, // 是否正在搜索专题
-            searchCollectionName: ''
+            searchCollectionName: '',
+            searchCollections: [],
+            collectionIDs: [], // 用户刚刚操作后，投稿的专题
         };
     },
     mounted() {
@@ -188,6 +190,23 @@ export default {
         onCopyLink() {
             this.$refs.successTip.show('已复制到剪贴板中');
         },
+        updateCollectionStatus(c) {
+            function updateStatus(collectionArr) {
+                if (!collectionArr || collectionArr.length <= 0) {
+                    return;
+                }
+                collectionArr.forEach(collection => {
+                    if (collection.id === c.id) {
+                        collection.statusLabel = '等待审核';
+                        collection.buttonMode = false;
+                    }
+                });
+            }
+            updateStatus(this.collections);
+            updateStatus(this.contributeCollections);
+            updateStatus(this.recommendCollections);
+            updateStatus(this.searchCollections);
+        },
         onContribute(collection, isManager) {
             if (!collection.buttonMode) {
                 return;
@@ -201,8 +220,10 @@ export default {
                         collection.statusLabel = '已收录';
                         collection.buttonMode = false;
                     } else if (res.data.data.status === CollectionStatus.Auditing) {
-                        collection.statusLabel = '等待审核';
-                        collection.buttonMode = false;
+                        if (!isManager) {
+                            this.collectionIDs.push(collection.id);
+                        }
+                        this.updateCollectionStatus(collection);
                     }
                 } else {
                     collection.statusLabel = isManager ? '收录' : '投稿';
@@ -216,20 +237,44 @@ export default {
         jumpToCollection(id) {
             location.href = `/collections/${id}.html`;
         },
+        onSearchInput(event) {
+            let name = this.searchCollectionName;
+            name = trim(name);
+            if (!name) {
+                this.isSearch = false;
+                this.isSearchLoading = false;
+            }
+        },
         onSearchCollection() {
-            const url = `/collections/${collection.id}/articles/${article.id}`;
-            myHTTP.post(url).then((res) => {
+            const url = `/collections/searchbypublish`;
+            let name = this.searchCollectionName;
+            name = trim(name);
+            if (!name) {
+                this.isSearch = false;
+                this.isSearchLoading = false;
+                return;
+            }
+            this.isSearch = true;
+            this.isSearchLoading = true;
+            myHTTP.get(url).then((res) => {
+                this.isSearchLoading = false;
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    if (res.data.data.status === CollectionStatus.Collected) {
-                        
-                    } else if (res.data.data.status === CollectionStatus.Auditing) {
-                        
-                    }
+                    const searchCollections = res.data.data;
+                    searchCollections.forEach(c => {
+                        if (this.collectionIDs.indexOf(c.id) >= 0) {
+                            c.statusLabel = '等待审核';
+                            c.buttonMode = false;
+                        } else {
+                            c.statusLabel = '投稿';
+                            c.buttonMode = true;
+                        }
+                    });
+                    this.searchCollections = searchCollections;
                 } else {
-                    
+                    this.$refs.successTip.show(res.data.message);
                 }
             }).catch((err) => {
-                
+                this.isSearchLoading = false;
             });
         }
     },
@@ -690,6 +735,11 @@ export default {
         -webkit-animation: strokedash 1.5s cubic-bezier(.645, .045, .355, 1) infinite;
         animation: strokedash 1.5s cubic-bezier(.645, .045, .355, 1) infinite;
         will-change: stroke-dasharray, stroke-dashoffset;
+    }
+
+    .no-search-result {
+        text-align: center;
+        padding-top: 30px;
     }
 </style>
 
