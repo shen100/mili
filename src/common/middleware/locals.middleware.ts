@@ -18,6 +18,7 @@ export class LocalsMiddleware implements NestMiddleware {
             res.locals.fontPath = configService.static.fontPath;
             res.locals.globalConfig = {
                 hostname: configService.server.hostname,
+                mHostName: configService.server.mHostName,
                 csrfToken: configService.server.csrfProtect ? req.csrfToken() : '',
                 apiPrefix: configService.server.apiPrefix,
                 imgPath: configService.static.imgPath,

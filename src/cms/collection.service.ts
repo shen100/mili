@@ -222,6 +222,7 @@ export class CollectionService {
                 collection.cover_url as coverURL
             FROM collections collection, user_collection uc
             WHERE collection.id = uc.collection_id AND uc.user_id != ${userID}
+            AND collection.creator_id != ${userID}
             LIMIT ${offset}, ${limit}`;
         const results = await this.collectionRepository.manager.query(sql);
         return results.map(data => {

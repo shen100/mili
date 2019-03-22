@@ -1,6 +1,7 @@
 <template>
     <div>
         <SuccessTip ref="successTip" :width="200" />
+        <QRCodePopup ref="qrCodePopup" :articleID="article.id"/>
         <div class="done-header">
             <div class="done-title">
                 <a :href="`/p/${article.id}.html`" class="main-title">{{article.name}}</a><br>
@@ -10,13 +11,13 @@
                 <li class="weibo">
                     <a :href="`${shareURL}&platform=weibo`" target="_blank"><i class="fa fa-weibo"></i>微博</a>
                 </li>
-                <li class="weixin"><i class="fa fa-wechat"></i>微信</li>
+                <li @click="showQRCodePopup" class="weixin"><i class="fa fa-wechat"></i>微信</li>
                 <li class="link" :data-clipboard-text="`https://${hostname}/p/${article.id}.html`" @click="onCopyLink"><i class="fa fa-link"></i>复制链接</li>
                 <li @mouseleave="onMoreShareMouseLeave" @mouseenter="onMoreShareMouseEnter" class="more">
                     <span class="more">更多分享
                         <div v-if="sharePopupVisible" class="popup">
                             <ul>
-                                <li style="padding: 4px 12px;">
+                                <li @click="showQRCodePopup" style="padding: 4px 12px;">
                                     <span class="social-item"><i class="social-icon-weixin"></i><span class="social-title">微信</span></span>
                                 </li>
                                 <li>
@@ -133,6 +134,7 @@ import { CollectionStatus } from '~/js/constants/entity.js';
 import { trim, countToK } from '~/js/utils/utils.js';
 import { myHTTP } from '~/js/common/net.js';
 import SuccessTip from '~/js/components/common/SuccessTip.vue';
+import QRCodePopup from '~/js/components/editor/QRCodePopup.vue';
 import { ErrorCode } from '~/js/constants/error.js';
 
 export default {
@@ -181,6 +183,9 @@ export default {
         });
     },
     methods: {
+        showQRCodePopup() {
+            this.$refs.qrCodePopup.show();
+        },
         onMoreShareMouseLeave() {
             this.sharePopupVisible = false;
         },
@@ -282,6 +287,7 @@ export default {
         countToK,
     },
     components: {
+        QRCodePopup,
         SuccessTip,
     }
 }
