@@ -10,7 +10,10 @@ class CacheKeys {
     readonly user: string = 'golang123:user:%d';
     readonly signupCode: string = 'golang123:signupcode:%s';
     readonly userToken: string = 'golang123:usertoken:%d';
+    readonly publishArticle: string = 'golang123:publisharticle:%d';
 }
+
+export const cacheKeys: CacheKeys = new CacheKeys();
 
 @Injectable()
 export class RedisService {
@@ -58,6 +61,15 @@ export class RedisService {
     async getUserToken(userID: number) {
         const cacheKey = util.format(this.cacheKeys.userToken, userID);
         return await this.client.getAsync(cacheKey);
+    }
+
+    async setPublishArticle(userID: number, article) {
+        const cacheKey = util.format(this.cacheKeys.publishArticle, userID);
+        return await this.client.setAsync(cacheKey, JSON.stringify(article), 'EX', 60);
+    }
+
+    async getCache(key: string) {
+        return await this.client.getAsync(key);
     }
 
     async delCache(key: string) {

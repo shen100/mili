@@ -280,7 +280,7 @@ export default {
                 }
                 // 非编辑文章，那么就是直接创建文章，或编辑草稿，
                 // 编辑草稿时，点击发布，同样是创建文章
-                location.href = `/editor/published/${result.data.id}.html`;
+                location.href = `/editor/published`;
             });
         },
         onCancelSelectCategory() {

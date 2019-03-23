@@ -53,6 +53,7 @@ export class ArticleController {
             this.redisService.setUser(user),
             // this.redisService.delCache(this.redisService.cacheKeys.articles),
         ]);
+        await this.redisService.setPublishArticle(user.id, createResult);
         return {
             id: createResult.id,
         };

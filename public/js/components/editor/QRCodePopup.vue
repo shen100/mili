@@ -1,6 +1,6 @@
 <template>
     <Modal v-model="modalVisible" class-name="vertical-center-modal" 
-        :width="360" :closable="false" :mask-closable="false" footer-hide>
+        :width="360" :closable="false" :mask-closable="true" footer-hide>
         <div slot="header" class="alert-modal-header">
             <button @click="onCancel" type="button" class="close">×</button>
         </div>

@@ -1,3 +1,4 @@
+import * as util from 'util';
 import {
     Controller, Post, Body, UseGuards, Get, Query, Param, Render, Res, Delete,
 } from '@nestjs/common';
@@ -18,10 +19,12 @@ import { SwitchEditorDto } from './dto/switch-editor.dto';
 import { Draft } from '../entity/draft.entity';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { CollectionService } from './collection.service';
+import { RedisService } from '../redis/redis.service';
 
 @Controller()
 export class EditorController {
     constructor(
+        private readonly redisService: RedisService,
         private readonly userService: UserService,
         private readonly articleService: ArticleService,
         private readonly draftService: DraftService,
@@ -104,20 +107,28 @@ export class EditorController {
         });
     }
 
-    @Get('/editor/published/:id.html')
+    @Get('/editor/published')
     @UseGuards(ActiveGuard)
-    async publishedView(@Param('id', ParseIntPipe) id: number, @CurUser() user, @Res() res) {
+    async publishedView(@CurUser() user, @Res() res) {
+        const publishArticleKey: string = util.format(this.redisService.cacheKeys.publishArticle, user.id);
         const [article, recommendCollections, collections, contributeCollections] = await Promise.all([
-            this.articleService.detailForEditor(id),
+            this.redisService.getCache(publishArticleKey),
             // 排除掉自己创建或管理的专题
             this.collectionService.recommends(user.id),
             this.collectionService.createOrMangeCollections(user.id, 1),
             // 排除掉自己创建或管理的专题
             this.collectionService.contributeCollections(user.id, 1),
         ]);
+        if (!article) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        await this.redisService.delCache(publishArticleKey);
+        const articleObj = JSON.parse(article);
         res.render('pages/editor/published', {
             user,
-            article,
+            article: articleObj,
             collections: collections || [],
             recommendCollections: recommendCollections || [],
             contributeCollections: contributeCollections || [],
