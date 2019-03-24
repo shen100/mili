@@ -78,10 +78,20 @@ const config = new ConfigService();
         //   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         // await connection.manager.query(sql);
 
-        const sql = `CREATE TABLE contributor_collection (
-            user_id int(11) unsigned NOT NULL,
-            collection_id int(11) unsigned NOT NULL,
-            PRIMARY KEY (user_id, collection_id)
+        // const sql = `CREATE TABLE contributor_collection (
+        //     user_id int(11) unsigned NOT NULL,
+        //     collection_id int(11) unsigned NOT NULL,
+        //     PRIMARY KEY (user_id, collection_id)
+        //   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        // await connection.manager.query(sql);
+
+        const sql = `CREATE TABLE post_message (
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            author_id int(11) unsigned NOT NULL,
+            article_id int(11) unsigned NOT NULL,
+            status int(11) unsigned NOT NULL,
+            PRIMARY KEY (id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);
 

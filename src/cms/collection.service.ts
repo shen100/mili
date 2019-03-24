@@ -10,6 +10,7 @@ import { MyHttpException } from '../common/exception/my-http.exception';
 import { CollectionStatus } from '../entity/collection.entity';
 import { ErrorCode } from '../config/constants';
 import { User, Follower } from '../entity/user.entity';
+import { PostMsg, PostMsgStatus } from '../entity/postmsg.entity';
 
 @Injectable()
 export class CollectionService {
@@ -106,6 +107,14 @@ export class CollectionService {
                             ON DUPLICATE KEY UPDATE user_id = ${userID}`;
             await manager.query(sql2);
             await manager.query(sql3);
+            if (status === CollectionStatus.Auditing) {
+                const postMsg = new PostMsg();
+                postMsg.authorID = userID;
+                postMsg.articleID = articleID;
+                postMsg.status = PostMsgStatus.NotProcess;
+                postMsg.createdAt = new Date();
+                await manager.save(postMsg);
+            }
         });
     }
 

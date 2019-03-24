@@ -1,0 +1,274 @@
+#app {
+    width: 960px;
+    padding-left: 15px;
+    padding-right: 15px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+.aside {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin: 86px 0 0;
+    padding: 0 0 30px;
+    width: 280px;
+    overflow: auto;
+}
+
+.content-box {
+    margin-left: 300px;
+    margin-top: 86px;
+}
+
+.aside ul {
+    list-style: none;
+}
+
+.aside ul li {
+    margin: 0;
+    line-height: 20px;
+}
+
+.aside ul a {
+    height: auto;
+    padding: 10px 25px;
+    line-height: 30px;
+    display: block;
+    cursor: pointer;
+}
+
+.aside ul a:hover {
+    text-decoration: none;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.aside ul li.active a {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.aside ul i {
+    margin-right: 15px;
+    font-size: 24px;
+    color: #ea6f5a;
+    vertical-align: middle;
+}
+
+.aside ul span {
+    font-size: 15px;
+    vertical-align: middle;
+}
+
+.aside ul .badge {
+    min-width: 10px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-align: center;
+    border-radius: 10px;
+    padding: 3px 6px;
+    font-size: 13px!important;
+    background-color: #ea6f5a;
+    float: right;
+    margin-top: 7px;
+    box-sizing: border-box;
+}
+
+.ic-comments:before {
+    content: "\E656";
+}
+
+.ic-chats:before {
+    content: "\E637";
+}
+
+.ic-requests:before {
+    content: "\E635";
+}
+
+.ic-likes:before {
+    content: "\E664";
+}
+
+.ic-follows:before {
+    content: "\E636";
+}
+
+.ic-money:before {
+    content: "\E606";
+}
+
+.ic-others:before {
+    content: "\E633";
+}
+
+.message .menu {
+    padding-bottom: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.content-box .find-nothing {
+    margin-top: 150px;
+    text-align: center;
+}
+
+.content-box .find-nothing img {
+    width: 100px;
+}
+
+.content-box .find-nothing div {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.content-box .note-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    padding-top: 50px;
+}
+
+.content-box .note-list li {
+    position: relative;
+    width: 100%;
+    line-height: 20px;
+    margin: 0 0 15px;
+    padding: 15px 2px 20px 0;
+    border-bottom: 1px solid #f0f0f0;
+    word-wrap: break-word;
+}
+
+.content-box .note-list .author {
+    margin-bottom: 14px;
+    font-size: 13px;
+}
+
+.content-box .note-list .avatar {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin: 0 5px 0 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.content-box .note-list .avatar img {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.content-box .note-list .author .avatar, .content-box .note-list .author .info {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.content-box .note-list .author .info .nickname {
+    vertical-align: middle;
+    color: #333;
+}
+
+.content-box .note-list .author .info span {
+    display: inline-block;
+    padding-left: 3px;
+    color: #969696;
+    vertical-align: middle;
+}
+
+.content-box .title {
+    margin: -7px 0 4px;
+    display: inherit;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.content-box .title .title:visited {
+    color: #969696;
+}
+
+.content-box .note-list .abstract {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 24px;
+    color: #999;
+}
+
+.content-box .note-list .meta {
+    padding-right: 0!important;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.content-box .note-list .meta a {
+    margin-right: 10px;
+    color: #b4b4b4;
+}
+
+.content-box .note-list .meta a, .content-box .note-list .meta a:hover {
+    transition: .1s ease-in;
+    -webkit-transition: .1s ease-in;
+    -moz-transition: .1s ease-in;
+    -o-transition: .1s ease-in;
+    -ms-transition: .1s ease-in;
+}
+
+.ic-list-read:before {
+    content: "\E662";
+}
+
+.ic-list-comments:before {
+    content: "\E660";
+}
+
+.content-box .note-list .meta span {
+    margin-right: 10px;
+    color: #b4b4b4;
+}
+
+.ic-list-like:before {
+    content: "\E661";
+}
+
+.content-box .note-list .push-action {
+    margin-top: 10px;
+}
+
+.content-box .btn-delete, .content-box .btn-gray, .content-box .btn-hollow {
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: normal;
+    border-radius: 40px;
+    background: none;
+}
+
+.content-box .btn-hollow {
+    border: 1px solid rgba(59, 194, 29, .7);
+    color: #42c02e!important;
+}
+
+.content-box .btn-gray {
+    border: 1px solid hsla(0, 0%, 59%, .7);
+    color: #969696!important;
+}
+
+.content-box .note-list .btn-gray, .content-box .note-list .hollow {
+    margin: 0 10px;
+    padding: 4px 12px;
+    font-size: 12px;
+}
+
+.content-box .note-list .push-status, .content-box .note-list .push-time {
+    font-size: 12px;
+    color: #969696;
+}

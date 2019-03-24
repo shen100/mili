@@ -22,6 +22,7 @@ import { DraftService } from './draft.service';
 import { Settings } from '../entity/settings.entity';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
+import { PostMsg } from '../entity/postmsg.entity';
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { MessageService } from './message.service';
             Collection,
             Category,
             Draft,
+            PostMsg,
         ]),
         UserModule,
     ],
