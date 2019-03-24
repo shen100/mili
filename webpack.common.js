@@ -17,6 +17,7 @@ module.exports = {
         'entry/signin': './public/js/entry/signin.js',
         'entry/signup': './public/js/entry/signup.js',
         'entry/user/user': './public/js/entry/user/user.js',
+        'entry/messages': './public/js/entry/messages.js',
         'entry/article/articleDetail': './public/js/entry/article/articleDetail.js',
         'entry/collection/collection': './public/js/entry/collection/collection.js',
         'entry/collection/edit': './public/js/entry/collection/edit.js',

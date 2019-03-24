@@ -20,6 +20,8 @@ import { Category } from '../entity/category.entity';
 import { Draft } from '../entity/draft.entity';
 import { DraftService } from './draft.service';
 import { Settings } from '../entity/settings.entity';
+import { MessageController } from './message.controller';
+import { MessageService } from './message.service';
 
 @Module({
     imports: [
@@ -40,6 +42,7 @@ import { Settings } from '../entity/settings.entity';
         UCController,
         CollectionController,
         EditorController,
+        MessageController,
         SearchController,
         AdminController,
     ],
@@ -47,6 +50,7 @@ import { Settings } from '../entity/settings.entity';
         ArticleService,
         DraftService,
         CategoryService,
+        MessageService,
         UploadService,
         CollectionService,
     ],

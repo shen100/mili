@@ -9,6 +9,7 @@ dist
 
 # Log files
 npm-debug.log*
+package-lock.json
 
 src/config/json.development.ts
 src/config/json.staging.ts
