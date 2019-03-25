@@ -5,6 +5,8 @@ import { ActiveGuard } from '../common/guards/active.guard';
 import { MessageService } from './message.service';
 import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
 import { CurUser } from '../common/decorators/user.decorator';
+import { recentTime } from '../utils/viewfilter';
+import moment = require('moment');
 
 @Controller()
 export class MessageController {
@@ -21,6 +23,15 @@ export class MessageController {
     @UseGuards(ActiveGuard)
     async postMsgList(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
         const pageSize: number = 20;
-        return await this.messageService.postMsgList(user.id, 1, pageSize);
+        const result = await this.messageService.postMsgList(user.id, 1, pageSize);
+        result.list = result.list || [];
+        result.list = result.list.map(item => {
+            return {
+                ...item,
+                createdAtRecentLabel: recentTime(item.createdAt, 'YYYY.MM.DD HH:mm'),
+                createdAtLabel: moment(item.createdAt).format('YYYY.MM.DD HH:mm'),
+            };
+        });
+        return result;
     }
 }

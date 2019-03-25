@@ -89,6 +89,7 @@ const config = new ConfigService();
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             author_id int(11) unsigned NOT NULL,
+            user_id int(11) unsigned NOT NULL,
             article_id int(11) unsigned NOT NULL,
             status int(11) unsigned NOT NULL,
             PRIMARY KEY (id)

@@ -64,8 +64,10 @@
     "typescript": "^3.0.1",
     "uuid": "^3.3.2",
     "validator": "^10.9.0",
-    "vue": "^2.5.18",
-    "vue-router": "^3.0.2"
+    "vue": "^2.6.10",
+    "vue-loader": "^15.7.0",
+    "vue-router": "^3.0.2",
+    "vue-template-compiler": "^2.6.10"
   },
   "devDependencies": {
     "@nestjs/swagger": "^2.5.1",
@@ -123,8 +125,6 @@
     "tsconfig-paths": "^3.5.0",
     "tslint": "5.11.0",
     "url-loader": "^1.1.2",
-    "vue-loader": "^15.4.2",
-    "vue-template-compiler": "^2.5.18",
     "walk": "^2.3.14",
     "webpack": "^4.16.5",
     "webpack-bundle-analyzer": "^3.0.3",

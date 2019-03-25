@@ -157,7 +157,7 @@ export class CollectionController {
         if (index >= 0) {
             status = CollectionStatus.Collected;
         }
-        await this.collectionService.addArticle(user.id, collectionID, articleID, status);
+        await this.collectionService.addArticle(user.id, collection, articleID, status);
         return {
             status,
         };

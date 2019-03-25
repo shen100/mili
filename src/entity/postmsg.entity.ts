@@ -23,6 +23,9 @@ export class PostMsg {
     @Column('datetime', { name: 'created_at', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
+    @Column('int', { name: 'user_id' })
+    userID: number;
+
     @Column('int', { name: 'author_id' })
     authorID: number;
 

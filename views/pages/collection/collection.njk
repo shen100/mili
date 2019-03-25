@@ -93,7 +93,7 @@
       <ul class="list collection-follower">
         {% for follower in followers %}
         <li>
-          <a href="/u/{{follower.id}}.html" target="_blank" class="avatar hint--bottom hint--rounded hint--no-animate" aria-label="{{follower.username}} · {{follower.date | recentTime }} 关注">
+          <a href="/u/{{follower.id}}.html" target="_blank" class="avatar hint--bottom hint--rounded hint--no-animate" aria-label="{{follower.username}} · {{follower.date | recentTime('YYYY.MM.DD HH:mm')}} 关注">
             <img src="{{follower.avatarURL}}">
           </a>
         </li>
