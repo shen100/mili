@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import { CollectionStatus } from '~/js/constants/entity.js';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import { trim } from '~/js/utils/utils.js';

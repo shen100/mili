@@ -10,10 +10,10 @@ import {
 import { Article } from './article.entity';
 import { User } from './user.entity';
 
-export enum CollectionStatus {
-    NotCollect = 1,
-    Auditing = 2,
-    Collected = 3,
+export enum ArticleCollectionStatus {
+    Auditing = 1,
+    Collected = 2,
+    NotCollect = 3,
 }
 
 @Entity({name: 'collections'})

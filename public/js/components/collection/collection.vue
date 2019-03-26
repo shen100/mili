@@ -18,10 +18,10 @@
                     <li :key="article.id" v-for="article in articles">
                         <div>
                             <div class="note-name">{{article.name}}</div> 
-                            <span v-if="article.collectionStatus === CollectionStatus.Collected" class="status has-add">已加入</span>
-                            <span v-if="article.collectionStatus === CollectionStatus.Auditing" class="status has-add">待审核</span>
-                            <a v-if="article.collectionStatus === CollectionStatus.Collected" @click="onRemoveArticle(article)" class="action-btn remove">移除</a>
-                            <a v-else-if="article.collectionStatus === CollectionStatus.Auditing" @click="onRemoveArticle(article)" class="action-btn remove">撤回</a>
+                            <span v-if="article.collectionStatus === ArticleCollectionStatus.Collected" class="status has-add">已加入</span>
+                            <span v-if="article.collectionStatus === ArticleCollectionStatus.Auditing" class="status has-add">待审核</span>
+                            <a v-if="article.collectionStatus === ArticleCollectionStatus.Collected" @click="onRemoveArticle(article)" class="action-btn remove">移除</a>
+                            <a v-else-if="article.collectionStatus === ArticleCollectionStatus.Auditing" @click="onRemoveArticle(article)" class="action-btn remove">撤回</a>
                             <a v-else :id="article.id" @click="onCollectArticle(article)" class="action-btn push">{{isCollectionAdmin ? '收录' : '投稿'}}</a>
                         </div>
                     </li>
@@ -132,7 +132,7 @@
 </style>
 
 <script>
-import { CollectionStatus } from '~/js/constants/entity.js';
+import { ArticleCollectionStatus } from '~/js/constants/entity.js';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import { trim } from '~/js/utils/utils.js';
@@ -151,7 +151,7 @@ export default {
             articles: [],
             isLoading: true,
             isCollectionAdmin: window.isCollectionAdmin,
-            CollectionStatus: CollectionStatus,
+            ArticleCollectionStatus: ArticleCollectionStatus,
             keyword: '',
             inputTitle: ''
         };
@@ -188,9 +188,9 @@ export default {
             myHTTP.post(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     if (this.isCollectionAdmin) {
-                        article.collectionStatus = CollectionStatus.Collected;
+                        article.collectionStatus = ArticleCollectionStatus.Collected;
                     } else {
-                        article.collectionStatus = CollectionStatus.Auditing;
+                        article.collectionStatus = ArticleCollectionStatus.Auditing;
                     }
                 }
             });
@@ -199,7 +199,7 @@ export default {
             const url = `/collections/${this.collectionID}/articles/${article.id}`;
             myHTTP.delete(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    article.collectionStatus = CollectionStatus.NotCollect;
+                    article.collectionStatus = ArticleCollectionStatus.NotCollect;
                 }
             });
         },

@@ -3,7 +3,7 @@
         <div class="menu">全部投稿请求</div>
         <div v-if="alreadyLoad && !this.msgArr.length" class="find-nothing">
             <img src="../../../images/message/post_nocontent.png"> 
-            <div>投稿都处理完啦~休息一下吧</div>
+            <div>还没有投稿哦~休息一下吧</div>
         </div>
     
         <Pinterest url="/messages/post" @load="onLoad">
@@ -45,9 +45,14 @@
                             </div>
                         </div> 
                         <div class="push-action">
-                            <a class="btn btn-hollow">接受</a> 
-                            <a class="btn btn-gray">拒绝</a>
-                            <span class="push-time">{{msg.createdAtLabel}} 投稿</span>
+                            <template v-if="msg.status === ArticleCollectionStatus.Auditing">
+                                <a @click="onReceive(msg, ArticleCollectionStatus.Collected)" class="btn btn-hollow">接受</a> 
+                                <a @click="onReceive(msg, ArticleCollectionStatus.NotCollect)" class="btn btn-gray">拒绝</a>
+                            </template>
+                            <span v-else-if="msg.status === ArticleCollectionStatus.Collected" class="push-time" style="font-weight: 700;">已收录</span>
+                            <span v-else-if="msg.status === ArticleCollectionStatus.NotCollect" class="push-time" style="font-weight: 700;">已拒绝</span>
+                            <span class="push-time">{{msg.createdAtLabel}} 投稿到专题</span>
+                            <a class="collection" :href="`/collections/${msg.collection.id}.html`">{{msg.collection.name}}</a>
                         </div>
                     </li>
                 </ul>
@@ -58,6 +63,8 @@
 
 <script>
 import { ErrorCode } from '~/js/constants/error.js';
+import { ArticleCollectionStatus } from '~/js/constants/entity.js';
+import { myHTTP } from '~/js/common/net.js';
 import Pinterest from '~/js/components/common/Pinterest.vue';
 
 export default {
@@ -66,15 +73,28 @@ export default {
         return {
             msgArr: [],
             alreadyLoad: false,
+            ArticleCollectionStatus: ArticleCollectionStatus,
         };
     },
     methods: {
-        onLoad(result) { 
+        onLoad(result) {
             if (result.data.errorCode === ErrorCode.SUCCESS.CODE) {
                 this.msgArr = this.msgArr.concat(result.data.data.list);
                 this.alreadyLoad = true;
             }
         },
+        onReceive(msg, status) {
+            const url = `/collections/${msg.collection.id}/articles/${msg.article.id}/${msg.id}/${status}`;
+            myHTTP.put(url)
+                .then((result) => {
+                    if (result.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                        msg.status = result.data.data.status;
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
     },
     components: {
         Pinterest,

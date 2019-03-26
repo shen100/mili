@@ -7,12 +7,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Article } from './article.entity';
-
-export enum PostMsgStatus {
-    NotProcess = 1, // 未处理
-    Accept = 2, // 接受
-    Reject = 3, // 拒绝
-}
+import { Collection, ArticleCollectionStatus } from './collection.entity';
 
 // 投稿消息
 @Entity({name: 'post_message'})
@@ -40,6 +35,13 @@ export class PostMsg {
     @JoinColumn({ name: 'article_id' })
     article: Article;
 
+    @Column('int', { name: 'collection_id' })
+    collectionID: number;
+
+    @ManyToOne(type => Collection)
+    @JoinColumn({ name: 'collection_id' })
+    collection: Collection;
+
     @Column('int', { name: 'status' })
-    status: PostMsgStatus;
+    status: ArticleCollectionStatus;
 }

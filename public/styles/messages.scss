@@ -243,6 +243,10 @@
     margin-top: 10px;
 }
 
+.content-box .note-list .push-action .collection:hover {
+    text-decoration: none;
+}
+
 .content-box .btn-delete, .content-box .btn-gray, .content-box .btn-hollow {
     padding: 4px 12px;
     font-size: 12px;
@@ -271,4 +275,5 @@
 .content-box .note-list .push-status, .content-box .note-list .push-time {
     font-size: 12px;
     color: #969696;
+    padding-right: 8px;
 }

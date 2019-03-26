@@ -1,5 +1,5 @@
-export const CollectionStatus = {
-    NotCollect: 1,
-    Auditing: 2,
-    Collected: 3,
+export const ArticleCollectionStatus = {
+    Auditing: 1,
+    Collected: 2,
+    NotCollect: 3,
 };

@@ -91,6 +91,7 @@ const config = new ConfigService();
             author_id int(11) unsigned NOT NULL,
             user_id int(11) unsigned NOT NULL,
             article_id int(11) unsigned NOT NULL,
+            collection_id int(11) unsigned NOT NULL,
             status int(11) unsigned NOT NULL,
             PRIMARY KEY (id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;

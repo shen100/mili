@@ -130,7 +130,7 @@
 
 <script>
 import ClipboardJS from 'clipboard';
-import { CollectionStatus } from '~/js/constants/entity.js';
+import { ArticleCollectionStatus } from '~/js/constants/entity.js';
 import { trim, countToK } from '~/js/utils/utils.js';
 import { myHTTP } from '~/js/common/net.js';
 import SuccessTip from '~/js/components/common/SuccessTip.vue';
@@ -221,10 +221,10 @@ export default {
             const url = `/collections/${collection.id}/articles/${article.id}`;
             myHTTP.post(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    if (res.data.data.status === CollectionStatus.Collected) {
+                    if (res.data.data.status === ArticleCollectionStatus.Collected) {
                         collection.statusLabel = '已收录';
                         collection.buttonMode = false;
-                    } else if (res.data.data.status === CollectionStatus.Auditing) {
+                    } else if (res.data.data.status === ArticleCollectionStatus.Auditing) {
                         if (!isManager) {
                             this.collectionIDs.push(collection.id);
                         }

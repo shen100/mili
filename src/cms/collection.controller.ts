@@ -12,8 +12,7 @@ import { Article } from 'entity/article.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UploadService } from './upload.service';
 import { CollectionService } from './collection.service';
-import { Collection } from '../entity/collection.entity';
-import { CollectionStatus } from '../entity/collection.entity';
+import { Collection, ArticleCollectionStatus } from '../entity/collection.entity';
 import { ErrorCode } from '../config/constants';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { CurUser } from '../common/decorators/user.decorator';
@@ -153,9 +152,9 @@ export class CollectionController {
             return admin.id === user.id;
         });
 
-        let status: number = CollectionStatus.Auditing;
+        let status: number = ArticleCollectionStatus.Auditing;
         if (index >= 0) {
-            status = CollectionStatus.Collected;
+            status = ArticleCollectionStatus.Collected;
         }
         await this.collectionService.addArticle(user.id, collection, articleID, status);
         return {
@@ -191,6 +190,19 @@ export class CollectionController {
         return {};
     }
 
+    @Put('/api/v1/collections/:collectionID/articles/:articleID/:messageID/:status')
+    @UseGuards(ActiveGuard)
+    async receiveArticle(@CurUser() user, @Param('collectionID', ParseIntPipe) collectionID: number,
+                         @Param('articleID', ParseIntPipe) articleID: number,
+                         @Param('messageID', ParseIntPipe) messageID: number,
+                         @Param('status', ParseIntPipe) status: number) {
+        // todo: 是管理员才允许接受投稿
+        await this.collectionService.receiveArticle(collectionID, articleID, messageID, status);
+        return {
+            status,
+        };
+    }
+
     @Get('/api/v1/collections/:id/myarticles')
     @UseGuards(ActiveGuard)
     async myArticles(@CurUser() user, @Param('id', ParseIntPipe) id: number, @Query('page', ParsePagePipe) page: number,
@@ -216,7 +228,7 @@ export class CollectionController {
             if (collectedArticleMap[article.id]) {
                 theArticle.collectionStatus = collectedArticleMap[article.id].status;
             } else {
-                theArticle.collectionStatus = CollectionStatus.NotCollect;
+                theArticle.collectionStatus = ArticleCollectionStatus.NotCollect;
             }
             myArticles.push(theArticle);
         });

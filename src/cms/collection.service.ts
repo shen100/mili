@@ -7,10 +7,10 @@ import { Repository, Transaction, TransactionRepository } from 'typeorm';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { MyLoggerService } from '../logger/logger.service';
 import { MyHttpException } from '../common/exception/my-http.exception';
-import { CollectionStatus } from '../entity/collection.entity';
+import { ArticleCollectionStatus } from '../entity/collection.entity';
 import { ErrorCode } from '../config/constants';
 import { User, Follower } from '../entity/user.entity';
-import { PostMsg, PostMsgStatus } from '../entity/postmsg.entity';
+import { PostMsg } from '../entity/postmsg.entity';
 
 @Injectable()
 export class CollectionService {
@@ -92,7 +92,7 @@ export class CollectionService {
 
     async articleCount(collectionID: number): Promise<number> {
         const sql = `SELECT COUNT(*) as count FROM article_collection WHERE collection_id = ${collectionID} AND
-            status = ${CollectionStatus.Collected}`;
+            status = ${ArticleCollectionStatus.Collected}`;
         const result = await this.collectionRepository.manager.query(sql);
         return parseInt(result[0].count, 10) || 0;
     }
@@ -107,12 +107,13 @@ export class CollectionService {
                             ON DUPLICATE KEY UPDATE user_id = ${userID}`;
             await manager.query(sql2);
             await manager.query(sql3);
-            if (status === CollectionStatus.Auditing) {
+            if (status === ArticleCollectionStatus.Auditing) {
                 const postMsg = new PostMsg();
                 postMsg.authorID = userID;
                 postMsg.userID = collection.creatorID;
                 postMsg.articleID = articleID;
-                postMsg.status = PostMsgStatus.NotProcess;
+                postMsg.collectionID = collection.id;
+                postMsg.status = ArticleCollectionStatus.Auditing;
                 postMsg.createdAt = new Date();
                 await manager.save(postMsg);
             }
@@ -122,6 +123,19 @@ export class CollectionService {
     async removeArticle(collectionID: number, articleID: number): Promise<boolean> {
         const sql = `DELETE FROM article_collection WHERE collection_id = ${collectionID} AND article_id = ${articleID}`;
         return await this.collectionRepository.manager.query(sql);
+    }
+
+    // 向专题投稿
+    async receiveArticle(collectionID: number, articleID: number, messageID: number, status: number) {
+        await this.collectionRepository.manager.connection.transaction(async manager => {
+            const sql = `UPDATE article_collection SET status = ${status}
+            WHERE collection_id = ${collectionID} AND article_id = ${articleID}`;
+
+            const sql2 = `UPDATE post_message SET status = ${status}
+                WHERE id = ${messageID}`;
+            await manager.query(sql);
+            await manager.query(sql2);
+        });
     }
 
     async articlesStatusInCollection(collectionID: number, articleIDs: number[]): Promise<Array<any>> {

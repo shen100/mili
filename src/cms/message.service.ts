@@ -29,9 +29,13 @@ export class MessageService {
                         commentCount: true,
                         likeCount: true,
                     },
+                    collection: {
+                        id: true,
+                        name: true,
+                    },
                     status: true,
                 },
-                relations: ['author', 'article'],
+                relations: ['author', 'article', 'collection'],
                 where: {
                     userID,
                 },
