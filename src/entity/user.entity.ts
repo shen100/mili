@@ -75,6 +75,15 @@ export class User {
     @Column('int', { name: 'comment_count', default: 0 })
     commentCount: number;
 
+    @Column('int', { name: 'word_count', default: 0 })
+    wordCount: number; // 写了多少字
+
+    @Column('int', { name: 'follower_count', default: 0 })
+    followerCount: number; // 被多少人关注
+
+    @Column('int', { name: 'like_count', default: 0 })
+    likeCount: number; // 获得多少个喜欢, 如点击文章的喜欢，这时作者将获得一个喜欢
+
     @Column('int')
     role: UserRole; // 角色
 

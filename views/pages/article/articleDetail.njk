@@ -2,168 +2,168 @@
 
 {% block main %}
 <div class="container">
-  <div class="article-box">
-    <div class="article">
-        {% if data.article.coverURL %}
-        <div class="article-cover" style="background-image: url({{data.article.coverURL}})"></div>
-        {% endif %}
-      <div class="article-title">{{data.article.name}}</div>
-      <div class="author">
-        <a class="avatar" href="">
-          <img src="//upload.jianshu.io/users/upload_avatars/10537840/81ab6a0c-e0fa-470b-9ee1-6f25e44fe92d.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96" />
-        </a>
-        <div class="info">
-          <span class="name"><a href="">{{data.article.user.username}}</a></span>
-          <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
-          <div class="meta">
-            <span class="publish-time">{{data.article.createdAt | formatTime('YYYY.MM.DD HH:mm')}}</span>
-            <span class="wordage">字数 {{data.article.wordCount}}</span>
-            <span class="views-count">阅读 {{data.article.browseCount}}</span><span class="comments-count">评论
-              {{data.article.commentCount}}</span><span class="likes-count">喜欢 {{data.article.likeCount}}</span>
-          </div>
-        </div>
-      </div>
-      <div class="article-content">
-        <div class="mili-editor">
-          {{data.article.htmlContent | safe}}
-        </div>
-      </div>
-
-      <div class="support-author">
-        <p>小手抖一抖，来{{siteName}}关注我~</p>
-        <div class="btn btn-pay">赞赏支持</div>
-        <div class="supporter">
-          <ul class="support-list"></ul>
-        </div>
-      </div>
-
-      <div class="follow-detail">
-        <div class="info">
-          <a class="avatar" href="">
-            <img src="//upload.jianshu.io/users/upload_avatars/13038478/454eed72-1e31-49ca-a51d-35411418341f.png?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96" />
-          </a>
-          <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
-          <a class="title" href="">天天减肥瘦身3</a>
-          <p>写了 244468 字，被 606 人关注，获得了 1381 个喜欢</p>
-        </div>
-        <div class="signature">一个专注减肥瘦身的达人，不论饮食、运动或者是穿搭、每天都有新方法推荐。想变瘦，就关注微信公众号：ttjfss，打开一座美丽的宝库！</div>
-      </div>
-
-      <div class="meta-bottom">
-        <div class="like">
-          <div class="btn like-group">
-            <div class="btn-like"><a>喜欢</a></div>
-            <div class="modal-wrap"><a>1</a></div>
-          </div>
-        </div>
-        <div class="share-group" style="position: relative;">
-          <a class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微信">
-            <i class="iconfont ic-wechat"></i>
-          </a>
-          <a class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微博">
-            <i class="iconfont ic-weibo"></i>
-          </a>
-          <a class="share-circle" data-toggle="tooltip" id="longshare" target="_blank">
-            <div class="qrcode" id="qrcode" style="display: none;">
-              <img src=""
-                alt="Download index side qrcode">
-              <p>下载app生成长微博图片</p>
+    <div class="article-box">
+        <div class="article">
+            {% if article.coverURL %}
+            <div class="article-cover" style="background-image: url({{article.coverURL}})"></div>
+            {% endif %}
+            <div class="article-title">{{article.name}}</div>
+            <div class="author">
+                <a class="avatar" href="/u/{{article.user.id}}.html">
+                    <img src="{{article.user.avatarURL}}" />
+                </a>
+                <div class="info">
+                    <span class="name"><a href="/u/{{article.user.id}}.html">{{article.user.username}}</a></span>
+                    <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+                    <div class="meta">
+                        <span class="publish-time">{{article.createdAt | formatTime('YYYY.MM.DD HH:mm')}}</span>
+                        <span class="wordage">字数 {{article.wordCount}}</span>
+                        <span class="views-count">阅读 {{article.browseCount}}</span><span class="comments-count">评论 {{article.commentCount}}</span><span class="likes-count">喜欢 {{article.likeCount}}</span>
+                    </div>
+                </div>
             </div>
-            <i class="iconfont ic-picture"></i>
-          </a>
-          <a class="share-circle more-share" tabindex="0" data-toggle="popover" data-placement="top" data-html="true"
-            data-trigger="focus" href="javascript:void(0);" data-content="" data-original-title="" title="">更多分享</a>
-          <div id="shareListPop" class="popover fade top in" role="tooltip" id="popover809082" style="top: -180px; left: 50%;">
-            <div class="arrow" style="left: 50%;"></div>
-            <h3 class="popover-title" style="display: none;"></h3>
-            <div class="popover-content">
-              <ul class="share-list">
-                <li><a href=""><i
-                      class="social-icon-sprite social-icon-zone"></i><span>分享到QQ空间</span></a></li>
-                <li><a href=""><i
-                      class="social-icon-sprite social-icon-twitter"></i><span>分享到Twitter</span></a></li>
-                <li><a href=""><i
-                      class="social-icon-sprite social-icon-facebook"></i><span>分享到Facebook</span></a></li>
-                <li><a href=""><i
-                      class="social-icon-sprite social-icon-google"></i><span>分享到Google+</span></a></li>
-                <li><a href=""><i
-                      class="social-icon-sprite social-icon-douban"></i><span>分享到豆瓣</span></a></li>
-              </ul>
+            <div class="article-content">
+                <div class="mili-editor">
+                    {{article.htmlContent | safe}}
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <a id="web-note-ad-1" target="_blank"><img src="{{imgPath}}/article/app.png"></a>
+            <div class="support-author">
+                <p>小手抖一抖，来{{siteName}}关注我~</p>
+                <div class="btn btn-pay">赞赏支持</div>
+                <div class="supporter">
+                    <ul class="support-list"></ul>
+                </div>
+            </div>
 
-      <div>
-        <div id="comment-list" class="comment-list">
-          <div>
-            <form class="new-comment">
-              <a class="avatar"><img src="{{imgPath}}/avatar_default.png"></a>
-              <div class="sign-container">
-                <a href="" class="btn btn-sign">登录</a> 
-                <span>后发表评论</span>
-              </div>
-            </form>
-          </div>
-          <div id="normal-comment-list" class="normal-comment-list">
+            <div class="follow-detail">
+                <div class="info">
+                    <a class="avatar" href="/u/{{article.user.id}}.html">
+                        <img src="{{article.user.avatarURL}}" />
+                    </a>
+                    <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+                    <a class="title" href="/u/{{article.user.id}}.html">{{article.user.username}}</a>
+                    <p>写了 {{article.user.wordCount | defaultValue(0)}} 字，被 {{article.user.wordCount | defaultValue(0)}} 人关注，获得了 {{article.user.wordCount | defaultValue(0)}} 个喜欢</p>
+                </div>
+                {% if article.user.signature %}
+                <div class="signature">{{article.user.signature}}</div>
+                {% endif %}
+            </div>
+
+            <div class="meta-bottom">
+                <div class="like">
+                    <div class="btn like-group">
+                        <div class="btn-like"><a>喜欢</a></div>
+                        <div class="modal-wrap"><a>{{article.likeCount | defaultValue(0)}}</a></div>
+                    </div>
+                </div>
+                <div class="share-group" style="position: relative;">
+                    <a class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微信">
+                        <i class="iconfont ic-wechat"></i>
+                    </a>
+                    <a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=weibo" target="_blank" class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微博">
+                        <i class="iconfont ic-weibo"></i>
+                    </a>
+                    <a class="share-circle" data-toggle="tooltip" id="longshare" target="_blank">
+                        <div class="qrcode" id="qrcode" style="display: none;">
+                            <img src="" alt="Download index side qrcode">
+                            <p>下载app生成长微博图片</p>
+                        </div>
+                        <i class="iconfont ic-picture"></i>
+                    </a>
+                    <a class="share-circle more-share" tabindex="0" data-toggle="popover" data-placement="top" data-html="true"
+                      data-trigger="focus" href="javascript:void(0);" data-content="" data-original-title="" title="">更多分享</a>
+                    <div id="shareListPop" class="popover fade top in" role="tooltip" style="top: -180px; left: 50%;">
+                        <div class="arrow" style="left: 50%;"></div>
+                        <h3 class="popover-title" style="display: none;"></h3>
+                        <div class="popover-content">
+                            <ul class="share-list">
+                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=weibo" target="_blank"><i class="social-icon-sprite social-icon-zone"></i><span>分享到QQ空间</span></a></li>
+                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=twitter" target="_blank"><i class="social-icon-sprite social-icon-twitter"></i><span>分享到Twitter</span></a></li>
+                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=facebook" target="_blank"><i class="social-icon-sprite social-icon-facebook"></i><span>分享到Facebook</span></a></li>
+                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=google" target="_blank"><i class="social-icon-sprite social-icon-google"></i><span>分享到Google+</span></a></li>
+                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=douban" target="_blank"><i class="social-icon-sprite social-icon-douban"></i><span>分享到豆瓣</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a id="web-note-ad-1" target="_blank"><img src="{{imgPath}}/article/app.png"></a>
+
             <div>
-              <div>
-                <div class="top-title"><span>评论</span> <a class="close-btn" style="display: none;">关闭评论</a></div>
-                <div class="no-comment"></div>
-                <div class="text">
-                  智慧如你，不想<a href="">发表一点想法</a>咩~
-                </div>
-              </div>
-              
-              <div class="comments-placeholder" style="display: none;">
-                <div class="author">
-                  <div class="avatar"></div>
-                  <div class="info">
-                    <div class="name"></div>
-                    <div class="meta"></div>
-                  </div>
-                </div>
-                <div class="text"></div>
-                <div class="text animation-delay"></div>
-                <div class="tool-group"><i class="iconfont ic-zan-active"></i>
-                  <div class="zan"></div> <i class="iconfont ic-list-comments"></i>
-                  <div class="zan"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="article-box-fixed-box">
-      <a class="article-box-fixed-ad" style="background-image: url({{imgPath}}/article/ad.png);"
-        href=""><span class="close">×</span></a>
-    </div>
-  </div>
+                <div id="comment-list" class="comment-list">
+                    {% if not user %}
+                    <div>
+                        <form class="new-comment">
+                            <a href="javascript:void(0);" class="avatar" style="cursor: default;"><img style="cursor: default;" src="{{imgPath}}/avatar_default.png"></a>
+                            <div class="sign-container">
+                                <a href="/signin.html" class="btn btn-sign">登录</a>
+                                <span>后发表评论</span>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                    <div id="normal-comment-list" class="normal-comment-list">
+                        <div>
+                            <div>
+                                <div class="top-title"><span>评论</span> <a class="close-btn" style="display: none;">关闭评论</a></div>
+                                <div class="no-comment"></div>
+                                <div class="text">
+                                    智慧如你，不想<a href="/signin.html">发表一点想法</a>咩~
+                                </div>
+                            </div>
 
-  <div class="note-bottom">
-    <div>
-      <div class="recommend-note">
-        <div class="meta">
-          <div class="title">推荐阅读
-            <a target="_blank" href="/" class="more">更多精彩内容<i class="iconfont ic-link"></i></a>
-          </div>
+                            <div class="comments-placeholder" style="display: none;">
+                                <div class="author">
+                                    <div class="avatar"></div>
+                                    <div class="info">
+                                        <div class="name"></div>
+                                        <div class="meta"></div>
+                                    </div>
+                                </div>
+                                <div class="text"></div>
+                                <div class="text animation-delay"></div>
+                                <div class="tool-group"><i class="iconfont ic-zan-active"></i>
+                                    <div class="zan"></div> <i class="iconfont ic-list-comments"></i>
+                                    <div class="zan"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="list">
-          <div class="note">
-            <a target="_blank" href="" class="title">女尼开示：出家后我如何对待两性欲望（写的透彻）!</a>
-            <p class="description">很多朋友问我，出家后我如何对待两性欲望。 这确实是很多人感兴趣的问题，一个人剃掉头发，卸下一切妖娆装扮，甘愿守持世间人看起来几乎不尽人情的戒律，吃着毫无肉腥的“草”，念着没人听得懂的“咒”，还要莫名其妙盘坐那么久，这些人，到底怎么活的，为了什么？他们没欲望吗？他们怎么对待欲望呢？ 其中，最感兴趣的，难免就是两性的欲望，世间人不明白，一剃了头发，就像用水洗掉污迹一样把欲望给剃没了？ 现在我告诉你，没有，剃了头发，并没有剃掉欲望的习气。 但是，一个真正理智谨慎认真的对待自己人生、对自己的未来负责的人，选择出家，他一定很清楚出家的好处。 佛法，绝不仅是多数人眼中高高在上的佛像和古佛清灯前的僧人...</p>
-            <a target="_blank" href="" class="author">
-              <div class="avatar" style="background-image: url(&quot;//upload.jianshu.io/users/upload_avatars/12382274/bf2cb375-376c-40b9-9b13-72ef5c7a4853.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/24/h/24/format/webp&quot;);"></div>
-              <span class="name">重拾你的美</span>
-            </a>
-          </div>
+        <div class="article-box-fixed-box" style="display: none;">
         </div>
-      </div>
     </div>
-  </div>
+
+    <div class="note-bottom">
+        <div>
+            <div class="recommend-note">
+                <div class="meta">
+                    <div class="title">推荐阅读
+                        <a target="_blank" href="/" class="more">更多精彩内容<i class="iconfont ic-link"></i></a>
+                    </div>
+                </div>
+                <div class="list">
+                    <div class="note">
+                        <a target="_blank" href="" class="title">女尼开示：出家后我如何对待两性欲望（写的透彻）!</a>
+                        <p class="description">很多朋友问我，出家后我如何对待两性欲望。
+                          这确实是很多人感兴趣的问题，一个人剃掉头发，卸下一切妖娆装扮，甘愿守持世间人看起来几乎不尽人情的戒律，吃着毫无肉腥的“草”，念着没人听得懂的“咒”，还要莫名其妙盘坐那么久，这些人，到底怎么活的，为了什么？他们没欲望吗？他们怎么对待欲望呢？
+                          其中，最感兴趣的，难免就是两性的欲望，世间人不明白，一剃了头发，就像用水洗掉污迹一样把欲望给剃没了？ 现在我告诉你，没有，剃了头发，并没有剃掉欲望的习气。
+                          但是，一个真正理智谨慎认真的对待自己人生、对自己的未来负责的人，选择出家，他一定很清楚出家的好处。 佛法，绝不仅是多数人眼中高高在上的佛像和古佛清灯前的僧人...</p>
+                        <a target="_blank" href="" class="author">
+                            <div class="avatar"
+                              style="background-image: url(&quot;//upload.jianshu.io/users/upload_avatars/12382274/bf2cb375-376c-40b9-9b13-72ef5c7a4853.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/24/h/24/format/webp&quot;);">
+                            </div>
+                            <span class="name">重拾你的美</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -171,5 +171,5 @@
 {% endblock %}
 
 {% block devjs %}
-  {{ loadjs('entry/article/articleDetail.js') }}
+{{ loadjs('entry/article/articleDetail.js') }}
 {% endblock %}

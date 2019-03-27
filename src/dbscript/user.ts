@@ -11,6 +11,11 @@ const config = new ConfigService();
     try {
         await connection.manager.query(`alter table users drop column score`);
         await connection.manager.query(`alter table users change name username varchar(100)`);
+
+        await connection.manager.query(`alter table users add column word_count int`);
+        await connection.manager.query(`alter table users add column follower_count int`);
+        await connection.manager.query(`alter table users add column like_count int`);
+
         await connection.manager.query(`alter table users add column github_id int`);
         await connection.manager.query(`alter table users add column github_avatar_url varchar(500)`);
         await connection.manager.query(`alter table users add column github_login varchar(100)`);

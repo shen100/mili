@@ -42,3 +42,10 @@ export const recentTime = (time: Date | string | number, formatStr: string): str
     }
     return '刚刚';
 };
+
+export const defaultValue = (val: any, defaultVal: any): any => {
+    if (!val) {
+        return defaultVal;
+    }
+    return val;
+};

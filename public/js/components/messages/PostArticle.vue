@@ -26,22 +26,22 @@
                     <li :key="msg.id" v-for="msg in msgArr">
                         <div class="content">
                             <div class="author">
-                                <a :href="`/u/${msg.author.id}`" class="avatar">
+                                <a :href="`/u/${msg.author.id}.html`" class="avatar">
                                     <img :src="msg.author.avatarURL">
                                 </a> 
                                 <div class="info">
-                                    <a :href="`/u/${msg.author.id}`" class="nickname">{{msg.author.username}}</a> 
+                                    <a :href="`/u/${msg.author.id}.html`" class="nickname">{{msg.author.username}}</a> 
                                     <span class="time">{{msg.createdAtRecentLabel}}</span>
                                 </div>
                             </div> 
                             <a :href="`/p/${msg.article.id}.html`" target="_blank" class="title">{{msg.article.name}}</a> 
                             <p class="abstract">{{msg.article.summary}}...</p> 
                             <div class="meta">
-                                <a :href="`/p/${msg.article.id}`"><i class="iconfont ic-list-read"></i> {{msg.article.browseCount}}</a> 
-                                <a :href="`/p/${msg.article.id}#comments`">
+                                <a :href="`/p/${msg.article.id}.html`"><i class="iconfont ic-list-read"></i> {{msg.article.browseCount}}</a> 
+                                <a :href="`/p/${msg.article.id}.html#comments`">
                                     <i class="iconfont ic-list-comments"></i> {{msg.article.commentCount}}
                                 </a> 
-                                <span><i class="iconfont ic-list-like"></i> {{msg.article.likeCount}}</span> 
+                                <a :href="`/p/${msg.article.id}.html#like`"><i class="iconfont ic-list-like"></i> {{msg.article.likeCount}}</a> 
                             </div>
                         </div> 
                         <div class="push-action">

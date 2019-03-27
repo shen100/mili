@@ -35,12 +35,11 @@ export class ArticleController {
     }
 
     @Get('/p/:id.html')
-    @Render('pages/article/articleDetail')
-    async detail(@Param('id', ParseIntPipe) id: number) {
+    async detail(@Param('id', ParseIntPipe) id: number, @Res() res) {
         const article = await this.articleService.detail(id);
-        return {
+        res.render('pages/article/articleDetail', {
             article,
-        };
+        });
     }
 
     @Post('/api/v1/articles')
