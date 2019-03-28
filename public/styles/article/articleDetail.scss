@@ -679,6 +679,198 @@
     text-decoration: none!important;
 }
 
+.recommend-note .list .note.have-img .title {
+    width: 455px;
+}
+
+.recommend-note .list .note.have-img .description {
+    width: 455px;
+}
+
+.recommend-note .list .note .recommend-img {
+    width: 150px;
+    height: 120px;
+    float: right;
+}
+
+.recommend-note .list .note .recommend-img img {
+    margin: -5px 0 0 15px;
+    width: 150px;
+    height: 120px;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 6px;
+}
+
 .ic-link:before {
     content: "\E616";
+}
+
+.comments .comment {
+    padding: 20px 0 30px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.comments .comment .author {
+    margin-bottom: 15px;
+}
+
+.comments .comment p {
+    font-size: 16px;
+}
+
+.comments .comment .tool-group a {
+    margin-right: 10px;
+    font-size: 0;
+    color: #969696;
+    display: inline-block;
+}
+
+.comments .comment .like-button {
+    position: relative;
+    padding-left: 23px;
+}
+
+.comments .comment .like-button:before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    top: -16px;
+    width: 50px;
+    height: 50px;
+    background-image: url(../../images/zan.png);
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: 1050px 50px;
+}
+
+.comments .comment .tool-group a span {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+.comments .comment .tool-group a i {
+    margin-right: 5px;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.ic-comment:before {
+    content: "\E639";
+}
+
+.comments .comment .report {
+    float: right;
+    margin: 12px 0 0 10px;
+    display: none;
+}
+
+.comments .comment .sub-comment-list {
+    margin-top: 20px;
+    padding: 5px 0 5px 20px;
+    border-left: 2px solid #d9d9d9;
+}
+
+.comments .comment .comment-list .sub-comment {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #f0f0f0;
+}
+
+.comments .comment .comment-list .sub-comment-list .v-tooltip-box {
+    word-break: break-word!important;
+    word-break: break-all;
+    margin: 0 0 5px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.v-tooltip-container {
+    position: relative;
+}
+
+.v-tooltip-container, .v-tooltip-content {
+    display: inline-block;
+}
+
+.v-tooltip-container .v-tooltip-content {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.comments .comment .comment-list .sub-comment-list a, .comments .comment .comment-list .sub-comment-list a:hover {
+    color: #3194d0;
+}
+
+.comments .comment .comment-list .sub-tool-group {
+    font-size: 12px;
+    color: #969696;
+}
+
+.comments .comment .comment-list .sub-tool-group a {
+    margin-left: 10px;
+    color: #969696;
+}
+
+.comments .comment .comment-list .sub-tool-group a i {
+    margin-right: 5px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.ic-comment:before {
+    content: "\E639";
+}
+
+.comments .comment .comment-list .sub-tool-group a span {
+    vertical-align: middle;
+}
+
+.comments .comment .comment-list .sub-comment .report, .comments .comment .comment-list .sub-comment .subcomment-delete {
+    float: right;
+    margin: 1px 0 0 10px;
+    display: none;
+}
+
+.comments .comment .comment-list .sub-tool-group a span {
+    vertical-align: middle;
+}
+
+.comments .comment .comment-list .sub-comment {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #f0f0f0;
+}
+
+.comments .comment .comment-list .more-comment {
+    font-size: 14px;
+    color: #969696;
+    border: none;
+}
+
+.comments .comment .comment-list .sub-comment:last-child {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.comments .comment .comment-list .sub-comment-list .add-comment-btn {
+    color: #969696;
+}
+
+.comments .comment .comment-list .sub-comment-list .add-comment-btn i {
+    margin-right: 5px;
+}
+
+.ic-subcomment:before {
+    content: "\E698";
+}
+
+.comments .comment .comment-list .line-warp {
+    margin-left: 10px;
+    padding-left: 10px;
+    border-left: 1px solid #d9d9d9;
 }

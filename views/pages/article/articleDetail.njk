@@ -61,7 +61,7 @@
                     <a class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微信">
                         <i class="iconfont ic-wechat"></i>
                     </a>
-                    <a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=weibo" target="_blank" class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微博">
+                    <a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=weibo" target="_blank" class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微博">
                         <i class="iconfont ic-weibo"></i>
                     </a>
                     <a class="share-circle" data-toggle="tooltip" id="longshare" target="_blank">
@@ -78,11 +78,11 @@
                         <h3 class="popover-title" style="display: none;"></h3>
                         <div class="popover-content">
                             <ul class="share-list">
-                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=weibo" target="_blank"><i class="social-icon-sprite social-icon-zone"></i><span>分享到QQ空间</span></a></li>
-                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=twitter" target="_blank"><i class="social-icon-sprite social-icon-twitter"></i><span>分享到Twitter</span></a></li>
-                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=facebook" target="_blank"><i class="social-icon-sprite social-icon-facebook"></i><span>分享到Facebook</span></a></li>
-                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=google" target="_blank"><i class="social-icon-sprite social-icon-google"></i><span>分享到Google+</span></a></li>
-                                <li><a href="/api/v1/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=douban" target="_blank"><i class="social-icon-sprite social-icon-douban"></i><span>分享到豆瓣</span></a></li>
+                                <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=weibo" target="_blank"><i class="social-icon-sprite social-icon-zone"></i><span>分享到QQ空间</span></a></li>
+                                <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=twitter" target="_blank"><i class="social-icon-sprite social-icon-twitter"></i><span>分享到Twitter</span></a></li>
+                                <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=facebook" target="_blank"><i class="social-icon-sprite social-icon-facebook"></i><span>分享到Facebook</span></a></li>
+                                <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=google" target="_blank"><i class="social-icon-sprite social-icon-google"></i><span>分享到Google+</span></a></li>
+                                <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=douban" target="_blank"><i class="social-icon-sprite social-icon-douban"></i><span>分享到豆瓣</span></a></li>
                             </ul>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                                 </div>
                             </div>
 
-                            <div class="comments-placeholder" style="display: none;">
+                            <div class="comments-placeholder" >
                                 <div class="author">
                                     <div class="avatar"></div>
                                     <div class="info">
@@ -129,6 +129,8 @@
                                     <div class="zan"></div>
                                 </div>
                             </div>
+
+                            <div id="comments"></div>
                         </div>
                     </div>
                 </div>
@@ -147,19 +149,21 @@
                     </div>
                 </div>
                 <div class="list">
-                    <div class="note">
-                        <a target="_blank" href="" class="title">女尼开示：出家后我如何对待两性欲望（写的透彻）!</a>
-                        <p class="description">很多朋友问我，出家后我如何对待两性欲望。
-                          这确实是很多人感兴趣的问题，一个人剃掉头发，卸下一切妖娆装扮，甘愿守持世间人看起来几乎不尽人情的戒律，吃着毫无肉腥的“草”，念着没人听得懂的“咒”，还要莫名其妙盘坐那么久，这些人，到底怎么活的，为了什么？他们没欲望吗？他们怎么对待欲望呢？
-                          其中，最感兴趣的，难免就是两性的欲望，世间人不明白，一剃了头发，就像用水洗掉污迹一样把欲望给剃没了？ 现在我告诉你，没有，剃了头发，并没有剃掉欲望的习气。
-                          但是，一个真正理智谨慎认真的对待自己人生、对自己的未来负责的人，选择出家，他一定很清楚出家的好处。 佛法，绝不仅是多数人眼中高高在上的佛像和古佛清灯前的僧人...</p>
-                        <a target="_blank" href="" class="author">
-                            <div class="avatar"
-                              style="background-image: url(&quot;//upload.jianshu.io/users/upload_avatars/12382274/bf2cb375-376c-40b9-9b13-72ef5c7a4853.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/24/h/24/format/webp&quot;);">
-                            </div>
-                            <span class="name">重拾你的美</span>
+                    {% for recommend in recommends %}
+                    <div class="note {% if recommend.coverURL %}have-img{% endif %}">
+                        {% if recommend.coverURL %}
+                        <a class="recommend-img" href="/p/{{recommend.id}}.html">
+                            <img src="{{recommend.coverURL}}" />
+                        </a>
+                        {% endif %}
+                        <a target="_blank" href="/p/{{recommend.id}}.html" class="title">{{recommend.name}}</a>
+                        <p class="description">{{recommend.summary}}...</p>
+                        <a target="_blank" href="/u/{{recommend.user.id}}.html" class="author">
+                            <div class="avatar" style="background-image: url({{recommend.user.avatarURL}});"></div>
+                            <span class="name">{{recommend.user.username}}</span>
                         </a>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

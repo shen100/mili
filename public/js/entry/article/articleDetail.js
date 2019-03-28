@@ -1,6 +1,12 @@
 import '~/styles/main.scss';
 import '~/styles/article/articleDetail.scss';
 import '~/js/common/default.js';
+import Vue from 'vue';
+import CommentsOfArticle from '~/js/components/article/CommentsOfArticle.vue';
+
+new Vue({
+    render: h => h(CommentsOfArticle),
+}).$mount('#comments');
 
 (function() {
     $('.meta-bottom .more-share').click(function() {

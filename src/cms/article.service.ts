@@ -108,6 +108,32 @@ export class ArticleService {
         });
     }
 
+    async recommendList(page: number) {
+        return await this.articleRepository.find({
+            select: {
+                id: true,
+                name: true,
+                summary: true,
+                coverURL: true,
+                user: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
+            } as any,
+            relations: ['user'],
+            where: {
+                deletedAt: null,
+                status: Not(ArticleStatus.VerifyFail),
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: (page - 1) * 20,
+            take: 20,
+        });
+    }
+
     async userArticles(userID: number, page: number, pageSize: number, order) {
         return await this.articleRepository.find({
             select: {

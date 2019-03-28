@@ -36,9 +36,13 @@ export class ArticleController {
 
     @Get('/p/:id.html')
     async detail(@Param('id', ParseIntPipe) id: number, @Res() res) {
-        const article = await this.articleService.detail(id);
+        const [article, recommends] = await Promise.all([
+            this.articleService.detail(id),
+            this.articleService.recommendList(1),
+        ]);
         res.render('pages/article/articleDetail', {
             article,
+            recommends,
         });
     }
 
