@@ -1,7 +1,7 @@
 import { createConnection } from 'typeorm';
-import { Comment } from '../entity/Comment.entity';
 import { ConfigService } from '../config/config.service';
 import * as marked from 'marked';
+import { Comment, CommentContentType } from '../entity/comment.entity';
 
 const config = new ConfigService();
 
@@ -21,9 +21,13 @@ const config = new ConfigService();
             },
         });
 
-        comments.forEach(async (comment) => {
-            const updateData: any = {};
-            if (comment.contentType === 1) {
+        let doneCount = 0;
+
+        comments.forEach(async (comment, i) => {
+            const updateData: any = {
+                contentType: CommentContentType.HTML,
+            };
+            if (comment.contentType === CommentContentType.Markdown) {
                 updateData.htmlContent = marked(comment.content);
             } else {
                 updateData.htmlContent = comment.htmlContent;
@@ -33,9 +37,15 @@ const config = new ConfigService();
                 id: comment.id,
             }, updateData);
 
-            // tslint:disable-next-line:no-console
-            console.log('comments.length:', comments.length);
+            doneCount++;
+            if (doneCount >= comments.length) {
+                // tslint:disable-next-line:no-console
+                console.log('done');
+            }
         });
+
+        // tslint:disable-next-line:no-console
+        console.log('comments.length:', comments.length);
     } catch (error) {
         // tslint:disable-next-line:no-console
         console.log('Error: ', error);

@@ -31,29 +31,8 @@ import {
     Underline,
     Placeholder,
 } from 'tiptap-extensions';
-import RichEditorMenubar from '~/js/components/common/RichEditorMenubar.vue';
-
-import { Node } from 'tiptap'
-import { chainCommands, exitCode } from 'tiptap-commands'
-
-class MyHardBreak extends HardBreak {
-    get name() {
-        return 'my_hard_break';
-    }
-
-    commands({ type }) {
-        return attrs => (state, dispatch) => {
-            const { selection } = state;
-            let position = selection.$cursor ? selection.$cursor.pos : selection.$to.pos;
-            if (attrs && attrs.isCodeBlock) {
-                position = position + 1;
-            }
-            const node = type.create(attrs);
-            const transaction = state.tr.insert(position, node);
-            dispatch(transaction);
-        }
-    }
-}
+import MyHardBreak from '~/js/components/common/editor/MyHardBreak.js';
+import RichEditorMenubar from '~/js/components/common/editor/RichEditorMenubar.vue';
 
 export default {
     name: 'RichEditor',
@@ -69,7 +48,6 @@ export default {
                     new Blockquote(),
                     new BulletList(),
                     new CodeBlock(),
-                    // new HardBreak(),
                     new MyHardBreak(),
                     new Heading({ levels: [1, 2] }),
                     new HorizontalRule(),

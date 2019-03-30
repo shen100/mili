@@ -9,7 +9,7 @@
         <div class="md-editor-footer">
             <div class="md-editor-footer-left" :style="{width: isSideBySide ? '50%' : '100%'}">
                 <div class="md-editor-markdown-btn">
-                    <img src="../../../images/editor/markdown.svg">
+                    <img src="../../../../images/editor/markdown.svg">
                     <div class="md-editor-shotcut-panel">
                         <span class="md-editor-panel-title">快捷键</span>
                         <a href="https://www.appinn.com/markdown/" target="_blank" class="md-editor-more-link">更多语法</a>
@@ -26,13 +26,13 @@
                     </div>
                 </div>
                 <Uploader @success="onImgUploadSuccess" @error="onImgUploadFail">
-                    <div class="md-editor-uploadimg-btn"><img src="../../../images/editor/uploadimg.svg"></div>
+                    <div class="md-editor-uploadimg-btn"><img src="../../../../images/editor/uploadimg.svg"></div>
                 </Uploader>
                 <div v-if="isSideBySide" class="md-editor-togglelayout-btn" @click="onToggleSideBySide">
-                    <img src="../../../images/editor/togglelayout.svg" />
+                    <img src="../../../../images/editor/togglelayout.svg" />
                 </div>
                 <div v-else class="md-editor-togglelayout-btn" @click="onToggleSideBySide">
-                    <img src="../../../images/editor/togglelayout2.svg" />
+                    <img src="../../../../images/editor/togglelayout2.svg" />
                 </div>
             </div>
             <div v-if="isSideBySide" class="md-editor-footer-right">

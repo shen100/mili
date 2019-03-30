@@ -166,7 +166,6 @@ export default {
         },
         onCodeBlockClick(isActive, commands) {
             if (!isActive.code_block()) {
-                console.log('?????????');
                 commands.my_hard_break({ isCodeBlock: true });
             }
             commands.code_block();

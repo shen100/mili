@@ -25,7 +25,7 @@ export class CommentController {
             if (!isExists) {
                 throw new MyHttpException({
                     errorCode: ErrorCode.ParamsError.CODE,
-                    message: '无效的parentID',
+                    message: '无效的参数',
                 });
             }
         }

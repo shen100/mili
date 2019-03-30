@@ -26,13 +26,8 @@ export class CommentService {
 
     async create(createCommentDto: CreateCommentDto, userID: number) {
         const comment = new Comment();
-        comment.contentType = createCommentDto.contentType;
-        if (comment.contentType === CommentContentType.Markdown) {
-            comment.content = createCommentDto.content;
-            comment.htmlContent = marked(createCommentDto.content);
-        } else {
-            comment.htmlContent = createCommentDto.content;
-        }
+        comment.contentType = CommentContentType.HTML;
+        comment.htmlContent = createCommentDto.content;
         comment.status = CommentStatus.Verifying;
         comment.userID = userID;
         comment.createdAt = new Date();

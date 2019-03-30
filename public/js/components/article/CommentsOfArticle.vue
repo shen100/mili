@@ -27,6 +27,7 @@
                         </a>
                         <a class="report"><span>举报</span></a>
                     </div>
+                    <CommentRichEditor />
                 </div>
             </div>
             <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
@@ -57,6 +58,7 @@
                         <a>收起</a>
                     </span>
                 </div>
+                <CommentRichEditor />
             </div>
         </div>
     </div>
@@ -64,6 +66,7 @@
 
 <script>
 import { myHTTP } from '~/js/common/net.js';
+import CommentRichEditor from '~/js/components/common/editor/CommentRichEditor.vue';
 
 export default {
     name: 'App',
@@ -164,6 +167,7 @@ export default {
         },
     },
     components: {
+        CommentRichEditor,
     }
 };
 </script>

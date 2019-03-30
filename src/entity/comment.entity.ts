@@ -3,8 +3,6 @@ import {
     Column,
     PrimaryGeneratedColumn,
     ManyToOne,
-    TreeParent,
-    Tree,
     JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
@@ -41,7 +39,7 @@ export class Comment {
     @Column('text', { name: 'html_content', nullable: true, default: null })
     htmlContent: string;
 
-    @Column('int')
+    @Column('int', { name: 'content_type' })
     contentType: CommentContentType;
 
     @Column('int')
