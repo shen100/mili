@@ -26,6 +26,15 @@ export class ArticleService {
         private readonly configService: ConfigService,
     ) {}
 
+    async isExist(id: number) {
+        const article = await this.articleRepository.findOne({
+            id,
+        }, {
+            select: ['id'],
+        });
+        return article !== null;
+    }
+
     async detail(id: number) {
         return await this.articleRepository.findOne({
             select: {

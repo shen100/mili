@@ -23,6 +23,9 @@ import { Settings } from '../entity/settings.entity';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { PostMsg } from '../entity/postmsg.entity';
+import { Comment } from '../entity/comment.entity';
+import { CommentController } from './comment.controller';
+import { CommentService } from './comment.service';
 
 @Module({
     imports: [
@@ -30,6 +33,7 @@ import { PostMsg } from '../entity/postmsg.entity';
             User,
             Settings,
             Article,
+            Comment,
             Collection,
             Category,
             Draft,
@@ -41,6 +45,7 @@ import { PostMsg } from '../entity/postmsg.entity';
         IndexController,
         ArticleController,
         CategoryController,
+        CommentController,
         UCController,
         CollectionController,
         EditorController,
@@ -50,6 +55,7 @@ import { PostMsg } from '../entity/postmsg.entity';
     ],
     providers: [
         ArticleService,
+        CommentService,
         DraftService,
         CategoryService,
         MessageService,

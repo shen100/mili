@@ -22,7 +22,6 @@ export enum CommentContentType {
 }
 
 @Entity({name: 'comments'})
-@Tree('closure-table')
 export class Comment {
     @PrimaryGeneratedColumn()
     id: number;
@@ -57,14 +56,11 @@ export class Comment {
     @Column('int', { name: 'parent_id' })
     parentID: number;
 
-    @TreeParent()
-    parent: Comment;
-
-    @Column('varchar', { name: 'source_name', length: 100 })
-    sourceName: string;
+    @Column('int', { name: 'comment_count' })
+    commentCount: number;
 
     @Column('int', { name: 'source_id' })
-    sourceID: number;
+    articleID: number;
 
     @ManyToOne(type => Article, article => article.comments)
     @JoinColumn({name: 'source_id'})

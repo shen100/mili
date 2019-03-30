@@ -716,8 +716,26 @@
     margin-bottom: 15px;
 }
 
+.comments .comment .author-tag {
+    margin-left: 2px;
+    padding: 0 2px;
+    font-size: 12px;
+    color: #ea6f5a;
+    border: 1px solid #ea6f5a;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+
 .comments .comment p {
     font-size: 16px;
+}
+
+.comments .comment-wrap p {
+    margin: 10px 0;
+    line-height: 1.5;
+    font-size: 16px;
+    word-break: break-word!important;
+    word-break: break-all;
 }
 
 .comments .comment .tool-group a {
@@ -725,11 +743,22 @@
     font-size: 0;
     color: #969696;
     display: inline-block;
+    vertical-align: top;
+    line-height: normal;
+}
+
+.comments .comment .tool-group a:hover {
+    text-decoration: none;
+    color: #333;
 }
 
 .comments .comment .like-button {
     position: relative;
     padding-left: 23px;
+}
+
+.comments .comment .like-button:hover:before {
+    background-position: -50px;
 }
 
 .comments .comment .like-button:before {
@@ -762,7 +791,7 @@
 
 .comments .comment .report {
     float: right;
-    margin: 12px 0 0 10px;
+    margin: 0 0 0 10px;
     display: none;
 }
 
@@ -772,13 +801,13 @@
     border-left: 2px solid #d9d9d9;
 }
 
-.comments .comment .comment-list .sub-comment {
+.comments .comment .sub-comment {
     margin-bottom: 15px;
     padding-bottom: 15px;
     border-bottom: 1px dashed #f0f0f0;
 }
 
-.comments .comment .comment-list .sub-comment-list .v-tooltip-box {
+.comments .comment .sub-comment-list .v-tooltip-box {
     word-break: break-word!important;
     word-break: break-all;
     margin: 0 0 5px;
@@ -801,21 +830,21 @@
     user-select: none;
 }
 
-.comments .comment .comment-list .sub-comment-list a, .comments .comment .comment-list .sub-comment-list a:hover {
+.comments .comment .sub-comment-list a, .comments .comment .sub-comment-list a:hover {
     color: #3194d0;
 }
 
-.comments .comment .comment-list .sub-tool-group {
+.comments .comment .sub-tool-group {
     font-size: 12px;
     color: #969696;
 }
 
-.comments .comment .comment-list .sub-tool-group a {
+.comments .comment .sub-tool-group a {
     margin-left: 10px;
     color: #969696;
 }
 
-.comments .comment .comment-list .sub-tool-group a i {
+.comments .comment .sub-tool-group a i {
     margin-right: 5px;
     font-size: 14px;
     vertical-align: middle;
@@ -825,43 +854,43 @@
     content: "\E639";
 }
 
-.comments .comment .comment-list .sub-tool-group a span {
+.comments .comment .sub-tool-group a span {
     vertical-align: middle;
 }
 
-.comments .comment .comment-list .sub-comment .report, .comments .comment .comment-list .sub-comment .subcomment-delete {
+.comments .comment .sub-comment .report, .comments .comment .sub-comment .subcomment-delete {
     float: right;
     margin: 1px 0 0 10px;
     display: none;
 }
 
-.comments .comment .comment-list .sub-tool-group a span {
+.comments .comment .sub-tool-group a span {
     vertical-align: middle;
 }
 
-.comments .comment .comment-list .sub-comment {
+.comments .comment .sub-comment {
     margin-bottom: 15px;
     padding-bottom: 15px;
     border-bottom: 1px dashed #f0f0f0;
 }
 
-.comments .comment .comment-list .more-comment {
+.comments .comment .more-comment {
     font-size: 14px;
     color: #969696;
     border: none;
 }
 
-.comments .comment .comment-list .sub-comment:last-child {
+.comments .comment .sub-comment:last-child {
     margin: 0;
     padding: 0;
     border: none;
 }
 
-.comments .comment .comment-list .sub-comment-list .add-comment-btn {
+.comments .comment .sub-comment-list .add-comment-btn {
     color: #969696;
 }
 
-.comments .comment .comment-list .sub-comment-list .add-comment-btn i {
+.comments .comment .sub-comment-list .add-comment-btn i {
     margin-right: 5px;
 }
 
@@ -869,8 +898,12 @@
     content: "\E698";
 }
 
-.comments .comment .comment-list .line-warp {
+.comments .comment .line-warp {
     margin-left: 10px;
     padding-left: 10px;
     border-left: 1px solid #d9d9d9;
+}
+
+.no-border {
+    border: none!important;
 }
