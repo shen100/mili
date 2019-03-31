@@ -4,6 +4,12 @@ import '~/js/common/default.js';
 import Vue from 'vue';
 import CommentsOfArticle from '~/js/components/article/CommentsOfArticle.vue';
 
+import {
+    registerDirective,
+} from '~/js/utils/vue.js';
+
+registerDirective(Vue);
+
 new Vue({
     render: h => h(CommentsOfArticle),
 }).$mount('#comments');

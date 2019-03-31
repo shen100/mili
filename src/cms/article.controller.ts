@@ -1,8 +1,5 @@
-import axios from 'axios';
-import * as path from 'path';
-import * as fs from 'fs';
 import {
-    Controller, Post, Body, Req, Put, UseGuards, Get, Query, Param, Render, Res,
+    Controller, Post, Body, Put, UseGuards, Get, Query, Param, Render, Res,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
@@ -16,8 +13,6 @@ import { CurUser } from '../common/decorators/user.decorator';
 import { strToPage } from '../utils/common';
 import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
 import { ErrorCode } from '../config/constants';
-
-let count = 0;
 
 @Controller()
 export class ArticleController {
@@ -76,23 +71,5 @@ export class ArticleController {
         return {
             id: updateResult.id,
         };
-    }
-
-    @Get('/api/v1/articles/download')
-    async downloadImg(@Query() query, @Res() res) {
-        let url = query.url;
-        url = decodeURIComponent(url);
-        const filename = url.substr(url.lastIndexOf('/') + 1);
-        await axios({
-            method: 'get',
-            url,
-            responseType: 'stream',
-        }).then((response) => {
-            const thePath = path.join('/Users/liushen/dev/workspace/nodejs/mili/public/images/emojis', filename);
-            // tslint:disable-next-line:no-console
-            console.log(count++, thePath);
-            response.data.pipe(fs.createWriteStream(thePath));
-        });
-        return {};
     }
 }

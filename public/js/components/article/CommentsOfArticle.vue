@@ -66,7 +66,7 @@
 
 <script>
 import { myHTTP } from '~/js/common/net.js';
-import CommentRichEditor from '~/js/components/common/editor/CommentRichEditor.vue';
+import CommentRichEditor from '~/js/components/editor/CommentRichEditor.vue';
 
 export default {
     name: 'App',

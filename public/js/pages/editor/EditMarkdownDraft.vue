@@ -23,7 +23,7 @@
 <script>
 import dom from '~/js/utils/dom.js';
 import EditorHeader from '~/js/components/editor/EditorHeader.vue';
-import MarkdownEditor from '~/js/components/common/editor/MarkdownEditor.vue';
+import MarkdownEditor from '~/js/components/editor/MarkdownEditor.vue';
 
 export default {
     data () {

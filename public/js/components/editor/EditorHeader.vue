@@ -341,7 +341,7 @@ export default {
             }
             myHTTP.post(url, reqData).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    location.href = '/editor/drafts/new';
+                    location.href = '/editor/drafts/new.html';
                 }
             }).catch((err) => {
 

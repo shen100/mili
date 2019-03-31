@@ -18,7 +18,7 @@
 
 <script>
 import EditorHeader from '~/js/components/editor/EditorHeader.vue';
-import RichEditor from '~/js/components/common/editor/RichEditor.vue';
+import RichEditor from '~/js/components/editor/RichEditor.vue';
 
 export default {
     data () {
