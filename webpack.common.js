@@ -142,8 +142,8 @@ module.exports = {
         extensions: ['.js', '.vue', '.css', '.scss']
     },
     externals: {
-        jquery: 'jQuery'
+        jquery: 'jQuery',
     },
     plugins: [
-    ]
+    ],
 };

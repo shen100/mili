@@ -1,5 +1,9 @@
 {# 创建草稿、编辑草稿、编辑文章都是用的这个页面(markdown格式) #}
 
+{% block libcss %}
+<link charset="utf-8" href="{{cssPath}}/libs/simplemde.min.css" rel="stylesheet">
+{% endblock %}
+
 {% extends '../../layout/empty.njk' %}
 
 {% block main %}
@@ -23,10 +27,6 @@
 
   var uploadPolicy = {{ uploadPolicy | dump | safe }};
 </script>
-{% endblock %}
-
-{% block libcss %}
-<link charset="utf-8" href="{{cssPath}}/libs/simplemde.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block libjs %}

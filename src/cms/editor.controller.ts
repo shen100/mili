@@ -38,7 +38,7 @@ export class EditorController {
         res.render('pages/editor/drafts', {});
     }
 
-    @Get('/editor/drafts/new')
+    @Get('/editor/drafts/new.html')
     @UseGuards(ActiveGuard)
     async createDraft(@CurUser() user, @Query() query, @Res() res) {
         const [settings, uploadPolicy] = await Promise.all([
@@ -107,7 +107,7 @@ export class EditorController {
         });
     }
 
-    @Get('/editor/published')
+    @Get('/editor/published.html')
     @UseGuards(ActiveGuard)
     async publishedView(@CurUser() user, @Res() res) {
         const publishArticleKey: string = util.format(this.redisService.cacheKeys.publishArticle, user.id);

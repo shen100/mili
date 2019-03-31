@@ -12,7 +12,6 @@
 <script>
 import uuid from 'uuid/v4';
 import Vue from 'vue';
-import 'iview/dist/styles/iview.css';
 import { Upload } from 'iview';
 import { ossResponseParse } from '~/js/utils/utils.js';
 

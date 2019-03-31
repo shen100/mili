@@ -5,6 +5,11 @@
   <meta charset="utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+
+  {% block iviewcss %}
+  <link rel="stylesheet" href="{{cssPath}}/libs/iview-3.3.3.min.css">
+  {% endblock %}
+  
   {% block libcss %}
   {% endblock %}
 

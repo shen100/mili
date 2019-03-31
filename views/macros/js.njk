@@ -1,5 +1,6 @@
 {% macro loadjs(entry) %}
   {% if env === 'development' %}
+    <script type="text/javascript" src="{{jsPath}}/runtime.js"></script>
     <script type="text/javascript" src="{{jsPath}}/{{entry}}"></script>
   {% endif %}
 {% endmacro %}

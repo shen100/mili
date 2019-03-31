@@ -48,6 +48,7 @@ class StaticConfig extends BaseConfig {
     readonly jsPath: string; // js路径
     readonly imgPath: string; // 图片路径
     readonly fontPath: string; // 字体路径
+    readonly dllJSTimestamp: string; // 前端dll升级时，改下时间戳
     readonly uploadImgURL: string;
     readonly imgFormat: string;
     readonly imgMaxSize: number; // 设置上传图片的大小限制, 单位M

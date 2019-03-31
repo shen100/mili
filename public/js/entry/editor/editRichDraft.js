@@ -1,4 +1,3 @@
-import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
 import '~/styles/editor/editDraft.scss';
 import '~/styles/editor/rich.editor.scss';

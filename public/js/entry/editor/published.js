@@ -1,4 +1,3 @@
-import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
 import Vue from 'vue';
 import '~/js/common/default.js';

@@ -8,7 +8,6 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const common = require('./webpack.common.js');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const MyInjectWebpackPlugin = require('./my-inject-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -110,12 +109,6 @@ module.exports = () => {
                     cacheGroups: {
                         default: false,
                         vendors: false,
-                        iview: {
-                            name: 'iview',
-                            priority: 2,
-                            test: /[\\/]node_modules[\\/]iview[\\/]/
-
-                        },
                         vendor: {
                             name: 'vendor',
                             test: /[\\/]node_modules[\\/]/,
@@ -149,10 +142,12 @@ module.exports = () => {
                 // new webpack.DefinePlugin({
                 //     'process.env.NODE_ENV': JSON.stringify('production')
                 // }),
-                new CopyWebpackPlugin([{
-                    from: path.join(__dirname, 'public', 'images'),
-                    to: './images' // 目标地址，相对于output的path目录
-                }]),
+                new CopyWebpackPlugin([
+                    {
+                        from: path.join(__dirname, 'public', 'images'),
+                        to: './images', // 目标地址，相对于output的path目录
+                    },
+                ]),
                 new VueLoaderPlugin(),
                 // new ExtractTextPlugin('styles/[name].[chunkhash:16].css'),
                 new MiniCssExtractPlugin({

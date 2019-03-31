@@ -23,6 +23,7 @@ export default {
         jsPath: '/js',
         imgPath: '/images',
         fontPath: '/fonts',
+        dllJSTimestamp: '1554027424530', // 前端dll升级时，改下时间戳
         uploadImgURL: '',
         imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
         imgMaxSize: 3,
