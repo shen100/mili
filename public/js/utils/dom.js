@@ -82,3 +82,16 @@ export const getScrollPos = function () {
         scrollTop,
     };
 };
+
+export const isContentEmpty = function (content, isRich) {
+    if (isRich) {
+        if (!content || content === '<p></p>') {
+            return true;
+        }
+    } else {
+        if (!content) {
+            return true;
+        }
+    }
+    return false;
+};

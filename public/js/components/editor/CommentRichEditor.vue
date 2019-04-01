@@ -1,14 +1,16 @@
 <template>
     <div class="comment-editor-box">
+        <SuccessTip ref="successTip" />
+        <ErrorTip ref="errorTip" />
         <div class="comment-editor-cbox">
             <editor-content class="mili-editor-content" :editor="editor" />
         </div>
-        <div class="write-function-block">
+        <div v-if="sendVisible" class="write-function-block">
             <div class="emoji-modal-wrap">
                 <CommentRichEditorEmoji :editor="editor" />
             </div>
             <div class="hint">⌘+Return 发表</div>
-            <a class="btn btn-send">发送</a>
+            <a @click="onComment" class="btn btn-send">发送</a>
             <a class="cancel">取消</a>
         </div>
     </div>
@@ -20,6 +22,12 @@
 // https://tiptap.scrumpy.io/
 
 import { Editor, EditorContent } from 'tiptap';
+import { myHTTP } from '~/js/common/net.js';
+import { trim } from '~/js/utils/utils.js';
+import { ErrorCode } from '~/js/constants/error.js';
+import { isContentEmpty } from '~/js/utils/dom.js';
+import SuccessTip from '~/js/components/common/SuccessTip.vue';
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import {
     Image,
     Placeholder,
@@ -30,6 +38,8 @@ import CommentRichEditorEmoji from '~/js/components/editor/CommentRichEditorEmoj
 export default {
     name: 'CommentRichEditor',
     props: [
+        'articleID',
+        'sendDefVisible',
         'content',
     ],
     data () {
@@ -44,8 +54,12 @@ export default {
                         showOnlyWhenEditable: true,
                     }),
                 ],
-                content: ''
-            })
+                content: '',
+                onFocus: this.onEditorFocus,
+                onBlur: this.onEditorBlur,
+            }),
+            sendVisible: this.sendDefVisible,
+            isSaving: false,
         };
     },
     beforeDestroy() {
@@ -54,6 +68,41 @@ export default {
     methods: {
         getHTML() {
             return this.editor.getHTML();
+        },
+        onEditorFocus() {
+            this.sendVisible = true;
+        },
+        onEditorBlur() {
+            if (!this.sendDefVisible) {
+                this.sendVisible = false;
+            }
+        },
+        onComment() {
+            if (this.isSaving === true) {
+                return;
+            }
+            let content = trim(this.editor.getHTML() || '');
+            if (isContentEmpty(content, true)) {
+                this.$refs.errorTip.show('回复内容不能为空');
+                return;
+            }
+            const url = `/comments`;
+            const reqData = {
+                articleID: this.articleID,
+                content: content,
+            };
+            if (this.parentID) {
+                reqData.parentID = this.parentID;
+            }
+            this.isSaving = true;
+            myHTTP.post(url, reqData).then((res) => {
+                this.isSaving = false;
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.$refs.successTip.show('回复成功');
+                }
+            }).catch((err) => {
+                this.isSaving = false;
+            });
         }
     },
     mounted() {
@@ -63,6 +112,8 @@ export default {
     components: {
         EditorContent,
         CommentRichEditorEmoji,
+        SuccessTip,
+        ErrorTip,
     },
 }
 </script>

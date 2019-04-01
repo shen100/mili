@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as marked from 'marked';
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, Not, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment, CommentContentType, CommentStatus } from '../entity/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -22,6 +22,71 @@ export class CommentService {
             select: ['id', 'articleID'],
         });
         return comment !== null;
+    }
+
+    async list(articleID: number, page: number) {
+        const limit: number = 20;
+        const self = this;
+        async function findComments(parentIDs: number[]) {
+            const condition = {
+                articleID,
+                parentID: parentIDs ? In(parentIDs) : null,
+                deletedAt: null,
+                status: Not(CommentStatus.VerifyFail),
+            };
+            const query = {
+                select: {
+                    id: true,
+                    createdAt: true,
+                    htmlContent: true,
+                    user: {
+                        id: true,
+                        username: true,
+                        avatarURL: true,
+                    },
+                } as any,
+                relations: ['user'],
+                where: condition,
+                order: {
+                    createdAt: 'DESC',
+                },
+                skip: (page - 1) * limit,
+                take: limit,
+            };
+            let count: number = 0;
+            let commentArr;
+            if (!parentIDs) {
+                [commentArr, count] = await Promise.all([
+                    self.commentRepository.find(query as any),
+                    self.commentRepository.count(condition),
+                ]);
+                return {
+                    comments: commentArr,
+                    totalCount: count,
+                };
+            }
+            commentArr = await self.commentRepository.find(query as any);
+            return {
+                comments: commentArr,
+                totalCount: count,
+            };
+        }
+
+        const result = await findComments(null);
+        const comments = result.comments || [];
+        const totalCount = result.totalCount || 0;
+        let subComments;
+        if (comments.length) {
+            const commentIDs = _.map(comments, 'id');
+            subComments = await findComments(commentIDs);
+        }
+        return {
+            comments,
+            subComments,
+            page,
+            pageSize: limit,
+            totalCount,
+        };
     }
 
     async create(createCommentDto: CreateCommentDto, userID: number) {

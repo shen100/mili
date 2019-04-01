@@ -74,6 +74,7 @@ import { ArticleContentType } from '~/js/constants/article.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
 import { trim } from '~/js/utils/utils.js';
+import { isContentEmpty } from '~/js/utils/dom.js';
 
 export default {
     props: [
@@ -172,7 +173,7 @@ export default {
             const articleContent = this.getContent() || '';
             const cID = this.selectHotCategoryID || this.selectCategoryID || undefined;
             const coverURL = this.coverURL || '';
-            if (!articleTitle && this.isContentEmpty(articleContent)) {
+            if (!articleTitle && isContentEmpty(articleContent, this.isRich)) {
                 return;
             }
             if (this.lastSaveDraftTitle === articleTitle && this.lastSaveDraftContent === articleContent
@@ -222,18 +223,6 @@ export default {
             }
             return this.getEditorMarkdown();
         },
-        isContentEmpty(articleContent) {
-            if (this.isRich) {
-                if (!articleContent || articleContent === '<p></p>') {
-                    return true;
-                }
-            } else {
-                if (!articleContent) {
-                    return true;
-                }
-            }
-            return false;
-        },
         onPublish() {
             this.articleTitle = trim(this.getTitle()) || '';
             this.articleContent = this.getContent();
@@ -242,7 +231,7 @@ export default {
                 this.$refs.errorTip.show('请输入标题');
                 return;
             }
-            if (this.isContentEmpty(this.articleContent)) {
+            if (isContentEmpty(this.articleContent, this.isRich)) {
                 this.$refs.errorTip.show('请输入正文');
                 return;
             }

@@ -1,6 +1,7 @@
 import { createConnection } from 'typeorm';
 import { ConfigService } from '../config/config.service';
 import * as marked from 'marked';
+import * as bluebird from 'bluebird';
 import { Comment, CommentContentType } from '../entity/comment.entity';
 
 const config = new ConfigService();
@@ -10,42 +11,34 @@ const config = new ConfigService();
     const commentRepository = connection.getRepository(Comment);
 
     try {
-        // await connection.manager.query(`alter table comments add column comment_count int`);
+        await connection.manager.query(`alter table comments add column comment_count int`);
 
-        const comments = await commentRepository.find({
-            select: {
-                id: true,
-                content: true,
-                htmlContent: true,
-                contentType: true,
-            },
-        });
+        const comments = await connection.manager.query(`select id, content,
+            source_id, html_content, content_type from comments`);
 
-        let doneCount = 0;
-
-        comments.forEach(async (comment, i) => {
-            const updateData: any = {
-                contentType: CommentContentType.HTML,
-            };
-            if (comment.contentType === CommentContentType.Markdown) {
-                updateData.htmlContent = marked(comment.content);
+        await bluebird.map(comments, async (comment: any, i) => {
+            let htmlContent;
+            if (comment.content_type === CommentContentType.Markdown) {
+                htmlContent = marked(comment.content);
             } else {
-                updateData.htmlContent = comment.htmlContent;
+                htmlContent = comment.html_content;
             }
-
-            await commentRepository.update({
+            return await commentRepository.update({
                 id: comment.id,
-            }, updateData);
+            }, {
+                htmlContent,
+                contentType: CommentContentType.HTML,
+            });
 
-            doneCount++;
-            if (doneCount >= comments.length) {
-                // tslint:disable-next-line:no-console
-                console.log('done');
-            }
         });
+
+        await connection.manager.query(`alter table comments change source_id article_id int`);
+        await connection.manager.query(`alter table comments drop column source_name;`);
 
         // tslint:disable-next-line:no-console
         console.log('comments.length:', comments.length);
+        // tslint:disable-next-line:no-console
+        console.log('done');
     } catch (error) {
         // tslint:disable-next-line:no-console
         console.log('Error: ', error);

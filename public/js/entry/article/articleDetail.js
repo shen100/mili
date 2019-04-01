@@ -11,7 +11,11 @@ import {
 registerDirective(Vue);
 
 new Vue({
-    render: h => h(CommentsOfArticle),
+    render: h => h(CommentsOfArticle, {
+        props: {
+            articleID: window.articleID,
+        },
+    }),
 }).$mount('#comments');
 
 (function() {

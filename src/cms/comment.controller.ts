@@ -1,5 +1,5 @@
 import {
-    Controller, Post, Body, UseGuards,
+    Controller, Post, Body, UseGuards, Get, Query, Param,
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { ArticleService } from './article.service';
@@ -9,6 +9,7 @@ import { CurUser } from '../common/decorators/user.decorator';
 import { ActiveGuard } from '../common/guards/active.guard';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { strToPage } from '../utils/common';
 
 @Controller()
 export class CommentController {
@@ -17,7 +18,13 @@ export class CommentController {
         private readonly commentService: CommentService,
     ) {}
 
-    @Post('/api/v1/comments')
+    @Get('/api/v1/comments/article/:articleID')
+    async comments(@Query('page') pageStr: string, @Param('articleID') articleID: number) {
+        const page: number = strToPage(pageStr);
+        return await this.commentService.list(articleID, page);
+    }
+
+    @Post('/api/v1/comments/article')
     @UseGuards(ActiveGuard)
     async create(@CurUser() user, @Body() createCommentDto: CreateCommentDto) {
         if (createCommentDto.parentID) {
@@ -42,5 +49,4 @@ export class CommentController {
         return {
         };
     }
-
 }
