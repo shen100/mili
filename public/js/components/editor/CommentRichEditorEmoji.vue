@@ -1,8 +1,8 @@
 <template>
     <EditorMenuBar :editor="editor">
-        <div slot-scope="{ commands, }">
-            <a v-clickoutside="onClickOutside" @click="switchEmojiVisible" class="emoji">
-                <i class="iconfont ic-comment-emotions xxxxxx"></i>
+        <div v-clickoutside="onClickOutside" class="helloman" slot-scope="{ commands, }">
+            <a @click="switchEmojiVisible" class="emoji">
+                <i class="iconfont ic-comment-emotions"></i>
             </a>
             <div v-if="emojiVisible" class="emoji-modal arrow-top">
                 <ul id="emojiTab" class="emoji-nav-tabs modal-header">
@@ -861,6 +861,7 @@ export default {
             const img = event.currentTarget.firstChild.firstChild;
             const imgURL = img.getAttribute('src');
             commands.image({ src: imgURL });
+            this.emojiVisible = false;
         }
     },
     components: {
@@ -954,6 +955,7 @@ export default {
     padding: 8px;
     margin: 0;
     list-style: none;
+    user-select: none;
 }
 
 .comment-editor-box .emoji-modal-wrap .tab-content ul li {
@@ -967,5 +969,6 @@ export default {
     height: 24px;
     vertical-align: middle;
     border: 0;
+    user-select: none;
 }
 </style>

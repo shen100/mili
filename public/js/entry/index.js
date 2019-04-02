@@ -11,7 +11,7 @@ import { myHTTP } from '~/js/common/net.js';
 
     function load() {
         isLoading = true;
-        let url = globalConfig.apiPrefix + '/articles/?format=html&page=' + (page + 1);
+        let url = '/articles/?format=html&page=' + (page + 1);
         myHTTP.get(url).then((result) => {
             isLoading = false;
             page++;

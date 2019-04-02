@@ -2,19 +2,34 @@ import { createConnection } from 'typeorm';
 import { ConfigService } from '../config/config.service';
 import * as marked from 'marked';
 import * as bluebird from 'bluebird';
-import { Comment, CommentContentType } from '../entity/comment.entity';
+import { CommentContentType, TempComment, VoteComment } from '../entity/comment.entity';
 
 const config = new ConfigService();
 
 (async function run() {
     const connection = await createConnection(config.db);
-    const commentRepository = connection.getRepository(Comment);
+    const commentRepository = connection.getRepository(TempComment);
+    const voteRepository = connection.getRepository(VoteComment);
 
     try {
-        await connection.manager.query(`alter table comments add column comment_count int`);
+        await connection.manager.query(`CREATE TABLE votecomments (
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+            content text,
+            html_content text,
+            content_type int(11) NOT NULL,
+            parent_id int(11) NOT NULL DEFAULT '0',
+            status int(11) NOT NULL,
+            vote_id int(11) unsigned NOT NULL,
+            user_id int(11) unsigned NOT NULL,
+            comment_count int(11),
+            created_at datetime NOT NULL,
+            updated_at datetime NOT NULL,
+            deleted_at datetime DEFAULT NULL,
+            PRIMARY KEY (id)
+          ) ENGINE=InnoDB AUTO_INCREMENT=340 DEFAULT CHARSET=utf8mb4;`);
 
-        const comments = await connection.manager.query(`select id, content,
-            source_id, html_content, content_type from comments`);
+        const comments = await connection.manager.query(`select * from comments`);
+        const voteComments = [];
 
         await bluebird.map(comments, async (comment: any, i) => {
             let htmlContent;
@@ -23,17 +38,37 @@ const config = new ConfigService();
             } else {
                 htmlContent = comment.html_content;
             }
+            if (comment.source_name === 'vote') {
+                voteComments.push({
+                    id: comment.id,
+                    createdAt: comment.created_at,
+                    updatedAt: comment.updated_at,
+                    deletedAt: comment.deleted_at,
+                    content: comment.content,
+                    htmlContent,
+                    contentType: CommentContentType.HTML,
+                    status: comment.status,
+                    userID: comment.user_id,
+                    parentID: comment.parent_id,
+                    commentCount: 0,
+                    voteID: comment.source_id,
+                });
+            }
             return await commentRepository.update({
                 id: comment.id,
             }, {
                 htmlContent,
                 contentType: CommentContentType.HTML,
             });
-
         });
 
+        await voteRepository.insert(voteComments);
+
+        await connection.manager.query(`delete from comments where source_name = "vote"`);
         await connection.manager.query(`alter table comments change source_id article_id int`);
         await connection.manager.query(`alter table comments drop column source_name;`);
+        await connection.manager.query(`alter table comments drop column ups;`);
+        await connection.manager.query(`alter table comments add column comment_count int`);
 
         // tslint:disable-next-line:no-console
         console.log('comments.length:', comments.length);

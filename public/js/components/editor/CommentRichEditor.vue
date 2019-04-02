@@ -1,5 +1,5 @@
 <template>
-    <div class="comment-editor-box">
+    <div v-clickoutside="onClickOutside" class="comment-editor-box">
         <SuccessTip ref="successTip" />
         <ErrorTip ref="errorTip" />
         <div class="comment-editor-cbox">
@@ -56,7 +56,6 @@ export default {
                 ],
                 content: '',
                 onFocus: this.onEditorFocus,
-                onBlur: this.onEditorBlur,
             }),
             sendVisible: this.sendDefVisible,
             isSaving: false,
@@ -72,7 +71,7 @@ export default {
         onEditorFocus() {
             this.sendVisible = true;
         },
-        onEditorBlur() {
+        onClickOutside() {
             if (!this.sendDefVisible) {
                 this.sendVisible = false;
             }

@@ -1,6 +1,6 @@
 <template>
     <div id="comments" class="comments">
-        <CommentRichEditor :articleID="this.articleID" :sendDefVisible="false" />
+        <CommentRichEditor :articleID="articleID" :sendDefVisible="false" />
         <div v-for="(comment, i) in comments" class="comment" :class="{'no-border': i === comments.length - 1}"
             :key="`comment-${comment.id}`" :id="`comment-${comment.id}`" >
             <div>
@@ -17,21 +17,20 @@
                     </div>
                 </div>
                 <div class="comment-wrap">
-                    <p style="">{{comment.htmlContent}}</p>
+                    <p style="" v-html="comment.htmlContent"></p>
                     <div class="tool-group">
                         <a :id="`like-button-${comment.id}`" class="like-button">
                             <span>{{comment.likeCount}}人赞</span>
                         </a>
-                        <a>
+                        <a @click="onCommentClick(comment)">
                             <i class="iconfont ic-comment"></i>
                             <span>回复</span>
                         </a>
                         <a class="report"><span>举报</span></a>
                     </div>
-                    <CommentRichEditor :articleID="this.articleID" :sendDefVisible="true" />
                 </div>
             </div>
-            <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
+            <div v-if="subCommentsVisible(comment)" class="sub-comment-list">
                 <div :key="`comment-${subcomment.id}`" v-for="subcomment in comment.comments" :id="`comment-${subcomment.id}`" class="sub-comment">
                     <div class="v-tooltip-box">
                         <div class="v-tooltip-container" style="z-index: 0;">
@@ -50,7 +49,7 @@
                         <a class="report"><span>举报</span></a>
                     </div>
                 </div>
-                <div class="sub-comment more-comment">
+                <div v-if="comment.comments.length" class="sub-comment more-comment">
                     <a class="add-comment-btn">
                         <i class="iconfont ic-subcomment"></i> 
                         <span>添加新评论</span>
@@ -59,7 +58,7 @@
                         <a>收起</a>
                     </span>
                 </div>
-                <CommentRichEditor :articleID="this.articleID" :sendDefVisible="true" />
+                <CommentRichEditor :articleID="articleID" :sendDefVisible="true" />
             </div>
         </div>
     </div>
@@ -170,6 +169,7 @@ export default {
                 const comments = res.data.data.comments || [];
                 const commentMap = {};
                 comments.forEach(comment => {
+                    comment.toggled = false;
                     comment.comments = [];
                     commentMap[comment.id] = comment;
                 });
@@ -178,7 +178,20 @@ export default {
                     commentMap[subComment.parentID].comments.push(subComment);
                     subComment.parentComment = commentMap[subComment.parentID];
                 });
+                this.comments = comments;
             });
+        },
+        subCommentsVisible(comment) {
+            if (comment.comments.length) {
+                return true;
+            }
+            if (comment.toggled) {
+                return true;
+            }
+            return false;
+        },
+        onCommentClick(comment) {
+            comment.toggled = !comment.toggled;
         },
     },
     components: {

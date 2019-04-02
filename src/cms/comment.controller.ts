@@ -21,6 +21,7 @@ export class CommentController {
     @Get('/api/v1/comments/article/:articleID')
     async comments(@Query('page') pageStr: string, @Param('articleID') articleID: number) {
         const page: number = strToPage(pageStr);
+        articleID = parseInt(articleID + '', 10);
         return await this.commentService.list(articleID, page);
     }
 

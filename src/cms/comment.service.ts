@@ -5,6 +5,7 @@ import { Repository, Not, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment, CommentContentType, CommentStatus } from '../entity/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { NO_PARENT } from '../config/constants';
 
 @Injectable()
 export class CommentService {
@@ -30,7 +31,7 @@ export class CommentService {
         async function findComments(parentIDs: number[]) {
             const condition = {
                 articleID,
-                parentID: parentIDs ? In(parentIDs) : null,
+                parentID: parentIDs ? In(parentIDs) : NO_PARENT,
                 deletedAt: null,
                 status: Not(CommentStatus.VerifyFail),
             };
@@ -75,14 +76,14 @@ export class CommentService {
         const result = await findComments(null);
         const comments = result.comments || [];
         const totalCount = result.totalCount || 0;
-        let subComments;
+        let subResult;
         if (comments.length) {
             const commentIDs = _.map(comments, 'id');
-            subComments = await findComments(commentIDs);
+            subResult = await findComments(commentIDs);
         }
         return {
             comments,
-            subComments,
+            subComments: subResult.comments || [],
             page,
             pageSize: limit,
             totalCount,
