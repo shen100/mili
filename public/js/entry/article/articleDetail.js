@@ -14,6 +14,7 @@ new Vue({
     render: h => h(CommentsOfArticle, {
         props: {
             articleID: window.articleID,
+            authorID: window.authorID,
         },
     }),
 }).$mount('#comments');

@@ -1,6 +1,15 @@
 <template>
     <div id="comments" class="comments">
         <CommentRichEditor :articleID="articleID" :sendDefVisible="false" />
+        <div :style="{marginTop: interestingComments.length ? '0' : '24px'}" class="top-title">
+            <span>全部评论（{{totalCount}}）</span> 
+            <a @click="onAuthorOnly" class="author-only" :class="{active: isAuthorOnly}">只看作者</a> 
+            <a class="close-btn" style="display: none;">关闭评论</a> 
+            <div class="pull-right">
+                <a @click="changeASC(true)" :class="{active: isASC}">按时间正序</a>
+                <a @click="changeASC(false)" :class="{active: !isASC}">按时间倒序</a>
+            </div>
+        </div>
         <div v-for="(comment, i) in comments" class="comment" :class="{'no-border': i === comments.length - 1}"
             :key="`comment-${comment.id}`" :id="`comment-${comment.id}`" >
             <div>
@@ -17,7 +26,7 @@
                     </div>
                 </div>
                 <div class="comment-wrap">
-                    <p style="" v-html="comment.htmlContent"></p>
+                    <p v-html="comment.htmlContent"></p>
                     <div class="tool-group">
                         <a :id="`like-button-${comment.id}`" class="like-button">
                             <span>{{comment.likeCount}}人赞</span>
@@ -38,29 +47,31 @@
                                 <a :href="`/u/${subcomment.user.id}.html`" target="_blank">{{subcomment.user.username}}</a>：
                             </div>
                         </div>
-                        <span>
+                        <span style="display: inline-block;">
                             <a v-if="subcomment.parentComment && subcomment.parentComment.id !== comment.id" :href="`/u/${subcomment.parentComment.user.id}.html`" class="maleskine-author" target="_blank">@{{subcomment.parentComment.user.username}}</a> 
-                            {{subcomment.htmlContent}}
+                            <p v-html="subcomment.htmlContent"></p>
                         </span> 
                     </div>
                     <div class="sub-tool-group">
                         <span>2019.03.02 16:49</span>
-                        <a class=""><i class="iconfont ic-comment"></i> <span>回复</span></a> 
+                        <a @click="onAddSubComment(comment)"><i class="iconfont ic-comment"></i> <span>回复</span></a> 
                         <a class="report"><span>举报</span></a>
                     </div>
                 </div>
                 <div v-if="comment.comments.length" class="sub-comment more-comment">
-                    <a class="add-comment-btn">
+                    <a @click="onAddSubComment(comment)" class="add-comment-btn">
                         <i class="iconfont ic-subcomment"></i> 
                         <span>添加新评论</span>
                     </a>
+                    <!--
                     <span class="line-warp">
                         <a>收起</a>
-                    </span>
+                    </span> -->
                 </div>
-                <CommentRichEditor :articleID="articleID" :sendDefVisible="true" />
+                <CommentRichEditor v-if="subCommentEditorVisible(comment)" :articleID="articleID" :sendDefVisible="true" />
             </div>
         </div>
+        <a class="c-load-more">查看更多评论</a>
     </div>
 </template>
 
@@ -72,99 +83,42 @@ export default {
     name: 'CommentsOfArticle',
     props: [
         'articleID',
+        'authorID',
     ],
     data: function() {
         return {
-            // comments: [
-            //     {
-            //         id: 1,
-            //         content: '面基死。',
-            //         user: {
-            //             id: 644,
-            //             username: '王_凯',
-            //             avatarURL: 'http://tva2.sinaimg.cn/crop.0.0.180.180.180/79d20cbbjw1e8qgp5bmzyj2050050aa8.jpg'
-            //         },
-            //         comments: []
-            //     },
-            //     {
-            //         id: 2,
-            //         content: '哈哈哈，只能说这个世界有太多让女人变美的工具。。。。',
-            //         user: {
-            //             id: 644,
-            //             username: '王_凯',
-            //             avatarURL: 'http://tva2.sinaimg.cn/crop.0.0.180.180.180/79d20cbbjw1e8qgp5bmzyj2050050aa8.jpg'
-            //         },
-            //         comments: [
-            //             {
-            //                 id: 645,
-            //                 content: '世界有太多让女人变美的',
-            //                 user: {
-            //                     id: 10,
-            //                     username: 'java',
-            //                     avatarURL: 'http://tva2.sinaimg.cn/crop.0.0.180.180.180/79d20cbbjw1e8qgp5bmzyj2050050aa8.jpg'
-            //                 },
-            //                 parentComment: {
-            //                     id: 644,
-            //                     user: {
-            //                         id: 10,
-            //                         username: 'shen100'
-            //                     }
-            //                 }
-            //             },
-            //             {
-            //                 id: 646,
-            //                 content: '多让女人变美的工',
-            //                 user: {
-            //                     id: 644,
-            //                     username: 'mk',
-            //                     avatarURL: 'http://tva2.sinaimg.cn/crop.0.0.180.180.180/79d20cbbjw1e8qgp5bmzyj2050050aa8.jpg'
-            //                 },
-            //                 parentComment: {
-            //                     id: 2,
-            //                     user: {
-            //                         id: 10,
-            //                         username: 'shen100'
-            //                     }
-            //                 }
-            //             },
-            //             {
-            //                 id: 647,
-            //                 content: '世界有太多',
-            //                 user: {
-            //                     id: 644,
-            //                     username: 'mk',
-            //                     avatarURL: 'http://tva2.sinaimg.cn/crop.0.0.180.180.180/79d20cbbjw1e8qgp5bmzyj2050050aa8.jpg'
-            //                 },
-            //                 parentComment: {
-            //                     id: 646,
-            //                     user: {
-            //                         id: 10,
-            //                         username: 'shen100'
-            //                     }
-            //                 }
-            //             },
-            //         ]
-            //     },
-            //     {
-            //         id: 3,
-            //         content: '前几天我被一个大叔控的女孩子追，我91她02，一开始挺介意年龄的，后来想着试试谈吧，聊了一个星期快要奔现我就拒绝掉了',
-            //         user: {
-            //             id: 644,
-            //             username: '王_凯',
-            //             avatarURL: 'http://tva2.sinaimg.cn/crop.0.0.180.180.180/79d20cbbjw1e8qgp5bmzyj2050050aa8.jpg'
-            //         },
-            //         comments: []
-            //     }
-            // ],
-            comments: []
+            interestingComments: [],
+            comments: [],
+            totalCount: 0,
+            isAuthorOnly: false,
+            isASC: true
         };
     },
     mounted: function() {
         this.reqComments();
     },
     methods: {
+        onAuthorOnly() {
+            this.isAuthorOnly = !this.isAuthorOnly;
+            this.reqComments();
+        },
+        changeASC(value) {
+            const shouldLoad = isASC !== value;
+            this.isASC = value;
+            if (shouldLoad) {
+                this.reqComments();
+            }
+        },
         reqComments() {
-            const url = `/comments/article/${this.articleID}`;
+            let dateorder = 1;
+            if (this.isASC) {
+                dateorder = 0;
+            }
+            let authorID;
+            if (this.isAuthorOnly) {
+                authorID = this.authorID;
+            }
+            const url = `/comments/article/${this.articleID}?dateorder=${dateorder}&authorID=${authorID}`;
             myHTTP.get(url).then((res) => {
                 const comments = res.data.data.comments || [];
                 const commentMap = {};
@@ -179,6 +133,7 @@ export default {
                     subComment.parentComment = commentMap[subComment.parentID];
                 });
                 this.comments = comments;
+                this.totalCount = res.data.data.totalCount;
             });
         },
         subCommentsVisible(comment) {
@@ -190,12 +145,303 @@ export default {
             }
             return false;
         },
+        subCommentEditorVisible(comment) {
+            if (comment.comments.length <= 0 || comment.toggled) {
+                return true;
+            }
+            return false;
+        },
         onCommentClick(comment) {
             comment.toggled = !comment.toggled;
         },
+        onAddSubComment(comment) {
+            comment.toggled = !comment.toggled;
+        }
     },
     components: {
         CommentRichEditor,
     }
 };
 </script>
+
+<style>
+.comments .comment {
+    padding: 20px 0 30px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.comments .comment .author {
+    margin-bottom: 15px;
+}
+
+.comments .comment .author-tag {
+    margin-left: 2px;
+    padding: 0 2px;
+    font-size: 12px;
+    color: #ea6f5a;
+    border: 1px solid #ea6f5a;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+
+.comments .comment p {
+    font-size: 16px;
+}
+
+.comments .comment-wrap p {
+    margin: 10px 0;
+    line-height: 1.5;
+    font-size: 16px;
+    word-break: break-word!important;
+    word-break: break-all;
+}
+
+.comments .comment .tool-group a {
+    margin-right: 10px;
+    font-size: 0;
+    color: #969696;
+    display: inline-block;
+    vertical-align: top;
+    line-height: normal;
+}
+
+.comments .comment .tool-group a:hover {
+    text-decoration: none;
+    color: #333;
+}
+
+.comments .comment .like-button {
+    position: relative;
+    padding-left: 23px;
+}
+
+.comments .comment .like-button:hover:before {
+    background-position: -50px;
+}
+
+.comments .comment .like-button:before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    top: -16px;
+    width: 50px;
+    height: 50px;
+    background-image: url(../../../images/zan.png);
+    background-position: left;
+    background-repeat: no-repeat;
+    background-size: 1050px 50px;
+}
+
+.comments .comment .tool-group a span {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+.comments .comment .tool-group a i {
+    margin-right: 5px;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.ic-comment:before {
+    content: "\E639";
+}
+
+.comments .comment .report {
+    float: right;
+    margin: 0 0 0 10px;
+    display: none;
+}
+
+.comments .comment .sub-comment-list {
+    margin-top: 20px;
+    padding: 5px 0 5px 20px;
+    border-left: 2px solid #d9d9d9;
+}
+
+.comments .comment .sub-comment {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #f0f0f0;
+}
+
+.comments .comment .sub-comment-list .v-tooltip-box {
+    word-break: break-word!important;
+    word-break: break-all;
+    margin: 0 0 5px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.v-tooltip-container {
+    position: relative;
+}
+
+.v-tooltip-container, .v-tooltip-content {
+    display: inline-block;
+}
+
+.v-tooltip-container .v-tooltip-content {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.comments .comment .sub-comment-list a, .comments .comment .sub-comment-list a:hover {
+    color: #3194d0;
+}
+
+.comments .comment .sub-tool-group {
+    font-size: 12px;
+    color: #969696;
+}
+
+.comments .comment .sub-tool-group a {
+    margin-left: 10px;
+    color: #969696;
+}
+
+.comments .comment .sub-tool-group a:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+.comments .comment .sub-tool-group a i {
+    margin-right: 5px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.ic-comment:before {
+    content: "\E639";
+}
+
+.comments .comment .sub-tool-group a span {
+    vertical-align: middle;
+}
+
+.comments .comment .sub-comment .report, .comments .comment .sub-comment .subcomment-delete {
+    float: right;
+    margin: 1px 0 0 10px;
+    display: none;
+}
+
+.comments .comment .sub-tool-group a span {
+    vertical-align: middle;
+}
+
+.comments .comment .sub-comment {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #f0f0f0;
+}
+
+.comments .comment .more-comment {
+    font-size: 14px;
+    color: #969696;
+    border: none;
+}
+
+.comments .comment .sub-comment:last-child {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.comments .comment .sub-comment-list .add-comment-btn {
+    color: #969696;
+}
+
+.comments .comment .sub-comment-list .add-comment-btn:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+.comments .comment .sub-comment-list .add-comment-btn i {
+    margin-right: 5px;
+}
+
+.ic-subcomment:before {
+    content: "\E698";
+}
+
+.comments .comment .line-warp {
+    margin-left: 10px;
+    padding-left: 10px;
+    border-left: 1px solid #d9d9d9;
+}
+
+.no-border {
+    border: none!important;
+}
+
+.comments .c-load-more {
+    display: block;
+    color: #3194d0;
+    font-size: 14px;
+    line-height: 32px;
+    text-align: center;
+    background-color: #f4f5f6;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.comments .c-load-more:hover {
+    text-decoration: none;
+}
+
+.comments .top-title {
+    padding-bottom: 20px;
+    font-size: 17px;
+    font-weight: 700;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.comments .top-title span {
+    display: inline-block;
+    line-height: 24px;
+}
+
+.comments .top-title .author-only {
+    margin-left: 10px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #969696;
+    border: 1px solid #e1e1e1;
+    border-radius: 12px;
+}
+
+.comments .top-title .author-only.active {
+    color: #fff;
+    border: 1px solid #ea6f5a;
+    background-color: #ea6f5a;
+}
+
+.comments .top-title .author-only:focus, .comments .top-title .author-only:hover {
+    text-decoration: none;
+}
+
+.comments .top-title .close-btn {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #969696;
+}
+
+.pull-right {
+    float: right!important;
+}
+
+.comments .pull-right a {
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #969696;
+    display: inline-block;
+}
+
+.comments .pull-right .active, .comments .pull-right a:hover {
+    color: #2f2f2f;
+    text-decoration: none;
+}
+</style>

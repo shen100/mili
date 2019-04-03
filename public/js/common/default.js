@@ -20,11 +20,17 @@ if (navbarUser) {
             return;
         }
         const userDropdownBox = document.getElementById('userDropdownBox');
+        if (!userDropdownBox) {
+            return;
+        }
         removeClass(userDropdownBox, 'open');
     });
 
     navbarUser.addEventListener('click', () => {
         const userDropdownBox = document.getElementById('userDropdownBox');
+        if (!userDropdownBox) {
+            return;
+        }
         if (hasClass(userDropdownBox, 'open')) {
             removeClass(userDropdownBox, 'open');
         } else {

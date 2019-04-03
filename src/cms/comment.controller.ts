@@ -19,10 +19,13 @@ export class CommentController {
     ) {}
 
     @Get('/api/v1/comments/article/:articleID')
-    async comments(@Query('page') pageStr: string, @Param('articleID') articleID: number) {
+    async comments(@Query('page') pageStr: string, @Query('dateorder') dateorder: string,
+                   @Query('authorIDStr') authorIDStr: string, @Param('articleID') articleID: number) {
         const page: number = strToPage(pageStr);
         articleID = parseInt(articleID + '', 10);
-        return await this.commentService.list(articleID, page);
+        const dateOrderASC = dateorder !== '1';
+        const authorID = parseInt(authorIDStr, 10);
+        return await this.commentService.list(articleID, page, authorID, dateOrderASC);
     }
 
     @Post('/api/v1/comments/article')
