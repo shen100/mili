@@ -14,7 +14,7 @@ export class CreateCommentDto {
     })
     readonly articleID: number;
 
-    @ValidateIf(o => o.parentID !== null)
+    @ValidateIf(o => o.parentID !== undefined)
     @IsInt({
         message: '无效的parentID',
     })
@@ -28,9 +28,4 @@ export class CreateCommentDto {
     })
     @IsString()
     readonly content: string;
-
-    @IsEnum(ArticleContentType, {
-        message: '无效的内容格式',
-    })
-    readonly contentType: number;
 }

@@ -72,4 +72,20 @@ export class ArticleController {
             id: updateResult.id,
         };
     }
+
+    @Put('/api/v1/articles/:id/closecomment')
+    @UseGuards(ActiveGuard)
+    async closeComment(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+        await this.articleService.closeOrOpenComment(id, user.id, false);
+        return {
+        };
+    }
+
+    @Put('/api/v1/articles/:id/opencomment')
+    @UseGuards(ActiveGuard)
+    async openComment(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+        await this.articleService.closeOrOpenComment(id, user.id, true);
+        return {
+        };
+    }
 }

@@ -85,7 +85,7 @@ export default {
                 this.$refs.errorTip.show('回复内容不能为空');
                 return;
             }
-            const url = `/comments`;
+            const url = `/comments/article`;
             const reqData = {
                 articleID: this.articleID,
                 content: content,

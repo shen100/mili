@@ -25,7 +25,7 @@ export class CommentService {
         return comment !== null;
     }
 
-    async list(articleID: number, page: number, authorID: number, dateOrderASC: boolean) {
+    async list(articleID: number, authorID: number, dateOrderASC: boolean, page: number) {
         const limit: number = 20;
         const self = this;
         async function findComments(parentIDs: number[]) {
@@ -33,11 +33,14 @@ export class CommentService {
                 articleID,
                 parentID: parentIDs ? In(parentIDs) : NO_PARENT,
                 deletedAt: null,
-                authorID,
+                userID: authorID,
                 status: Not(CommentStatus.VerifyFail),
             };
+            if (!articleID) {
+                delete condition.articleID;
+            }
             if (!authorID) {
-                delete condition.authorID;
+                delete condition.userID;
             }
             const query = {
                 select: {
@@ -99,6 +102,7 @@ export class CommentService {
         const comment = new Comment();
         comment.contentType = CommentContentType.HTML;
         comment.htmlContent = createCommentDto.content;
+        comment.parentID = NO_PARENT;
         comment.status = CommentStatus.Verifying;
         comment.userID = userID;
         comment.createdAt = new Date();

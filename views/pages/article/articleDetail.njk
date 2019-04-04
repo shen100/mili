@@ -177,7 +177,8 @@
 {% block pageData %}
 <script>
   var articleID = {{ article.id }};
-  var authorID = {{ article.userID }};
+  var commentEnabled = {{ article.commentEnabled }};
+  var authorID = {{ article.user.id }};
 </script>
 {% endblock %}
 

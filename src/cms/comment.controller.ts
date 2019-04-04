@@ -18,14 +18,20 @@ export class CommentController {
         private readonly commentService: CommentService,
     ) {}
 
-    @Get('/api/v1/comments/article/:articleID')
-    async comments(@Query('page') pageStr: string, @Query('dateorder') dateorder: string,
-                   @Query('authorIDStr') authorIDStr: string, @Param('articleID') articleID: number) {
+    @Get('/api/v1/comments/article/:id')
+    async comments(@Param('id') id: string, @Query('dateorder') dateorder: string,
+                   @Query('author') author: string, @Query('page') pageStr: string) {
         const page: number = strToPage(pageStr);
-        articleID = parseInt(articleID + '', 10);
+        const articleID = parseInt(id, 10);
         const dateOrderASC = dateorder !== '1';
-        const authorID = parseInt(authorIDStr, 10);
-        return await this.commentService.list(articleID, page, authorID, dateOrderASC);
+        const authorID = parseInt(author, 10);
+        if (isNaN(articleID)) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '无效的参数',
+            });
+        }
+        return await this.commentService.list(articleID, authorID, dateOrderASC, page);
     }
 
     @Post('/api/v1/comments/article')
