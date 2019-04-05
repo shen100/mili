@@ -14,10 +14,11 @@ new Vue({
     render: h => h(CommentsOfArticle, {
         props: {
             articleID: window.articleID,
+            userID: window.userID,
             authorID: window.authorID,
         },
     }),
-}).$mount('#comments');
+}).$mount('#normal-comment-list');
 
 (function() {
     $('.meta-bottom .more-share').click(function() {

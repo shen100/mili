@@ -20,7 +20,7 @@ const summaryStripLenth = 100;
         // await connection.manager.query(`alter table articles add column like_count int default 0`);
         // await connection.manager.query(`alter table articles add column word_count int default 0`);
         // await connection.manager.query(`alter table articles add column hot int default 0`);
-        await connection.manager.query(`alter table articles add column comment_enabled tinyint(1) NOT NULL DEFAULT '0'`);
+        await connection.manager.query(`alter table articles add column comment_enabled tinyint(1) NOT NULL DEFAULT '1'`);
         await connection.manager.query(`alter table articles add column cover_url varchar(500) DEFAULT NULL`);
 
         return ;

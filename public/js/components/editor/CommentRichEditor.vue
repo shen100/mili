@@ -39,6 +39,8 @@ export default {
     name: 'CommentRichEditor',
     props: [
         'articleID',
+        'parentID',
+        'rootID',
         'sendDefVisible',
         'content',
     ],
@@ -92,6 +94,9 @@ export default {
             };
             if (this.parentID) {
                 reqData.parentID = this.parentID;
+            }
+            if (this.rootID) {
+                reqData.rootID = this.rootID;
             }
             this.isSaving = true;
             myHTTP.post(url, reqData).then((res) => {

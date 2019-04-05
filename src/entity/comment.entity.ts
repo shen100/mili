@@ -55,6 +55,9 @@ export class Comment {
     @Column('int', { name: 'parent_id' })
     parentID: number;
 
+    @Column('int', { name: 'root_id' })
+    rootID: number;
+
     @Column('int', { name: 'comment_count' })
     commentCount: number;
 

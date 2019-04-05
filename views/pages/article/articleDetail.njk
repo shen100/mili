@@ -93,46 +93,8 @@
 
             <div>
                 <div id="comment-list" class="comment-list">
-                    {% if not user %}
-                    <div>
-                        <form class="new-comment">
-                            <a href="javascript:void(0);" class="avatar" style="cursor: default;"><img style="cursor: default;" src="{{imgPath}}/avatar_default.png"></a>
-                            <div class="sign-container">
-                                <a href="/signin.html" class="btn btn-sign">登录</a>
-                                <span>后发表评论</span>
-                            </div>
-                        </form>
-                    </div>
-                    {% endif %}
-                    <div id="normal-comment-list" class="normal-comment-list">
-                        <div>
-                            <div>
-                                <div class="top-title"><span>评论</span> <a class="close-btn" style="display: none;">关闭评论</a></div>
-                                <div class="no-comment"></div>
-                                <div class="text">
-                                    智慧如你，不想<a href="/signin.html">发表一点想法</a>咩~
-                                </div>
-                            </div>
-
-                            <div class="comments-placeholder" >
-                                <div class="author">
-                                    <div class="avatar"></div>
-                                    <div class="info">
-                                        <div class="name"></div>
-                                        <div class="meta"></div>
-                                    </div>
-                                </div>
-                                <div class="text"></div>
-                                <div class="text animation-delay"></div>
-                                <div class="tool-group"><i class="iconfont ic-zan-active"></i>
-                                    <div class="zan"></div> <i class="iconfont ic-list-comments"></i>
-                                    <div class="zan"></div>
-                                </div>
-                            </div>
-
-                            <div id="comments"></div>
-                        </div>
-                    </div>
+                    {# 评论组件的容器 #}
+                    <div id="normal-comment-list" class="normal-comment-list"></div>
                 </div>
             </div>
         </div>
@@ -178,6 +140,7 @@
 <script>
   var articleID = {{ article.id }};
   var commentEnabled = {{ article.commentEnabled }};
+  var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
   var authorID = {{ article.user.id }};
 </script>
 {% endblock %}

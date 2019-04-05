@@ -20,6 +20,12 @@ export class CreateCommentDto {
     })
     readonly parentID: number;
 
+    @ValidateIf(o => o.rootID !== undefined)
+    @IsInt({
+        message: '无效的rootID',
+    })
+    readonly rootID: number;
+
     @MinLength(1, {
         message: '评论内容不能为空',
     })

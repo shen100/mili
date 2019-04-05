@@ -12,6 +12,8 @@ const config = new ConfigService();
     const voteRepository = connection.getRepository(VoteComment);
 
     try {
+        await connection.manager.query(`alter table comments add column root_id int(11) NOT NULL DEFAULT '0'`);
+
         await connection.manager.query(`CREATE TABLE votecomments (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             content text,
@@ -30,6 +32,27 @@ const config = new ConfigService();
 
         const comments = await connection.manager.query(`select * from comments`);
         const voteComments = [];
+
+        const allCommentMap = {};
+        comments.forEach(comment => {
+            allCommentMap[comment.id] = comment;
+        });
+
+        comments.forEach(comment => {
+            comment.parent = allCommentMap[comment.parent_id];
+        });
+
+        comments.forEach(comment => {
+            let root = comment.parent;
+            if (!root) {
+                comment.root_id = 0;
+                return;
+            }
+            while (root.parent) {
+                root = root.parent;
+            }
+            comment.root_id = root.id;
+        });
 
         await bluebird.map(comments, async (comment: any, i) => {
             let htmlContent;
@@ -54,12 +77,15 @@ const config = new ConfigService();
                     voteID: comment.source_id,
                 });
             }
-            return await commentRepository.update({
-                id: comment.id,
-            }, {
-                htmlContent,
-                contentType: CommentContentType.HTML,
-            });
+            return await bluebird.all([
+                commentRepository.update({
+                    id: comment.id,
+                }, {
+                    htmlContent,
+                    contentType: CommentContentType.HTML,
+                }),
+                connection.manager.query(`update comments set root_id = ${comment.root_id} where id = ${comment.id}`),
+            ]);
         });
 
         await voteRepository.insert(voteComments);

@@ -28,10 +28,10 @@ export class CommentService {
     async list(articleID: number, authorID: number, dateOrderASC: boolean, page: number) {
         const limit: number = 20;
         const self = this;
-        async function findComments(parentIDs: number[]) {
+        async function findComments(rootIDs: number[]) {
             const condition = {
                 articleID,
-                parentID: parentIDs ? In(parentIDs) : NO_PARENT,
+                rootID: rootIDs ? In(rootIDs) : NO_PARENT,
                 deletedAt: null,
                 userID: authorID,
                 status: Not(CommentStatus.VerifyFail),
@@ -48,6 +48,7 @@ export class CommentService {
                     createdAt: true,
                     htmlContent: true,
                     parentID: true,
+                    rootID: true,
                     user: {
                         id: true,
                         username: true,
@@ -64,7 +65,7 @@ export class CommentService {
             };
             let count: number = 0;
             let commentArr;
-            if (!parentIDs) {
+            if (!rootIDs) {
                 [commentArr, count] = await Promise.all([
                     self.commentRepository.find(query as any),
                     self.commentRepository.count(condition),
@@ -91,7 +92,7 @@ export class CommentService {
         }
         return {
             comments,
-            subComments: subResult.comments || [],
+            subComments: subResult && subResult.comments || [],
             page,
             pageSize: limit,
             totalCount,
@@ -100,9 +101,11 @@ export class CommentService {
 
     async create(createCommentDto: CreateCommentDto, userID: number) {
         const comment = new Comment();
+        comment.articleID = createCommentDto.articleID;
         comment.contentType = CommentContentType.HTML;
         comment.htmlContent = createCommentDto.content;
-        comment.parentID = NO_PARENT;
+        comment.parentID = createCommentDto.parentID || NO_PARENT;
+        comment.rootID = createCommentDto.rootID || NO_PARENT;
         comment.status = CommentStatus.Verifying;
         comment.userID = userID;
         comment.createdAt = new Date();
