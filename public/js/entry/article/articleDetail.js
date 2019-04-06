@@ -16,6 +16,7 @@ new Vue({
             articleID: window.articleID,
             userID: window.userID,
             authorID: window.authorID,
+            commentEnabled: window.commentEnabled,
         },
     }),
 }).$mount('#normal-comment-list');

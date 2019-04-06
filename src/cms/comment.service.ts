@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Comment, CommentContentType, CommentStatus } from '../entity/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { NO_PARENT } from '../config/constants';
+import { recentTime } from '../utils/viewfilter';
 
 @Injectable()
 export class CommentService {
@@ -90,13 +91,26 @@ export class CommentService {
             const commentIDs = _.map(comments, 'id');
             subResult = await findComments(commentIDs);
         }
-        return {
+        const obj = {
             comments,
             subComments: subResult && subResult.comments || [],
             page,
             pageSize: limit,
             totalCount,
         };
+        obj.comments = obj.comments.map(comment => {
+            return {
+                ...comment,
+                createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD HH:mm'),
+            };
+        });
+        obj.subComments = obj.subComments.map(comment => {
+            return {
+                ...comment,
+                createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD HH:mm'),
+            };
+        });
+        return obj;
     }
 
     async create(createCommentDto: CreateCommentDto, userID: number) {

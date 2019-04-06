@@ -3,33 +3,27 @@
         <ErrorTip ref="errorTip" />
         <div>
             <!-- 允许评论，并且用户没有登录 -->
-            <form v-if="commentEnabled && !userID" class="new-comment">
+            <form v-if="isCommentEnabled && !userID" class="new-comment">
                 <a href="javascript:void(0);" class="avatar" style="cursor: default;"><img style="cursor: default;" src="../../../images/avatar_default.png"></a>
                 <div class="sign-container">
                     <a href="/signin.html" class="btn btn-sign">登录</a>
                     <span>后发表评论</span>
                 </div>
             </form>
-            <!-- 允许评论，并且用户已经登录 -->
-            <div v-if="commentEnabled && userID">
-                <div class="top-title"><span>评论</span> <a class="close-btn" style="display: none;">关闭评论</a></div>
-                <div class="no-comment"></div>
-                <div class="text">
-                    智慧如你，不想<a href="/signin.html">发表一点想法</a>咩~
-                </div>
-            </div>
-        
+
             <div id="comments" class="comments">
-                <!-- 不允许评论 -->
-                <div v-if="!commentEnabled && userID !== authorID">
-                    <div class="top-title"><span>评论</span><span class="close-tip">已关闭评论</span></div> 
+                <!-- 不允许评论, 并且不是作者(没登录，或登录了，但不是作者) -->
+                <div v-if="!isCommentEnabled && userID !== authorID">
+                    <div class="top-title"><span>评论</span><span class="close-tip">已关闭评论</span></div>
                     <div class="close-comment"></div> 
-                    <div class="text">想发表一点看法咩，<a href="/notifications#/chats/new?mail_to=2275425">与Ta私信交流</a>吧~</div>
+                    <div class="text">想发表一点看法咩，<a href="/chats">与Ta私信交流</a>吧~</div>
                 </div>
 
-                <template v-if="commentEnabled">
-                    <CommentRichEditor v-if="userID" :articleID="articleID" :sendDefVisible="false" />
-                    <div :style="{marginTop: interestingComments.length ? '0' : '24px'}" class="top-title">
+                <template v-if="isCommentEnabled">
+                    <CommentRichEditor v-if="userID" :articleID="articleID" 
+                        emptyPlaceholder="写下你的评论"
+                        :sendDefVisible="false" />
+                    <div :style="{marginTop: interestingComments.length ? '0' : '24px'}" class="top-title" :class="{'no-border-bottom': totalCount <= 0}">
                         <span>全部评论（{{totalCount}}）</span> 
                         <a v-if="totalCount" @click="onAuthorOnly" class="author-only" :class="{active: isAuthorOnly}">只看作者</a> 
                         <div class="pull-right">
@@ -39,12 +33,12 @@
                         <template v-if="!totalCount && totalCount !== undefined">
                             <div class="no-comment"></div>
                             <div class="text">
-                                智慧如你，不想<a href="/signin.html">发表一点想法</a>咩~
+                                智慧如你，不想<a @click="onFirstComment">发表一点想法</a>咩~
                             </div>
                         </template>
                     </div>
                     <div v-for="(comment, i) in comments" class="comment" :class="{'no-border': i === comments.length - 1}"
-                        :key="`comment-${comment.id}`" :id="`comment-${comment.id}`" >
+                        :key="`comment-${comment.id}`" :id="`comment-${comment.id}`">
                         <div>
                             <div class="author">
                                 <div class="v-tooltip-container" style="z-index: 0;">
@@ -55,25 +49,28 @@
                                 <div class="info">
                                     <a :href="`/u/${comment.user.id}.html`" target="_blank" class="name">{{comment.user.username}}</a>
                                     <span v-if="comment.user.id === authorID" class="author-tag">作者</span>
-                                    <div class="meta"><span>{{i + 1}}楼 · 2019.02.26 00:37</span></div>
+                                    <div class="meta"><span>{{i + 1}}楼 · {{comment.createdAtLabel}}</span></div>
                                 </div>
                             </div>
                             <div class="comment-wrap">
                                 <p v-html="comment.htmlContent"></p>
                                 <div class="tool-group">
-                                    <a :id="`like-button-${comment.id}`" class="like-button">
+                                    <a @click="onLike(comment)" class="like-button" :class="{active: comment.userLiked, 'zan-animation': comment.userLiked}">
                                         <span>{{comment.likeCount}}人赞</span>
                                     </a>
-                                    <a @click="onCommentClick(comment)">
+                                    <a @click="onAddComment(comment)">
                                         <i class="iconfont ic-comment"></i>
                                         <span>回复</span>
                                     </a>
-                                    <a class="report"><span>举报</span></a>
+                                    <a v-if="comment.user.id === userID" class="report"><span>删除</span></a>
                                 </div>
                             </div>
+                            <CommentRichEditor v-if="userID && comment.editorToggled" :articleID="articleID" :emptyPlaceholder="`回复${comment.user.username}`"
+                                :sendDefVisible="true" :rootID="comment.id" 
+                                :parentID="comment.id" @cancel="onCancelComment(comment)" />
                         </div>
-                        <div v-if="subCommentsVisible(comment)" class="sub-comment-list">
-                            <div :key="`comment-${subcomment.id}`" v-for="subcomment in comment.comments" :id="`comment-${subcomment.id}`" class="sub-comment">
+                        <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
+                            <div :key="`comment-${subcomment.id}`" v-for="subcomment in comment.comments" class="sub-comment">
                                 <div class="v-tooltip-box">
                                     <div class="v-tooltip-container" style="z-index: 0;">
                                         <div class="v-tooltip-content">
@@ -83,34 +80,38 @@
                                     <span style="display: inline-block;">
                                         <a v-if="!subcomment.parentIsRoot" 
                                             :href="`/u/${subcomment.parentComment.user.id}.html`" 
-                                            class="maleskine-author comment-user-name" target="_blank">@{{subcomment.parentComment.user.username}}{{subcomment.user.id === authorID ? '(作者)' : ''}}</a> 
+                                            class="maleskine-author comment-user-name" target="_blank">@{{subcomment.parentComment.user.username}}{{subcomment.parentComment.user.id === authorID ? '(作者)' : ''}}</a> 
                                     </span>
                                     <div class="comment-content-box" v-html="subcomment.htmlContent"></div>
                                 </div>
                                 <div class="sub-tool-group">
-                                    <span>2019.03.02 16:49</span>
-                                    <a @click="onAddSubComment(comment, subcomment)"><i class="iconfont ic-comment"></i> <span>回复</span></a> 
-                                    <a class="report"><span>举报</span></a>
+                                    <span>{{subcomment.createdAtLabel}}</span>
+                                    <a @click="onLike(subcomment)" class="like-button" :class="{active: subcomment.userLiked, 'zan-animation': subcomment.userLiked}">
+                                        <span>{{subcomment.likeCount}}人赞</span>
+                                    </a>
+                                    <a @click="onAddComment(subcomment)"><i class="iconfont ic-comment"></i> <span>回复</span></a> 
+                                    <a v-if="subcomment.user.id === userID" class="report"><span>删除</span></a>
                                 </div>
+                                <CommentRichEditor v-if="userID && subcomment.editorToggled" :emptyPlaceholder="`回复${subcomment.user.username}`"
+                                    :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" 
+                                    :parentID="subcomment.id" @cancel="onCancelComment(subcomment)" />
                             </div>
+                            <!--
                             <div v-if="comment.comments.length" class="sub-comment more-comment">
-                                <a @click="onAddSubComment(comment)" class="add-comment-btn">
+                                <a @click="onAddComment(comment)" class="add-comment-btn">
                                     <i class="iconfont ic-subcomment"></i> 
                                     <span>添加新评论</span>
                                 </a>
-                                <!--
-                                <span class="line-warp">
-                                    <a>收起</a>
-                                </span> -->
-                            </div>
-                            <CommentRichEditor :rootID="comment.id" :parentID="commentParentIDMap[comment.id]" v-if="subCommentEditorVisible(comment)" :articleID="articleID" :sendDefVisible="true" />
+                            </div> -->
                         </div>
                     </div>
                     <!-- 允许评论，且评论还没有加载完 -->
                     <a v-if="isLoadDone === 'no'" @click="onLoadMore" class="c-load-more">{{isLoading ? '正在加载...' : '查看更多评论'}}</a>
-                    <p v-else-if="isLoadDone === 'yes'" class="all-comment-load">没有更多评论了</p>
+                    <p v-else-if="isLoadDone === 'yes' && totalCount > 0" class="all-comment-load">没有更多评论了</p>
                 </template>
-                <div v-else-if="userID === authorID" class="open-block"><a @click="openComment" class="open-btn">打开评论</a></div>
+                <div v-else-if="userID === authorID" class="open-block" :class="{'no-border-top': !isCommentEnabled}">
+                    <a @click="openComment" class="open-btn">打开评论</a>
+                </div>
             </div>
         </div>
     </div>
@@ -127,25 +128,28 @@ export default {
     props: [
         'articleID',
         'authorID',
-        'userID'
+        'userID',
+        'commentEnabled'
     ],
     data: function() {
         return {
-            interestingComments: [],
+            interestingComments: [], // 精彩评论
             comments: [],
             totalCount: 0,
             isAuthorOnly: false,
-            commentEnabled: window.commentEnabled,
+            isCommentEnabled: this.commentEnabled,
             isLoadDone: 'unknow',
             isLoading: false,
             page: 1,
-            commentParentIDMap: {} // 对评论进行评论时，key为一级评论的id，value为当前选中的二级评论
         };
     },
     mounted: function() {
         this.reqComments(1);
     },
     methods: {
+        onFirstComment() {
+
+        },
         onAuthorOnly() {
             this.isAuthorOnly = !this.isAuthorOnly;
             this.reqComments(1, true);
@@ -158,13 +162,9 @@ export default {
                 return;
             }
             this.isLoading = true;
-            let authorID;
-            if (this.isAuthorOnly) {
-                authorID = this.authorID;
-            }
             let url = `/comments/article/${this.articleID}?page=${page}`;
-            if (authorID) {
-                url += `&author=${authorID}`;
+            if (this.isAuthorOnly) {
+                url += `&author=${this.authorID}`;
             }
             myHTTP.get(url).then((res) => {
                 this.isLoading = false;
@@ -172,22 +172,24 @@ export default {
                     this.comments = [];
                 }
                 const comments = res.data.data.comments || [];
+                // key为评论的id，value为评论（所有的评论，包括子评论）
                 const commentMap = {};
-                const commentParentIDMap = {};
                 comments.forEach(comment => {
-                    comment.toggled = false;
+                    comment.editorToggled = false;
+                    comment.userLiked = false;
                     comment.comments = [];
                     commentMap[comment.id] = comment;
-                    commentParentIDMap[comment.id] = comment.id;
                 });
                 const subComments = res.data.data.subComments || [];
                 subComments.forEach(comment => {
                     commentMap[comment.id] = comment;
                 });
-                this.commentParentIDMap = commentParentIDMap;
                 subComments.forEach(subComment => {
+                    subComment.editorToggled = false;
+                    subComment.userLiked = false;
                     commentMap[subComment.rootID].comments.push(subComment);
                     subComment.parentComment = commentMap[subComment.parentID];
+                    subComment.rootComment = commentMap[subComment.rootID];
                     if (subComment.parentID === subComment.rootID) {
                         subComment.parentIsRoot = true;
                     } else {
@@ -207,40 +209,29 @@ export default {
                 this.isLoading = false;
             });
         },
-        subCommentsVisible(comment) {
-            if (comment.comments.length) {
-                return true;
-            }
-            if (comment.toggled) {
-                return true;
-            }
-            return false;
-        },
-        subCommentEditorVisible(comment) {
-            if (comment.comments.length <= 0 || comment.toggled) {
-                return true;
-            }
-            return false;
-        },
-        onCommentClick(comment) {
-            comment.toggled = !comment.toggled;
-        },
-        onAddSubComment(comment, subComment) {
-            comment.toggled = !comment.toggled;
-            if (subComment) {
-                // 对二级评论进行评论
-                this.commentParentIDMap[comment.id] = subComment.id;
+        onAddComment(comment) {
+            let subComments;
+            const editorToggled = comment.editorToggled;
+            if (comment.rootComment) {
+                comment.rootComment.editorToggled = false;
+                subComments = comment.rootComment.comments;
             } else {
-                // 对一级评论进行评论
-                this.commentParentIDMap[comment.id] = comment.id;
+                subComments = comment.comments;
             }
+            subComments.forEach(comment => comment.editorToggled = false);
+            comment.editorToggled = !editorToggled;
+        },
+        onCancelComment(comment) {
+            comment.editorToggled = false;
+        },
+        onLike(comment) {
+            comment.userLiked = true;
         },
         openComment() {
             const url = `/articles/${this.articleID}/opencomment`;
-            console.log(ErrorCode);
             myHTTP.put(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.commentEnabled = true;
+                    this.isCommentEnabled = true;
                 } else if (res.data.errorCode === ErrorCode.Forbidden.CODE) {
                     this.$refs.errorTip.show(res.data.message);
                 }
@@ -250,7 +241,7 @@ export default {
             const url = `/articles/${this.articleID}/closecomment`;
             myHTTP.put(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.commentEnabled = false;
+                    this.isCommentEnabled = false;
                 } else if (res.data.errorCode === ErrorCode.Forbidden.CODE) {
                     this.$refs.errorTip.show(res.data.message);
                 }
@@ -296,6 +287,10 @@ export default {
     word-break: break-all;
 }
 
+.comments .comment-wrap:hover .tool-group .report {
+    display: block!important;
+}
+
 .comments .comment .tool-group a {
     margin-right: 10px;
     font-size: 0;
@@ -332,6 +327,34 @@ export default {
     background-size: 1050px 50px;
 }
 
+.like-button.active:before {
+    background-position: right!important;
+}
+
+.like-button.zan-animation:before {
+    -webkit-animation: likeBlast 0.6s 1 steps(19);
+    animation: likeBlast 0.6s 1 steps(19);
+    background-position: right;
+}
+
+@-webkit-keyframes likeBlast {
+    0% {
+        background-position: -50px;
+    }
+    100% {
+        background-position: right;
+    }
+}
+
+@keyframes likeBlast {
+    0% {
+        background-position: -50px;
+    }
+    100% {
+        background-position: right;
+    }
+}
+
 .comments .comment .tool-group a span {
     vertical-align: middle;
     font-size: 14px;
@@ -350,7 +373,7 @@ export default {
 .comments .comment .report {
     float: right;
     margin: 0 0 0 10px;
-    display: none;
+    display: none!important;
 }
 
 .comments .comment .sub-comment-list {
@@ -369,7 +392,7 @@ export default {
     word-break: break-word!important;
     word-break: break-all;
     margin: 0 0 5px;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.5;
 }
 
@@ -397,8 +420,12 @@ export default {
 }
 
 .comments .comment .sub-tool-group {
-    font-size: 12px;
+    font-size: 14px;
     color: #969696;
+}
+
+.comments .sub-comment:hover .sub-tool-group .report {
+    display: block!important;
 }
 
 .comments .comment .sub-tool-group a {
@@ -413,7 +440,7 @@ export default {
 
 .comments .comment .sub-tool-group a i {
     margin-right: 5px;
-    font-size: 14px;
+    font-size: 18px;
     vertical-align: middle;
 }
 
@@ -633,6 +660,14 @@ export default {
     display: inline;
     white-space: pre-wrap;
     word-break: break-word;
-    font-size: 14px!important;
+    font-size: 16px!important;
+}
+
+.no-border-bottom {
+    border-bottom: none!important;
+}
+
+.no-border-top {
+    border-top: none!important;
 }
 </style>

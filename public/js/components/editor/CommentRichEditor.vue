@@ -11,7 +11,7 @@
             </div>
             <div class="hint">⌘+Return 发表</div>
             <a @click="onComment" class="btn btn-send">发送</a>
-            <a class="cancel">取消</a>
+            <a @click="onCancelComment" class="cancel">取消</a>
         </div>
     </div>
 </template>
@@ -41,8 +41,9 @@ export default {
         'articleID',
         'parentID',
         'rootID',
-        'sendDefVisible',
+        'sendDefVisible', // 初始化编辑器时，是否默认显示发送按钮
         'content',
+        'emptyPlaceholder',
     ],
     data () {
         return {
@@ -52,7 +53,7 @@ export default {
                     new Image(),
                     new Placeholder({
                         emptyClass: 'is-empty',
-                        emptyNodeText: '写下你的评论',
+                        emptyNodeText: this.emptyPlaceholder,
                         showOnlyWhenEditable: true,
                     }),
                 ],
@@ -77,6 +78,12 @@ export default {
             if (!this.sendDefVisible) {
                 this.sendVisible = false;
             }
+        },
+        onCancelComment() {
+            if (!this.sendDefVisible) {
+                this.sendVisible = false;
+            }
+            this.$emit('cancel');
         },
         onComment() {
             if (this.isSaving === true) {
