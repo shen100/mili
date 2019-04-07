@@ -59,20 +59,25 @@ export class CommentController {
         };
     }
 
-    @Post('/api/v1/comments/:commentID/like')
+    @Delete('/api/v1/comments/:commentID')
     @UseGuards(ActiveGuard)
-    async like(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number,
-               @Query('articleID', MustIntPipe) articleID: number) {
-        await this.commentService.like(commentID, user.id, articleID);
+    async delete(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number) {
+        await this.commentService.delete(commentID, user.id);
         return {
         };
+    }
+
+    @Post('/api/v1/comments/:commentID/like')
+    @UseGuards(ActiveGuard)
+    async like(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number) {
+        await this.commentService.like(commentID, user.id);
+        return {};
     }
 
     @Delete('/api/v1/comments/:commentID/like')
     @UseGuards(ActiveGuard)
     async deleteLike(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number) {
         await this.commentService.deleteLike(commentID, user.id);
-        return {
-        };
+        return {};
     }
 }

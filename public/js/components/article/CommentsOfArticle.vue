@@ -1,6 +1,9 @@
 <template>
     <div id="normal-comment-list" class="normal-comment-list">
+        <SuccessTip ref="successTip" />
         <ErrorTip ref="errorTip" />
+        <Alert ref="deleteCommentAlert" width="450" 
+            @ok="onDeleteCommentOk" @cancel="onDeleteCommentCancel" />
         <div>
             <!-- 允许评论，并且用户没有登录 -->
             <form v-if="isCommentEnabled && !userID" class="new-comment">
@@ -20,9 +23,9 @@
                 </div>
 
                 <template v-if="isCommentEnabled">
-                    <CommentRichEditor v-if="userID" :articleID="articleID" 
+                    <CommentRichEditor ref="commentRichEditor" v-if="userID" :articleID="articleID" 
                         emptyPlaceholder="写下你的评论" @success="addCommentSuccess"
-                        :sendDefVisible="false" />
+                        @error="addCommentError" :sendDefVisible="false" />
                     <div :style="{marginTop: interestingComments.length ? '0' : '24px'}" class="top-title" :class="{'no-border-bottom': totalCount <= 0}">
                         <span>全部评论（{{totalCount}}）</span> 
                         <a v-if="totalCount" @click="onAuthorOnly" class="author-only" :class="{active: isAuthorOnly}">只看作者</a> 
@@ -53,7 +56,7 @@
                                 </div>
                             </div>
                             <div class="comment-wrap">
-                                <p v-html="comment.htmlContent"></p>
+                                <div v-html="comment.htmlContent"></div>
                                 <div class="tool-group">
                                     <a @click="onLikeOrNot(comment)" class="like-button" :class="{active: comment.userLiked, 'zan-animation': comment.userLiked}">
                                         <span>{{comment.likeCount || ''}}{{comment.likeCount ? '人' : ''}}赞</span>
@@ -62,12 +65,12 @@
                                         <i class="iconfont ic-comment"></i>
                                         <span>回复</span>
                                     </a>
-                                    <a v-if="comment.user.id === userID" class="report"><span>删除</span></a>
+                                    <a v-if="comment.user.id === userID" @click="showDeleteCommentAlert(comment)" class="report"><span>删除</span></a>
                                 </div>
                             </div>
                             <CommentRichEditor v-if="userID && comment.editorToggled" :articleID="articleID" :emptyPlaceholder="`回复${comment.user.username}`"
                                 :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
-                                :parentID="comment.id" @cancel="onCancelComment(comment)" />
+                                @error="addCommentError" :parentID="comment.id" @cancel="onCancelComment(comment)" />
                         </div>
                         <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
                             <div :key="`comment-${subcomment.id}`" v-for="subcomment in comment.comments" class="sub-comment">
@@ -90,11 +93,11 @@
                                         <span>{{subcomment.likeCount || ''}}{{subcomment.likeCount ? '人' : ''}}赞</span>
                                     </a>
                                     <a @click="onAddComment(subcomment)"><i class="iconfont ic-comment"></i> <span>回复</span></a> 
-                                    <a v-if="subcomment.user.id === userID" class="report"><span>删除</span></a>
+                                    <a v-if="subcomment.user.id === userID" @click="showDeleteCommentAlert(subcomment)" class="report"><span>删除</span></a>
                                 </div>
                                 <CommentRichEditor v-if="userID && subcomment.editorToggled" :emptyPlaceholder="`回复${subcomment.user.username}`"
                                     :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
-                                    :parentID="subcomment.id" @cancel="onCancelComment(subcomment)" />
+                                    @error="addCommentError" :parentID="subcomment.id" @cancel="onCancelComment(subcomment)" />
                             </div>
                             <!--
                             <div v-if="comment.comments.length" class="sub-comment more-comment">
@@ -120,8 +123,10 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import CommentRichEditor from '~/js/components/editor/CommentRichEditor.vue';
+import SuccessTip from '~/js/components/common/SuccessTip.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import { ErrorCode } from '~/js/constants/error.js';
+import Alert from '~/js/components/common/Alert.vue';
 
 export default {
     name: 'CommentsOfArticle',
@@ -145,7 +150,8 @@ export default {
             isLoading: false,
             page: 1,
             userCommentsLikesMap: {}, // 登录用户在这篇文章下的所有点过赞的评论
-            isUserCommentsLikesLoaded: false
+            isUserCommentsLikesLoaded: false,
+            curWillDeleteComment: null
         };
     },
     mounted: function() {
@@ -154,7 +160,7 @@ export default {
     },
     methods: {
         onFirstComment() {
-
+            this.$refs.commentRichEditor.focus();
         },
         // 当前登录用户在这篇文章下的所有点过赞的评论
         onReqUserCommentsLikes() {
@@ -269,6 +275,7 @@ export default {
             comment.editorToggled = !editorToggled;
         },
         addCommentSuccess(comment) {
+            this.$refs.successTip.show('回复成功');
             comment.user = {
                 id: this.userID,
                 username: this.username,
@@ -282,6 +289,7 @@ export default {
             if (comment.parentID) {
                 comment.parentComment = this.commentMap[comment.parentID];
                 comment.rootComment = this.commentMap[comment.rootID];
+                comment.parentComment.editorToggled = false;
                 if (comment.parentID === comment.rootID) {
                     comment.parentIsRoot = true;
                 } else {
@@ -294,13 +302,15 @@ export default {
                 this.comments.push(comment);
             }
         },
+        addCommentError(message) {
+            this.$refs.errorTip.show(message);
+        },
         onCancelComment(comment) {
             comment.editorToggled = false;
         },
         onLikeOrNot(comment) {
             let url = `/comments/${comment.id}/like`;
             if (!comment.userLiked) {
-                url += '?articleID=' + this.articleID;
                 myHTTP.post(url).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         comment.userLiked = true;
@@ -335,11 +345,44 @@ export default {
                     this.$refs.errorTip.show(res.data.message);
                 }
             });  
+        },
+        showDeleteCommentAlert(comment) {
+            this.curWillDeleteComment = comment;
+            this.$refs.deleteCommentAlert.show('删除评论', '确定要删除评论么?');
+        },
+        onDeleteCommentOk() {
+            if (!this.curWillDeleteComment) {
+                return;
+            }
+            const url = `/comments/${this.curWillDeleteComment.id}`;
+            myHTTP.delete(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.$refs.successTip.show('评论已删除');
+                    const comment = this.commentMap[this.curWillDeleteComment.id];
+                    this.curWillDeleteComment = null;
+                    if (!comment.parentID) {
+                        const index = this.comments.indexOf(comment);
+                        this.comments.splice(index, 1);
+                        return;
+                    }
+                    this.comments.forEach(c => {
+                        const index = c.comments.indexOf(comment);
+                        c.comments.splice(index, 1);
+                    });
+                } else if (res.data.errorCode === ErrorCode.Forbidden.CODE) {
+                    this.$refs.errorTip.show(res.data.message);
+                }
+            });   
+        },
+        onDeleteCommentCancel() {
+
         }
     },
     components: {
         CommentRichEditor,
+        SuccessTip,
         ErrorTip,
+        Alert,
     }
 };
 </script>
@@ -362,6 +405,10 @@ export default {
     border: 1px solid #ea6f5a;
     border-radius: 3px;
     vertical-align: middle;
+}
+
+.comments .comment-wrap img {
+    max-width: 100%;
 }
 
 .comments .comment p {
@@ -743,6 +790,18 @@ export default {
 
 .comment-content-box {
     display: inline;
+}
+
+.comment-content-box img {
+    max-width: 100%;
+}
+
+.comment-wrap pre, .comment-content-box pre {
+    word-spacing: normal;
+    word-wrap: normal;
+    word-break: break-word!important;
+    word-break: break-all;
+    overflow: auto;
 }
 
 .comment-content-box div, .comment-content-box p {

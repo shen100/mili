@@ -17,6 +17,15 @@ export class CommentService {
         private readonly commentRepository: Repository<Comment>,
     ) {}
 
+    async findOne(commentID: number, select) {
+        const comment = await this.commentRepository.findOne({
+            id: commentID,
+        }, {
+            select,
+        });
+        return comment;
+    }
+
     async isExist(id: number, articleID?: number) {
         const conditions = { id, articleID };
         if (!articleID) {
@@ -67,6 +76,9 @@ export class CommentService {
                 skip: (page - 1) * limit,
                 take: limit,
             };
+            if (rootIDs) {
+                delete query.take;
+            }
             let count: number = 0;
             let commentArr;
             if (!rootIDs) {
@@ -128,11 +140,58 @@ export class CommentService {
         comment.createdAt = new Date();
         comment.updatedAt = comment.createdAt;
         comment.commentCount = 0;
-        return await this.commentRepository.save(comment);
+
+        await this.commentRepository.manager.connection.transaction(async manager => {
+            const sql = `UPDATE articles SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
+            const commentRepository = manager.getRepository(Comment);
+            await commentRepository.save(comment);
+            await manager.query(sql);
+        });
+        return comment;
+    }
+
+    async delete(commentID: number, userID: number) {
+        const comment = await this.findOne(commentID, ['id', 'articleID', 'parentID', 'rootID']);
+        if (!comment) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        if (comment.userID !== userID) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.Forbidden.CODE,
+            });
+        }
+        await this.commentRepository.manager.connection.transaction(async manager => {
+            let sql1 = `DELETE FROM comments WHERE id = ${commentID}`;
+            let sql2 = `DELETE FROM userlikecomments WHERE comment_id = ${commentID}`;
+            if (!comment.parentID) {
+                sql1 = `DELETE FROM comments WHERE id = ${commentID} or root_id = ${commentID}`;
+                sql2 = `DELETE FROM userlikecomments WHERE comment_id = ${commentID} or root_id = ${commentID}`;
+            }
+            const deleteResult = await manager.query(sql1);
+            await manager.query(sql2);
+            const sql3 = `UPDATE articles SET comment_count = comment_count - ${deleteResult.affectedRows} WHERE id = ${comment.articleID}`;
+            await manager.query(sql3);
+        });
     }
 
     // articleID是个冗余字段，为了方便查询用户在某篇文章下点过赞的所有评论
-    async like(commentID: number, userID: number, articleID: number) {
+    async like(commentID: number, userID: number) {
+        const comment = await this.findOne(commentID, ['id', 'articleID', 'parentID', 'rootID']);
+        if (!comment) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        if (comment.userID !== userID) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.Forbidden.CODE,
+            });
+        }
+        const articleID = comment.articleID;
+        const parentID = comment.parentID || NO_PARENT;
+        const rootID = comment.rootID || NO_PARENT;
         const sql = `SELECT comment_id, user_id FROM userlikecomments
             WHERE comment_id = ${commentID} AND user_id = ${userID}`;
         let result = await this.commentRepository.manager.query(sql);
@@ -144,8 +203,9 @@ export class CommentService {
             });
         }
         await this.commentRepository.manager.connection.transaction(async manager => {
-            const sql2 = `INSERT INTO userlikecomments (comment_id, user_id, created_at, article_id)
-                VALUES(${commentID}, ${userID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}", ${articleID})`;
+            const sql2 = `INSERT INTO userlikecomments (comment_id, user_id, created_at, article_id, parent_id, root_id)
+                VALUES(${commentID}, ${userID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}", ${articleID},
+                ${parentID}, ${rootID})`;
             const sql3 = `UPDATE comments SET like_count = like_count + 1 WHERE id = ${commentID}`;
             await manager.query(sql2);
             await manager.query(sql3);

@@ -45,14 +45,14 @@ export class EditorController {
             this.userService.findSettings(user.id),
             this.uploadService.requestPolicy(),
         ]);
-        if (settings.editorType === ArticleContentType.HTML) {
-            res.render('pages/editor/editRichArticle', {
+        if (!settings || settings.editorType === ArticleContentType.Markdown) {
+            res.render('pages/editor/editMarkdownArticle', {
                 user,
                 uploadPolicy,
             });
             return;
         }
-        res.render('pages/editor/editMarkdownArticle', {
+        res.render('pages/editor/editRichArticle', {
             user,
             uploadPolicy,
         });

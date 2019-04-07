@@ -236,6 +236,7 @@ export class ArticleService {
         article.summary = summary;
         article.status = ArticleStatus.Verifying;
         article.userID = userID;
+        article.commentEnabled = true;
         article.createdAt = new Date();
         article.updatedAt = article.createdAt;
 

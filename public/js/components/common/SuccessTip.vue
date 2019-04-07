@@ -2,7 +2,9 @@
     <transition name="custom-classes-transition"
             enter-active-class="animated fadeInDown faster"
             leave-active-class="animated fadeOut">
-        <div v-if="errorTipVisible" :style="{width: width + 'px', 'margin-left': -(width / 2) + 'px'}" class="successtip-msg"><i style="margin-right: 4px;" class="fa fa-check-circle"></i>{{message}}</div>
+        <div ref="tipDOM" v-if="errorTipVisible" :style="{width: width + 'px', 'margin-left': -(width / 2) + 'px'}" class="successtip-msg">
+            <i style="margin-right: 4px;" class="fa fa-check-circle"></i>{{message}}
+        </div>
     </transition>
 </template>
 

@@ -14,6 +14,13 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import {
+    Modal,
+} from 'iview';
+
+Vue.component('Modal', Modal);
+
 export default {
     props: [
         'width',

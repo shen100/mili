@@ -1,7 +1,5 @@
 <template>
     <div v-clickoutside="onClickOutside" class="comment-editor-box">
-        <SuccessTip ref="successTip" />
-        <ErrorTip ref="errorTip" />
         <div class="comment-editor-cbox">
             <editor-content class="mili-editor-content" :editor="editor" />
         </div>
@@ -26,8 +24,6 @@ import { myHTTP } from '~/js/common/net.js';
 import { trim } from '~/js/utils/utils.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import { isContentEmpty } from '~/js/utils/dom.js';
-import SuccessTip from '~/js/components/common/SuccessTip.vue';
-import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import {
     Image,
     Placeholder,
@@ -71,6 +67,14 @@ export default {
         getHTML() {
             return this.editor.getHTML();
         },
+        focus() {
+            this.editor.focus();
+            setTimeout(() => {
+                // 下面这行代码不能去掉，onClickOutside 也会调用,
+                // 将this.sendVisible 设为 false了
+                this.sendVisible = true;
+            }, 100);
+        },
         onEditorFocus() {
             this.sendVisible = true;
         },
@@ -91,7 +95,7 @@ export default {
             }
             let content = trim(this.editor.getHTML() || '');
             if (isContentEmpty(content, true)) {
-                this.$refs.errorTip.show('回复内容不能为空');
+                this.$emit('error', '回复内容不能为空');
                 return;
             }
             const url = `/comments`;
@@ -109,7 +113,7 @@ export default {
             myHTTP.post(url, reqData).then((res) => {
                 this.isSaving = false;
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.$refs.successTip.show('回复成功');
+                    /// this.editor.setContent('');
                     const comment = res.data.data.comment;
                     this.$emit('success', comment);
                 }
@@ -120,13 +124,11 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
-        })
+        });
     },
     components: {
         EditorContent,
         CommentRichEditorEmoji,
-        SuccessTip,
-        ErrorTip,
     },
 }
 </script>
