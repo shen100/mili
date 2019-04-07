@@ -15,6 +15,8 @@ new Vue({
         props: {
             articleID: window.articleID,
             userID: window.userID,
+            username: window.username,
+            avatarURL: window.avatarURL,
             authorID: window.authorID,
             commentEnabled: window.commentEnabled,
         },

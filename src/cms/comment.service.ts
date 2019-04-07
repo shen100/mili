@@ -1,12 +1,14 @@
 import * as _ from 'lodash';
 import * as marked from 'marked';
+import * as moment from 'moment';
 import { Injectable } from '@nestjs/common';
 import { Repository, Not, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment, CommentContentType, CommentStatus } from '../entity/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { NO_PARENT } from '../config/constants';
+import { NO_PARENT, ErrorCode } from '../config/constants';
 import { recentTime } from '../utils/viewfilter';
+import { MyHttpException } from '../common/exception/my-http.exception';
 
 @Injectable()
 export class CommentService {
@@ -55,6 +57,7 @@ export class CommentService {
                         username: true,
                         avatarURL: true,
                     },
+                    likeCount: true,
                 } as any,
                 relations: ['user'],
                 where: condition,
@@ -126,5 +129,56 @@ export class CommentService {
         comment.updatedAt = comment.createdAt;
         comment.commentCount = 0;
         return await this.commentRepository.save(comment);
+    }
+
+    // articleID是个冗余字段，为了方便查询用户在某篇文章下点过赞的所有评论
+    async like(commentID: number, userID: number, articleID: number) {
+        const sql = `SELECT comment_id, user_id FROM userlikecomments
+            WHERE comment_id = ${commentID} AND user_id = ${userID}`;
+        let result = await this.commentRepository.manager.query(sql);
+        result = result || [];
+        if (result.length) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '已经赞过此评论',
+            });
+        }
+        await this.commentRepository.manager.connection.transaction(async manager => {
+            const sql2 = `INSERT INTO userlikecomments (comment_id, user_id, created_at, article_id)
+                VALUES(${commentID}, ${userID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}", ${articleID})`;
+            const sql3 = `UPDATE comments SET like_count = like_count + 1 WHERE id = ${commentID}`;
+            await manager.query(sql2);
+            await manager.query(sql3);
+        });
+    }
+
+    async deleteLike(commentID: number, userID: number) {
+        const sql = `SELECT comment_id, user_id FROM userlikecomments
+            WHERE comment_id = ${commentID} AND user_id = ${userID}`;
+        let result = await this.commentRepository.manager.query(sql);
+        result = result || [];
+        if (result.length <= 0) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '您还没有赞过此评论哦',
+            });
+        }
+        await this.commentRepository.manager.connection.transaction(async manager => {
+            const sql2 = `DELETE FROM userlikecomments
+                WHERE comment_id = ${commentID} AND user_id = ${userID}`;
+            const sql3 = `UPDATE comments SET like_count = like_count - 1 WHERE id = ${commentID}`;
+            await manager.query(sql2);
+            await manager.query(sql3);
+        });
+
+        return result;
+    }
+
+    async userLikesInArticle(articleID: number, userID: number) {
+        const sql = `SELECT comment_id as commentID FROM userlikecomments
+            WHERE article_id = ${articleID} AND user_id = ${userID}`;
+        let result = await this.commentRepository.manager.query(sql);
+        result = result || [];
+        return result;
     }
 }

@@ -1,5 +1,5 @@
 import {
-    Controller, Post, Body, UseGuards, Get, Query, Param,
+    Controller, Post, Body, UseGuards, Get, Query, Param, Delete,
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { ArticleService } from './article.service';
@@ -9,7 +9,9 @@ import { CurUser } from '../common/decorators/user.decorator';
 import { ActiveGuard } from '../common/guards/active.guard';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { strToPage } from '../utils/common';
+import { MustIntPipe } from '../common/pipes/must-int.pipe';
+import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
+import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
 
 @Controller()
 export class CommentController {
@@ -18,23 +20,19 @@ export class CommentController {
         private readonly commentService: CommentService,
     ) {}
 
-    @Get('/api/v1/comments/article/:id')
-    async comments(@Param('id') id: string, @Query('dateorder') dateorder: string,
-                   @Query('author') author: string, @Query('page') pageStr: string) {
-        const page: number = strToPage(pageStr);
-        const articleID = parseInt(id, 10);
-        const dateOrderASC = dateorder !== '1';
-        const authorID = parseInt(author, 10);
-        if (isNaN(articleID)) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.ParamsError.CODE,
-                message: '无效的参数',
-            });
-        }
-        return await this.commentService.list(articleID, authorID, dateOrderASC, page);
+    @Get('/api/v1/comments/likes/:articleID')
+    async likes(@CurUser() user, @Param('articleID', MustIntPipe) articleID: number) {
+        const likes = await this.commentService.userLikesInArticle(articleID, user.id);
+        return { likes };
     }
 
-    @Post('/api/v1/comments/article')
+    @Get('/api/v1/comments/:articleID')
+    async comments(@Param('articleID', MustIntPipe) articleID: number,
+                   @Query('author', ShouldIntPipe) authorID: number, @Query('page', ParsePagePipe) page: number) {
+        return await this.commentService.list(articleID, authorID, true, page);
+    }
+
+    @Post('/api/v1/comments')
     @UseGuards(ActiveGuard)
     async create(@CurUser() user, @Body() createCommentDto: CreateCommentDto) {
         if (createCommentDto.parentID) {
@@ -54,8 +52,26 @@ export class CommentController {
             });
         }
 
-        await this.commentService.create(createCommentDto, user.id);
+        const comment = await this.commentService.create(createCommentDto, user.id);
 
+        return {
+            comment,
+        };
+    }
+
+    @Post('/api/v1/comments/:commentID/like')
+    @UseGuards(ActiveGuard)
+    async like(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number,
+               @Query('articleID', MustIntPipe) articleID: number) {
+        await this.commentService.like(commentID, user.id, articleID);
+        return {
+        };
+    }
+
+    @Delete('/api/v1/comments/:commentID/like')
+    @UseGuards(ActiveGuard)
+    async deleteLike(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number) {
+        await this.commentService.deleteLike(commentID, user.id);
         return {
         };
     }

@@ -8,7 +8,7 @@ import { UserService } from '../user/user.service';
 import { ActiveGuard } from '../common/guards/active.guard';
 import { CurUser } from '../common/decorators/user.decorator';
 import { strToPage } from '../utils/common';
-import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
+import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { ErrorCode } from '../config/constants';
 import { UploadService } from './upload.service';
 import { DraftService } from './draft.service';
@@ -60,7 +60,7 @@ export class EditorController {
 
     @Get('/editor/drafts/:id.html')
     @UseGuards(ActiveGuard)
-    async editDraftView(@Param('id', ParseIntPipe) id: number, @CurUser() user, @Res() res) {
+    async editDraftView(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const [draft, uploadPolicy] = await Promise.all([
             this.draftService.detail(id),
             this.uploadService.requestPolicy(),
@@ -87,7 +87,7 @@ export class EditorController {
 
     @Get('/editor/posts/:id.html')
     @UseGuards(ActiveGuard)
-    async editPostView(@Param('id', ParseIntPipe) id: number, @CurUser() user, @Res() res) {
+    async editPostView(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const [article, uploadPolicy] = await Promise.all([
             this.articleService.detailForEditor(id),
             this.uploadService.requestPolicy(),
@@ -166,7 +166,7 @@ export class EditorController {
 
     @Delete(`${APIPrefix}/editor/drafts/:id`)
     @UseGuards(ActiveGuard)
-    async deleteDraft(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+    async deleteDraft(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.draftService.delete(id, user.id);
         return {};
     }

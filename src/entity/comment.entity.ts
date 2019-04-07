@@ -61,6 +61,9 @@ export class Comment {
     @Column('int', { name: 'comment_count' })
     commentCount: number;
 
+    @Column('int', { name: 'like_count' })
+    likeCount: number;
+
     @Column('int', { name: 'article_id' })
     articleID: number;
 

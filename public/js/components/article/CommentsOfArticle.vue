@@ -11,7 +11,7 @@
                 </div>
             </form>
 
-            <div id="comments" class="comments">
+            <div v-if="isUserCommentsLikesLoaded" id="comments" class="comments">
                 <!-- 不允许评论, 并且不是作者(没登录，或登录了，但不是作者) -->
                 <div v-if="!isCommentEnabled && userID !== authorID">
                     <div class="top-title"><span>评论</span><span class="close-tip">已关闭评论</span></div>
@@ -21,7 +21,7 @@
 
                 <template v-if="isCommentEnabled">
                     <CommentRichEditor v-if="userID" :articleID="articleID" 
-                        emptyPlaceholder="写下你的评论"
+                        emptyPlaceholder="写下你的评论" @success="addCommentSuccess"
                         :sendDefVisible="false" />
                     <div :style="{marginTop: interestingComments.length ? '0' : '24px'}" class="top-title" :class="{'no-border-bottom': totalCount <= 0}">
                         <span>全部评论（{{totalCount}}）</span> 
@@ -55,8 +55,8 @@
                             <div class="comment-wrap">
                                 <p v-html="comment.htmlContent"></p>
                                 <div class="tool-group">
-                                    <a @click="onLike(comment)" class="like-button" :class="{active: comment.userLiked, 'zan-animation': comment.userLiked}">
-                                        <span>{{comment.likeCount}}人赞</span>
+                                    <a @click="onLikeOrNot(comment)" class="like-button" :class="{active: comment.userLiked, 'zan-animation': comment.userLiked}">
+                                        <span>{{comment.likeCount || ''}}{{comment.likeCount ? '人' : ''}}赞</span>
                                     </a>
                                     <a @click="onAddComment(comment)">
                                         <i class="iconfont ic-comment"></i>
@@ -66,7 +66,7 @@
                                 </div>
                             </div>
                             <CommentRichEditor v-if="userID && comment.editorToggled" :articleID="articleID" :emptyPlaceholder="`回复${comment.user.username}`"
-                                :sendDefVisible="true" :rootID="comment.id" 
+                                :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
                                 :parentID="comment.id" @cancel="onCancelComment(comment)" />
                         </div>
                         <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
@@ -86,14 +86,14 @@
                                 </div>
                                 <div class="sub-tool-group">
                                     <span>{{subcomment.createdAtLabel}}</span>
-                                    <a @click="onLike(subcomment)" class="like-button" :class="{active: subcomment.userLiked, 'zan-animation': subcomment.userLiked}">
-                                        <span>{{subcomment.likeCount}}人赞</span>
+                                    <a @click="onLikeOrNot(subcomment)" class="like-button" :class="{active: subcomment.userLiked, 'zan-animation': subcomment.userLiked}">
+                                        <span>{{subcomment.likeCount || ''}}{{subcomment.likeCount ? '人' : ''}}赞</span>
                                     </a>
                                     <a @click="onAddComment(subcomment)"><i class="iconfont ic-comment"></i> <span>回复</span></a> 
                                     <a v-if="subcomment.user.id === userID" class="report"><span>删除</span></a>
                                 </div>
                                 <CommentRichEditor v-if="userID && subcomment.editorToggled" :emptyPlaceholder="`回复${subcomment.user.username}`"
-                                    :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" 
+                                    :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
                                     :parentID="subcomment.id" @cancel="onCancelComment(subcomment)" />
                             </div>
                             <!--
@@ -129,11 +129,14 @@ export default {
         'articleID',
         'authorID',
         'userID',
+        'username',
+        'avatarURL',
         'commentEnabled'
     ],
     data: function() {
         return {
             interestingComments: [], // 精彩评论
+            commentMap: {},
             comments: [],
             totalCount: 0,
             isAuthorOnly: false,
@@ -141,14 +144,56 @@ export default {
             isLoadDone: 'unknow',
             isLoading: false,
             page: 1,
+            userCommentsLikesMap: {}, // 登录用户在这篇文章下的所有点过赞的评论
+            isUserCommentsLikesLoaded: false
         };
     },
     mounted: function() {
         this.reqComments(1);
+        this.onReqUserCommentsLikes();
     },
     methods: {
         onFirstComment() {
 
+        },
+        // 当前登录用户在这篇文章下的所有点过赞的评论
+        onReqUserCommentsLikes() {
+            if (!this.userID) {
+                this.isUserCommentsLikesLoaded = true;
+                return;
+            }
+            const url = `/comments/likes/${this.articleID}`;
+            myHTTP.get(url).then((res) => {
+                const userCommentsLikesMap = {};
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.isUserCommentsLikesLoaded = true;
+                    const likes = res.data.data.likes;
+                    likes.forEach(like => userCommentsLikesMap[like.commentID] = true);
+                    this.userCommentsLikesMap = userCommentsLikesMap;
+                    this.updateCommentsLiks();
+                }
+            });
+        },
+        updateCommentsLiks() {
+            if (!this.userID) {
+                return;
+            }
+            if (Object.keys(this.userCommentsLikesMap).length <= 0) {
+                return;
+            }
+            if (this.comments.length <= 0) {
+                return;
+            }
+            this.comments.forEach(comment => {
+                if (this.userCommentsLikesMap[comment.id]) {
+                    comment.userLiked = true;
+                }
+                comment.comments.forEach(subComment => {
+                    if (this.userCommentsLikesMap[subComment.id]) {
+                        subComment.userLiked = true;
+                    }
+                });
+            });
         },
         onAuthorOnly() {
             this.isAuthorOnly = !this.isAuthorOnly;
@@ -162,7 +207,7 @@ export default {
                 return;
             }
             this.isLoading = true;
-            let url = `/comments/article/${this.articleID}?page=${page}`;
+            let url = `/comments/${this.articleID}?page=${page}`;
             if (this.isAuthorOnly) {
                 url += `&author=${this.authorID}`;
             }
@@ -196,6 +241,7 @@ export default {
                         subComment.parentIsRoot = false;
                     }
                 });
+                this.commentMap = commentMap;
                 this.comments = this.comments.concat(comments);
                 this.totalCount = res.data.data.totalCount || 0;
                 this.page =  res.data.data.page;
@@ -205,6 +251,7 @@ export default {
                 } else {
                     this.isLoadDone = 'no';
                 }
+                this.updateCommentsLiks();
             }).catch(err => {
                 this.isLoading = false;
             });
@@ -221,11 +268,53 @@ export default {
             subComments.forEach(comment => comment.editorToggled = false);
             comment.editorToggled = !editorToggled;
         },
+        addCommentSuccess(comment) {
+            comment.user = {
+                id: this.userID,
+                username: this.username,
+                avatarURL: this.avatarURL,
+            };
+            comment.editorToggled = false;
+            comment.userLiked = false;
+            comment.likeCount = 0;
+            comment.comments = [];
+            this.commentMap[comment.id] = comment;
+            if (comment.parentID) {
+                comment.parentComment = this.commentMap[comment.parentID];
+                comment.rootComment = this.commentMap[comment.rootID];
+                if (comment.parentID === comment.rootID) {
+                    comment.parentIsRoot = true;
+                } else {
+                    comment.parentIsRoot = false;
+                }
+            }
+            if (comment.rootID) {
+                this.commentMap[comment.rootID].comments.push(comment);
+            } else {
+                this.comments.push(comment);
+            }
+        },
         onCancelComment(comment) {
             comment.editorToggled = false;
         },
-        onLike(comment) {
-            comment.userLiked = true;
+        onLikeOrNot(comment) {
+            let url = `/comments/${comment.id}/like`;
+            if (!comment.userLiked) {
+                url += '?articleID=' + this.articleID;
+                myHTTP.post(url).then((res) => {
+                    if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                        comment.userLiked = true;
+                        comment.likeCount++;
+                    }
+                });
+            } else {
+                myHTTP.delete(url).then((res) => {
+                    if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                        comment.userLiked = false;
+                        comment.likeCount--;
+                    }
+                });
+            }
         },
         openComment() {
             const url = `/articles/${this.articleID}/opencomment`;

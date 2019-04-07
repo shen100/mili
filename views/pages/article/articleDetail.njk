@@ -141,6 +141,8 @@
   var articleID = {{ article.id }};
   var commentEnabled = {{ article.commentEnabled }};
   var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
+  var username = '{% if user %}{{user.username}}{% else %}{% endif %}';
+  var avatarURL = '{% if user %}{{user.avatarURL}}{% else %}{% endif %}';
   var authorID = {{ article.user.id }};
 </script>
 {% endblock %}

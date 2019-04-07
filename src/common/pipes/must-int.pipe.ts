@@ -8,10 +8,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '../../config/config.service';
 import { ErrorCode } from '../../config/constants';
-import { MyHttpException } from '../../common/exception/my-http.exception';
+import { MyHttpException } from '../exception/my-http.exception';
 
 @Injectable()
-export class ParseIntPipe implements PipeTransform<string, number> {
+export class MustIntPipe implements PipeTransform<string, number> {
     constructor(
         private readonly configService: ConfigService,
     ) {}

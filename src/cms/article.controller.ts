@@ -11,7 +11,7 @@ import { ConfigService } from '../config/config.service';
 import { ActiveGuard } from '../common/guards/active.guard';
 import { CurUser } from '../common/decorators/user.decorator';
 import { strToPage } from '../utils/common';
-import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
+import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { ErrorCode } from '../config/constants';
 
 @Controller()
@@ -35,7 +35,7 @@ export class ArticleController {
     }
 
     @Get('/p/:id.html')
-    async detail(@Param('id', ParseIntPipe) id: number, @Res() res) {
+    async detail(@Param('id', MustIntPipe) id: number, @Res() res) {
         const [article, recommends] = await Promise.all([
             this.articleService.detail(id),
             this.articleService.recommendList(1),
@@ -75,7 +75,7 @@ export class ArticleController {
 
     @Put('/api/v1/articles/:id/closecomment')
     @UseGuards(ActiveGuard)
-    async closeComment(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+    async closeComment(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.articleService.closeOrOpenComment(id, user.id, false);
         return {
         };
@@ -83,7 +83,7 @@ export class ArticleController {
 
     @Put('/api/v1/articles/:id/opencomment')
     @UseGuards(ActiveGuard)
-    async openComment(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+    async openComment(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.articleService.closeOrOpenComment(id, user.id, true);
         return {
         };

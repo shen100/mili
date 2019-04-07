@@ -4,7 +4,7 @@ import {
 import * as bluebird from 'bluebird';
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
-import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
+import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { strToPage } from '../utils/common';
 import { ConfigService } from '../config/config.service';
 import { Article } from 'entity/article.entity';
@@ -24,7 +24,7 @@ export class UCController {
     ) {}
 
     @Get('/:id.html')
-    async article(@Param('id', ParseIntPipe) id: number, @CurUser() user, @Res() res) {
+    async article(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const pageSize: number = 2;
         const [author, articles] = await bluebird.all([
             this.userService.detail(id),
@@ -56,8 +56,8 @@ export class UCController {
     }
 
     @Get('/articles')
-    async list(@Query('userID', ParseIntPipe) userID: number,
-               @Query('page', ParseIntPipe) page: number,
+    async list(@Query('userID', MustIntPipe) userID: number,
+               @Query('page', MustIntPipe) page: number,
                @Query('format') format: string,
                @Query('sort') sort: string) {
         const pageSize: number = 2;

@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import * as bluebird from 'bluebird';
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
-import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
+import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { strToPage } from '../utils/common';
 import { ConfigService } from '../config/config.service';
 import { Article } from 'entity/article.entity';
@@ -31,7 +31,7 @@ export class CollectionController {
     ) {}
 
     @Get('/collections/:id.html')
-    async detail(@Param('id', ParseIntPipe) id: number, @CurUser() user, @Res() res) {
+    async detail(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const pageSize: number = 2;
         const [articles, collection, articleCount, isFollowed, followers] = await bluebird.all([
             this.articleService.collectionArticlesSortByCommentCount(id, 1, pageSize),
@@ -82,7 +82,7 @@ export class CollectionController {
 
     @Get('/collections/:id/edit.html')
     @UseGuards(ActiveGuard)
-    async editView(@CurUser() user, @Param('id', ParseIntPipe) id: number, @Res() res) {
+    async editView(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
         const [collection, uploadPolicy] = await bluebird.all([
             this.collectionService.findById(id),
             this.uploadService.requestPolicy(),
@@ -119,7 +119,7 @@ export class CollectionController {
 
     @Put('/api/v1/collections/:id')
     @UseGuards(ActiveGuard)
-    async update(@CurUser() user, @Param('id', ParseIntPipe) id: number,
+    async update(@CurUser() user, @Param('id', MustIntPipe) id: number,
                  @Body() createCollectionDto: CreateCollectionDto) {
         return await this.collectionService.updateOne(createCollectionDto, id, user.id);
     }
@@ -127,8 +127,8 @@ export class CollectionController {
     // 投稿
     @Post('/api/v1/collections/:collectionID/articles/:articleID')
     @UseGuards(ActiveGuard)
-    async addArticle(@CurUser() user, @Param('collectionID', ParseIntPipe) collectionID: number,
-                     @Param('articleID', ParseIntPipe) articleID: number) {
+    async addArticle(@CurUser() user, @Param('collectionID', MustIntPipe) collectionID: number,
+                     @Param('articleID', MustIntPipe) articleID: number) {
         const [collection, article] = await Promise.all([
             this.collectionService.findById(collectionID),
             this.articleService.detail(articleID),
@@ -164,8 +164,8 @@ export class CollectionController {
 
     @Delete('/api/v1/collections/:collectionID/articles/:articleID')
     @UseGuards(ActiveGuard)
-    async removeArticle(@CurUser() user, @Param('collectionID', ParseIntPipe) collectionID: number,
-                        @Param('articleID', ParseIntPipe) articleID: number) {
+    async removeArticle(@CurUser() user, @Param('collectionID', MustIntPipe) collectionID: number,
+                        @Param('articleID', MustIntPipe) articleID: number) {
         const [collection, article] = await Promise.all([
             this.collectionService.findById(collectionID),
             this.articleService.detail(articleID),
@@ -192,10 +192,10 @@ export class CollectionController {
 
     @Put('/api/v1/collections/:collectionID/articles/:articleID/:messageID/:status')
     @UseGuards(ActiveGuard)
-    async receiveArticle(@CurUser() user, @Param('collectionID', ParseIntPipe) collectionID: number,
-                         @Param('articleID', ParseIntPipe) articleID: number,
-                         @Param('messageID', ParseIntPipe) messageID: number,
-                         @Param('status', ParseIntPipe) status: number) {
+    async receiveArticle(@CurUser() user, @Param('collectionID', MustIntPipe) collectionID: number,
+                         @Param('articleID', MustIntPipe) articleID: number,
+                         @Param('messageID', MustIntPipe) messageID: number,
+                         @Param('status', MustIntPipe) status: number) {
         // todo: 是管理员才允许接受投稿
         await this.collectionService.receiveArticle(collectionID, articleID, messageID, status);
         return {
@@ -205,7 +205,7 @@ export class CollectionController {
 
     @Get('/api/v1/collections/:id/myarticles')
     @UseGuards(ActiveGuard)
-    async myArticles(@CurUser() user, @Param('id', ParseIntPipe) id: number, @Query('page', ParsePagePipe) page: number,
+    async myArticles(@CurUser() user, @Param('id', MustIntPipe) id: number, @Query('page', ParsePagePipe) page: number,
                      @Query('q') keyword: string) {
         const pageSize: number = 20;
         let  articles: Article[];
@@ -237,7 +237,7 @@ export class CollectionController {
 
     @Delete('/api/v1/collections/:id')
     @UseGuards(ActiveGuard)
-    async removeCollection(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+    async removeCollection(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         const collection: Collection = await this.collectionService.findById(id);
         if (!collection) {
             throw new MyHttpException({
@@ -255,7 +255,7 @@ export class CollectionController {
 
     @Post('/api/v1/collections/:id/follow')
     @UseGuards(ActiveGuard)
-    async follow(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+    async follow(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         const collection: Collection = await this.collectionService.findById(id);
         if (!collection) {
             throw new MyHttpException({
@@ -268,7 +268,7 @@ export class CollectionController {
 
     @Delete('/api/v1/collections/:id/follow')
     @UseGuards(ActiveGuard)
-    async cancelFollow(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+    async cancelFollow(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         const collection: Collection = await this.collectionService.findById(id);
         if (!collection) {
             throw new MyHttpException({
@@ -281,7 +281,7 @@ export class CollectionController {
 
     @Get('/api/v1/collections/:id/followers')
     @UseGuards(ActiveGuard)
-    async followers(@CurUser() user, @Param('id', ParseIntPipe) id: number) {
+    async followers(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         const followers: Follower[] = await this.collectionService.getFollowers(id, 1);
         return followers;
     }

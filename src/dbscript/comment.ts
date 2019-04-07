@@ -12,6 +12,14 @@ const config = new ConfigService();
     const voteRepository = connection.getRepository(VoteComment);
 
     try {
+        await connection.manager.query(`CREATE TABLE userlikecomments (
+            comment_id int(11) unsigned NOT NULL,
+            user_id int(11) unsigned NOT NULL,
+            article_id int(11) unsigned NOT NULL,
+            created_at datetime NOT NULL,
+            PRIMARY KEY (comment_id, user_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+
         await connection.manager.query(`alter table comments add column root_id int(11) NOT NULL DEFAULT '0'`);
 
         await connection.manager.query(`CREATE TABLE votecomments (
@@ -28,7 +36,7 @@ const config = new ConfigService();
             updated_at datetime NOT NULL,
             deleted_at datetime DEFAULT NULL,
             PRIMARY KEY (id)
-          ) ENGINE=InnoDB AUTO_INCREMENT=340 DEFAULT CHARSET=utf8mb4;`);
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         const comments = await connection.manager.query(`select * from comments`);
         const voteComments = [];
@@ -94,7 +102,8 @@ const config = new ConfigService();
         await connection.manager.query(`alter table comments change source_id article_id int`);
         await connection.manager.query(`alter table comments drop column source_name;`);
         await connection.manager.query(`alter table comments drop column ups;`);
-        await connection.manager.query(`alter table comments add column comment_count int`);
+        await connection.manager.query(`alter table comments add column comment_count int(11) NOT NULL DEFAULT '0'`);
+        await connection.manager.query(`alter table comments add column like_count int(11) NOT NULL DEFAULT '0'`);
 
         // tslint:disable-next-line:no-console
         console.log('comments.length:', comments.length);

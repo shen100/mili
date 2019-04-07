@@ -94,7 +94,7 @@ export default {
                 this.$refs.errorTip.show('回复内容不能为空');
                 return;
             }
-            const url = `/comments/article`;
+            const url = `/comments`;
             const reqData = {
                 articleID: this.articleID,
                 content: content,
@@ -110,6 +110,8 @@ export default {
                 this.isSaving = false;
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.$refs.successTip.show('回复成功');
+                    const comment = res.data.data.comment;
+                    this.$emit('success', comment);
                 }
             }).catch((err) => {
                 this.isSaving = false;
