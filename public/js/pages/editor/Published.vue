@@ -1,7 +1,7 @@
 <template>
     <div>
         <SuccessTip ref="successTip" :width="200" />
-        <QRCodePopup ref="qrCodePopup" :articleID="article.id"/>
+        <ArticleShareQRCode ref="qrCodePopup" :articleID="article.id"/>
         <div class="done-header">
             <div class="done-title">
                 <a :href="`/p/${article.id}.html`" class="main-title">{{article.name}}</a><br>
@@ -134,7 +134,7 @@ import { ArticleCollectionStatus } from '~/js/constants/entity.js';
 import { trim, countToK } from '~/js/utils/utils.js';
 import { myHTTP } from '~/js/common/net.js';
 import SuccessTip from '~/js/components/common/SuccessTip.vue';
-import QRCodePopup from '~/js/components/editor/QRCodePopup.vue';
+import ArticleShareQRCode from '~/js/components/article/ArticleShareQRCode.vue';
 import { ErrorCode } from '~/js/constants/error.js';
 
 export default {
@@ -287,7 +287,7 @@ export default {
         countToK,
     },
     components: {
-        QRCodePopup,
+        ArticleShareQRCode,
         SuccessTip,
     }
 }

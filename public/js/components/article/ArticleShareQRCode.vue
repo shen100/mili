@@ -5,8 +5,8 @@
             <button @click="onCancel" type="button" class="close">×</button>
         </div>
         <div class="alert-modal-body">
-            <div class="scan-text">打开微信“扫一扫”，打开网页后点击屏</div>
-            <div class="scan-text">幕右上角分享按钮</div>
+            <div class="scan-text">打开微信“扫一扫”，然后点击屏幕</div>
+            <div class="scan-text">右上角分享按钮</div>
             <div class="qrcode-box">
                 <img v-if="qrcodeURL" :src="qrcodeURL">
             </div>

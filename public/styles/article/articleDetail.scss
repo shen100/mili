@@ -314,6 +314,50 @@
     padding: 18px 26px 18px 18px;
 }
 
+.meta-bottom .like-group.like-animation, .meta-bottom .like-group.active {
+    background-color: #EA6F5A!important;
+}
+
+.meta-bottom .like-group.like-animation .btn-like a, .meta-bottom .like-group.active .btn-like a {
+    color: white;
+}
+
+.meta-bottom .like-group.like-animation .modal-wrap, .meta-bottom .like-group.active .modal-wrap {
+    border-left: 1px solid white;
+}
+
+.meta-bottom .like-group.like-animation .modal-wrap a, .meta-bottom .like-group.active .modal-wrap a {
+    color: white;
+}
+
+.meta-bottom .like-group.like-animation .btn-like:before {
+    -webkit-animation: likeBlast2 0.6s 1 steps(19);
+    animation: likeBlast2 0.6s 1 steps(19);
+    background-position: right;
+}
+
+@-webkit-keyframes likeBlast2 {
+    0% {
+        background-position: left;
+    }
+    100% {
+        background-position: right;
+    }
+}
+
+@keyframes likeBlast2 {
+    0% {
+        background-position: left;
+    }
+    100% {
+        background-position: right;
+    }
+}
+
+.meta-bottom .like-group.active .btn-like:before {
+    background-position: right;
+}
+
 .meta-bottom .share-group {
     float: right;
     margin-top: 6px;
@@ -393,8 +437,8 @@
 }
 
 .meta-bottom .share-group .more-share {
-    width: auto;
-    padding: 4px 18px;
+    width: 94px;
+    padding: 4px 0;
     font-size: 14px;
     color: #9b9b9b;
     line-height: 40px;

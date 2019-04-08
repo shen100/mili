@@ -12,6 +12,7 @@ const config = new ConfigService();
     const voteRepository = connection.getRepository(VoteComment);
 
     try {
+        // todo: 增加id作为主键
         await connection.manager.query(`CREATE TABLE userlikecomments (
             comment_id int(11) unsigned NOT NULL,
             user_id int(11) unsigned NOT NULL,

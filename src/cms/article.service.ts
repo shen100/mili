@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as marked from 'marked';
+import * as moment from 'moment';
 import * as striptags from 'striptags';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Article, ArticleStatus, ArticleContentType } from '../entity/article.entity';
@@ -342,5 +343,38 @@ export class ArticleService {
                 errorCode: ErrorCode.Forbidden.CODE,
             });
         }
+    }
+
+    async likeOrCancelLike(articleID: number, userID: number) {
+        const sql = `DELETE FROM userlikearticles
+                WHERE article_id = ${articleID} AND user_id = ${userID}`;
+        const sql2 = `UPDATE articles SET like_count = like_count - 1 WHERE id = ${articleID}`;
+
+        const sql3 = `INSERT INTO userlikearticles (user_id, article_id, created_at)
+                VALUES (${userID}, ${articleID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}")`;
+        const sql4 = `UPDATE articles SET like_count = like_count + 1 WHERE id = ${articleID}`;
+
+        const userLiked = await this.isUserLiked(articleID, userID);
+
+        await this.articleRepository.manager.connection.transaction(async manager => {
+            if (userLiked) {
+                await manager.query(sql);
+                await manager.query(sql2);
+                return;
+            }
+            await manager.query(sql3);
+            await manager.query(sql4);
+        });
+    }
+
+    async isUserLiked(articleID: number, userID: number): Promise<boolean> {
+        const sql = `SELECT article_id, user_id FROM userlikearticles
+            WHERE article_id = ${articleID} AND user_id = ${userID}`;
+        let result = await this.articleRepository.manager.query(sql);
+        result = result || [];
+        if (result.length) {
+            return true;
+        }
+        return false;
     }
 }

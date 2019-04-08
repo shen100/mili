@@ -6,6 +6,15 @@ const config = new ConfigService();
 (async function run() {
     const connection = await createConnection(config.db);
     try {
+
+        await connection.manager.query(`CREATE TABLE userlikearticles (
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+            user_id int(11) unsigned NOT NULL,
+            article_id int(11) unsigned NOT NULL,
+            created_at datetime NOT NULL,
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+
         // const sql = `CREATE TABLE settings (
         //     id int(11) unsigned NOT NULL AUTO_INCREMENT,
         //     editor_type int(11) NOT NULL,

@@ -35,12 +35,15 @@ export class ArticleController {
     }
 
     @Get('/p/:id.html')
-    async detail(@Param('id', MustIntPipe) id: number, @Res() res) {
-        const [article, recommends] = await Promise.all([
+    async detail(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
+        id = id;
+        const [userLiked, article, recommends] = await Promise.all([
+            user ? this.articleService.isUserLiked(id, user.id) : Promise.resolve(false),
             this.articleService.detail(id),
             this.articleService.recommendList(1),
         ]);
         res.render('pages/article/articleDetail', {
+            userLiked,
             article,
             recommends,
         });
@@ -87,5 +90,19 @@ export class ArticleController {
         await this.articleService.closeOrOpenComment(id, user.id, true);
         return {
         };
+    }
+
+    @Post('/api/v1/articles/:id/like')
+    @UseGuards(ActiveGuard)
+    async like(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        await this.articleService.likeOrCancelLike(id, user.id);
+        return {};
+    }
+
+    @Post('/api/v1/articles/:id/cancellike')
+    @UseGuards(ActiveGuard)
+    async cancelLike(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        await this.articleService.likeOrCancelLike(id, user.id);
+        return {};
     }
 }
