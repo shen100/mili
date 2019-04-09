@@ -14,7 +14,11 @@
                 </a>
                 <div class="info">
                     <span class="name"><a href="/u/{{article.user.id}}.html">{{article.user.username}}</a></span>
-                    <a class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+                    {% if userFollowed %}
+                    <a id="followUserSmallBtn" href="javascript:void(0)" class="btn btn-default following"><i class="iconfont ic-followed"></i><span>已关注</span></a>
+                    {% else %}
+                    <a id="followUserSmallBtn" href="javascript:void(0)" class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>                    
+                    {% endif %}
                     <div class="meta">
                         <span class="publish-time">{{article.createdAt | formatTime('YYYY.MM.DD HH:mm')}}</span>
                         <span class="wordage">字数 {{article.wordCount}}</span>
@@ -144,6 +148,7 @@
 <script>
   var articleID = {{ article.id }};
   var userLiked = {{ userLiked }};
+  var userFollowed = {{ userFollowed }};
   var articleLikeCount = {{ article.likeCount }};
   var commentEnabled = {{ article.commentEnabled }};
   var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};

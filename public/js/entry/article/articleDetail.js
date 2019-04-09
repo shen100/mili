@@ -13,6 +13,7 @@ import {
 } from '~/js/constants/error.js';
 
 import Vue from 'vue';
+import SmallFollow from '~/js/components/article/SmallFollow.vue';
 import ArticleShareQRCodeWrap from '~/js/components/article/ArticleShareQRCodeWrap.vue';
 import CommentsOfArticle from '~/js/components/article/CommentsOfArticle.vue';
 
@@ -22,6 +23,17 @@ import {
 
 registerDirective(Vue);
 
+// 关注作者
+new Vue({
+    render: h => h(SmallFollow, {
+        props: {
+            authorID: window.authorID,
+            userFollowed: window.userFollowed,
+        },
+    }),
+}).$mount('#followUserSmallBtn');
+
+// 评论列表
 new Vue({
     render: h => h(CommentsOfArticle, {
         props: {
@@ -35,6 +47,7 @@ new Vue({
     }),
 }).$mount('#normal-comment-list');
 
+// 微信分享文章
 new Vue({
     render: h => h(ArticleShareQRCodeWrap, {
         props: {
@@ -43,6 +56,7 @@ new Vue({
     }),
 }).$mount('#articleShareQRCode');
 
+// 喜欢文章
 (function () {
     let articleUserLiked = window.userLiked;
     let articleLikeCount = window.articleLikeCount;
@@ -75,6 +89,7 @@ new Vue({
     });
 }());
 
+// 更多分享
 (function () {
     const articleMoreShareBtn = document.getElementById('articleMoreShareBtn');
     const shareListPop = document.getElementById('shareListPop');

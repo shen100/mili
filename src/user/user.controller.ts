@@ -5,6 +5,9 @@ import {
     Body,
     Res,
     Query,
+    UseGuards,
+    Param,
+    Delete,
 } from '@nestjs/common';
 
 import * as util from 'util';
@@ -21,6 +24,8 @@ import { ErrorCode } from '../config/constants';
 import { ConfigService } from '../config/config.service';
 import { User } from '../entity/user.entity';
 import { SigninDto } from './dto/signin.dto';
+import { ActiveGuard } from '../common/guards/active.guard';
+import { MustIntPipe } from '../common/pipes/must-int.pipe';
 
 @Controller()
 export class UserController {
@@ -273,5 +278,31 @@ export class UserController {
         username = decodeURIComponent(username);
         const users: Array<User> = await this.userService.fuzzyQueryByUsername(username);
         return users;
+    }
+
+    @Post('/api/v1/users/follow/:userID')
+    @UseGuards(ActiveGuard)
+    async follow(@CurUser() user, @Param('userID', MustIntPipe) userID: number) {
+        const isUserExist: boolean = await this.userService.isExist(userID);
+        if (!isUserExist) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        await this.userService.followOrCancelFollow(user.id, userID);
+        return {};
+    }
+
+    @Delete('/api/v1/users/follow/:userID')
+    @UseGuards(ActiveGuard)
+    async cancelFollow(@CurUser() user, @Param('userID', MustIntPipe) userID: number) {
+        const isUserExist: boolean = await this.userService.isExist(userID);
+        if (!isUserExist) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        await this.userService.followOrCancelFollow(user.id, userID);
+        return {};
     }
 }

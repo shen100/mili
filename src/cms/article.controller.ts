@@ -42,8 +42,13 @@ export class ArticleController {
             this.articleService.detail(id),
             this.articleService.recommendList(1),
         ]);
+        let userFollowed = false;
+        if (user) {
+            userFollowed = await this.userService.isUserFollowed(user.id, article.user.id);
+        }
         res.render('pages/article/articleDetail', {
             userLiked,
+            userFollowed,
             article,
             recommends,
         });

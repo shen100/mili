@@ -14,6 +14,7 @@ import { SignUpDto } from './dto/signup.dto';
 import { RedisService } from '../redis/redis.service';
 import { Settings } from '../entity/settings.entity';
 import { ArticleContentType } from 'entity/article.entity';
+import * as moment from 'moment';
 
 @Injectable()
 export class UserService {
@@ -406,5 +407,47 @@ export class UserService {
             VALUES (${userID}, ${editorType})
             ON DUPLICATE KEY UPDATE editor_type = ${editorType}`,
         );
+    }
+
+    async isExist(id: number) {
+        const user = await this.userRepository.findOne({
+            id,
+        }, {
+            select: ['id'],
+        });
+        return user !== null;
+    }
+
+    async followOrCancelFollow(followerID: number, userID: number) {
+        const sql = `DELETE FROM user_follower
+                WHERE follower_id = ${followerID} AND user_id = ${userID}`;
+        const sql2 = `UPDATE users SET follower_count = follower_count - 1 WHERE id = ${userID}`;
+
+        const sql3 = `INSERT INTO user_follower (follower_id, user_id, created_at)
+                VALUES (${followerID}, ${userID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}")`;
+        const sql4 = `UPDATE users SET follower_count = follower_count + 1 WHERE id = ${userID}`;
+
+        const userFollowed = await this.isUserFollowed(followerID, userID);
+
+        await this.userRepository.manager.connection.transaction(async manager => {
+            if (userFollowed) {
+                await manager.query(sql);
+                await manager.query(sql2);
+                return;
+            }
+            await manager.query(sql3);
+            await manager.query(sql4);
+        });
+    }
+
+    async isUserFollowed(followerID: number, userID: number): Promise<boolean> {
+        const sql = `SELECT follower_id, user_id FROM user_follower
+            WHERE follower_id = ${followerID} AND user_id = ${userID}`;
+        let result = await this.userRepository.manager.query(sql);
+        result = result || [];
+        if (result.length) {
+            return true;
+        }
+        return false;
     }
 }

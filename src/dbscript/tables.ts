@@ -15,6 +15,14 @@ const config = new ConfigService();
             PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
+        await connection.manager.query(`CREATE TABLE user_follower (
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+            user_id int(11) unsigned NOT NULL,
+            follower_id int(11) unsigned NOT NULL,
+            created_at datetime NOT NULL,
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+
         // const sql = `CREATE TABLE settings (
         //     id int(11) unsigned NOT NULL AUTO_INCREMENT,
         //     editor_type int(11) NOT NULL,

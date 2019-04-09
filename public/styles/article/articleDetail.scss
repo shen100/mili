@@ -128,6 +128,22 @@
     border-color: #42c02e;
 }
 
+.btn-default {
+    border-radius: 40px;
+}
+
+.ic-followed:before {
+    content: "\E610";
+}
+
+.follow-cancel:focus, .follow-cancel:hover, .follow-each:focus, .follow-each:hover, .following, .following:focus, .following:hover {
+    border-color: #969696!important;
+    background-color: hsla(0, 0%, 39%, .05)!important;
+    padding: 0 7px 0 5px;
+    font-size: 12px;
+    color: #8c8c8c;
+}
+
 .ic-follow:before {
     content: "\E611";
 }
