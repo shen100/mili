@@ -13,9 +13,10 @@ import {
 } from '~/js/constants/error.js';
 
 import Vue from 'vue';
-import SmallFollow from '~/js/components/article/SmallFollow.vue';
+import SmallFollow from '~/js/components/user/SmallFollow.vue';
+import BigFollow from '~/js/components/user/BigFollow.vue';
 import ArticleShareQRCodeWrap from '~/js/components/article/ArticleShareQRCodeWrap.vue';
-import CommentsOfArticle from '~/js/components/article/CommentsOfArticle.vue';
+import CommentsOfArticle from '~/js/components/comment/CommentsOfArticle.vue';
 
 import {
     registerDirective,
@@ -24,14 +25,37 @@ import {
 registerDirective(Vue);
 
 // 关注作者
-new Vue({
-    render: h => h(SmallFollow, {
-        props: {
-            authorID: window.authorID,
-            userFollowed: window.userFollowed,
-        },
-    }),
-}).$mount('#followUserSmallBtn');
+(function () {
+    const callerProxy1 = {};
+    const callerProxy2 = {};
+
+    function onChange (userFollowed) {
+        callerProxy1.setUserFollowed(userFollowed);
+        callerProxy2.setUserFollowed(userFollowed);
+    }
+
+    new Vue({
+        render: h => h(SmallFollow, {
+            props: {
+                authorID: window.authorID,
+                userFollowed: window.userFollowed,
+                onChange: onChange,
+                callerProxy: callerProxy1,
+            },
+        }),
+    }).$mount('#followUserSmallBtn');
+
+    new Vue({
+        render: h => h(BigFollow, {
+            props: {
+                authorID: window.authorID,
+                userFollowed: window.userFollowed,
+                onChange: onChange,
+                callerProxy: callerProxy2,
+            },
+        }),
+    }).$mount('#followUserBigBtn');
+}());
 
 // 评论列表
 new Vue({
