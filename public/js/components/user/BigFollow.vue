@@ -1,6 +1,6 @@
 <template>
     <a @click="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
-        class="btn" :class="isFollowed ? followedClass : unfollowedClass">
+        class="btn big" :class="isFollowed ? followedClass : unfollowedClass">
         <i class="iconfont" :class="followedIClass"></i>
         <span>{{followText}}</span>
     </a>

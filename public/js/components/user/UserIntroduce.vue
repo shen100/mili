@@ -1,21 +1,21 @@
 <template>
-    <div class="v-tooltip-avatar">
+    <div class="v-tooltip-avatar v-tooltip-wrap v-tooltip-wrap-bottom">
         <div class="v-tooltip">
             <div class="tips-card">
                 <div class="card-content">
-                <div class="summary">
-                    <a target="_blank" href="/u/21cccd3b44bf" class="avatar"
-                        style="background-image: url(&quot;//upload.jianshu.io/users/upload_avatars/15050995/93415bda-578d-4ee0-83bd-4f7ceaf26c27.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/144/h/144/format/webp&quot;);"></a>
-                    <div class="name">
-                        <a target="_blank" :href="`/u/${user.id}.html`" class="nickname">{{user.username}}</a>
+                    <div class="summary">
+                        <a target="_blank" :href="`/u/${user.id}.html`" class="avatar"
+                            style="background-image: url(&quot;//upload.jianshu.io/users/upload_avatars/15050995/93415bda-578d-4ee0-83bd-4f7ceaf26c27.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/144/h/144/format/webp&quot;);"></a>
+                        <div class="name">
+                            <a target="_blank" :href="`/u/${user.id}.html`" class="nickname">{{user.username}}</a>
+                        </div>
+                        <div class="intro">{{user.signature}}</div>
+                        <div class="list">
+                            <a :key="article.id" v-for="article in articles" target="_blank" :href="`/p/${article.id}.html`" class="item">
+                                <i class="iconfont ic-article-s"></i> {{article.summary}}
+                            </a>
+                        </div>
                     </div>
-                    <div class="intro">{{user.signature}}</div>
-                    <div class="list">
-                        <a :key="article.id" v-for="article in articles" target="_blank" :href="`/p/${article.id}.html`" class="item">
-                            <i class="iconfont ic-article-s"></i> 实用又方便的那种网站推荐！
-                        </a>
-                    </div>
-                </div>
                 </div>
                 <div class="card-footer">
                     <div class="profile">
@@ -27,28 +27,453 @@
                             <span class="count">5</span>
                             <span class="type">关注</span>
                         </div>
-                        <div >
-                        <span class="count">5</span>
-                        <span class="type">粉丝</span>
+                        <div>
+                            <span class="count">5</span>
+                            <span class="type">粉丝</span>
                         </div>
                     </div>
                     <div class="social">
                         <a target="_blank" href="/notifications#/chats/new?mail_to=15050995"
                             class="message">发简信</a>
-                        <button class="off user-follow-button">
+                        <button @click="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" class="off user-follow-button">
                             <i class="iconfont"></i>
-                            <span >关注</span>
+                            <span>关注</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="arrow arrow-type-bottom">
+            <i><em></em></i>
+        </div>
     </div>
 </template>
+
+<script>
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
+
+export default {
+    props: [
+        'userID',
+        'onChange',
+        'methodProxy'
+    ],
+    data () {
+        if (this.methodProxy) {
+            this.methodProxy.setUserFollowed = this.setUserFollowed.bind(this);
+        }
+        return {
+            articles: [
+                {
+                    id: 1,
+                    summary: '实用又方便的那种网站推荐！'
+                }
+            ],
+            isFollowed: false,
+            isMouseEnter: false,
+            unfollowedClass: {
+                'btn-success': true,
+                follow: true,
+            },
+            followedClass: {
+                'btn-default': true,
+                following: true,
+            },
+        };
+    },
+    mounted() {
+        await Promise.all([
+            
+        ])
+    },
+    computed: {
+        followedIClass() {
+            if (this.isFollowed && this.isMouseEnter) {
+                return {
+                    'ic-unfollow': true
+                };
+            }
+            if (this.isFollowed) {
+                return {
+                    'ic-followed': true
+                };
+            }
+            return {
+                'ic-follow': true
+            };
+        },
+        followText() {
+            if (this.isFollowed && this.isMouseEnter) {
+                return '取消关注';
+            }
+            if (this.isFollowed) {
+                return '已关注';
+            }
+            return '关注';
+        }
+    },
+    methods: {
+        onMouseenter() {
+            this.isMouseEnter = true;
+        },
+        onMouseleave() {
+            this.isMouseEnter = false;
+        },
+        onFollow () {
+            const url = `/users/follow/${this.userID}`;
+            let reqMethod;
+            if (this.isFollowed) {
+                reqMethod = myHTTP.delete;
+            } else {
+                reqMethod = myHTTP.post;
+            }
+            reqMethod(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.isFollowed = !this.isFollowed;
+                    this.onChange(this.isFollowed);
+                }
+            });
+        },
+        setUserFollowed(userFollowed) {
+            this.isFollowed = userFollowed;
+        }
+    }
+}
+</script>
 
 <style scoped>
 .v-tooltip-avatar {
     position: absolute;
 }
-</style>
 
+.v-tooltip-container .v-tooltip-wrap.v-tooltip-wrap-bottom {
+    top: 100%;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    padding-top: 10px;
+}
+
+.tips-card-loading, .tips-card {
+    width: 460px;
+    position: relative;
+    left: 0;
+    top: 0;
+    border-radius: 6px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    background-color: #fff;
+    -webkit-box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d9d9d9;
+}
+
+.tips-card {
+    z-index: 10;
+}
+
+.tips-card .card-content {
+    padding: 20px 20px 0 20px;
+}
+
+.tips-card .card-content .summary {
+    padding: 8px 0 20px 90px;
+    min-height: 92px;
+    position: relative;
+}
+
+.avatar {
+    width: 24px;
+    height: 24px;
+    display: block;
+    cursor: pointer;
+    margin-right: 5px;
+    width: 38px;
+    height: 38px;
+    display: inline-block;
+}
+
+.tips-card .card-content .summary .avatar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 72px;
+    height: 72px;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #EAEAEA;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.name {
+    font-size: 15px;
+    color: #333;
+}
+
+.tips-card .card-content .summary .name {
+    height: 26px;
+    margin-right: 3px;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: start;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.tips-card .card-content .summary .name .nickname {
+    color: #333333;
+    font-size: 19px;
+    font-weight: bold;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.tips-card .card-content .summary .intro {
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333333;
+}
+
+.tips-card .card-content .summary .intro.block {
+    color: #999999;
+}
+
+.tips-card .card-content .summary .list .item {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #999999;
+    cursor: pointer;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tips-card .card-content .summary .list .item i {
+    margin-right: 2px;
+}
+
+.ic-article-s:before {
+    content: "\E671";
+}
+
+.tips-card .card-footer {
+    border-top: 1px solid #F0F0F0;
+    padding: 15px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    overflow: hidden;
+    _zoom: 1;
+}
+
+.tips-card .card-footer .profile {
+    width: 198px;
+    overflow: hidden;
+    _zoom: 1;
+    float: left;
+}
+
+.tips-card .card-footer .profile div {
+    float: left;
+    width: 60px;
+    height: 44px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.tips-card .card-footer .profile div span {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.tips-card .card-footer .profile div .count {
+    font-size: 18px;
+    color: #333333;
+}
+
+.tips-card .card-footer .profile div .type {
+    font-size: 13px;
+    color: #999999;
+}
+
+.tips-card .card-footer .social {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-pack: end;
+    -webkit-justify-content: flex-end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    float: right;
+    overflow: hidden;
+    _zoom: 1;
+}
+
+.tips-card .card-footer .social .message {
+    border: 1px solid rgba(59, 194, 29, 0.7);
+    color: #42C02E;
+    margin: 0 10px 0 16px;
+    font-size: 15px;
+    padding: 8px 0;
+    width: 90px;
+    border-radius: 40px;
+    text-align: center;
+    cursor: pointer;
+    float: left;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.user-follow-button {
+    text-align: center;
+    border-radius: 40px;
+    font-weight: 400;
+    border: 1px solid transparent;
+    line-height: normal;
+}
+
+.user-follow-button.off {
+    color: #fff;
+    background-color: #42c02e;
+}
+
+.tips-card .card-footer .social .user-follow-button {
+    font-size: 15px;
+    padding: 8px 0;
+    width: 100px;
+}
+
+.user-follow-button.off i:before {
+    content: "\E611";
+}
+
+.user-follow-button span {
+    margin-left: 2px;
+}
+
+.arrow {
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    left: 0;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.arrow-type-bottom {
+    top: 1px;
+}
+
+.arrow i {
+    position: absolute;
+    left: 50%;
+    margin: 0;
+    margin-left: -10px;
+    border-width: 10px;
+    border-color: transparent;
+    padding: 0;
+}
+
+.arrow-type-bottom i {
+    border-bottom-color: #d9d9d9;
+    border-style: dashed dashed solid;
+    top: -10px;
+}
+
+.arrow em {
+    display: block;
+    position: absolute;
+    left: -9px;
+    border-width: 9px;
+    border-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.arrow-type-bottom em {
+    border-style: dashed dashed solid;
+    border-bottom-color: #fff;
+    top: -8px;
+}
+
+.tips-card .card-footer .social .message:hover {
+    text-decoration: none;
+    border: 1px solid #42C02E;
+    color: #42C02E;
+    background-color: rgba(59, 194, 29, 0.05);
+}
+
+.user-follow-button.off:hover {
+    border-color: #3db922;
+    background-color: #3db922;
+}
+</style>

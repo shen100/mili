@@ -206,6 +206,12 @@ export class ArticleService {
         });
     }
 
+    async threeRecentArticles(userID: number): Promise<Article[]> {
+        return await this.userArticles(userID, 1, 3, {
+            createdAt: 'DESC',
+        });
+    }
+
     async create(createArticleDto: CreateArticleDto, userID: number) {
         const uniqCates = _.uniqBy(createArticleDto.categories, (c) => c.id);
         const categories: Category[] = uniqCates.map(cate => {

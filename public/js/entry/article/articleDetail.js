@@ -26,21 +26,21 @@ registerDirective(Vue);
 
 // 关注作者
 (function () {
-    const callerProxy1 = {};
-    const callerProxy2 = {};
+    const methodProxy1 = {};
+    const methodProxy2 = {};
 
     function onChange (userFollowed) {
-        callerProxy1.setUserFollowed(userFollowed);
-        callerProxy2.setUserFollowed(userFollowed);
+        methodProxy1.setUserFollowed(userFollowed);
+        methodProxy2.setUserFollowed(userFollowed);
     }
 
     new Vue({
         render: h => h(SmallFollow, {
             props: {
-                authorID: window.authorID,
+                userID: window.authorID,
                 userFollowed: window.userFollowed,
                 onChange: onChange,
-                callerProxy: callerProxy1,
+                methodProxy: methodProxy1,
             },
         }),
     }).$mount('#followUserSmallBtn');
@@ -48,10 +48,10 @@ registerDirective(Vue);
     new Vue({
         render: h => h(BigFollow, {
             props: {
-                authorID: window.authorID,
+                userID: window.authorID,
                 userFollowed: window.userFollowed,
                 onChange: onChange,
-                callerProxy: callerProxy2,
+                methodProxy: methodProxy2,
             },
         }),
     }).$mount('#followUserBigBtn');
