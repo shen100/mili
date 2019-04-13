@@ -5,7 +5,6 @@ import * as bluebird from 'bluebird';
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
 import { MustIntPipe } from '../common/pipes/must-int.pipe';
-import { strToPage } from '../utils/common';
 import { ConfigService } from '../config/config.service';
 import { Article } from 'entity/article.entity';
 import { ErrorCode } from '../config/constants';
@@ -13,8 +12,9 @@ import { CurUser } from '../common/decorators/user.decorator';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { CollectionService } from './collection.service';
 import { Collection } from 'entity/collection.entity';
+import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
 
-@Controller('u')
+@Controller()
 export class UCController {
     constructor(
         private readonly articleService: ArticleService,
@@ -23,7 +23,7 @@ export class UCController {
         private readonly collectionService: CollectionService,
     ) {}
 
-    @Get('/:id.html')
+    @Get('/u/:id.html')
     async article(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const pageSize: number = 2;
         const [author, articles] = await bluebird.all([
@@ -55,7 +55,7 @@ export class UCController {
         });
     }
 
-    @Get('/articles')
+    @Get('/u/articles')
     async list(@Query('userID', MustIntPipe) userID: number,
                @Query('page', MustIntPipe) page: number,
                @Query('format') format: string,
@@ -90,5 +90,19 @@ export class UCController {
             result.errNo = ErrorCode.SUCCESS.CODE;
         }
         return result;
+    }
+
+    @Get('/api/v1/u/:userID/businesscard')
+    async businessCard(@CurUser() user, @Param('userID', MustIntPipe) userID: number) {
+        const [userInfo, articles, isFollowed] = await Promise.all([
+            this.userService.detail(userID),
+            this.articleService.threeRecentArticles(userID),
+            user ? this.userService.isUserFollowed(user.id, userID) : Promise.resolve(false),
+        ]);
+        return {
+            user: userInfo,
+            articles,
+            isFollowed,
+        };
     }
 }

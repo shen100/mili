@@ -18,8 +18,8 @@ export default {
         'methodProxy'
     ],
     data () {
-        if (this.callerProxy) {
-            this.callerProxy.setUserFollowed = this.setUserFollowed.bind(this);
+        if (this.methodProxy) {
+            this.methodProxy.setUserFollowed = this.setUserFollowed.bind(this);
         }
         return {
             isFollowed: this.userFollowed,

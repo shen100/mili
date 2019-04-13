@@ -49,7 +49,8 @@
                                     @mouseleave="onMouseLeaveUser()">
                                     <div class="v-tooltip-content">
                                         <a :href="`/u/${comment.user.id}.html`" target="_blank" class="avatar"><img :src="comment.user.avatarURL"></a>
-                                        <UserIntroduce v-if="comment.id === mouseenterCommentID" :user="comment.user" />
+                                        <UserBusinessCard v-if="comment.id === mouseenterCommentID"
+                                            :userID="comment.user.id" :onChange="onFollowChange"/>
                                     </div>
                                 </div>
                                 <div class="info">
@@ -83,7 +84,8 @@
                                         @mouseleave="onMouseLeaveUser2()">
                                         <div class="v-tooltip-content">
                                             <a class="comment-user-name" :href="`/u/${subcomment.user.id}.html`" target="_blank">{{subcomment.user.username}}{{subcomment.user.id === authorID ? '(作者)' : ''}}</a>：
-                                            <UserIntroduce v-if="subcomment.id === mouseenterCommentID2" :user="subcomment.user" />
+                                            <UserBusinessCard v-if="subcomment.id === mouseenterCommentID2" 
+                                                :userID="subcomment.user.id" :onChange="onFollowChange" />
                                         </div>
                                     </div>
                                     <span style="display: inline-block;">
@@ -133,7 +135,7 @@ import SuccessTip from '~/js/components/common/SuccessTip.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import { ErrorCode } from '~/js/constants/error.js';
 import Alert from '~/js/components/common/Alert.vue';
-import UserIntroduce from '~/js/components/user/UserIntroduce.vue';
+import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
 
 export default {
     name: 'CommentsOfArticle',
@@ -143,7 +145,8 @@ export default {
         'userID',
         'username',
         'avatarURL',
-        'commentEnabled'
+        'commentEnabled',
+        'onFollowChange'
     ],
     data: function() {
         return {
@@ -404,7 +407,7 @@ export default {
         SuccessTip,
         ErrorTip,
         Alert,
-        UserIntroduce,
+        UserBusinessCard,
     }
 };
 </script>

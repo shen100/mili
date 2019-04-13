@@ -1,13 +1,13 @@
 <template>
     <div class="v-tooltip-avatar v-tooltip-wrap v-tooltip-wrap-bottom">
         <div class="v-tooltip">
-            <div class="tips-card">
+            <div v-if="0&& user" class="tips-card">
                 <div class="card-content">
                     <div class="summary">
-                        <a target="_blank" :href="`/u/${user.id}.html`" class="avatar"
-                            style="background-image: url(&quot;//upload.jianshu.io/users/upload_avatars/15050995/93415bda-578d-4ee0-83bd-4f7ceaf26c27.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/144/h/144/format/webp&quot;);"></a>
+                        <a target="_blank" :href="`/u/${userID}.html`" class="avatar"
+                            :style="{'background-image': `url(${user.avatarURL})`}"></a>
                         <div class="name">
-                            <a target="_blank" :href="`/u/${user.id}.html`" class="nickname">{{user.username}}</a>
+                            <a target="_blank" :href="`/u/${userID}.html`" class="nickname">{{user.username}}</a>
                         </div>
                         <div class="intro">{{user.signature}}</div>
                         <div class="list">
@@ -20,25 +20,58 @@
                 <div class="card-footer">
                     <div class="profile">
                         <div>
-                            <span class="count">4</span>
+                            <span class="count">{{user.articleCount}}</span>
                             <span class="type">文章</span>
                         </div>
                         <div>
-                            <span class="count">5</span>
+                            <span class="count">{{user.followCount || 0}}</span>
                             <span class="type">关注</span>
                         </div>
                         <div>
-                            <span class="count">5</span>
+                            <span class="count">{{user.followerCount || 0}}</span>
                             <span class="type">粉丝</span>
                         </div>
                     </div>
                     <div class="social">
                         <a target="_blank" href="/notifications#/chats/new?mail_to=15050995"
                             class="message">发简信</a>
-                        <button @click="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" class="off user-follow-button">
-                            <i class="iconfont"></i>
-                            <span>关注</span>
+                        <button @click="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
+                            class="off user-follow-button" :class="isFollowed ? followedClass : unfollowedClass">
+                            <i class="iconfont" :class="followedIClass"></i>
+                            <span>{{followText}}</span>
                         </button>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="tips-card">
+                <div class="card-content">
+                    <div class="summary">
+                        <a class="avatar" style="cursor: default;"></a>
+                        <div style="width: 80%;">
+                            <div class="loading-line1"></div>
+                            <div class="loading-line2"></div>
+                            <div class="loading-line3 animation-delay"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="profile">
+                        <div>
+                            <span class="count loadingcount"></span>
+                            <span class="type loadingtype"></span>
+                        </div>
+                        <div>
+                            <span class="count loadingcount"></span>
+                            <span class="type loadingtype"></span>
+                        </div>
+                        <div>
+                            <span class="count loadingcount"></span>
+                            <span class="type loadingtype"></span>
+                        </div>
+                    </div>
+                    <div class="social">
+                        <button class="loading-bigbtn" style="margin-right: 10px;"></button>
+                        <button class="loading-bigbtn"></button>
                     </div>
                 </div>
             </div>
@@ -57,13 +90,10 @@ export default {
     props: [
         'userID',
         'onChange',
-        'methodProxy'
     ],
     data () {
-        if (this.methodProxy) {
-            this.methodProxy.setUserFollowed = this.setUserFollowed.bind(this);
-        }
         return {
+            user: null,
             articles: [
                 {
                     id: 1,
@@ -83,9 +113,14 @@ export default {
         };
     },
     mounted() {
-        await Promise.all([
-            
-        ])
+        const userID = this.userID;
+        myHTTP.get(`/u/${userID}/businesscard`).then((res) => {
+            if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                this.user = res.data.data.user;
+                this.articles = res.data.data.articles;
+                this.isFollowed = res.data.data.isFollowed;
+            }
+        });
     },
     computed: {
         followedIClass() {
@@ -131,12 +166,9 @@ export default {
             reqMethod(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isFollowed = !this.isFollowed;
-                    this.onChange(this.isFollowed);
+                    this.onChange(this.userID, this.isFollowed);
                 }
             });
-        },
-        setUserFollowed(userFollowed) {
-            this.isFollowed = userFollowed;
         }
     }
 }
@@ -350,9 +382,22 @@ export default {
     color: #333333;
 }
 
+.tips-card .card-footer .profile div .loadingcount {
+    background-color: #EAEAEA;
+    width: 40px;
+    height: 18px;
+    margin-bottom: 6px;
+}
+
 .tips-card .card-footer .profile div .type {
     font-size: 13px;
     color: #999999;
+}
+
+.tips-card .card-footer .profile div .loadingtype {
+    background-color: #EAEAEA;
+    width: 30px;
+    height: 12px;
 }
 
 .tips-card .card-footer .social {
@@ -475,5 +520,52 @@ export default {
 .user-follow-button.off:hover {
     border-color: #3db922;
     background-color: #3db922;
+}
+
+.user-follow-button .ic-followed:before {
+    content: "\E610"!important;
+}
+
+.user-follow-button .ic-unfollow:before {
+    content: "\E610"!important;
+}
+
+.loading-bigbtn {
+    background-color: #EAEAEA;
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 40px;
+    cursor: default;
+}
+
+.loading-line1 {
+    margin-bottom: 10px;
+    width: 50%;
+    height: 20px;
+    background-color: #eaeaea;
+}
+
+.loading-line2 {
+    width: 100%;
+    height: 16px;
+    margin: 0 0 10px;
+    background-color: #eaeaea;
+    -webkit-animation: loading 1s ease-in-out infinite;
+    animation: loading 1s ease-in-out infinite;
+}
+
+.loading-line3 {
+    width: 100%;
+    height: 16px;
+    margin: 0 0 10px;
+    background-color: #eaeaea;
+    -webkit-animation: loading 1s ease-in-out infinite;
+    animation: loading 1s ease-in-out infinite;
+}
+
+.animation-delay {
+    -webkit-animation: loading 1s ease-in-out -0.5s infinite !important;
+    animation: loading 1s ease-in-out -0.5s infinite !important;
 }
 </style>

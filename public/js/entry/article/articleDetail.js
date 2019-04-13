@@ -24,7 +24,6 @@ import {
 
 registerDirective(Vue);
 
-// 关注作者
 (function () {
     const methodProxy1 = {};
     const methodProxy2 = {};
@@ -34,6 +33,14 @@ registerDirective(Vue);
         methodProxy2.setUserFollowed(userFollowed);
     }
 
+    function onFollowChange (userID, userFollowed) {
+        if (userID === window.authorID) {
+            methodProxy1.setUserFollowed(userFollowed);
+            methodProxy2.setUserFollowed(userFollowed);
+        }
+    }
+
+    // 关注作者
     new Vue({
         render: h => h(SmallFollow, {
             props: {
@@ -45,6 +52,7 @@ registerDirective(Vue);
         }),
     }).$mount('#followUserSmallBtn');
 
+    // 关注作者
     new Vue({
         render: h => h(BigFollow, {
             props: {
@@ -55,21 +63,22 @@ registerDirective(Vue);
             },
         }),
     }).$mount('#followUserBigBtn');
-}());
 
-// 评论列表
-new Vue({
-    render: h => h(CommentsOfArticle, {
-        props: {
-            articleID: window.articleID,
-            userID: window.userID,
-            username: window.username,
-            avatarURL: window.avatarURL,
-            authorID: window.authorID,
-            commentEnabled: window.commentEnabled,
-        },
-    }),
-}).$mount('#normal-comment-list');
+    // 评论列表
+    new Vue({
+        render: h => h(CommentsOfArticle, {
+            props: {
+                articleID: window.articleID,
+                userID: window.userID,
+                username: window.username,
+                avatarURL: window.avatarURL,
+                authorID: window.authorID,
+                commentEnabled: window.commentEnabled,
+                onFollowChange,
+            },
+        }),
+    }).$mount('#normal-comment-list');
+}());
 
 // 微信分享文章
 new Vue({
