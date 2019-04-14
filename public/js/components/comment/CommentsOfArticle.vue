@@ -44,13 +44,13 @@
                         :key="`comment-${comment.id}`" :id="`comment-${comment.id}`">
                         <div>
                             <div class="author">
-                                <div class="v-tooltip-container" :style="{'z-index': comment.id === mouseenterCommentID ? '9999' : '0'}" 
+                                <div class="v-tooltip-container" :style="{'z-index': comment.id === mouseenterCommentID ? '999' : '0'}" 
                                     @mouseenter="onMouseEnterUser(comment.id)"
                                     @mouseleave="onMouseLeaveUser()">
                                     <div class="v-tooltip-content">
                                         <a :href="`/u/${comment.user.id}.html`" target="_blank" class="avatar"><img :src="comment.user.avatarURL"></a>
                                         <UserBusinessCard v-if="comment.id === mouseenterCommentID"
-                                            :userID="comment.user.id" :onChange="onFollowChange"/>
+                                            :userID="comment.user.id" :followerID="userID" :onChange="onFollowChange"/>
                                     </div>
                                 </div>
                                 <div class="info">
@@ -79,13 +79,13 @@
                         <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
                             <div :key="`comment-${subcomment.id}`" v-for="subcomment in comment.comments" class="sub-comment">
                                 <div class="v-tooltip-box">
-                                    <div class="v-tooltip-container" :style="{'z-index': subcomment.id === mouseenterCommentID2 ? '9999' : '0'}" 
+                                    <div class="v-tooltip-container" :style="{'z-index': subcomment.id === mouseenterCommentID2 ? '999' : '0'}" 
                                         @mouseenter="onMouseEnterUser2(subcomment.id)"
                                         @mouseleave="onMouseLeaveUser2()">
                                         <div class="v-tooltip-content">
                                             <a class="comment-user-name" :href="`/u/${subcomment.user.id}.html`" target="_blank">{{subcomment.user.username}}{{subcomment.user.id === authorID ? '(作者)' : ''}}</a>：
                                             <UserBusinessCard v-if="subcomment.id === mouseenterCommentID2" 
-                                                :userID="subcomment.user.id" :onChange="onFollowChange" />
+                                                :userID="subcomment.user.id" :followerID="userID" :onChange="onFollowChange" />
                                         </div>
                                     </div>
                                     <span style="display: inline-block;">
@@ -181,7 +181,7 @@ export default {
             this.mouseenterCommentID2 = commentID;
         },
         onMouseLeaveUser2() {
-            this.mouseenterCommentID2 = undefined;
+            // this.mouseenterCommentID2 = undefined;
         },
         onFirstComment() {
             this.$refs.commentRichEditor.focus();
@@ -807,6 +807,7 @@ export default {
     text-align: center;
     border-top: 1px solid #f0f0f0;
     padding-top: 40px;
+    color: #969696;
 }
 
 .normal-comment-list .comment-user-name, .normal-comment-list .comment-user-name:hover {
@@ -843,5 +844,9 @@ export default {
 
 .no-border-top {
     border-top: none!important;
+}
+
+.comments .avatar img {
+    border: none;
 }
 </style>

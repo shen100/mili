@@ -57,7 +57,7 @@ export class ArticleService {
                     wordCount: true,
                     followerCount: true,
                     likeCount: true,
-                    signature: true,
+                    introduce: true,
                 },
             } as any,
             relations: ['user'],

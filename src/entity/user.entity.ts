@@ -97,7 +97,7 @@ export class User {
     sex: UserSex;
 
     @Column('varchar', { length: 200 })
-    signature: string; // 个人介绍
+    introduce: string; // 个人介绍
 
     @Column('int', { name: 'github_id', nullable: true, default: null })
     githubID: number;
@@ -125,9 +125,6 @@ export class User {
 
     @Column('varchar', { length: 200, nullable: true, default: null })
     location: string;
-
-    @Column('varchar', { length: 500, nullable: true, default: null })
-    introduce: string; // 个人介绍
 
     @ManyToMany(type => Collection, collection => collection.admins)
     @JoinTable({

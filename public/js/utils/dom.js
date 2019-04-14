@@ -74,6 +74,34 @@ export const getDocumentSize = function () {
     };
 };
 
+export const isInViewport = function (dom) {
+    const winSize = getWindowSize();
+    // the size of an element and its position relative to the viewport.
+    const clientRect = dom.getBoundingClientRect();
+    let inViewport = true;
+    if (clientRect.x < 0 || clientRect.y < 0) {
+        inViewport = false;
+    }
+    if (clientRect.y + clientRect.height > winSize.height) {
+        inViewport = false;
+    }
+    if (clientRect.x + clientRect.width > winSize.width) {
+        inViewport = false;
+    }
+    return inViewport;
+};
+
+export const getBoundingClientRect = function (dom) {
+    // the size of an element and its position relative to the viewport.
+    const clientRect = dom.getBoundingClientRect();
+    return {
+        x: clientRect.x,
+        y: clientRect.y,
+        width: clientRect.width,
+        height: clientRect.height,
+    };
+};
+
 export const getScrollPos = function () {
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;

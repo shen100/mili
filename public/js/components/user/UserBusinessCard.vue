@@ -1,7 +1,8 @@
 <template>
-    <div class="v-tooltip-avatar v-tooltip-wrap v-tooltip-wrap-bottom">
+    <div ref="box" class="v-tooltip-avatar v-tooltip-wrap v-tooltip-wrap-bottom"
+        :style="{top: top}">
         <div class="v-tooltip">
-            <div v-if="0&& user" class="tips-card">
+            <div v-if="user" class="tips-card">
                 <div class="card-content">
                     <div class="summary">
                         <a target="_blank" :href="`/u/${userID}.html`" class="avatar"
@@ -9,7 +10,7 @@
                         <div class="name">
                             <a target="_blank" :href="`/u/${userID}.html`" class="nickname">{{user.username}}</a>
                         </div>
-                        <div class="intro">{{user.signature}}</div>
+                        <div class="intro">{{user.introduce}}</div>
                         <div class="list">
                             <a :key="article.id" v-for="article in articles" target="_blank" :href="`/p/${article.id}.html`" class="item">
                                 <i class="iconfont ic-article-s"></i> {{article.summary}}
@@ -33,13 +34,15 @@
                         </div>
                     </div>
                     <div class="social">
-                        <a target="_blank" href="/notifications#/chats/new?mail_to=15050995"
-                            class="message">发简信</a>
-                        <button @click="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
-                            class="off user-follow-button" :class="isFollowed ? followedClass : unfollowedClass">
-                            <i class="iconfont" :class="followedIClass"></i>
-                            <span>{{followText}}</span>
-                        </button>
+                        <template v-if="!isSelf">
+                            <a target="_blank" href="/notifications#/chats/new?mail_to=15050995"
+                                class="message">发简信</a>
+                            <button @click="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
+                                class="off user-follow-button" :class="isFollowed ? followedClass : unfollowedClass">
+                                <i class="iconfont" :class="followedIClass"></i>
+                                <span>{{followText}}</span>
+                            </button>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -76,7 +79,7 @@
                 </div>
             </div>
         </div>
-        <div class="arrow arrow-type-bottom">
+        <div class="arrow arrow-type-bottom" :class="{'arrow-rotation': isArrowRotation}">
             <i><em></em></i>
         </div>
     </div>
@@ -85,14 +88,19 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import { isInViewport, getBoundingClientRect } from '~/js/utils/dom.js';
 
 export default {
     props: [
         'userID',
+        'followerID',
         'onChange',
     ],
     data () {
         return {
+            top: '100%',
+            isSelf: this.userID && this.userID === this.followerID,
+            isArrowRotation: false,
             user: null,
             articles: [
                 {
@@ -109,7 +117,7 @@ export default {
             followedClass: {
                 'btn-default': true,
                 following: true,
-            },
+            }
         };
     },
     mounted() {
@@ -119,8 +127,10 @@ export default {
                 this.user = res.data.data.user;
                 this.articles = res.data.data.articles;
                 this.isFollowed = res.data.data.isFollowed;
+                this.adjustCoordinate();
             }
         });
+        this.adjustCoordinate();
     },
     computed: {
         followedIClass() {
@@ -149,6 +159,18 @@ export default {
         }
     },
     methods: {
+        adjustCoordinate() {
+            this.top = '100%';
+            this.isArrowRotation = false;
+            this.$nextTick(() => {
+                const dom = this.$refs.box;
+                if (!isInViewport(dom)) {
+                    const clientRect = getBoundingClientRect(dom);
+                    this.top = -(clientRect.height + 10) + 'px';
+                    this.isArrowRotation = true;
+                }
+            });
+        },
         onMouseenter() {
             this.isMouseEnter = true;
         },
@@ -567,5 +589,14 @@ export default {
 .animation-delay {
     -webkit-animation: loading 1s ease-in-out -0.5s infinite !important;
     animation: loading 1s ease-in-out -0.5s infinite !important;
+}
+
+.arrow-rotation {
+    top: auto!important;
+    bottom: -9px;
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 </style>

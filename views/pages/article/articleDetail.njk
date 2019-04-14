@@ -53,8 +53,8 @@
                     <a class="title" href="/u/{{article.user.id}}.html">{{article.user.username}}</a>
                     <p>写了 {{article.user.wordCount | defaultValue(0)}} 字，被 {{article.user.wordCount | defaultValue(0)}} 人关注，获得了 {{article.user.wordCount | defaultValue(0)}} 个喜欢</p>
                 </div>
-                {% if article.user.signature %}
-                <div class="signature">{{article.user.signature}}</div>
+                {% if article.user.introduce %}
+                <div class="introduce">{{article.user.introduce}}</div>
                 {% endif %}
             </div>
 
