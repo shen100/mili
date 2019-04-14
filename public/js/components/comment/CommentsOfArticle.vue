@@ -77,7 +77,7 @@
                                 @error="addCommentError" :parentID="comment.id" @cancel="onCancelComment(comment)" />
                         </div>
                         <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
-                            <div :key="`comment-${subcomment.id}`" v-for="subcomment in comment.comments" class="sub-comment">
+                            <div :id="`comment-${subcomment.id}`" :key="`comment-${subcomment.id}`" v-for="subcomment in comment.comments" class="sub-comment">
                                 <div class="v-tooltip-box">
                                     <div class="v-tooltip-container" :style="{'z-index': subcomment.id === mouseenterCommentID2 ? '999' : '0'}" 
                                         @mouseenter="onMouseEnterUser2(subcomment.id)"
@@ -175,13 +175,13 @@ export default {
             this.mouseenterCommentID = commentID;
         },
         onMouseLeaveUser() {
-            // this.mouseenterCommentID = undefined;
+            this.mouseenterCommentID = undefined;
         },
         onMouseEnterUser2(commentID) {
             this.mouseenterCommentID2 = commentID;
         },
         onMouseLeaveUser2() {
-            // this.mouseenterCommentID2 = undefined;
+            this.mouseenterCommentID2 = undefined;
         },
         onFirstComment() {
             this.$refs.commentRichEditor.focus();

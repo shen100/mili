@@ -77,6 +77,7 @@ export class CommentService {
                 take: limit,
             };
             if (rootIDs) {
+                delete query.skip;
                 delete query.take;
             }
             let count: number = 0;

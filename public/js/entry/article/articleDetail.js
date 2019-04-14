@@ -1,3 +1,4 @@
+import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
 import '~/styles/article/articleDetail.scss';
 import '~/js/common/default.js';
@@ -125,6 +126,9 @@ new Vue({
 (function () {
     const QRCode = window.QRCode;
     const hostname = window.globalConfig.hostname;
+    // http://davidshimjs.github.io/qrcodejs/
+    // https://github.com/davidshimjs/qrcodejs
+
     // eslint-disable-next-line no-new
     new QRCode(document.getElementById('qrcodeContainer'), {
         text: `https://${hostname}/downloadapp`,

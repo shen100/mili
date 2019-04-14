@@ -6,10 +6,6 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
 
-  {% block iviewcss %}
-  <link rel="stylesheet" href="{{cssPath}}/libs/iview-3.3.3.min.css">
-  {% endblock %}
-
   {% block libcss %}
   {% endblock %}
 
@@ -17,7 +13,17 @@
   {% endblock %}
 </head>
 
-<body {% if env === 'development'%} style="display: none;"{% endif %}>
+<body {% if env === 'development' %} style="display: none;"{% endif %}>
+  {% if env === 'development' %}
+  <script>
+    setTimeout(function () {
+      if (!window.defaultJSLoaded) {
+        alert('没有加载default.js');
+      }
+    }, 5000);
+  </script>
+  {% endif %}
+
   {% from '../macros/js.njk' import loadjs  %}
 
   {% block header %}
@@ -43,10 +49,6 @@
   </script>
 
   {% block pageData %}
-  {% endblock %}
-
-  {% block jqueryjs %}
-  <script src="{{jsPath}}/libs/jquery-1.11.3.min.js"></script>
   {% endblock %}
 
   {% block libjs %}

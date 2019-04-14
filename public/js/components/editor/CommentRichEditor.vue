@@ -1,13 +1,13 @@
 <template>
     <div v-clickoutside="onClickOutside" class="comment-editor-box">
-        <div class="comment-editor-cbox">
+        <div @keydown.meta.enter="onComment" @keydown.ctrl.enter="onComment" class="comment-editor-cbox">
             <editor-content class="mili-editor-content" :editor="editor" />
         </div>
         <div v-if="sendVisible" class="write-function-block">
             <div class="emoji-modal-wrap">
                 <CommentRichEditorEmoji :editor="editor" />
             </div>
-            <div class="hint">⌘+Return 发表</div>
+            <div class="hint">Ctrl or ⌘ + Enter 发表</div>
             <a @click="onComment" class="btn btn-send">发送</a>
             <a @click="onCancelComment" class="cancel">取消</a>
         </div>
@@ -90,6 +90,7 @@ export default {
             this.$emit('cancel');
         },
         onComment() {
+            this.editor.blur();
             if (this.isSaving === true) {
                 return;
             }
@@ -113,7 +114,8 @@ export default {
             myHTTP.post(url, reqData).then((res) => {
                 this.isSaving = false;
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    /// this.editor.setContent('');
+                    this.editor.setContent('<p></p>');
+                    this.sendVisible = false;
                     const comment = res.data.data.comment;
                     this.$emit('success', comment);
                 }

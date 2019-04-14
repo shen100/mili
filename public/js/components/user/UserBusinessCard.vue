@@ -1,6 +1,6 @@
 <template>
     <div ref="box" class="v-tooltip-avatar v-tooltip-wrap v-tooltip-wrap-bottom"
-        :style="{top: top}">
+        :class="{'user-card-hidden': !isShowed}" :style="{top: top}">
         <div class="v-tooltip">
             <div v-if="user" class="tips-card">
                 <div class="card-content">
@@ -95,9 +95,11 @@ export default {
         'userID',
         'followerID',
         'onChange',
+        'delay',
     ],
     data () {
         return {
+            isShowed: false,
             top: '100%',
             isSelf: this.userID && this.userID === this.followerID,
             isArrowRotation: false,
@@ -117,20 +119,29 @@ export default {
             followedClass: {
                 'btn-default': true,
                 following: true,
-            }
+            },
+            timeoutID: 0
         };
     },
     mounted() {
-        const userID = this.userID;
-        myHTTP.get(`/u/${userID}/businesscard`).then((res) => {
-            if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                this.user = res.data.data.user;
-                this.articles = res.data.data.articles;
-                this.isFollowed = res.data.data.isFollowed;
-                this.adjustCoordinate();
-            }
-        });
-        this.adjustCoordinate();
+        this.timeoutID = setTimeout(() => {
+            this.isShowed = true;
+            const userID = this.userID;
+            myHTTP.get(`/u/${userID}/businesscard`).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.user = res.data.data.user;
+                    this.articles = res.data.data.articles;
+                    this.isFollowed = res.data.data.isFollowed;
+                    this.adjustCoordinate();
+                }
+            });
+            this.adjustCoordinate();
+        }, this.delay || 1000);
+    },
+    beforeDestroy() {
+        if (this.timeoutID) {
+            clearTimeout(this.timeoutID);
+        }
     },
     computed: {
         followedIClass() {
@@ -164,6 +175,9 @@ export default {
             this.isArrowRotation = false;
             this.$nextTick(() => {
                 const dom = this.$refs.box;
+                if (!dom) {
+                    return;
+                }
                 if (!isInViewport(dom)) {
                     const clientRect = getBoundingClientRect(dom);
                     this.top = -(clientRect.height + 10) + 'px';
@@ -197,6 +211,10 @@ export default {
 </script>
 
 <style scoped>
+.user-card-hidden {
+    display: none;
+}
+
 .v-tooltip-avatar {
     position: absolute;
 }

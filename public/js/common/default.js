@@ -44,3 +44,5 @@ if (document.getElementById('topnavsearch')) {
         render: h => h(TopNavSearch),
     }).$mount('#topnavsearch');
 }
+
+window.defaultJSLoaded = true;
