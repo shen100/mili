@@ -32,13 +32,14 @@
                 </div>
             </div>
 
+            <!--
             <div class="support-author">
-                <p>小手抖一抖，来{{siteName}}关注我~</p>
-                <div class="btn btn-pay">赞赏支持</div>
+                <p>小红包走一走，来{{siteName}}打赏我~</p>
+                <div class="btn btn-pay">打赏支持</div>
                 <div class="supporter">
                     <ul class="support-list"></ul>
                 </div>
-            </div>
+            </div> -->
 
             <div class="follow-detail">
                 <div class="info">
@@ -73,9 +74,9 @@
                         <i class="iconfont ic-weibo"></i>
                     </a>
                     <a class="share-circle" data-toggle="tooltip" id="longshare" target="_blank">
-                        <div class="qrcode" id="qrcode" style="display: none;">
-                            <img src="" alt="Download index side qrcode">
-                            <p>下载app生成长微博图片</p>
+                        <div class="qrcode" id="qrcode" style="left: 22px;">
+                            <div id="qrcodeContainer" style="width: 160px;height: 160px;"></div>
+                            <p style="margin-top: 6px;">下载app生成长微博图片</p>
                         </div>
                         <i class="iconfont ic-picture"></i>
                     </a>
@@ -190,6 +191,7 @@
 
 {% block libjs %}
 <script type="text/javascript" src="//cpro.baidustatic.com/cpro/ui/c.js" async="async" defer="defer" ></script>
+<script src="{{jsPath}}/libs/qrcode.min.js"></script>
 {% endblock %}
 
 {% block devjs %}

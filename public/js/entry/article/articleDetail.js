@@ -122,6 +122,20 @@ new Vue({
     });
 }());
 
+(function () {
+    const QRCode = window.QRCode;
+    const hostname = window.globalConfig.hostname;
+    // eslint-disable-next-line no-new
+    new QRCode(document.getElementById('qrcodeContainer'), {
+        text: `https://${hostname}/downloadapp`,
+        width: 100,
+        height: 100,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H,
+    });
+}());
+
 // 更多分享
 (function () {
     const articleMoreShareBtn = document.getElementById('articleMoreShareBtn');

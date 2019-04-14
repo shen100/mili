@@ -401,8 +401,40 @@
     box-sizing: border-box;
 }
 
+.meta-bottom .share-group .share-circle .qrcode:before {
+    border-top: 20px solid #fff;
+    z-index: 2;
+    bottom: -24px;
+    width: 25px;
+    height: 25px;
+    content: "";
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    position: absolute;
+    left: 50%;
+    margin-left: -12px;
+}
+
+.meta-bottom .share-group .share-circle .qrcode:after {
+    width: 25px;
+    height: 25px;
+    content: "";
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    position: absolute;
+    left: 50%;
+    margin-left: -12px;
+    border-top: 20px solid #dcdcdc;
+    z-index: 1;
+    bottom: -25px;
+}
+
 .meta-bottom .share-group .share-circle:hover {
     background-color: hsla(0, 0%, 71%, .1);
+}
+
+.meta-bottom .share-group .share-circle:hover .qrcode {
+    display: block;
 }
 
 .meta-bottom .share-group .share-circle i {
@@ -428,18 +460,19 @@
 }
 
 .meta-bottom .share-group .share-circle .qrcode {
+    cursor: default;
     width: 200px;
-    height: 220px;
+    height: 225px;
     box-shadow: 0 3px 10px rgba(0,0,0,.15);
     box-sizing: border-box;
     background-color: #fff;
     position: absolute;
-    top: -230px;
+    top: -240px;
     left: 50%;
     margin-left: -100px;
     display: none;
     border-radius: 6px;
-    padding: 15px;
+    padding: 20px;
     border: 1px solid #ddd;
 }
 
