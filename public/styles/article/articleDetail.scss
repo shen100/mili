@@ -538,17 +538,25 @@
     display: none;
 }
 
-.article #web-note-ad-1 {
+.article .web-note-ad {
     display: block;
     width: 100%;
+    background: #f7f7f7;
+    text-align: center;
+    padding: 15px 0;
 }
 
-.article #web-note-ad-1 img {
-    width: 100%;
+.note-bottom .web-note-ad {
+    display: block;
+    width: 620px;
+    margin: 0 auto;
+    background: #fff;
+    text-align: center;
+    padding: 15px 0;
 }
 
 .article .comment-list {
-    padding-top: 20px;
+    padding-top: 0;
     box-sizing: border-box;
 }
 
@@ -611,7 +619,7 @@
 }
 
 .article .comment-list .normal-comment-list {
-    margin-top: 30px;
+    padding-top: 10px;
 }
 
 .article .comment-list .top-title {
