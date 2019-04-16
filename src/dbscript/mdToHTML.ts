@@ -16,6 +16,7 @@ const summaryStripLenth = 100;
     const articleRepository = connection.getRepository(Article);
 
     try {
+        // await connection.manager.query(`alter table users change signature introduce varchar(500)`);
         // await connection.manager.query(`alter table articles add column summary varchar(${summaryLenth})`);
         // await connection.manager.query(`alter table articles add column like_count int default 0`);
         // await connection.manager.query(`alter table articles add column word_count int default 0`);

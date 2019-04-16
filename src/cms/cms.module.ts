@@ -26,6 +26,7 @@ import { PostMsg } from '../entity/postmsg.entity';
 import { Comment } from '../entity/comment.entity';
 import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
+import { HandbookController } from './handbook.controller';
 
 @Module({
     imports: [
@@ -46,6 +47,7 @@ import { CommentService } from './comment.service';
         ArticleController,
         CategoryController,
         CommentController,
+        HandbookController,
         UCController,
         CollectionController,
         EditorController,
