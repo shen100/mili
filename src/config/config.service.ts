@@ -61,6 +61,7 @@ class StaticConfig extends BaseConfig {
 
 class ServerConfig extends BaseConfig {
     readonly siteName: string;
+    readonly icp: string;
     readonly hostname: string;
     readonly mHostName: string;
     readonly port: number;

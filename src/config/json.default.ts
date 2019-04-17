@@ -31,6 +31,7 @@ export default {
     },
     server: {
         siteName: '米粒',
+        icp: '京ICP备12045181号-2',
         hostname: 'dev.golang123.com',
         mHostName: 'mdev.golang123.com',
         port: 8884,

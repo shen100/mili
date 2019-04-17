@@ -6,15 +6,18 @@ import { ErrorCode } from '../config/constants';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { CurUser } from '../common/decorators/user.decorator';
 import { MustIntPipe } from '../common/pipes/must-int.pipe';
+import { ConfigService } from '../config/config.service';
 
 @Controller()
 export class HandbookController {
     constructor(
+        private readonly configService: ConfigService,
     ) {}
 
     @Get('/handbooks.html')
     async list(@CurUser() user, @Res() res) {
         const data = {
+            icp: this.configService.server.icp,
             categories: [
                 {
                     name: '前端',
@@ -31,6 +34,12 @@ export class HandbookController {
                 {
                     name: '通用',
                 },
+            ],
+            handbooks: [
+                {},
+                {},
+                {},
+                {},
             ],
         };
         res.render('pages/handbook/handbooks.njk', data);
