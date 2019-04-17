@@ -63,6 +63,15 @@ body {
     position: relative;
 }
 
+.handbooks .item:hover {
+    text-decoration: none;
+    background-color: #f7f9f9;
+}
+
+.handbooks .item:not(:last-child) {
+    border-bottom: 1px solid #e6e8e8;
+}
+
 .handbooks .poster {
     width: 100px;
     height: 140px;
