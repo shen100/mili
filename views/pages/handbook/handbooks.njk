@@ -14,9 +14,10 @@
     </div>
     <div class="content-box">
         <div class="handbooks">
-            {% for handbook in handbooks %}
+            {% for handbook, i in handbooks %}
             <div>
-                <a href="" target="_blank" class="item">
+                <a href="" target="_blank" class="item"
+                    {% if loop.last %} style="border-bottom: none;"{% endif %}>
                     <div class="poster">
                         <div class="lazy thumb poster-img loaded" style="background-image: url(&quot;https://user-gold-cdn.xitu.io/2019/2/25/16922d6d22ff1458?imageView2/1/w/200/h/280/q/95/format/webp/interlace/1&quot;); background-size: cover;"></div>
                     </div>
@@ -45,9 +46,11 @@
                                 <span class="message">
                                     <span>33小节</span>
                                 </span>
+                                <span class="dot">·</span>
                                 <span class="message">
                                     <span>阅读时长82分钟</span>
                                 </span>
+                                <span class="dot">·</span>
                                 <span class="message">
                                     <span>1485</span>
                                     <span>人已购买</span>
@@ -60,17 +63,54 @@
             </div>
             {% endfor %}
         </div>
+        <div class="aside top">
+            <div class="sticky-section">
+                <div class="section">
+                    <div class="slogan">
+                        <div class="title">掘金小册是什么？</div>
+                        <div class="desc">一个小篇幅、高浓度、成体系、有收益的技术学习平台</div>
+                    </div>
+                    <div class="wechat-qr">
+                        <div class="title">关注公众号 领取优惠码</div>
+                        <div class="qr-img"></div>
+                    </div>
+                </div>
+                <div class="section help">
+                    <a href="/book" target="_blank" rel="" class="items author">
+                        <img src="https://b-gold-cdn.xitu.io/v3/static/img/author.c5d975e.png">
+                        <div class="title">成为作者</div>
+                    </a>
+                    <a href="/feedback" target="_blank" rel="" class="items feedback">
+                        <img src="https://b-gold-cdn.xitu.io/v3/static/img/feedback.1230fb5.png">
+                        <div class="title">建议反馈</div>
+                    </a>
+                </div>
+                <div class="book-new-user-award-aside book-new-user-ticket-for-book-index">
+                    <div class="pic"><img src="https://b-gold-cdn.xitu.io/v3/static/img/icon.b99ea03.svg"></div>
+                    <div class="content">
+                        <div class="title">
+                            <span>送你 45 元买小册</span>
+                        </div>
+                        <div class="desc">
+                            <div class="get">立即领取</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block footer %}
-<div class="copy-right">
-    <span>©{{ '' | currentTime('YYYY')}} {{siteName}}</span>
-    <span> | </span>
-    <a href="http://www.miibeian.gov.cn" target="_blank">京ICP备12045181号-2</a>
-    <span> | </span>
-    <a href="" target="_blank">京公网安备xxxxx号</a>
+<div  class="copy-right-box">
+    <div class="copy-right">
+        <span>©{{ '' | currentTime('YYYY')}} {{siteName}}</span>
+        <span> | </span>
+        <a href="http://www.miibeian.gov.cn" target="_blank">京ICP备12045181号-2</a>
+        <span> | </span>
+        <a href="" target="_blank">京公网安备xxxxx号</a>
+    </div>
 </div>
 {% endblock %}
 
