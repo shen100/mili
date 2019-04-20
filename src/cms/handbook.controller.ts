@@ -44,4 +44,9 @@ export class HandbookController {
         };
         res.render('pages/handbook/handbooks.njk', data);
     }
+
+    @Get('/handbooks/:id.html')
+    async detail(@CurUser() user, @Res() res) {
+        res.render('pages/handbook/handbookDetail.njk');
+    }
 }
