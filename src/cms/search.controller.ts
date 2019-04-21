@@ -6,6 +6,7 @@ import { ArticleConstants } from '../config/constants';
 import { Article } from '../entity/article.entity';
 import { SearchService } from './search.service';
 import { recentTime } from '../utils/viewfilter';
+import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
 
 @Controller('/')
 export class SearchController {
@@ -56,6 +57,10 @@ export class SearchController {
                 view = 'pages/search/article';
                 break;
             }
+            case 'channel': {
+                view = 'pages/search/category';
+                break;
+            }
         }
         res.render(view, {
             keyword,
@@ -63,33 +68,32 @@ export class SearchController {
     }
 
     @Get('/api/v1/search')
-    async searchArticle(@Query('keyword') keyword: string, @Query('type') type: string) {
+    async searchArticle(@Query('keyword') keyword: string, @Query('type') type: string, @Query('page', ParsePagePipe) page: number) {
         if (!keyword || keyword.length > ArticleConstants.MAX_TITLE_LENGTH) {
             keyword = '';
         }
         keyword = decodeURIComponent(keyword);
+
+        const pageSize: number = 20;
 
         if (!type) {
             // 查询综合
         }
 
         if (type === 'article') {
-            let articles: Array<Article>;
+            let result;
             if (!keyword) {
-                articles = await this.articleService.randomArticles(1, 20);
+                result = await this.articleService.randomArticles(page, pageSize);
             } else {
-                articles = await this.searchService.searchArticle(keyword, 1, 20);
+                result = await this.searchService.searchArticle(keyword, page, pageSize);
             }
-            articles = articles || [];
-            articles = articles.map(article => {
+            result.list = result.list.map(item => {
                 return {
-                    ...article,
-                    createdAtLabel: recentTime(article.createdAt, 'YYYY.MM.DD HH:mm'),
+                    ...item,
+                    createdAtLabel: recentTime(item.createdAt, 'YYYY.MM.DD HH:mm'),
                 };
             });
-            return {
-                articles,
-            };
+            return result;
         }
     }
 }

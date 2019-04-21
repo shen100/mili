@@ -1,7 +1,7 @@
 <template>
     <div>
+        <slot name="content"></slot>
         <slot v-if="isLoading && !isComplete" name="loading"></slot>
-        <slot v-else name="content"></slot>
     </div>
 </template>
 
@@ -20,6 +20,7 @@ import {
 export default {
     props: [
         'url',
+        'query'
     ],
     data () {
         return {
@@ -40,15 +41,14 @@ export default {
                 return;
             }
             this.isLoading = true;
-            let url;
-            if (this.url.indexOf('?') < 0) {
-                url = this.url + '?page=' + this.page;
-            } else {
-                url = this.url + '&page=' + this.page;
+            let url = this.url + '?page=' + this.page;
+            if (this.query) {
+                for (let key in this.query) {
+                    url += ('&' + key + '=' + this.query[key]);
+                }
             }
             myHTTP.get(url)
                 .then((result) => {
-                    this.isLoading = false;
                     if (result.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         const page = result.data.data.page;
                         const pageSize = result.data.data.pageSize;
@@ -60,6 +60,7 @@ export default {
                     }
                     this.page++;
                     this.$emit('load', result);
+                    this.isLoading = false;
                 })
                 .catch((err) => {
                     console.log(err);

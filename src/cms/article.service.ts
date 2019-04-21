@@ -386,26 +386,35 @@ export class ArticleService {
 
     // 随机返回文章
     async randomArticles(page: number, pageSize: number) {
-        const articles = this.articleRepository.find({
-            select: {
-                id: true,
-                name: true,
-                createdAt: true,
-                summary: true,
-                commentCount: true,
-                user: {
+        const condition = {
+            deletedAt: null,
+            status: Not(ArticleStatus.VerifyFail),
+        };
+        const [list, count] = await Promise.all([
+            this.articleRepository.find({
+                select: {
                     id: true,
-                    username: true,
+                    name: true,
+                    createdAt: true,
+                    summary: true,
+                    commentCount: true,
+                    user: {
+                        id: true,
+                        username: true,
+                    },
                 },
-            },
-            relations: ['user'],
-            where: {
-                deletedAt: null,
-                status: Not(ArticleStatus.VerifyFail),
-            },
-            skip: (page - 1) * pageSize,
-            take: pageSize,
-        });
-        return articles;
+                relations: ['user'],
+                where: condition,
+                skip: (page - 1) * pageSize,
+                take: pageSize,
+            }),
+            this.articleRepository.count(condition),
+        ]);
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
     }
 }

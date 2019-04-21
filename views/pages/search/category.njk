@@ -1,0 +1,24 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="container">
+    {% include '../../component/search/searchtype.njk' %}
+    <div id="search-view" class="search-view"></div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block pageData %}
+<script>
+    var keyword = {{ keyword | dump | safe }};
+</script>
+{% endblock %}
+
+{% block devjs %}
+  {{ loadjs('entry/search/category.js') }}
+{% endblock %}

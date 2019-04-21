@@ -19,41 +19,51 @@
                     </ul>
                 </nav>
             </header>
-            <div id="articleBox" style="padding: 20px;padding-top: 10px;">
-                <div class="article-list">
-                    <ArticleItem :key="aritlce.id" v-for="aritlce in articles" :article="aritlce"/>
-                </div>
+            <div style="padding: 20px;padding-top: 10px;">
+                <Pinterest url="/search" :query="{ keyword, type: 'article' }" @load="onLoad">
+                    <template v-slot:loading>
+                        <ArticleLoading />
+                    </template>
+                    <template v-slot:content>
+                        <div>
+                            <div class="article-list">
+                                <ArticleItem :key="aritlce.id" v-for="aritlce in articles" :article="aritlce"/>
+                            </div>
+                        </div>
+                    </template>
+                </Pinterest>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import ArticleLoading from '~/js/components/article/ArticleLoading.vue';
 import ArticleItem from '~/js/components/article/ArticleItem.vue';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import Pinterest from '~/js/components/common/Pinterest.vue';
 
 export default {
     data () {
         return {
-            keyword: window.keyword,
+            keyword: encodeURIComponent(window.keyword),
             articles: []
         };
     },
     mounted() {
         this.$nextTick(() => {
-            const url = `/search?type=article&keyword=${encodeURIComponent(keyword)}`;
-            myHTTP.get(url).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.articles = this.articles.concat(res.data.data.articles);
-                }
-            });
         });
     },
     methods: {
+        onLoad(result) {
+            this.articles = this.articles.concat(result.data.data.list);
+        }
     },
     components: {
+        ArticleLoading,
         ArticleItem,
+        Pinterest,
     }
 }
 </script>
