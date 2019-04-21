@@ -3,7 +3,7 @@
 {% block main %}
 <div class="container">
     {% include '../../component/search/searchtype.njk' %}
-    <div id="search-view" class="search-view"></div>
+    <div id="result-list" class="result-list"></div>
 </div>
 {% endblock %}
 
@@ -13,12 +13,6 @@
 {% block css %}
 {% endblock %}
 
-{% block pageData %}
-<script>
-    var keyword = {{ globalConfig | dump }};
-</script>
-{% endblock %}
-
 {% block devjs %}
-  {{ loadjs('entry/search/article.js') }}
+  {{ loadjs('entry/search/all.js') }}
 {% endblock %}

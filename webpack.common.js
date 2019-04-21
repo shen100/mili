@@ -27,6 +27,8 @@ module.exports = {
         'entry/editor/drafts': './public/js/entry/editor/drafts.js',
         'entry/handbook/handbooks': './public/js/entry/handbook/handbooks.js',
         'entry/handbook/handbookDetail': './public/js/entry/handbook/handbookDetail.js',
+        'entry/search/all': './public/js/entry/search/all.js',
+        'entry/search/article': './public/js/entry/search/article.js',
         'entry/admin/app': './public/js/entry/admin/app.js',
     },
     output: {

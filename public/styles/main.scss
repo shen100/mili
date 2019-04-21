@@ -21,6 +21,49 @@ body {
     box-sizing: border-box;
 }
 
+
+.category-nav-box {
+    border-bottom: 1px #f0f0f0 solid;
+    background: #fff;
+    margin-top: 57px;
+    margin-bottom: 20px;
+}
+
+.category-nav {
+    width: 960px;
+    margin: 0 auto;
+    height: 46px;
+    line-height: 46px;
+}
+
+.category-list li {
+    float: left;
+    margin-right: 20px;
+}
+
+.category-item {
+    color: #909090;
+}
+
+.category-item:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+.category-item-select {
+    color: #000;
+}
+
+.category-item-select:hover {
+    text-decoration: none;
+}
+
+.category-manage {
+    float: right;   
+    color: #333;
+    cursor: pointer;
+}
+
 .errortip-msg {
     border: 1px #e84e18 solid;
     color: #e84e18;
