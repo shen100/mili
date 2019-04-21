@@ -13,56 +13,9 @@
         </div>
     </div>
     <div class="content-box">
-        <div class="handbooks">
-            {% for handbook, i in handbooks %}
-            <div>
-                <a href="" target="_blank" class="item"
-                    {% if loop.last %} style="border-bottom: none;"{% endif %}>
-                    <div class="poster">
-                        <div class="lazy thumb poster-img loaded" style="background-image: url(&quot;https://user-gold-cdn.xitu.io/2019/2/25/16922d6d22ff1458?imageView2/1/w/200/h/280/q/95/format/webp/interlace/1&quot;); background-size: cover;"></div>
-                    </div>
-                    <div class="info">
-                        <div class="title">
-                            <span class="presale">预售</span>
-                            <span>WebGL 入门与实践</span>
-                        </div>
-                        <div class="desc">介绍 WebGL 与 CSS 3D 开发的点点滴滴，详细阐述 3D 数学库的实现原理与使用，演示 3D 数学库对于 WebGL 开发和普通网页开发的重要作用，助力每个前端开发者轻松掌握 3D 开发的关键技术。</div>
-                        <div class="author">
-                            <div class="author-info">
-                                <div target="_blank" class="user">
-                                    <div class="lazy avatar hero loaded" style="background-image: url(&quot;https://user-gold-cdn.xitu.io/2019/3/14/1697bf1c8f8bdbb1?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1&quot;);"></div>
-                                    <span>lucefer</span>
-                                </div>
-                            </div>
-                            <div class="author-desc">
-                                <span class="selfDescription">某大型互联网公司前端工程师</span>
-                            </div>
-                        </div>
-                        <div class="other">
-                            <div class="price">
-                                <div class="price-text">￥39.9</div>
-                            </div>
-                            <div class="messages">
-                                <span class="message">
-                                    <span>33小节</span>
-                                </span>
-                                <span class="dot">·</span>
-                                <span class="message">
-                                    <span>阅读时长82分钟</span>
-                                </span>
-                                <span class="dot">·</span>
-                                <span class="message">
-                                    <span>1485</span>
-                                    <span>人已购买</span>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="footer-bar" style="display: none;"></div>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
+        {% block handbookList %}
+            {% include '../../component/handbook/handbookList.njk' %}
+        {% endblock %}
         <div class="aside top">
             <div class="sticky-section">
                 <div class="section">

@@ -14,7 +14,7 @@ export class HandbookController {
         private readonly configService: ConfigService,
     ) {}
 
-    @Get('/handbooks.html')
+    @Get('/handbooks')
     async list(@CurUser() user, @Res() res) {
         const data = {
             icp: this.configService.server.icp,
@@ -47,6 +47,13 @@ export class HandbookController {
 
     @Get('/handbooks/:id.html')
     async detail(@CurUser() user, @Res() res) {
-        res.render('pages/handbook/handbookDetail.njk');
+        res.render('pages/handbook/handbookDetail.njk', {
+            handbooks: [
+                {},
+                {},
+                {},
+                {},
+            ],
+        });
     }
 }

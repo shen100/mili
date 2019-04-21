@@ -49,10 +49,9 @@ body {
     color: #333;
 }
 
-.book-info .info .title-line .title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #333;
+.book-info .info .title-line .title:hover {
+    color: #007fff;
+    text-decoration: none;
 }
 
 .book-info .info .media {
@@ -93,6 +92,22 @@ body {
     height: 26px;
     border-radius: 50%;
     margin-right: 8px;
+}
+
+.book-info .info .title-line .title .presale {
+    vertical-align: middle;
+    display: inline-block;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-top: -3px;
+    height: 20px;
+    line-height: 20px;
+    color: #fff;
+    font-size: 12px;
+    cursor: default;
+    margin-right: 8px;
+    border-radius: 2px;
+    background-color: #ed7b11;
 }
 
 .lazy {
@@ -333,7 +348,7 @@ body {
     height: 34px;
     padding-left: 18px;
     padding-right: 6px;
-    background-image: url(../handbook/handbooks.scss);
+    background-image: url(../../images/handbook/corner-mark.png);
     background-repeat: no-repeat;
     color: #ef8625;
     background-size: auto 100%;
@@ -429,6 +444,11 @@ body {
     min-height: 70px;
 }
 
+.section-of-info .section:hover {
+    border-radius: 2px;
+    background-color: hsla(0, 0%, 84.7%, .2);
+}
+
 .section .step {
     align-items: center;
     display: flex;
@@ -473,8 +493,20 @@ body {
     content: "";
 }
 
+.section .step:before {
+    top: 0;
+}
+
+.section-of-info .section:first-child .step:before {
+    top: 50%;
+}
+
 .section .step:after {
     top: 50%;
+}
+
+.section-of-info .section:last-child .step:after {
+    top: 0;
 }
 
 .section-of-info .section .step:after, .section-of-info .section .step:before {
@@ -532,4 +564,210 @@ body {
 
 .section-of-info .aside {
     display: none;
+}
+
+.book-section-view {
+    padding: 1px 30px 30px;
+}
+
+.article-content {
+    word-break: break-word;
+    line-height: 1.75;
+    font-weight: 400;
+    font-size: 15px;
+    overflow-x: hidden;
+}
+
+.article-content h2 {
+    padding-bottom: 12px;
+    font-size: 24px;
+    border-bottom: 1px solid #ececec;
+    color: #333;
+    line-height: 1.5;
+    margin-top: 35px;
+    margin-bottom: 10px;
+}
+
+.book-card .header {
+    height: 50px;
+    border-bottom: 1px solid #eceded;
+    line-height: 50px;
+    padding-left: 25px;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+
+.handbooks {
+    width: 700px;
+    box-shadow: 0 1px 3px 0 rgba(4, 5, 13, .23);
+}
+
+.handbooks .item {
+    display: flex;
+    padding: 25px;
+    box-sizing: border-box;
+    background-color: #fff;
+    position: relative;
+    border-bottom: 1px solid #e6e8e8;
+}
+
+.handbooks .item:hover {
+    text-decoration: none;
+    background-color: #f7f9f9;
+}
+
+.handbooks .item:not(:last-child) {
+    border-bottom: 1px solid #e6e8e8;
+}
+
+.handbooks .poster {
+    width: 100px;
+    height: 140px;
+    flex-shrink: 0;
+    box-shadow: 3px 4px 12px 0 rgba(0, 0, 0, .2);
+    overflow: hidden;
+    background-color: #ccc;
+}
+
+.handbooks .poster .poster-img {
+    height: 100%;
+    width: 100%;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.handbooks .lazy {
+    position: relative;
+}
+
+.handbooks .info {
+    position: relative;
+    flex-grow: 1;
+    overflow: hidden;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #2e3135;
+    padding-left: 22px;
+}
+
+.handbooks .info .title {
+    color: inherit;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.handbooks .info .title .presale {
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 6px;
+    padding-right: 6px;
+    height: 20px;
+    margin-top: -3px;
+    line-height: 20px;
+    color: #fff;
+    font-size: 12px;
+    cursor: default;
+    margin-right: 8px;
+    border-radius: 2px;
+    background-color: #ed7b11;
+}
+
+.handbooks .info .desc {
+    margin-top: 5px;
+    line-height: 20px;
+    height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    color: #71777c;
+}
+
+.handbooks .info .author {
+    display: flex;
+    align-items: center;
+    margin-top: 6px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.handbooks .info .author .author-info {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.handbooks .info .author .user {
+    display: inline-flex;
+    align-items: center;
+    color: #000;
+}
+
+.handbooks .info .author .hero {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background-position: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.handbooks .info .author .author-desc {
+    color: #71777c;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.handbooks .info .author .author-desc .selfDescription {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.handbooks .info .other {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.handbooks .info .other .price {
+    color: #ed7b11;
+    font-size: 18px;
+    margin-right: 15px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.handbooks .info .other span.message {
+    opacity: .6;
+    font-size: 13px;
+    color: #71777c;
+}
+
+.handbooks .info .other span.message.presale {
+    color: #ed7b11;
+}
+
+.handbooks .info .footer-bar {
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.handbooks-aside {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 240px;
+}
+
+.handbooks {
+    width: 100%;
+    box-shadow: none;
 }
