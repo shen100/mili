@@ -13,6 +13,7 @@ export class UserConstants {
 export class ArticleConstants {
     static readonly SUMMARY_LENGTH: number = 100;
     static readonly MAX_CATEGORY_COUNT: number = 3;
+    static readonly MAX_TITLE_LENGTH: number = 100;
 }
 
 export class CategoryConstants {

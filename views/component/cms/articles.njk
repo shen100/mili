@@ -1,7 +1,7 @@
 {% if articles and articles.length %}
-<ul class="article-list">
+<div class="article-list">
     {% for article in articles %}
-    <li>
+    <div class="article-list-item">
         <div class="article-content" {% if article.image %} style="padding-right: 140px;" {% endif %}>
             <a href="/p/{{article.id}}.html" class="article-title">{{article.name}}</a>
             <p class="article-content">{{article.summary}}...</p>
@@ -24,7 +24,7 @@
             <img src="{{article.image}}" />
         </a>
         {% endif %}
-    </li>
+    </div>
     {% endfor %}
-</ul>
+</div>
 {% endif %}

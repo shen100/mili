@@ -383,4 +383,29 @@ export class ArticleService {
         }
         return false;
     }
+
+    // 随机返回文章
+    async randomArticles(page: number, pageSize: number) {
+        const articles = this.articleRepository.find({
+            select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                summary: true,
+                commentCount: true,
+                user: {
+                    id: true,
+                    username: true,
+                },
+            },
+            relations: ['user'],
+            where: {
+                deletedAt: null,
+                status: Not(ArticleStatus.VerifyFail),
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return articles;
+    }
 }

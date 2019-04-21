@@ -5,25 +5,25 @@
                 <nav class="nav-block">
                     <ul class="nav-list right">
                         <li class="nav-item active">
-                            <a href="/search?query=vue&amp;type=article&amp;period=all">全部</a>
+                            <a :href="`/search?query=${keyword}&type=article&period=0`">全部</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/search?query=vue&amp;type=article&amp;period=d1">一天内</a>
+                            <a :href="`/search?query=${keyword}&type=article&period=1`">一天内</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/search?query=vue&amp;type=article&amp;period=w1">一周内</a>
+                            <a :href="`/search?query=${keyword}&type=article&period=2`">一周内</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/search?query=vue&amp;type=article&amp;period=m3">三月内</a>
+                            <a :href="`/search?query=${keyword}&type=article&period=3`">三月内</a>
                         </li>
                     </ul>
                 </nav>
             </header>
-            <ul :key="aritlce.id" v-for="aritlce in aritlces">
-                <li>
-                    <ArticleItem :data="aritlce"/>
-                </li>
-            </ul>
+            <div id="articleBox" style="padding: 20px;padding-top: 10px;">
+                <div class="article-list">
+                    <ArticleItem :key="aritlce.id" v-for="aritlce in articles" :article="aritlce"/>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -37,14 +37,15 @@ export default {
     data () {
         return {
             keyword: window.keyword,
-            aritlces: []
+            articles: []
         };
     },
     mounted() {
         this.$nextTick(() => {
-            const url = `/search/keyword=?${encodeURIComponent(keyword)}`;
-            myHTTP.get(url).then((result) => {
+            const url = `/search?type=article&keyword=${encodeURIComponent(keyword)}`;
+            myHTTP.get(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.articles = this.articles.concat(res.data.data.articles);
                 }
             });
         });
@@ -59,7 +60,7 @@ export default {
 
 <style scoped>
 .nav-block {
-    height: 32px;
+    height: 50px;
     font-size: 12px;
     display: flex;
     align-items: center;
@@ -116,6 +117,10 @@ export default {
     background-color: #2b445d;
     transform: translateY(-50%);
     opacity: .5;
+}
+
+.article-list {
+    width: 100%;
 }
 </style>
 

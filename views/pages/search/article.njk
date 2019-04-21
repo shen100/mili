@@ -15,7 +15,7 @@
 
 {% block pageData %}
 <script>
-    var keyword = {{ globalConfig | dump }};
+    var keyword = {{ keyword | dump | safe }};
 </script>
 {% endblock %}
 

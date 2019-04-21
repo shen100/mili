@@ -27,6 +27,7 @@ import { Comment } from '../entity/comment.entity';
 import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
 import { HandbookController } from './handbook.controller';
+import { SearchService } from './search.service';
 
 @Module({
     imports: [
@@ -63,6 +64,7 @@ import { HandbookController } from './handbook.controller';
         MessageService,
         UploadService,
         CollectionService,
+        SearchService,
     ],
 })
 export class CMSModule {}
