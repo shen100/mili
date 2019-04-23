@@ -7,11 +7,13 @@ import { Article } from '../entity/article.entity';
 import { SearchService } from './search.service';
 import { recentTime } from '../utils/viewfilter';
 import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
+import { CategoryService } from './category.service';
 
 @Controller('/')
 export class SearchController {
     constructor(
         private readonly articleService: ArticleService,
+        private readonly categoryService: CategoryService,
         private readonly searchService: SearchService,
     ) {}
 
@@ -93,6 +95,16 @@ export class SearchController {
                     createdAtLabel: recentTime(item.createdAt, 'YYYY.MM.DD HH:mm'),
                 };
             });
+            return result;
+        }
+
+        if (type === 'category') {
+            let result;
+            if (!keyword) {
+                result = await this.categoryService.randomCategories(page, pageSize);
+            } else {
+                result = await this.categoryService.searchCategories(keyword, page, pageSize);
+            }
             return result;
         }
     }

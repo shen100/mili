@@ -24,7 +24,7 @@ export class CategoryController {
             return [];
         }
         name = decodeURIComponent(name);
-        const categories: Array<Category> = await this.categoryService.searchByName(name);
-        return categories;
+        const result = await this.categoryService.searchCategories(name, 1, 20);
+        return result.list;
     }
 }

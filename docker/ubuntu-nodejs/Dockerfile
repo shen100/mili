@@ -27,4 +27,4 @@ RUN sed -i s/archive.ubuntu.com/mirrors.aliyun.com/g /etc/apt/sources.list && \
     echo "------------------- pm2-logrotate --------------------" && \
     npm install -g pm2-logrotate --registry=${NPM_REGISTRY} && \
     echo "------------------- yarn --------------------" && \
-    npm install -g yarn --registry=${NPM_REGISTRY}
+    npm install -g yarn --registry=${NPM_REGISTRY} && \

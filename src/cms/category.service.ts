@@ -23,32 +23,50 @@ export class CategoryService {
         return categories;
     }
 
-    async searchByName(name: string) {
-        let category: Category;
-        let categories: Array<Category>;
-        [category, categories] = await Promise.all([
-            this.categoryRepository.findOne({
+    // 随机返回文章
+    async randomCategories(page: number, pageSize: number) {
+        const [list, count] = await Promise.all([
+            this.categoryRepository.find({
                 select: {
                     id: true,
                     name: true,
+                    followerCount: true,
+                    articleCount: true,
                 },
-                where: { name },
+                skip: (page - 1) * pageSize,
+                take: pageSize,
             }),
+            this.categoryRepository.count(),
+        ]);
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    async searchCategories(keyword: string, page: number, pageSize: number) {
+        const condition = {
+            name: Like(`%${keyword}%`),
+        };
+        const [list, count] = await Promise.all([
             this.categoryRepository.find({
                 select: {
                     id: true,
                     name: true,
                 },
-                where: {
-                    name: Like(`${name}%`),
-                },
-                take: 10,
+                where: condition,
+                skip: (page - 1) * pageSize,
+                take: pageSize,
             } as any),
+            this.categoryRepository.count(condition),
         ]);
-        categories = categories || [];
-        if (!category) {
-            return categories;
-        }
-        return _.unionWith(categories, [category], _.isEqual);
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
     }
 }

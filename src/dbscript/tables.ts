@@ -7,21 +7,24 @@ const config = new ConfigService();
     const connection = await createConnection(config.db);
     try {
 
-        await connection.manager.query(`CREATE TABLE userlikearticles (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            user_id int(11) unsigned NOT NULL,
-            article_id int(11) unsigned NOT NULL,
-            created_at datetime NOT NULL,
-            PRIMARY KEY (id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+        await connection.manager.query(`alter table categories add column follower_count int default 0`);
+        await connection.manager.query(`alter table categories add column article_count int default 0`);
 
-        await connection.manager.query(`CREATE TABLE user_follower (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            user_id int(11) unsigned NOT NULL,
-            follower_id int(11) unsigned NOT NULL,
-            created_at datetime NOT NULL,
-            PRIMARY KEY (id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+        // await connection.manager.query(`CREATE TABLE userlikearticles (
+        //     id int(11) unsigned NOT NULL AUTO_INCREMENT,
+        //     user_id int(11) unsigned NOT NULL,
+        //     article_id int(11) unsigned NOT NULL,
+        //     created_at datetime NOT NULL,
+        //     PRIMARY KEY (id)
+        // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+
+        // await connection.manager.query(`CREATE TABLE user_follower (
+        //     id int(11) unsigned NOT NULL AUTO_INCREMENT,
+        //     user_id int(11) unsigned NOT NULL,
+        //     follower_id int(11) unsigned NOT NULL,
+        //     created_at datetime NOT NULL,
+        //     PRIMARY KEY (id)
+        // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         // const sql = `CREATE TABLE settings (
         //     id int(11) unsigned NOT NULL AUTO_INCREMENT,

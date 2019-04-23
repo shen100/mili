@@ -1,13 +1,13 @@
 <template>
     <div class="search-view">
-        <Pinterest url="/search" :query="{ keyword, type: 'category' }" @load="onLoad">
+        <Pinterest url="/search" :query="{ keyword, type: 'user' }" @load="onLoad">
             <template v-slot:loading>
                 <CategoryLoading />
             </template>
             <template v-slot:content>
                 <div>
                     <div class="searchcategory-list">
-                        <CategoryItem :key="category.id" v-for="(category, i) in categories" :category="category" />
+                        <CategoryItem :noBorderBottom="i === categories.length - 1" :key="category.id" v-for="(category, i) in categories" :category="category" />
                     </div>
                     <div style="width: 660px;height: 200px; padding: 20px;  background: #fff;">
                         <CategoryLoading />

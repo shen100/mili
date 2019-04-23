@@ -26,4 +26,10 @@ export class Category {
 
     @Column('int', { name: 'parent_id' })
     parentID: number;
+
+    @Column('int', { name: 'follower_count' })
+    followerCount: number; // 有多少人关注
+
+    @Column('int', { name: 'article_count' })
+    articleCount: number; // 有多少人关注
 }
