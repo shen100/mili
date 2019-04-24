@@ -450,4 +450,50 @@ export class UserService {
         }
         return false;
     }
+
+    async searchUsers(keyword: string, page: number, pageSize: number) {
+        const condition = {
+            username: Like(`%${keyword}%`),
+        };
+        const [list, count] = await Promise.all([
+            this.userRepository.find({
+                select: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
+                where: condition,
+                skip: (page - 1) * pageSize,
+                take: pageSize,
+            } as any),
+            this.userRepository.count(condition),
+        ]);
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    async randomUsers(page: number, pageSize: number) {
+        const [list, count] = await Promise.all([
+            this.userRepository.find({
+                select: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
+                skip: (page - 1) * pageSize,
+                take: pageSize,
+            }),
+            this.userRepository.count(),
+        ]);
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
 }

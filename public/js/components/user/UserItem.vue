@@ -9,7 +9,7 @@
                         <span class="position">前端工程师 @ 联想云</span>
                     </div>
                     <div class="detail">
-                        <a data-v-42acdba4="" href="/user/5a79089b6fb9a0633c65f0a1/followers" target="_blank" rel="">
+                        <a href="/user/5a79089b6fb9a0633c65f0a1/followers" target="_blank" rel="">
                             <span >13 个关注者</span>
                         </a>
                     </div>
@@ -23,8 +23,7 @@
 <script>
 export default {
     props: [
-        'category',
-        'noBorderBottom'
+        'user',
     ],
 }
 </script>

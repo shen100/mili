@@ -30,6 +30,7 @@ module.exports = {
         'entry/search/all': './public/js/entry/search/all.js',
         'entry/search/article': './public/js/entry/search/article.js',
         'entry/search/category': './public/js/entry/search/category.js',
+        'entry/search/user': './public/js/entry/search/user.js',
         'entry/admin/app': './public/js/entry/admin/app.js',
     },
     output: {

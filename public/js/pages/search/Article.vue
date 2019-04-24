@@ -47,7 +47,7 @@ import Pinterest from '~/js/components/common/Pinterest.vue';
 export default {
     data () {
         return {
-            keyword: encodeURIComponent(window.keyword),
+            keyword: encodeURIComponent(window.searchKeyword),
             articles: []
         };
     },

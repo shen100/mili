@@ -2,15 +2,15 @@
     <div class="search-view">
         <Pinterest url="/search" :query="{ keyword, type: 'user' }" @load="onLoad">
             <template v-slot:loading>
-                <CategoryLoading />
+                <UserLoading />
             </template>
             <template v-slot:content>
                 <div>
                     <div class="searchcategory-list">
-                        <CategoryItem :noBorderBottom="i === categories.length - 1" :key="category.id" v-for="(category, i) in categories" :category="category" />
+                        <UserItem :key="user.id" v-for="user in users" :user="user" />
                     </div>
                     <div style="width: 660px;height: 200px; padding: 20px;  background: #fff;">
-                        <CategoryLoading />
+                        <UserLoading />
                     </div>
                 </div>
             </template>
@@ -22,14 +22,14 @@
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import Pinterest from '~/js/components/common/Pinterest.vue';
-import CategoryLoading from '~/js/components/category/CategoryLoading.vue';
-import CategoryItem from '~/js/components/category/CategoryItem.vue';
+import UserLoading from '~/js/components/user/UserLoading.vue';
+import UserItem from '~/js/components/user/UserItem.vue';
 
 export default {
     data () {
         return {
-            keyword: encodeURIComponent(window.keyword),
-            categories: []
+            keyword: encodeURIComponent(window.searchKeyword),
+            users: []
         };
     },
     mounted() {
@@ -38,13 +38,13 @@ export default {
     },
     methods: {
         onLoad(result) {
-            this.categories = this.categories.concat(result.data.data.list);
+            this.users = this.users.concat(result.data.data.list);
         }
     },
     components: {
         Pinterest,
-        CategoryItem,
-        CategoryLoading,
+        UserItem,
+        UserLoading,
     }
 }
 </script>

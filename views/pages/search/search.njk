@@ -15,10 +15,10 @@
 
 {% block pageData %}
 <script>
-    var keyword = {{ keyword | dump | safe }};
+    var searchKeyword = {{ searchKeyword | dump | safe }};
 </script>
 {% endblock %}
 
 {% block devjs %}
-  {{ loadjs('entry/search/category.js') }}
+  {{ loadjs('entry/search/' + searchType + '.js') }}
 {% endblock %}

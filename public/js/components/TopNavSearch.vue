@@ -1,18 +1,18 @@
 <template>
     <li id="topnavsearch" class="search">
-        <form target="_blank" action="/search" accept-charset="UTF-8" method="get">
-            <input type="text" name="q" value="" autocomplete="off" placeholder="搜索" class="search-input">
-            <a class="search-btn" href="javascript:void(0)">
+        <form v-clickoutside="onClickOutside" target="_blank" :action="`/search?q=${keyword}`" accept-charset="UTF-8" method="get">
+            <input v-model="searchKeyword" @focus="onFocus" type="text" name="q" value="" autocomplete="off" placeholder="搜索" class="search-input">
+            <a class="search-btn" :href="`/search?q=${keyword}`" target="_blank">
                 <i class="iconfont ic-search"></i>
             </a>
-            <div id="navbar-search-tips">
+            <div v-if="searchTipVisible" id="navbar-search-tips">
                 <div class="search-trending">
                     <div class="search-trending-header clearfix">
                         <span>热门搜索</span> 
                         <a><i class="iconfont ic-search-change" style="transform: rotate(0deg);"></i> 换一批</a>
                     </div> 
                     <ul class="search-trending-tag-wrap">
-                        <li :key="trending.id" v-for="trending in trendingArr"><a href="" target="_blank">{{trending.label}}</a></li>
+                        <li :key="trending.id" v-for="trending in trendingArr"><a :href="`/search?q=${encodeURIComponent(trending.label)}`" target="_blank">22{{trending.label}}</a></li>
                     </ul>
                 </div>
                 <div class="search-recent">
@@ -32,11 +32,14 @@
 </template>
 
 <script>
+import { trim } from '~/js/utils/utils.js';
 
 export default {
     name: 'TopNavSearch',
     data: function() {
         return {
+            searchTipVisible: false,
+            searchKeyword: '',
             trendingArr: [
                 { label: '区块链' },
                 { label: '小程序' },
@@ -55,6 +58,23 @@ export default {
                 { label: 'ts' },
             ]
         };
+    },
+    computed: {
+        keyword: {
+            get: function () {
+                let keyword = this.searchKeyword;
+                keyword = trim(keyword || '');
+                return encodeURIComponent(keyword);
+            },
+        }
+    },
+    methods: {
+        onFocus () {
+            this.searchTipVisible = true;
+        },
+        onClickOutside () {
+            this.searchTipVisible = false;
+        }
     }
 }
 </script>

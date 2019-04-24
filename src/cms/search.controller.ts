@@ -8,6 +8,7 @@ import { SearchService } from './search.service';
 import { recentTime } from '../utils/viewfilter';
 import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
 import { CategoryService } from './category.service';
+import { UserService } from '../user/user.service';
 
 @Controller('/')
 export class SearchController {
@@ -15,6 +16,7 @@ export class SearchController {
         private readonly articleService: ArticleService,
         private readonly categoryService: CategoryService,
         private readonly searchService: SearchService,
+        private readonly userService: UserService,
     ) {}
 
     @Get('/')
@@ -44,28 +46,18 @@ export class SearchController {
     }
 
     @Get('/search')
-    async searchView(@Query('keyword') keyword: string, @Query('type') type: string, @Res() res) {
-        if (!keyword || keyword.length > ArticleConstants.MAX_TITLE_LENGTH) {
-            keyword = '';
+    async searchView(@Query('q') q: string, @Query('type') type: string, @Res() res) {
+        let searchKeyword = q;
+        if (!searchKeyword || searchKeyword.length > ArticleConstants.MAX_TITLE_LENGTH) {
+            searchKeyword = '';
         }
-        keyword = decodeURIComponent(keyword);
-        let view = 'pages/search/all';
-        switch (type) {
-            case 'all': {
-                view = 'pages/search/all';
-                break;
-            }
-            case 'article': {
-                view = 'pages/search/article';
-                break;
-            }
-            case 'channel': {
-                view = 'pages/search/category';
-                break;
-            }
+        searchKeyword = decodeURIComponent(searchKeyword);
+        if (['all', 'article', 'channel', 'user'].indexOf(type) < 0) {
+            type = 'all';
         }
-        res.render(view, {
-            keyword,
+        res.render('pages/search/search', {
+            searchKeyword,
+            searchType: type,
         });
     }
 
@@ -77,10 +69,6 @@ export class SearchController {
         keyword = decodeURIComponent(keyword);
 
         const pageSize: number = 20;
-
-        if (!type) {
-            // 查询综合
-        }
 
         if (type === 'article') {
             let result;
@@ -107,5 +95,17 @@ export class SearchController {
             }
             return result;
         }
+
+        if (type === 'user') {
+            let result;
+            if (!keyword) {
+                result = await this.userService.randomUsers(page, pageSize);
+            } else {
+                result = await this.userService.searchUsers(keyword, page, pageSize);
+            }
+            return result;
+        }
+
+        // 查询综合
     }
 }
