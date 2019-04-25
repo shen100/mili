@@ -5,12 +5,12 @@
                 <div class="lazy avatar avatar loaded" style="background-image: url(&quot;https://mirror-gold-cdn.xitu.io/168e08de05b253d8f62?imageView2/1/w/45/h/45/q/85/format/webp/interlace/1&quot;);"></div>
                 <div class="info-box">
                     <div class="profile">
-                        <span class="username"><em>vue</em></span>
-                        <span class="position">前端工程师 @ 联想云</span>
+                        <span class="username" v-html="userData.username"></span>
+                        <span class="position">{{userData.job}}</span>
                     </div>
                     <div class="detail">
                         <a href="/user/5a79089b6fb9a0633c65f0a1/followers" target="_blank" rel="">
-                            <span >13 个关注者</span>
+                            <span>{{userData.followerCount || 0}} 个关注者</span>
                         </a>
                     </div>
                 </div>
@@ -24,7 +24,23 @@
 export default {
     props: [
         'user',
+        'keyword',
     ],
+    data () {
+        const strongHTML = `<em style="color: #e8001c">${this.keyword}</em>`;
+        const userData = {
+            ...this.user,
+            username: this.user.username.replace(this.keyword, strongHTML),
+        };
+        console.log(userData);
+        return {
+            userData,
+        };
+    },
+    mounted() {
+        this.$nextTick(() => {
+        });
+    },
 }
 </script>
 
@@ -70,7 +86,7 @@ export default {
 .info-box .profile {
     display: flex;
     align-items: baseline;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: #2e3135;
     max-width: 480px;
@@ -79,7 +95,7 @@ export default {
     text-overflow: ellipsis;
 }
 
-.info-box .profile em {
+.username em {
     color: #e8001c;
     font-style: normal;
 }

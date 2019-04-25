@@ -1,13 +1,13 @@
 <template>
     <div class="search-view">
-        <Pinterest url="/search" :query="{ keyword, type: 'category' }" @load="onLoad">
+        <Pinterest url="/search" :query="{ q: encodedKeyword, type: 'category' }" @load="onLoad">
             <template v-slot:loading>
                 <CategoryLoading />
             </template>
             <template v-slot:content>
                 <div>
                     <div class="searchcategory-list">
-                        <CategoryItem :key="category.id" v-for="(category, i) in categories" :category="category" />
+                        <CategoryItem :key="category.id" :category="category" :keyword="keyword" v-for="category in categories" />
                     </div>
                     <div style="width: 660px;height: 200px; padding: 20px;  background: #fff;">
                         <CategoryLoading />
@@ -28,7 +28,8 @@ import CategoryItem from '~/js/components/category/CategoryItem.vue';
 export default {
     data () {
         return {
-            keyword: encodeURIComponent(window.searchKeyword),
+            keyword: window.searchKeyword,
+            encodedKeyword: encodeURIComponent(window.searchKeyword),
             categories: []
         };
     },

@@ -7,9 +7,6 @@
             <div class="meta">
                 <div class="read"></div>
                 <div class="small"></div>
-                <div class="subscribe-sep"> · </div>
-                <div class="read"></div>
-                <div class="small"></div>
             </div>
         </div>
         <div class="user-follower-btn"></div>

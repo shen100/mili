@@ -1,13 +1,13 @@
 <template>
     <div class="search-view">
-        <Pinterest url="/search" :query="{ keyword, type: 'user' }" @load="onLoad">
+        <Pinterest url="/search" :query="{ q: encodedKeyword, type: 'user' }" @load="onLoad">
             <template v-slot:loading>
                 <UserLoading />
             </template>
             <template v-slot:content>
                 <div>
                     <div class="searchcategory-list">
-                        <UserItem :key="user.id" v-for="user in users" :user="user" />
+                        <UserItem :key="user.id" :keyword="keyword" v-for="user in users" :user="user" />
                     </div>
                     <div style="width: 660px;height: 200px; padding: 20px;  background: #fff;">
                         <UserLoading />
@@ -28,7 +28,8 @@ import UserItem from '~/js/components/user/UserItem.vue';
 export default {
     data () {
         return {
-            keyword: encodeURIComponent(window.searchKeyword),
+            keyword: window.searchKeyword,
+            encodedKeyword: encodeURIComponent(window.searchKeyword),
             users: []
         };
     },

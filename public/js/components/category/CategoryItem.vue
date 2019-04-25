@@ -6,10 +6,10 @@
                     <div class="lazy thumb thumb loaded" style="background-image: url(&quot;https://lc-gold-cdn.xitu.io/7b5c3eb591b671749fee.png?imageView2/2/w/200/h/64/q/85/format/webp/interlace/1&quot;); background-size: contain;"></div>
                 </a>
                 <div class="meta-box">
-                    <div class="title"><em>{{category.name}}</em></div>
+                    <div class="title" v-html="categoryData.name"></div>
                     <div class="stat">
-                        <span class="subscribe">{{category.followerCount}} 关注 · </span>
-                        <span class="article">{{category.articleCount}} 文章</span>
+                        <span class="subscribe">{{categoryData.followerCount || 0}} 关注 · </span>
+                        <span class="article">{{categoryData.articleCount || 0}} 文章</span>
                     </div>
                 </div>
             </div>
@@ -23,8 +23,19 @@
 <script>
 export default {
     props: [
+        'keyword',
         'category',
     ],
+    data () {
+        const strongHTML = `<em style="color: #e8001c">${this.keyword}</em>`;
+        const categoryData = {
+            ...this.category,
+            name: this.category.name.replace(this.keyword, strongHTML),
+        };
+        return {
+            categoryData,
+        };
+    },
 }
 </script>
 
