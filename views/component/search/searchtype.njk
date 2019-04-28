@@ -1,10 +1,10 @@
 <div class="category-nav-box">
     <div class="category-nav">
         <ul class="category-list">
-            <li><a href="/search?type={{searchType}}&q={{searchKeyword}}" class="category-item category-item-select">综合</a></li>
-            <li><a href="/search?type={{searchType}}&q={{searchKeyword}}" class="category-item">文章</a></li>
-            <li><a href="/search?type={{searchType}}&q={{searchKeyword}}" class="category-item">频道</a></li>
-            <li><a href="/search?type={{searchType}}&q={{searchKeyword}}" class="category-item">用户</a></li>
+            <li><a href="/search?q={{keywordEncoded}}" class="category-item {% if searchType == 'all' %}category-item-select {% endif %}">综合</a></li>
+            <li><a href="/search?type=article&q={{keywordEncoded}}" class="category-item {% if searchType == 'article' %}category-item-select {% endif %}">文章</a></li>
+            <li><a href="/search?type=channel&q={{keywordEncoded}}" class="category-item {% if searchType == 'channel' %}category-item-select {% endif %}">频道</a></li>
+            <li><a href="/search?type=user&q={{keywordEncoded}}" class="category-item {% if searchType == 'user' %}category-item-select {% endif %}">用户</a></li>
         </ul>
     </div>
 </div>

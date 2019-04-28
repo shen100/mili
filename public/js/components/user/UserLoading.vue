@@ -4,10 +4,6 @@
         <div class="content">
             <div class="text"></div>
             <div class="text animation-delay"></div>
-            <div class="meta">
-                <div class="read"></div>
-                <div class="small"></div>
-            </div>
         </div>
         <div class="user-follower-btn"></div>
     </div>

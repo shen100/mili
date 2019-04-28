@@ -51,11 +51,12 @@ export class SearchController {
         if (!searchKeyword || searchKeyword.length > ArticleConstants.MAX_TITLE_LENGTH) {
             searchKeyword = '';
         }
-        searchKeyword = decodeURIComponent(searchKeyword);
+        const keywordEncoded = encodeURIComponent(searchKeyword);
         if (['all', 'article', 'channel', 'user'].indexOf(type) < 0) {
             type = 'all';
         }
         res.render('pages/search/search', {
+            keywordEncoded,
             searchKeyword,
             searchType: type,
         });

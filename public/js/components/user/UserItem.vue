@@ -2,7 +2,7 @@
     <div class="item">
         <div class="user">
             <a href="/user/5a79089b6fb9a0633c65f0a1" target="_blank" class="link">
-                <div class="lazy avatar avatar loaded" style="background-image: url(&quot;https://mirror-gold-cdn.xitu.io/168e08de05b253d8f62?imageView2/1/w/45/h/45/q/85/format/webp/interlace/1&quot;);"></div>
+                <div class="lazy avatar avatar loaded" :style="{'background-image': `url(${userData.avatarURL})`}"></div>
                 <div class="info-box">
                     <div class="profile">
                         <span class="username" v-html="userData.username"></span>

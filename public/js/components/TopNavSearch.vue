@@ -62,9 +62,9 @@ export default {
     computed: {
         keyword: {
             get: function () {
-                let keyword = this.searchKeyword;
-                keyword = trim(keyword || '');
-                return encodeURIComponent(keyword);
+                let k = this.searchKeyword;
+                k = trim(k || '');
+                return encodeURIComponent(k);
             },
         }
     },
