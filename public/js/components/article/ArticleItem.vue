@@ -24,8 +24,22 @@
 <script>
 export default {
     props: [
+        'keyword',
         'article'
     ],
 }
 </script>
+
+<style scoped>
+.article-list-item {
+    padding: 20px;
+    margin-bottom: 0;
+    box-sizing: border-box;
+}
+
+.article-list-item:hover {
+    background-color: rgba(222, 222, 222, 0.1);
+}
+</style>
+
 

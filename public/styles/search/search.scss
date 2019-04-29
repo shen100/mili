@@ -2,13 +2,131 @@ body {
     background: #f4f5f5;
 }
 
-.search-view {
+.search-view-box {
     width: 960px;
     margin: 0 auto;
 }
 
+.search-view {
+    width: 665px;
+    margin-bottom: 40px;
+    display: inline-block;
+}
+
 .result-list {
-    width: 700px;
+    width: 665px;
     background-color: #fff;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+}
+
+.side-box {
+    float: right;
+}
+
+.search-side-ad1 {
+    width: 275px;
+    text-align: center;
+    background: #fff;
+    padding: 12px 0;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+
+.recommended-books, .recommended-authors {
+    border-radius: 2px;
+    overflow: hidden;
+    background: #fff;
+    margin-bottom: 20px;
+    font-size: 13px;
+    text-align: center;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+}
+
+.recommended-books {
+    padding: 0; 
+}
+
+.recommended-books .book-item {
+    padding: 15px 16px;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+
+.recommended-books .book-item:hover {
+    background: #f8f8f8;
+}
+
+.recommended-books .book-item-img {
+    float: left;
+    width: 52px;
+    height: 72px;
+}
+
+.recommended-books .book-item-info {
+    float: left;
+    float: left;
+    width: 180px;
+    margin-left: 10px;
+    text-align: left;
+}
+
+.recommended-books .book-item-title {
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.book-item-buycount {
+    color: #878c90;
+    float: left;
+    height: 20px;
+    line-height: 20px;
+}
+
+.try-read {
+    height: 20px;
+    line-height: 20px;
+    color: #fff;
+    font-size: 12px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 2px;
+    background-color: #007fff;
+    float: right;
+}
+
+.try-read:after {
+    width: 0;
+    height: 0;
+    content: "";
+    display: inline-block;
+    margin-left: 3px;
+    border-color: transparent transparent transparent #fff;
+    border-style: solid;
+    border-width: 3px 0 3px 3px;
+}
+
+.recommended-books .title, .recommended-authors .title {
+    padding: 16px 16px 0 16px;
+    text-align: left;
+    border-bottom: 1px solid hsla(0, 0%, 58.8%, .1);
+    padding-bottom: 12px;
+}
+
+.recommended-books .title span, .recommended-authors .title span {
+    font-size: 14px;
+    color: #969696;
+}
+
+.recommended-authors .title .page-change {
+    float: right;
+    font-size: 14px;
+    color: #969696;
+}
+
+.recommended-authors .title .page-change i {
+    display: inline-block;
+    line-height: 1;
+    transition: .5s ease;
 }

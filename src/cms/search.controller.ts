@@ -3,12 +3,13 @@ import {
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { ArticleConstants } from '../config/constants';
-import { Article } from '../entity/article.entity';
 import { SearchService } from './search.service';
 import { recentTime } from '../utils/viewfilter';
 import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
 import { CategoryService } from './category.service';
 import { UserService } from '../user/user.service';
+import { Category } from 'entity/category.entity';
+import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
 
 @Controller('/')
 export class SearchController {
@@ -63,7 +64,8 @@ export class SearchController {
     }
 
     @Get('/api/v1/search')
-    async searchArticle(@Query('keyword') keyword: string, @Query('type') type: string, @Query('page', ParsePagePipe) page: number) {
+    async searchArticle(@Query('keyword') keyword: string, @Query('type') type: string,
+                        @Query('period', ShouldIntPipe) period: number, @Query('page', ParsePagePipe) page: number) {
         if (!keyword || keyword.length > ArticleConstants.MAX_TITLE_LENGTH) {
             keyword = '';
         }
@@ -108,5 +110,20 @@ export class SearchController {
         }
 
         // 查询综合
+        let category: Category;
+        let articleResult;
+        if (keyword) {
+            category = await this.categoryService.searchCategoryByName(keyword);
+        }
+        // period
+        // 0: 全部
+        // 1: 一天内
+        // 2: 一周内
+        // 3: 三月内
+        articleResult = await this.searchService.searchArticle(keyword, page, pageSize);
+        return {
+            category,
+            ...articleResult,
+        };
     }
 }

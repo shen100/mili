@@ -12,8 +12,8 @@
 <style scoped>
 .user-placeholder {
     position: relative;
-    padding: 15px 2px 0 0;
-    margin-bottom: 50px;
+    padding: 20px;
+    margin-bottom: 30px;
     overflow: hidden;
 }
 

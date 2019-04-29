@@ -54,6 +54,10 @@ export default {
     box-sizing: border-box;
 }
 
+.user:hover {
+    background-color: hsla(0, 0%, 87.1%, .1);
+}
+
 .link {
     display: flex;
     align-items: center;

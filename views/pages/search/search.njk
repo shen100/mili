@@ -3,7 +3,44 @@
 {% block main %}
 <div class="container">
     {% include '../../component/search/searchtype.njk' %}
-    <div id="search-view" class="search-view"></div>
+    <div class="search-view-box">
+        <div id="search-view" class="search-view"></div>
+        <div class="side-box">
+            <div class="recommended-books">
+                <div class="title">
+                    <span>推荐小册</span>
+                </div>
+                <ul>
+                    {% for handBook in recommendHandBooks %}
+                    <li class="book-item">
+                        <img class="book-item-img" src="{{imgPath}}/index/book1.jpg">
+                        <div class="book-item-info">
+                            <div class="book-item-title">{{handBook.name}}</div>
+                            <div>
+                                <span class="book-item-buycount">{{handBook.saleCount}}人已购买</span>
+                                <span class="try-read">试读</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% if baiduAd.ad250x250 %}
+            <div class="search-side-ad1">
+                <script type="text/javascript">
+                    (function() {
+                        var s = "_" + Math.random().toString(36).slice(2);
+                        document.write('<div style="" id="' + s + '"></div>');
+                        (window.slotbydup = window.slotbydup || []).push({
+                            id: "{{baiduAd.ad250x250}}",
+                            container: s
+                        });
+                    })();
+                </script>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -16,9 +53,14 @@
 {% block pageData %}
 <script>
     var searchKeyword = {{ searchKeyword | dump | safe }};
+    var searchType = '{{ searchType }}';
 </script>
 {% endblock %}
 
+{% block libjs %}
+<script src="//cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript" async="async" defer="defer"></script>
+{% endblock %}
+
 {% block devjs %}
-  {{ loadjs('entry/search/' + searchType + '.js') }}
+    {{ loadjs('entry/search/search.js') }}
 {% endblock %}

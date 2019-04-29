@@ -30,6 +30,9 @@ export class Handbook {
     @Column('int', { name: 'word_count' })
     wordCount: number; // 小册一共写了多少字
 
+    @Column('int', { name: 'sale_count' })
+    saleCount: number;
+
     @Column('int', { name: 'comment_count' })
     commentCount: number;
 

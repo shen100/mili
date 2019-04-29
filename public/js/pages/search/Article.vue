@@ -4,30 +4,30 @@
             <header>
                 <nav class="nav-block">
                     <ul class="nav-list right">
-                        <li class="nav-item active">
-                            <a :href="`/search?query=${keyword}&type=article&period=0`">全部</a>
+                        <li class="nav-item" :class="{active: period === 0}">
+                            <a :href="`/search?type=article&query=${encodedKeyword}&period=0`">全部</a>
                         </li>
-                        <li class="nav-item">
-                            <a :href="`/search?query=${keyword}&type=article&period=1`">一天内</a>
+                        <li class="nav-item" :class="{active: period === 1}">
+                            <a :href="`/search?type=article&query=${encodedKeyword}&period=1`">一天内</a>
                         </li>
-                        <li class="nav-item">
-                            <a :href="`/search?query=${keyword}&type=article&period=2`">一周内</a>
+                        <li class="nav-item" :class="{active: period === 2}">
+                            <a :href="`/search?type=article&query=${encodedKeyword}&period=2`">一周内</a>
                         </li>
-                        <li class="nav-item">
-                            <a :href="`/search?query=${keyword}&type=article&period=3`">三月内</a>
+                        <li class="nav-item" :class="{active: period === 3}">
+                            <a :href="`/search?type=article&query=${encodedKeyword}&period=3`">三月内</a>
                         </li>
                     </ul>
                 </nav>
             </header>
             <div style="padding: 20px;padding-top: 10px;">
-                <Pinterest url="/search" :query="{ keyword, type: 'article' }" @load="onLoad">
+                <Pinterest url="/search" :query="{ keyword, type: 'article', period }" @load="onLoad">
                     <template v-slot:loading>
                         <ArticleLoading />
                     </template>
                     <template v-slot:content>
                         <div>
                             <div class="article-list">
-                                <ArticleItem :key="aritlce.id" v-for="aritlce in articles" :article="aritlce"/>
+                                <ArticleItem :key="aritlce.id" v-for="aritlce in articles" :article="article"/>
                             </div>
                         </div>
                     </template>
@@ -47,7 +47,8 @@ import Pinterest from '~/js/components/common/Pinterest.vue';
 export default {
     data () {
         return {
-            keyword: encodeURIComponent(window.searchKeyword),
+            keyword: window.searchKeyword,
+            encodedKeyword: encodeURIComponent(window.searchKeyword),
             articles: []
         };
     },

@@ -17,6 +17,7 @@ export class LocalsMiddleware implements NestMiddleware {
             res.locals.jsPath = configService.static.jsPath;
             res.locals.imgPath = configService.static.imgPath;
             res.locals.fontPath = configService.static.fontPath;
+            res.locals.baiduAd = configService.baiduAd;
             res.locals.dllJSTimestamp = configService.static.dllJSTimestamp;
             res.locals.globalConfig = {
                 hostname: configService.server.hostname,

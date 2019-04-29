@@ -1,6 +1,6 @@
 <template>
-    <div class="search-view">
-        <Pinterest url="/search" :query="{ q: encodedKeyword, type: 'user' }" @load="onLoad">
+    <div class="search-view" style="background: #fff;">
+        <Pinterest url="/search" :query="{ q: keyword, type: 'user' }" @load="onLoad">
             <template v-slot:loading>
                 <UserLoading />
             </template>
@@ -8,9 +8,6 @@
                 <div>
                     <div class="searchcategory-list">
                         <UserItem :key="user.id" :keyword="keyword" v-for="user in users" :user="user" />
-                    </div>
-                    <div style="width: 660px;height: 200px; padding: 20px;  background: #fff;">
-                        <UserLoading />
                     </div>
                 </div>
             </template>
@@ -53,7 +50,6 @@ export default {
 <style scoped>
 .searchcategory-list {
     background-color: #fff;
-    width: 700px;
 }
 </style>
 

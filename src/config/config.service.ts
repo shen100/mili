@@ -82,6 +82,14 @@ class ServerConfig extends BaseConfig {
     }
 }
 
+class BaiduAdConfig extends BaseConfig {
+    readonly ad250x250: string;
+
+    constructor(cfg) {
+        super(cfg);
+    }
+}
+
 class AliyunOSSConfig extends BaseConfig {
     readonly accessKeyID: string;
     readonly accessKeySecret: string;
@@ -150,6 +158,7 @@ export class ConfigService {
     readonly redis: RedisConfig;
     readonly server: ServerConfig;
     readonly static: StaticConfig;
+    readonly baiduAd: BaiduAdConfig;
     readonly aliyunOSS: AliyunOSSConfig;
     readonly aliyunSMS: AliyunSMSConfig;
     readonly geetestCaptcha: GeetestCaptcha;
@@ -176,6 +185,7 @@ export class ConfigService {
         this.redis = new RedisConfig(defaultJSON.redis);
         this.server = new ServerConfig(defaultJSON.server);
         this.static = new StaticConfig(defaultJSON.static);
+        this.baiduAd = new BaiduAdConfig(defaultJSON.baiduAd);
         this.aliyunOSS = new AliyunOSSConfig(defaultJSON.aliyunOSS);
         this.aliyunSMS = new AliyunSMSConfig(defaultJSON.aliyunSMS);
         this.geetestCaptcha = new GeetestCaptcha(defaultJSON.geetestCaptcha);

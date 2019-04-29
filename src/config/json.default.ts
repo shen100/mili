@@ -47,6 +47,9 @@ export default {
         rateLimitMax: 1000, // limit each IP to rateLimitMax requests per windowMs
         swaggerPrefix: 'api/v1',
     },
+    baiduAd: {
+        ad250x250: '',
+    },
     aliyunOSS: {
         accessKeyID: '',
         accessKeySecret: '',

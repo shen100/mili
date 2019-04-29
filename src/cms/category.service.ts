@@ -69,4 +69,16 @@ export class CategoryService {
             pageSize,
         };
     }
+
+    async searchCategoryByName(keyword: string) {
+        return await this.categoryRepository.findOne({
+            select: {
+                id: true,
+                name: true,
+            },
+            where: {
+                name: keyword,
+            },
+        });
+    }
 }

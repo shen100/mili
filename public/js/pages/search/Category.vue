@@ -1,6 +1,6 @@
 <template>
     <div class="search-view">
-        <Pinterest url="/search" :query="{ q: encodedKeyword, type: 'category' }" @load="onLoad">
+        <Pinterest url="/search" :query="{ q: keyword, type: 'category' }" @load="onLoad">
             <template v-slot:loading>
                 <CategoryLoading />
             </template>
@@ -9,7 +9,7 @@
                     <div class="searchcategory-list">
                         <CategoryItem :key="category.id" :category="category" :keyword="keyword" v-for="category in categories" />
                     </div>
-                    <div style="width: 660px;height: 200px; padding: 20px;  background: #fff;">
+                    <div style="width: 660px; height: 200px; padding: 20px;  background: #fff;">
                         <CategoryLoading />
                     </div>
                 </div>
