@@ -27,10 +27,7 @@ module.exports = {
         'entry/editor/drafts': './public/js/entry/editor/drafts.js',
         'entry/handbook/handbooks': './public/js/entry/handbook/handbooks.js',
         'entry/handbook/handbookDetail': './public/js/entry/handbook/handbookDetail.js',
-        'entry/search/all': './public/js/entry/search/all.js',
-        'entry/search/article': './public/js/entry/search/article.js',
-        'entry/search/channel': './public/js/entry/search/channel.js',
-        'entry/search/user': './public/js/entry/search/user.js',
+        'entry/search/search': './public/js/entry/search/search.js',
         'entry/admin/app': './public/js/entry/admin/app.js',
     },
     output: {
