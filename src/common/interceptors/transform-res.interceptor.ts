@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map, throttleTime } from 'rxjs/operators';
 import { ConfigService } from '../../config/config.service';
 import { MyLoggerService } from '../../logger/logger.service';
-import { ErrorCode } from '../../config/constants';
+import { ErrorCode } from '../../constants/error';
 
 @Injectable()
 export class TransformResInterceptor<T> implements NestInterceptor {

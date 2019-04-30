@@ -27,7 +27,7 @@
                     <template v-slot:content>
                         <div>
                             <div class="article-list">
-                                <ArticleItem :key="aritlce.id" v-for="aritlce in articles" :article="article"/>
+                                <ArticleItem :key="article.id" v-for="article in articles" :article="article"/>
                             </div>
                         </div>
                     </template>
@@ -47,6 +47,7 @@ import Pinterest from '~/js/components/common/Pinterest.vue';
 export default {
     data () {
         return {
+            period: window.period,
             keyword: window.searchKeyword,
             encodedKeyword: encodeURIComponent(window.searchKeyword),
             articles: []
@@ -83,6 +84,14 @@ export default {
 .nav-item {
     position: relative;
     cursor: pointer;
+}
+
+.nav-item.active a {
+    color: #222;
+}
+
+.nav-item a:hover {
+    color: #222;
 }
 
 .nav-block .nav-list .nav-item, .nav-block .nav-list {

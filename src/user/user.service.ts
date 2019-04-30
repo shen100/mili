@@ -451,6 +451,12 @@ export class UserService {
         return false;
     }
 
+    async findUsersFilterByfollowerID(followerID: number, users: number[]) {
+        const sql = `SELECT follower_id as followerID, user_id as userID FROM user_follower
+            WHERE follower_id = ${followerID} AND user_id IN (${users.join(',')})`;
+        return await this.userRepository.manager.query(sql);
+    }
+
     async searchUsers(keyword: string, page: number, pageSize: number) {
         const condition = {
             username: Like(`%${keyword}%`),

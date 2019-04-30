@@ -1,7 +1,7 @@
 <template>
     <div class="item">
         <div class="user">
-            <a href="/user/5a79089b6fb9a0633c65f0a1" target="_blank" class="link">
+            <a :href="`/users/${userData.id}.html`" target="_blank" class="link">
                 <div class="lazy avatar avatar loaded" :style="{'background-image': `url(${userData.avatarURL})`}"></div>
                 <div class="info-box">
                     <div class="profile">
@@ -9,18 +9,22 @@
                         <span class="position">{{userData.job}}</span>
                     </div>
                     <div class="detail">
-                        <a href="/user/5a79089b6fb9a0633c65f0a1/followers" target="_blank" rel="">
+                        <a :href="`/users/${userData.id}/followers`" target="_blank" rel="">
                             <span>{{userData.followerCount || 0}} 个关注者</span>
                         </a>
                     </div>
                 </div>
-                <button class="follow-button follow-btn">关注</button>
+                <button @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
+                    class="follow-button follow-btn" :class="{'followed': isFollowed}">{{followText}}</button>
             </a>
         </div>
     </div>
 </template>
 
 <script>
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
+
 export default {
     props: [
         'user',
@@ -32,8 +36,9 @@ export default {
             ...this.user,
             username: this.user.username.replace(this.keyword, strongHTML),
         };
-        console.log(userData);
         return {
+            isFollowed: userData.isFollowed,
+            isMouseEnter: false,
             userData,
         };
     },
@@ -41,6 +46,39 @@ export default {
         this.$nextTick(() => {
         });
     },
+    computed: {
+        followText() {
+            if (this.isFollowed && this.isMouseEnter) {
+                return '取消关注';
+            }
+            if (this.isFollowed) {
+                return '已关注';
+            }
+            return '关注';
+        }
+    },
+    methods: {
+        onMouseenter() {
+            this.isMouseEnter = true;
+        },
+        onMouseleave() {
+            this.isMouseEnter = false;
+        },
+        onFollow () {
+            const url = `/users/follow/${this.userData.id}`;
+            let reqMethod;
+            if (this.isFollowed) {
+                reqMethod = myHTTP.delete;
+            } else {
+                reqMethod = myHTTP.post;
+            }
+            reqMethod(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.isFollowed = !this.isFollowed;
+                }
+            });
+        },
+    }
 }
 </script>
 
@@ -130,6 +168,11 @@ export default {
     color: #8a9aa9;
 }
 
+.info-box .detail:hover, .info-box .detail a {
+    color: #8a9aa9;
+    text-decoration: none;
+}
+
 .follow-btn {
     flex: 0 0 auto;
     margin: 0;
@@ -141,5 +184,15 @@ export default {
     background-color: #fff;
     border: 1px solid rgba(55, 199, 1, .6);
     border-radius: 2px;
+}
+
+.follow-button.followed {
+    color: #fff;
+    border-color: #6cbd45;
+    background-color: #6cbd45;
+}
+
+.follow-btn:hover {
+    opacity: .8;
 }
 </style>

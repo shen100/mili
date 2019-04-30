@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import * as striptags from 'striptags';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Article, ArticleStatus, ArticleContentType } from '../entity/article.entity';
-import { ArticleConstants } from '../config/constants';
+import { ArticleConstants } from '../constants/constants';
 import { Repository, Not, Like } from 'typeorm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,7 +13,7 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { MyLoggerService } from '../logger/logger.service';
 import { ConfigService } from '../config/config.service';
 import { UserRole, User } from '../entity/user.entity';
-import { ErrorCode } from '../config/constants';
+import { ErrorCode } from '../constants/error';
 import { MyHttpException } from '../common/exception/my-http.exception';
 
 @Injectable()

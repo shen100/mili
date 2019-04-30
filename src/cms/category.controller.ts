@@ -2,7 +2,7 @@ import {
     Controller, Get, Query,
 } from '@nestjs/common';
 
-import { CategoryConstants } from '../config/constants';
+import { CategoryConstants } from '../constants/constants';
 import { CategoryService } from './category.service';
 import { Category } from 'entity/category.entity';
 

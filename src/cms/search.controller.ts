@@ -2,7 +2,7 @@ import {
     Controller, Get, Query, Res,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { ArticleConstants } from '../config/constants';
+import { ArticleConstants, PeriodConstants } from '../constants/constants';
 import { SearchService } from './search.service';
 import { recentTime } from '../utils/viewfilter';
 import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
@@ -10,6 +10,7 @@ import { CategoryService } from './category.service';
 import { UserService } from '../user/user.service';
 import { Category } from 'entity/category.entity';
 import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
+import { CurUser } from '../common/decorators/user.decorator';
 
 @Controller('/')
 export class SearchController {
@@ -47,29 +48,54 @@ export class SearchController {
     }
 
     @Get('/search')
-    async searchView(@Query('q') q: string, @Query('type') type: string, @Res() res) {
+    async searchView(@Query('q') q: string, @Query('period') period: number, @Query('type') type: string, @Res() res) {
         let searchKeyword = q;
         if (!searchKeyword || searchKeyword.length > ArticleConstants.MAX_TITLE_LENGTH) {
             searchKeyword = '';
         }
         const keywordEncoded = encodeURIComponent(searchKeyword);
+        period = parseInt(period as any, 10);
         if (['all', 'article', 'channel', 'user'].indexOf(type) < 0) {
             type = 'all';
         }
+
+        if ([PeriodConstants.ALL, PeriodConstants.DAY, PeriodConstants.WEEK, PeriodConstants.THREE_MONTHS].indexOf(period) < 0) {
+            period = PeriodConstants.ALL;
+        }
+
+        const recommendHandBooks = [
+            {
+                name: 'Kubernetes 从上手到实践Kubernetes 从上手到实践Kubernetes 从上手到实践',
+                saleCount: 1123,
+                coverURL: '/images/index/book1.jpg',
+            },
+            {
+                name: 'Kubernetes 从上手到实践',
+                saleCount: 1123,
+                coverURL: '/images/index/book1.jpg',
+            },
+        ];
         res.render('pages/search/search', {
             keywordEncoded,
             searchKeyword,
             searchType: type,
+            recommendHandBooks,
+            period,
         });
     }
 
     @Get('/api/v1/search')
-    async searchArticle(@Query('keyword') keyword: string, @Query('type') type: string,
+    async searchArticle(@CurUser() user, @Query('keyword') keyword: string, @Query('type') type: string,
                         @Query('period', ShouldIntPipe) period: number, @Query('page', ParsePagePipe) page: number) {
         if (!keyword || keyword.length > ArticleConstants.MAX_TITLE_LENGTH) {
             keyword = '';
         }
         keyword = decodeURIComponent(keyword);
+
+        period = parseInt(period as any, 10);
+        if ([PeriodConstants.ALL, PeriodConstants.DAY, PeriodConstants.WEEK, PeriodConstants.THREE_MONTHS].indexOf(period) < 0) {
+            period = PeriodConstants.ALL;
+        }
 
         const pageSize: number = 20;
 
@@ -86,7 +112,10 @@ export class SearchController {
                     createdAtLabel: recentTime(item.createdAt, 'YYYY.MM.DD HH:mm'),
                 };
             });
-            return result;
+            return {
+                period,
+                ...result,
+            };
         }
 
         if (type === 'category') {
@@ -106,6 +135,17 @@ export class SearchController {
             } else {
                 result = await this.userService.searchUsers(keyword, page, pageSize);
             }
+            if (user) {
+                const users = result.list.map(u => u.id);
+                const followedUsers = await this.userService.findUsersFilterByfollowerID(user.id, users);
+                const userMap = {};
+                followedUsers.forEach(followedUser => {
+                    userMap[followedUser.userID] = true;
+                });
+                result.list.forEach((userData: any) => {
+                    userData.isFollowed = !!userMap[userData.id];
+                });
+            }
             return result;
         }
 
@@ -122,6 +162,7 @@ export class SearchController {
         // 3: 三月内
         articleResult = await this.searchService.searchArticle(keyword, page, pageSize);
         return {
+            period,
             category,
             ...articleResult,
         };

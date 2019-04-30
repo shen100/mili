@@ -6,7 +6,8 @@ import { Repository, Not, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment, CommentContentType, CommentStatus } from '../entity/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { NO_PARENT, ErrorCode } from '../config/constants';
+import { NO_PARENT } from '../constants/constants';
+import { ErrorCode } from '../constants/error';
 import { recentTime } from '../utils/viewfilter';
 import { MyHttpException } from '../common/exception/my-http.exception';
 

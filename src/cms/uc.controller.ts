@@ -7,7 +7,7 @@ import { UserService } from '../user/user.service';
 import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { ConfigService } from '../config/config.service';
 import { Article } from 'entity/article.entity';
-import { ErrorCode } from '../config/constants';
+import { ErrorCode } from '../constants/error';
 import { CurUser } from '../common/decorators/user.decorator';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { CollectionService } from './collection.service';
@@ -23,7 +23,7 @@ export class UCController {
         private readonly collectionService: CollectionService,
     ) {}
 
-    @Get('/u/:id.html')
+    @Get('/users/:id')
     async article(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const pageSize: number = 2;
         const [author, articles] = await bluebird.all([

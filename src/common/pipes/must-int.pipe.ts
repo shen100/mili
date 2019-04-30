@@ -7,7 +7,7 @@ import {
     Paramtype,
 } from '@nestjs/common';
 import { ConfigService } from '../../config/config.service';
-import { ErrorCode } from '../../config/constants';
+import { ErrorCode } from '../../constants/error';
 import { MyHttpException } from '../exception/my-http.exception';
 
 @Injectable()

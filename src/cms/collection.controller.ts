@@ -13,7 +13,7 @@ import { CreateCollectionDto } from './dto/create-collection.dto';
 import { UploadService } from './upload.service';
 import { CollectionService } from './collection.service';
 import { Collection, ArticleCollectionStatus } from '../entity/collection.entity';
-import { ErrorCode } from '../config/constants';
+import { ErrorCode } from '../constants/error';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { CurUser } from '../common/decorators/user.decorator';
 import { ActiveGuard } from '../common/guards/active.guard';

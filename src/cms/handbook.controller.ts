@@ -2,7 +2,7 @@ import {
     Controller, Post, Body, UseGuards, Get, Query, Param, Delete, Res,
 } from '@nestjs/common';
 import * as _ from 'lodash';
-import { ErrorCode } from '../config/constants';
+import { ErrorCode } from '../constants/error';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { CurUser } from '../common/decorators/user.decorator';
 import { MustIntPipe } from '../common/pipes/must-int.pipe';

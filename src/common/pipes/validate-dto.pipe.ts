@@ -7,7 +7,7 @@ import {
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { ConfigService } from '../../config/config.service';
-import { ErrorCode } from '../../config/constants';
+import { ErrorCode } from '../../constants/error';
 import { MyHttpException } from '../../common/exception/my-http.exception';
 
 @Injectable()

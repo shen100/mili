@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserTrack } from '../entity/stats.entity';
 import { MyHttpException } from '../common/exception/my-http.exception';
-import { ErrorCode } from '../config/constants';
+import { ErrorCode } from '../constants/error';
 
 @Injectable()
 export class StatsService {

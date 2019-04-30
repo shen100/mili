@@ -15,7 +15,7 @@ import {
 } from 'class-validator';
 import { ArticleContentType } from '../../entity/article.entity';
 import { Type } from 'class-transformer';
-import { ArticleConstants } from '../../config/constants';
+import { ArticleConstants } from '../../constants/constants';
 
 class CategoryDto {
     @IsInt({

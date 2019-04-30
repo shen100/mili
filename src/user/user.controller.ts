@@ -13,14 +13,14 @@ import {
 import * as util from 'util';
 import _ from 'lodash';
 import axios from 'axios';
-import { UserConstants } from '../config/constants';
+import { UserConstants } from '../constants/constants';
 import { UserService } from './user.service';
 import { SignUpDto } from './dto/signup.dto';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { RedisService } from '../redis/redis.service';
 import { SMSDto } from './dto/sms.dto';
 import { CurUser } from '../common/decorators/user.decorator';
-import { ErrorCode } from '../config/constants';
+import { ErrorCode } from '../constants/error';
 import { ConfigService } from '../config/config.service';
 import { User } from '../entity/user.entity';
 import { SigninDto } from './dto/signin.dto';

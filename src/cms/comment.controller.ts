@@ -3,7 +3,7 @@ import {
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { ArticleService } from './article.service';
-import { ErrorCode } from '../config/constants';
+import { ErrorCode } from '../constants/error';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { CurUser } from '../common/decorators/user.decorator';
 import { ActiveGuard } from '../common/guards/active.guard';

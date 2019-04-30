@@ -2,7 +2,7 @@ import { Injectable, NestMiddleware, MiddlewareFunction, HttpException } from '@
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '../../config/config.service';
 import { RedisService } from '../../redis/redis.service';
-import { ErrorCode } from '../../config/constants';
+import { ErrorCode } from '../../constants/error';
 import { User } from '../../entity/user.entity';
 import { UserService } from '../../user/user.service';
 

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '../../config/config.service';
 import { MyLoggerService } from '../../logger/logger.service';
-import { ErrorCode } from '../../config/constants';
+import { ErrorCode } from '../../constants/error';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {

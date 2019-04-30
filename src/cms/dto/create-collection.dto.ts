@@ -8,7 +8,7 @@ import {
     IsArray,
     IsUrl,
 } from 'class-validator';
-import { CollectionConstants } from '../../config/constants';
+import { CollectionConstants } from '../../constants/constants';
 
 export class CreateCollectionDto {
     @MinLength(1, {

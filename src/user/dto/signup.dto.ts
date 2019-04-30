@@ -3,7 +3,8 @@ import {
     IsMobilePhone,
     Length,
 } from 'class-validator';
-import { ErrorCode, UserConstants } from '../../config/constants';
+import { ErrorCode } from '../../constants/error';
+import { UserConstants } from '../../constants/constants';
 
 export class SignUpDto {
 

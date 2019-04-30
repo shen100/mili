@@ -12,7 +12,7 @@ import { ActiveGuard } from '../common/guards/active.guard';
 import { CurUser } from '../common/decorators/user.decorator';
 import { strToPage } from '../utils/common';
 import { MustIntPipe } from '../common/pipes/must-int.pipe';
-import { ErrorCode } from '../config/constants';
+import { ErrorCode } from '../constants/error';
 
 @Controller()
 export class ArticleController {

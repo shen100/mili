@@ -13,12 +13,12 @@
                 <ul>
                     {% for handBook in recommendHandBooks %}
                     <li class="book-item">
-                        <img class="book-item-img" src="{{imgPath}}/index/book1.jpg">
+                        <img class="book-item-img" src="{{handBook.coverURL}}">
                         <div class="book-item-info">
                             <div class="book-item-title">{{handBook.name}}</div>
-                            <div>
+                            <div style="margin-top: 2px;">
                                 <span class="book-item-buycount">{{handBook.saleCount}}人已购买</span>
-                                <span class="try-read">试读</span>
+                                <span class="try-read">购买</span>
                             </div>
                         </div>
                     </li>
@@ -54,6 +54,7 @@
 <script>
     var searchKeyword = {{ searchKeyword | dump | safe }};
     var searchType = '{{ searchType }}';
+    var period = {{period}};
 </script>
 {% endblock %}
 

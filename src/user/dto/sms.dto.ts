@@ -3,7 +3,7 @@ import {
     IsString,
     IsMobilePhone,
 } from 'class-validator';
-import { ErrorCode } from '../../config/constants';
+import { ErrorCode } from '../../constants/error';
 
 export class SMSDto {
 
