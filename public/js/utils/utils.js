@@ -5,6 +5,13 @@ export const trim = (str) => {
     return str.replace(/^\s+|\s+$/g, '');
 };
 
+export const replaceIgnoreCase = (str) => {
+    if (!str) {
+        return '';
+    }
+    return str.replace(/^\s+|\s+$/g, '');
+};
+
 export const ossResponseParse = (res, uploadImgURL) => {
     let xmlDOM = (new DOMParser()).parseFromString(res, 'text/xml');
     let PostResponseArr = xmlDOM.getElementsByTagName('PostResponse');

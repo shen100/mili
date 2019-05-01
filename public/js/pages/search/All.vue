@@ -5,24 +5,26 @@
                 <nav class="nav-block">
                     <ul class="nav-list right">
                         <li class="nav-item" :class="{active: period === 0}">
-                            <a :href="`/search?query=${encodedKeyword}&period=0`">全部</a>
+                            <a :href="`/search?q=${encodedKeyword}&period=0`">全部</a>
                         </li>
                         <li class="nav-item" :class="{active: period === 1}">
-                            <a :href="`/search?query=${encodedKeyword}&period=1`">一天内</a>
+                            <a :href="`/search?q=${encodedKeyword}&period=1`">一天内</a>
                         </li>
                         <li class="nav-item" :class="{active: period === 2}">
-                            <a :href="`/search?query=${encodedKeyword}&period=2`">一周内</a>
+                            <a :href="`/search?q=${encodedKeyword}&period=2`">一周内</a>
                         </li>
                         <li class="nav-item" :class="{active: period === 3}">
-                            <a :href="`/search?query=${encodedKeyword}&period=3`">三月内</a>
+                            <a :href="`/search?q=${encodedKeyword}&period=3`">三月内</a>
                         </li>
                     </ul>
                 </nav>
             </header>
             <div>
-                <Pinterest url="/search" :query="{ keyword, type: 'all', period }" @load="onLoad">
+                <Pinterest url="/search" :query="{ q: keyword, type: 'all', period }" @load="onLoad">
                     <template v-slot:loading>
-                        <ArticleLoading />
+                        <div style="padding: 20px; padding-top: 10px;">
+                            <ArticleLoading />
+                        </div>
                     </template>
                     <template v-slot:content>
                         <div>
@@ -30,7 +32,7 @@
                                 <div v-if="category">
                                     <CategoryItem :key="`category-${category.id}`" :category="category" :keyword="keyword" />
                                 </div>
-                                <ArticleItem :key="aritlce.id" v-for="aritlce in articles" :keyword="keyword" :article="article"/>
+                                <ArticleItem :key="article.id" v-for="article in articles" :keyword="keyword" :article="article"/>
                             </div>
                         </div>
                     </template>
@@ -88,11 +90,6 @@ export default {
     border-bottom: 1px solid rgba(178, 186, 194, .15);
 }
 
-.nav-item {
-    position: relative;
-    cursor: pointer;
-}
-
 .nav-block .nav-list .nav-item, .nav-block .nav-list {
     height: 100%;
     justify-content: center;
@@ -103,6 +100,14 @@ export default {
 .nav-item {
     position: relative;
     cursor: pointer;
+}
+
+.nav-item.active a {
+    color: #222;
+}
+
+.nav-item a:hover {
+    color: #222;
 }
 
 .nav-block .nav-list .nav-item {

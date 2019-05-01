@@ -1,9 +1,9 @@
 <template>
     <div class="item">
-        <a href="" class="searchcategory">
+        <a :href="`/category/${categoryData.id}.html`" target="_blank" class="searchcategory">
             <div class="info-box">
-                <a target="_blank">
-                    <div class="lazy thumb thumb loaded" style="background-image: url(&quot;https://lc-gold-cdn.xitu.io/7b5c3eb591b671749fee.png?imageView2/2/w/200/h/64/q/85/format/webp/interlace/1&quot;); background-size: contain;"></div>
+                <a :href="`/category/${categoryData.id}.html`" target="_blank">
+                    <div class="lazy thumb thumb loaded" :style="{'background-image': `url(${categoryData.coverURL})`, 'background-size': 'contain'}"></div>
                 </a>
                 <div class="meta-box">
                     <div class="title" v-html="categoryData.name"></div>
@@ -14,13 +14,18 @@
                 </div>
             </div>
             <div class="action-box">
-                <button class="follow-button follow-btn">关注</button>
+                <button @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave"
+                    class="follow-button follow-btn" :class="{'followed': isFollowed}">{{followText}}</button>
             </div>
         </a>
     </div>
 </template>
 
 <script>
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
+import { replaceIgnoreCase } from '~/js/utils/utils.js';
+
 export default {
     props: [
         'keyword',
@@ -30,12 +35,47 @@ export default {
         const strongHTML = `<em style="color: #e8001c">${this.keyword}</em>`;
         const categoryData = {
             ...this.category,
-            name: this.category.name.replace(this.keyword, strongHTML),
+            name: replaceIgnoreCase(this.category.name, this.keyword, strongHTML),
         };
         return {
+            isFollowed: categoryData.isFollowed,
+            isMouseEnter: false,
             categoryData,
         };
     },
+    computed: {
+        followText() {
+            if (this.isFollowed && this.isMouseEnter) {
+                return '取消关注';
+            }
+            if (this.isFollowed) {
+                return '已关注';
+            }
+            return '关注';
+        }
+    },
+    methods: {
+        onMouseenter() {
+            this.isMouseEnter = true;
+        },
+        onMouseleave() {
+            this.isMouseEnter = false;
+        },
+        onFollow () {
+            const url = `/categories/${this.categoryData.id}/follow`;
+            let reqMethod;
+            if (this.isFollowed) {
+                reqMethod = myHTTP.delete;
+            } else {
+                reqMethod = myHTTP.post;
+            }
+            reqMethod(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.isFollowed = !this.isFollowed;
+                }
+            });
+        },
+    }
 }
 </script>
 
@@ -130,6 +170,16 @@ export default {
 
 .searchcategory:hover {
     background-color: hsla(0, 0%, 87.1%, .1);
+}
+
+.follow-button.followed {
+    color: #fff;
+    border-color: #6cbd45;
+    background-color: #6cbd45;
+}
+
+.follow-btn:hover {
+    opacity: .8;
 }
 </style>
 

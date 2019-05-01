@@ -19,9 +19,10 @@
 <style scoped>
 .category-placeholder {
     position: relative;
-    padding: 15px 2px 0 0;
+    padding: 20px;
     margin-bottom: 50px;
     overflow: hidden;
+    background: #fff;
 }
 
 .category-placeholder .img {

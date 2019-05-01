@@ -9,6 +9,14 @@ const config = new ConfigService();
 
         await connection.manager.query(`alter table categories add column follower_count int default 0`);
         await connection.manager.query(`alter table categories add column article_count int default 0`);
+        await connection.manager.query(`alter table categories add column cover_url varchar(500)`);
+
+        await connection.manager.query(`CREATE TABLE follower_category (
+            user_id int(11) unsigned NOT NULL,
+            category_id int(11) unsigned NOT NULL,
+            date datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (user_id, category_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         // await connection.manager.query(`CREATE TABLE userlikearticles (
         //     id int(11) unsigned NOT NULL AUTO_INCREMENT,

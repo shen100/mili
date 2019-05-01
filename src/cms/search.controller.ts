@@ -55,7 +55,7 @@ export class SearchController {
         }
         const keywordEncoded = encodeURIComponent(searchKeyword);
         period = parseInt(period as any, 10);
-        if (['all', 'article', 'channel', 'user'].indexOf(type) < 0) {
+        if (['all', 'article', 'category', 'user'].indexOf(type) < 0) {
             type = 'all';
         }
 
@@ -124,6 +124,18 @@ export class SearchController {
                 result = await this.categoryService.randomCategories(page, pageSize);
             } else {
                 result = await this.categoryService.searchCategories(keyword, page, pageSize);
+            }
+            if (user) {
+                const categories = result.list.map(c => c.id);
+                const followedCategories = await this.categoryService.findCategoriesFilterByFollowerID(user.id, categories);
+                const categoryMap = {};
+                followedCategories.forEach(followedCategory => {
+                    categoryMap[followedCategory.categoryID] = true;
+                });
+                result.list.forEach((categoryData: any) => {
+                    categoryData.isFollowed = !!categoryMap[categoryData.id];
+                    categoryData.coverURL = 'https://img.golang123.com/upload/img/2018/02/d5efec9d-e8ff-4331-8f2c-70a1f7156be3.jpg';
+                });
             }
             return result;
         }

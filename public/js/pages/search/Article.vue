@@ -5,29 +5,31 @@
                 <nav class="nav-block">
                     <ul class="nav-list right">
                         <li class="nav-item" :class="{active: period === 0}">
-                            <a :href="`/search?type=article&query=${encodedKeyword}&period=0`">全部</a>
+                            <a :href="`/search?type=article&q=${encodedKeyword}&period=0`">全部</a>
                         </li>
                         <li class="nav-item" :class="{active: period === 1}">
-                            <a :href="`/search?type=article&query=${encodedKeyword}&period=1`">一天内</a>
+                            <a :href="`/search?type=article&q=${encodedKeyword}&period=1`">一天内</a>
                         </li>
                         <li class="nav-item" :class="{active: period === 2}">
-                            <a :href="`/search?type=article&query=${encodedKeyword}&period=2`">一周内</a>
+                            <a :href="`/search?type=article&q=${encodedKeyword}&period=2`">一周内</a>
                         </li>
                         <li class="nav-item" :class="{active: period === 3}">
-                            <a :href="`/search?type=article&query=${encodedKeyword}&period=3`">三月内</a>
+                            <a :href="`/search?type=article&q=${encodedKeyword}&period=3`">三月内</a>
                         </li>
                     </ul>
                 </nav>
             </header>
-            <div style="padding: 20px;padding-top: 10px;">
-                <Pinterest url="/search" :query="{ keyword, type: 'article', period }" @load="onLoad">
+            <div>
+                <Pinterest url="/search" :query="{ q: keyword, type: 'article', period }" @load="onLoad">
                     <template v-slot:loading>
-                        <ArticleLoading />
+                        <div style="padding: 20px; padding-top: 10px;">
+                            <ArticleLoading />
+                        </div>
                     </template>
                     <template v-slot:content>
                         <div>
                             <div class="article-list">
-                                <ArticleItem :key="article.id" v-for="article in articles" :article="article"/>
+                                <ArticleItem :key="article.id" :keyword="keyword" v-for="article in articles" :article="article"/>
                             </div>
                         </div>
                     </template>

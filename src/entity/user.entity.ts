@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Collection } from './collection.entity';
+import { Category } from './category.entity';
 
 class UserScoreDef {
     readonly CreateArticle: number = 5;
@@ -125,6 +126,20 @@ export class User {
 
     @Column('varchar', { length: 200, nullable: true, default: null })
     location: string;
+
+    @ManyToMany(type => Category, category => category.followers)
+    @JoinTable({
+        name: 'follower_category',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'category_id',
+            referencedColumnName: 'id',
+        },
+    })
+    followedCategories: Category[]; // 关注的分类
 
     @ManyToMany(type => Collection, collection => collection.admins)
     @JoinTable({

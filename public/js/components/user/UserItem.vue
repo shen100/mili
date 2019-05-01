@@ -9,7 +9,7 @@
                         <span class="position">{{userData.job}}</span>
                     </div>
                     <div class="detail">
-                        <a :href="`/users/${userData.id}/followers`" target="_blank" rel="">
+                        <a :href="`/users/${userData.id}/followers`" target="_blank">
                             <span>{{userData.followerCount || 0}} 个关注者</span>
                         </a>
                     </div>
@@ -24,6 +24,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import { replaceIgnoreCase } from '~/js/utils/utils.js';
 
 export default {
     props: [
@@ -34,7 +35,7 @@ export default {
         const strongHTML = `<em style="color: #e8001c">${this.keyword}</em>`;
         const userData = {
             ...this.user,
-            username: this.user.username.replace(this.keyword, strongHTML),
+            username: replaceIgnoreCase(this.user.username, this.keyword, strongHTML),
         };
         return {
             isFollowed: userData.isFollowed,

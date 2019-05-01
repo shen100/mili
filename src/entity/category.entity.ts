@@ -2,7 +2,9 @@ import {
     Entity,
     Column,
     PrimaryGeneratedColumn,
+    ManyToMany,
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity({name: 'categories'})
 export class Category {
@@ -21,6 +23,9 @@ export class Category {
     @Column('varchar', { length: 200 })
     name: string;
 
+    @Column('varchar', { name: 'cover_url', length: 500 })
+    coverURL: string; // 封面
+
     @Column('int')
     sequence: number;
 
@@ -29,6 +34,9 @@ export class Category {
 
     @Column('int', { name: 'follower_count' })
     followerCount: number; // 有多少人关注
+
+    @ManyToMany(type => User, user => user.followedCollections)
+    followers: User[];
 
     @Column('int', { name: 'article_count' })
     articleCount: number; // 有多少人关注

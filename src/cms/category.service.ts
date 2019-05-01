@@ -23,6 +23,34 @@ export class CategoryService {
         return categories;
     }
 
+    async isExists(id: number): Promise<boolean> {
+        const category = await this.categoryRepository.findOne({
+            select: ['id'],
+            where: { id },
+        });
+        return !!category;
+    }
+
+    async addFollower(collectionID: number, userID: number) {
+        await this.categoryRepository.createQueryBuilder()
+            .relation(Category, 'followers')
+            .of(collectionID)
+            .add(userID);
+    }
+
+    async removeFollower(id: number, userID: number) {
+        await this.categoryRepository.createQueryBuilder()
+            .relation(Category, 'followers')
+            .of(id)
+            .remove(userID);
+    }
+
+    async findCategoriesFilterByFollowerID(followerID: number, categories: number[]) {
+        const sql = `SELECT user_id as followerID, category_id as categoryID FROM follower_category
+            WHERE user_id = ${followerID} AND category_id IN (${categories.join(',')})`;
+        return await this.categoryRepository.manager.query(sql);
+    }
+
     // 随机返回文章
     async randomCategories(page: number, pageSize: number) {
         const [list, count] = await Promise.all([
@@ -32,6 +60,7 @@ export class CategoryService {
                     name: true,
                     followerCount: true,
                     articleCount: true,
+                    coverURL: true,
                 },
                 skip: (page - 1) * pageSize,
                 take: pageSize,
@@ -55,6 +84,9 @@ export class CategoryService {
                 select: {
                     id: true,
                     name: true,
+                    followerCount: true,
+                    articleCount: true,
+                    coverURL: true,
                 },
                 where: condition,
                 skip: (page - 1) * pageSize,

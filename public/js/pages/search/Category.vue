@@ -9,7 +9,7 @@
                     <div class="searchcategory-list">
                         <CategoryItem :key="category.id" :category="category" :keyword="keyword" v-for="category in categories" />
                     </div>
-                    <div style="width: 660px; height: 200px; padding: 20px;  background: #fff;">
+                    <div>
                         <CategoryLoading />
                     </div>
                 </div>
@@ -53,7 +53,6 @@ export default {
 <style scoped>
 .searchcategory-list {
     background-color: #fff;
-    width: 700px;
 }
 </style>
 
