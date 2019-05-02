@@ -4,7 +4,7 @@
         <ErrorTip ref="errorTip" />
         <Alert ref="deleteCommentAlert" width="450" 
             @ok="onDeleteCommentOk" @cancel="onDeleteCommentCancel" />
-        <div>
+        <div id="comments">
             <!-- 允许评论，并且用户没有登录 -->
             <form v-if="isCommentEnabled && !userID" class="new-comment">
                 <a href="javascript:void(0);" class="avatar" style="cursor: default;"><img style="cursor: default;" src="../../../images/avatar_default.png"></a>
@@ -14,7 +14,7 @@
                 </div>
             </form>
 
-            <div v-if="isUserCommentsLikesLoaded" id="comments" class="comments">
+            <div v-if="isUserCommentsLikesLoaded" class="comments">
                 <!-- 不允许评论, 并且不是作者(没登录，或登录了，但不是作者) -->
                 <div v-if="!isCommentEnabled && userID !== authorID">
                     <div class="top-title"><span>评论</span><span class="close-tip">已关闭评论</span></div>

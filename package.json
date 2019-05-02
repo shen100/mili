@@ -127,6 +127,7 @@
     "tsconfig-paths": "^3.5.0",
     "tslint": "5.11.0",
     "url-loader": "^1.1.2",
+    "vue-scrollto": "^2.15.0",
     "walk": "^2.3.14",
     "webpack": "^4.16.5",
     "webpack-bundle-analyzer": "^3.0.3",

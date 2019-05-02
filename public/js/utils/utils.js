@@ -5,11 +5,11 @@ export const trim = (str) => {
     return str.replace(/^\s+|\s+$/g, '');
 };
 
-export const replaceIgnoreCase = (str) => {
+export const replaceIgnoreCase = (str, substr, replacement) => {
     if (!str) {
         return '';
     }
-    return str.replace(/^\s+|\s+$/g, '');
+    return str.replace(substr, replacement);
 };
 
 export const ossResponseParse = (res, uploadImgURL) => {

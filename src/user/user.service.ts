@@ -452,6 +452,9 @@ export class UserService {
     }
 
     async findUsersFilterByfollowerID(followerID: number, users: number[]) {
+        if (!users || users.length <= 0) {
+            return [];
+        }
         const sql = `SELECT follower_id as followerID, user_id as userID FROM user_follower
             WHERE follower_id = ${followerID} AND user_id IN (${users.join(',')})`;
         return await this.userRepository.manager.query(sql);

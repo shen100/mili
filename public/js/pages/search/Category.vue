@@ -9,9 +9,6 @@
                     <div class="searchcategory-list">
                         <CategoryItem :key="category.id" :category="category" :keyword="keyword" v-for="category in categories" />
                     </div>
-                    <div>
-                        <CategoryLoading />
-                    </div>
                 </div>
             </template>
         </Pinterest>

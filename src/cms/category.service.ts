@@ -46,6 +46,9 @@ export class CategoryService {
     }
 
     async findCategoriesFilterByFollowerID(followerID: number, categories: number[]) {
+        if (!categories || categories.length <= 0) {
+            return [];
+        }
         const sql = `SELECT user_id as followerID, category_id as categoryID FROM follower_category
             WHERE user_id = ${followerID} AND category_id IN (${categories.join(',')})`;
         return await this.categoryRepository.manager.query(sql);
@@ -107,6 +110,7 @@ export class CategoryService {
             select: {
                 id: true,
                 name: true,
+                coverURL: true,
             },
             where: {
                 name: keyword,

@@ -85,8 +85,9 @@ export class SearchController {
     }
 
     @Get('/api/v1/search')
-    async searchArticle(@CurUser() user, @Query('keyword') keyword: string, @Query('type') type: string,
+    async searchArticle(@CurUser() user, @Query('q') q: string, @Query('type') type: string,
                         @Query('period', ShouldIntPipe) period: number, @Query('page', ParsePagePipe) page: number) {
+        let keyword = q;
         if (!keyword || keyword.length > ArticleConstants.MAX_TITLE_LENGTH) {
             keyword = '';
         }
@@ -166,6 +167,16 @@ export class SearchController {
         let articleResult;
         if (keyword) {
             category = await this.categoryService.searchCategoryByName(keyword);
+            if (category) {
+                category.coverURL = 'https://img.golang123.com/upload/img/2018/02/d5efec9d-e8ff-4331-8f2c-70a1f7156be3.jpg';
+                const categories = [category.id];
+                const followedCategories = await this.categoryService.findCategoriesFilterByFollowerID(user.id, categories);
+                if (followedCategories.length) {
+                    (category as any).isFollowed = true;
+                } else {
+                    (category as any).isFollowed = false;
+                }
+            }
         }
         // period
         // 0: 全部

@@ -6,7 +6,7 @@
             </template>
             <template v-slot:content>
                 <div>
-                    <div class="searchcategory-list">
+                    <div v-if="users && users.length" class="searchcategory-list">
                         <UserItem :key="user.id" :keyword="keyword" v-for="user in users" :user="user" />
                     </div>
                 </div>
