@@ -93,30 +93,41 @@ export class ArticleService {
         });
     }
 
-    async list(page: number) {
-        return await this.articleRepository.find({
-            select: {
-                id: true,
-                name: true,
-                createdAt: true,
-                summary: true,
-                commentCount: true,
-                user: {
+    async list(page: number, pageSize: number) {
+        const condition = {
+            deletedAt: null,
+            status: Not(ArticleStatus.VerifyFail),
+        };
+        const [list, count] = await Promise.all([
+            this.articleRepository.find({
+                select: {
                     id: true,
-                    username: true,
+                    name: true,
+                    createdAt: true,
+                    summary: true,
+                    commentCount: true,
+                    likeCount: true,
+                    user: {
+                        id: true,
+                        username: true,
+                    },
+                } as any,
+                relations: ['user'],
+                where: condition,
+                order: {
+                    createdAt: 'DESC',
                 },
-            } as any,
-            relations: ['user'],
-            where: {
-                deletedAt: null,
-                status: Not(ArticleStatus.VerifyFail),
-            },
-            order: {
-                createdAt: 'DESC',
-            },
-            skip: (page - 1) * 20,
-            take: 20,
-        });
+                skip: (page - 1) * 20,
+                take: 20,
+            }),
+            this.articleRepository.count(condition),
+        ]);
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
     }
 
     async recommendList(page: number) {
@@ -398,6 +409,7 @@ export class ArticleService {
                     createdAt: true,
                     summary: true,
                     commentCount: true,
+                    likeCount: true,
                     user: {
                         id: true,
                         username: true,

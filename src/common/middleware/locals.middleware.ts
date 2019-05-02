@@ -13,12 +13,12 @@ export class LocalsMiddleware implements NestMiddleware {
             res.locals.env = configService.env;
             res.locals.siteName = configService.server.siteName;
             res.locals.apiPrefix = configService.server.apiPrefix,
+            res.locals.reqPath = req.originalUrl,
             res.locals.cssPath = configService.static.cssPath;
             res.locals.jsPath = configService.static.jsPath;
             res.locals.imgPath = configService.static.imgPath;
             res.locals.fontPath = configService.static.fontPath;
             res.locals.baiduAd = configService.baiduAd;
-            res.locals.dllJSTimestamp = configService.static.dllJSTimestamp;
             res.locals.globalConfig = {
                 hostname: configService.server.hostname,
                 mHostName: configService.server.mHostName,

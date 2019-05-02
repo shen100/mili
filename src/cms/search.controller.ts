@@ -21,32 +21,6 @@ export class SearchController {
         private readonly userService: UserService,
     ) {}
 
-    @Get('/')
-    async article(@Query('type') type: string) {
-        let view = 'pages/search/article';
-        switch (type) {
-            case 'article': {
-                view = 'pages/search/article';
-                break;
-            }
-            case 'user': {
-                view = 'pages/search/user';
-                break;
-            }
-            case 'collection': {
-                view = 'pages/search/collection';
-                break;
-            }
-        }
-        const articles = await this.articleService.list(1);
-        return {
-            view,
-            data: {
-                articles,
-            },
-        };
-    }
-
     @Get('/search')
     async searchView(@Query('q') q: string, @Query('period') period: number, @Query('type') type: string, @Res() res) {
         let searchKeyword = q;

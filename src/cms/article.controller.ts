@@ -13,6 +13,7 @@ import { CurUser } from '../common/decorators/user.decorator';
 import { strToPage } from '../utils/common';
 import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { ErrorCode } from '../constants/error';
+import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
 
 @Controller()
 export class ArticleController {
@@ -24,14 +25,9 @@ export class ArticleController {
     ) {}
 
     @Get('/api/v1/articles')
-    async listView(@Query('page') pageStr, @Query('format') format, @Res() res) {
-        const page: number = strToPage(pageStr);
-        const articles = await this.articleService.list(page);
-        res.render('component/cms/articles', {
-            data: {
-                articles,
-            },
-        });
+    async list(@Query('page', ShouldIntPipe) page: number) {
+        const result = await this.articleService.list(page, 20);
+        return result;
     }
 
     @Get('/p/:id.html')

@@ -36,8 +36,10 @@ export default {
         const articleData = {
             ...this.article,
         };
-        articleData.name = replaceIgnoreCase(articleData.name, this.keyword, strongHTML);
-        articleData.summary = replaceIgnoreCase(articleData.summary, this.keyword, strongHTML);
+        if (this.keyword) {
+            articleData.name = replaceIgnoreCase(articleData.name, this.keyword, strongHTML);
+            articleData.summary = replaceIgnoreCase(articleData.summary, this.keyword, strongHTML);
+        }
         return {
             articleData,
         };

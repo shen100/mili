@@ -1,126 +1,110 @@
 {% extends '../layout/default.njk' %}
 
-{% block categorynav %}
-<div class="category-nav-box">
-  <div class="category-nav">
-    <ul class="category-list">
-      <li><a class="category-item category-item-select" href="">我关注的</a></li>
-      {% for category in categories %}
-      <li><a class="category-item" href="">{{category.name}}</a></li>
-      {% endfor %}
-      <li style="float: right;margin-right: 0;"><a class="category-item" href="">分类管理</a></li>
-    </ul>
-  </div>
-</div>
-{% endblock categorynav %}
-
 {% block main %}
+<div class="category-nav-box">
+    <div class="category-nav">
+        <ul class="category-list">
+            <li><a class="category-item {% if not categoryID %}category-item-select{% endif %}" href="/">推荐</a></li>
+            {% for category in categories %}
+            <li><a class="category-item {% if categoryID == category.id %}category-item-select{% endif %}" href="/?c={{category.id}}">{{category.name}}</a></li>
+            {% endfor %}
+            <li style="float: right;margin-right: 0;"><a class="category-item" href="">分类管理</a></li>
+        </ul>
+    </div>
+</div>
 <div class="container">
-  <div class="index-container">
-    <div class="content-box">
-      <div class="user-action-nav">
-        <div class="default-avatar-box"><img class="default-avatar" src="{{imgPath}}/avatar_default2.svg"></div>
-        <a class="user-action-item"><img src="{{imgPath}}/index/pin-icon.svg" />发沸点</a>
-        <a class="user-action-item"><img src="{{imgPath}}/index/write-icon.svg" />写文章</a>
-        <a class="user-action-item"><img src="{{imgPath}}/index/share-icon.svg" />分享链接</a>
-        <a href="/editor/drafts.html" class="user-action-item" style="float: right;margin-right: 20px;">草稿</a>
-      </div>
-      <div class="article-box-sep"></div>
-      <div id="articleBox">
-        {% include '../component/cms/articles.njk' %}
-      </div>
-
-      <div class="article-placeholder index">
-        <div class="img"></div>
-        <div class="content">
-          <div class="title"></div>
-          <div class="text"></div>
-          <div class="text animation-delay"></div>
-          <div class="meta">
-            <div class="read"></div><i class="iconfont ic-list-comments"></i>
-            <div class="small"></div><i class="iconfont ic-list-like"></i>
-            <div class="small"></div>
-          </div>
-        </div>
-      </div>
-
-      <a class="load-more">阅读更多</a>
-    </div>
-    <div class="home-sidebar">
-      <div class="hot-category">
-
-      </div>
-      <a class="home-sidebar-weixin">
-        <img class="home-sidebar-qrcode" src="{{imgPath}}/index/qrcode.png" />
-        <div class="home-sidebar-info">
-          <div class="home-sidebar-weixintitle">下载简书手机App<i class="iconfont ic-link"></i></div>
-          <div class="home-sidebar-desc">一个开源的全栈社区</div>
-        </div>
-      </a>
-
-      <div class="recommended-books">
-        <div class="title">
-          <span>推荐小册</span>
-        </div>
-        <ul>
-          <li class="book-item">
-            <img class="book-item-img" src="{{imgPath}}/index/book1.jpg">
-            <div class="book-item-info">
-              <div class="book-item-title">Python 实战：用 Scrapyd 打造个人化的爬虫部署管理控制台</div>
-              <div>
-                <span class="book-item-buycount">698人已购买</span>
-                <span class="try-read">试读</span>
-              </div>
+    <div class="index-container">
+        <div class="content-box">
+            <div class="user-action-nav">
+                <div class="default-avatar-box"><img class="default-avatar" src="{{imgPath}}/avatar_default2.svg"></div>
+                <a class="user-action-item"><img src="{{imgPath}}/index/pin-icon.svg" />发沸点</a>
+                <a class="user-action-item"><img src="{{imgPath}}/index/write-icon.svg" />写文章</a>
+                <a class="user-action-item"><img src="{{imgPath}}/index/share-icon.svg" />分享链接</a>
+                <a href="/editor/drafts.html" class="user-action-item" style="float: right;margin-right: 20px;">草稿</a>
             </div>
-          </li>
-          <li class="book-item">
-            <img class="book-item-img" src="{{imgPath}}/index/book2.jpg">
-            <div class="book-item-info">
-              <div class="book-item-title">基于 Go 语言构建企业级的 RESTful API 服务</div>
-              <div>
-                <span class="book-item-buycount">698人已购买</span>
-                <span class="try-read">试读</span>
-              </div>
+            <div class="article-box-sep"></div>
+            <div id="articleBox">
+                {% include '../component/cms/articles.njk' %}
             </div>
-          </li>
-        </ul>
-      </div>
 
-      <div class="recommended-authors">
-        <div class="title">
-          <span>推荐作者</span>
-          <a class="page-change">
-            <i class="iconfont ic-search-change" style="transform: rotate(0deg);"></i>
-            换一批
-          </a>
+            <div style="background: #fff;">
+                <div id="articleList"></div>
+            </div>
+
+            <!-- <a class="load-more">阅读更多</a> -->
         </div>
-        <ul class="list">
-          <li>
-            <a href="" target="_blank" class="avatar">
-              <img src="//upload.jianshu.io/users/upload_avatars/8781442/79bf6acc-5dd3-49d1-9e2b-6c58066c1442.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96/format/webp">
+        <div class="home-sidebar">
+            <a class="home-sidebar-weixin">
+                <img class="home-sidebar-qrcode" src="{{imgPath}}/index/qrcode.png" />
+                <div class="home-sidebar-info">
+                    <div class="home-sidebar-weixintitle">下载简书手机App<i class="iconfont ic-link"></i></div>
+                    <div class="home-sidebar-desc">一个开源的全栈社区</div>
+                </div>
             </a>
-            <a class="follow"><i class="iconfont ic-follow"></i>关注</a>
-            <a href="" target="_blank" class="name">胡七筒</a>
-            <p>写了231.7k字 · 9.5k喜欢</p>
-          </li>
-          <li>
-            <a href="" target="_blank" class="avatar">
-              <img src="//upload.jianshu.io/users/upload_avatars/8781442/79bf6acc-5dd3-49d1-9e2b-6c58066c1442.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96/format/webp">
-            </a>
-            <a class="follow" state="0"><i class="iconfont ic-follow"></i>关注</a>
-            <a href="" target="_blank" class="name">胡七筒</a>
-            <p>写了231.7k字 · 9.5k喜欢</p>
-          </li>
-        </ul>
-        <div class="find-more-box">
-          <a href="" target="_blank" class="find-more">查看全部<i class="iconfont ic-link"></i></a>
+
+            <div class="recommended-books">
+                <div class="title">
+                    <span>推荐小册</span>
+                </div>
+                <ul>
+                    <li class="book-item">
+                        <img class="book-item-img" src="{{imgPath}}/index/book1.jpg">
+                        <div class="book-item-info">
+                            <div class="book-item-title">Python 实战：用 Scrapyd 打造个人化的爬虫部署管理控制台</div>
+                            <div>
+                                <span class="book-item-buycount">698人已购买</span>
+                                <span class="try-read">试读</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="book-item">
+                        <img class="book-item-img" src="{{imgPath}}/index/book2.jpg">
+                        <div class="book-item-info">
+                            <div class="book-item-title">基于 Go 语言构建企业级的 RESTful API 服务</div>
+                            <div>
+                                <span class="book-item-buycount">698人已购买</span>
+                                <span class="try-read">试读</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="recommended-authors">
+                <div class="title">
+                    <span>推荐作者</span>
+                    <a class="page-change">
+                        <i class="iconfont ic-search-change" style="transform: rotate(0deg);"></i>
+                        换一批
+                    </a>
+                </div>
+                <ul class="list">
+                    <li>
+                        <a href="" target="_blank" class="avatar">
+                            <img src="//upload.jianshu.io/users/upload_avatars/8781442/79bf6acc-5dd3-49d1-9e2b-6c58066c1442.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96/format/webp">
+                        </a>
+                        <a class="follow"><i class="iconfont ic-follow"></i>关注</a>
+                        <a href="" target="_blank" class="name">胡七筒</a>
+                        <p>写了231.7k字 · 9.5k喜欢</p>
+                    </li>
+                    <li>
+                        <a href="" target="_blank" class="avatar">
+                            <img src="//upload.jianshu.io/users/upload_avatars/8781442/79bf6acc-5dd3-49d1-9e2b-6c58066c1442.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96/format/webp">
+                        </a>
+                        <a class="follow" state="0"><i class="iconfont ic-follow"></i>关注</a>
+                        <a href="" target="_blank" class="name">胡七筒</a>
+                        <p>写了231.7k字 · 9.5k喜欢</p>
+                    </li>
+                </ul>
+                <div class="find-more-box">
+                    <a href="" target="_blank" class="find-more">查看全部<i class="iconfont ic-link"></i></a>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 {% endblock %}
 
 {% block devjs %}
-  {{ loadjs('entry/index.js') }}
+    {{ loadjs('entry/index.js') }}
 {% endblock %}

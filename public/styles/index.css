@@ -2,14 +2,6 @@ body {
     background: #f4f5f5;
 }
 
-.navbar-nav-home a {
-    color: #ea6f5a!important;
-}
-
-.navbar-nav-home:hover {
-    background: #fff!important;
-}
-
 .container {
     width: 1200px;
     margin: 0 auto;

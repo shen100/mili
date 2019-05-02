@@ -1,7 +1,8 @@
 import {
-    Controller, Get, Render, Req, Res,
+    Controller, Get, Render, Req, Res, Query,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
+import { CurUser } from '../common/decorators/user.decorator';
 
 @Controller()
 export class IndexController {
@@ -10,11 +11,12 @@ export class IndexController {
     ) {}
 
     @Get('/')
-    async index(@Req() req, @Res() res) {
-        const articles = await this.articleService.list(1);
+    async index(@CurUser() user, @Query('c') c: number, @Res() res) {
+        const result = await this.articleService.list(1, 20);
         res.render('pages/index', {
-            user: req.user,
-            articles,
+            user,
+            articles: result.list,
+            categoryID: parseInt((c as any), 10) || 0,
             categories: [
                 {
                     id: 1,

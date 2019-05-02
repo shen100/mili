@@ -3,19 +3,21 @@
     {% for article in articles %}
     <div class="article-list-item">
         <div class="article-content" {% if article.image %} style="padding-right: 140px;" {% endif %}>
-            <a href="/p/{{article.id}}.html" class="article-title">{{article.name}}</a>
+            <a href="/p/{{article.id}}.html" target="_blank" class="article-title">{{article.name}}</a>
             <p class="article-content">{{article.summary}}...</p>
             <div class="article-meta">
                 <span class="paid-meta"><i class="iconfont ic-paid"></i> 付费</span>
-                <a target="_blank" href=""><i class="iconfont ic-list-read"></i> 556</a>
+                <a href="/p/{{article.id}}.html" target="_blank"><i class="iconfont ic-list-read"></i> 556</a>
                 {% if article.user and article.user.username %}
-                <a class="article-username">{{article.user.username}}</a>
+                <a href="/users/{{article.user.id}}.html" target="_blank" class="article-username">{{article.user.username}}</a>
                 {% endif %}
-                <a target="_blank" href="">
+                <a href="/p/{{article.id}}.html#comments" target="_blank">
                     <i class="iconfont ic-list-comments"></i>
                     {{article.commentCount | default(0, true)}}
                 </a>
-                <span><i class="iconfont ic-list-like"></i> {{article.upCount | default(0, true)}}</span>
+                <a target="_blank" :href="`/p/${article.id}.html`">
+                    <i class="iconfont ic-list-like"></i> {{article.likeCount | default(0, true)}}
+                </a>
                 <span class="time">{{article.createdAt | recentTime('YYYY.MM.DD HH:mm')}}</span>
             </div>
         </div>
