@@ -957,14 +957,15 @@ nav .width-limit {
 }
 
 .article-list {
-    width: 625px;
+    width: 665px;
 }
 
 .article-list-item {
     position: relative;
     width: 100%;
-    margin: 0 0 15px;
-    padding: 15px 2px 20px 0;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
     border-bottom: 1px solid #f0f0f0;
     word-wrap: break-word;
 }
@@ -1259,4 +1260,118 @@ nav .width-limit {
 
 .alert-modal-footer .cancel:hover {
     color: #333;
+}
+
+.recommended-authors .title .page-change {
+    float: right;
+    font-size: 14px;
+    color: #969696;
+}
+
+.recommended-authors .title .page-change i {
+    display: inline-block;
+    line-height: 1;
+    transition: .5s ease;
+}
+
+.ic-search-change:before {
+    content: "\E6E6";
+}
+
+.recommended-authors .list {
+    margin: 0 0 20px;
+    text-align: left;
+    list-style: none;
+}
+
+.recommended-authors .list a {
+    padding: 0 16px;
+    padding-top: 6px;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+.recommended-authors .list a:hover {
+    text-decoration: none;
+}
+
+.recommended-authors .list li:hover {
+    background: #f8f8f8;
+}
+
+.recommended-authors .list .avatar {
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    margin-right: 10px;
+}
+
+.recommended-authors .list .avatar img {
+    width: 100%;
+    height: auto;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+}
+
+.recommended-authors .list .name {
+    padding-top: 5px;
+    margin-right: 60px;
+    font-size: 14px;
+    display: block;
+}
+
+.recommended-authors .list .name:hover {
+    text-decoration: none;
+}
+
+.recommended-authors .list p {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #969696;
+    line-height: 16px;
+}
+
+.recommended-authors .follow {
+    float: right;
+    margin-top: 5px;
+    padding: 0;
+    font-size: 13px;
+    color: #42c02e;
+}
+
+.ic-follow:before {
+    content: "\E611";
+}
+
+.recommended-authors .find-more-box {
+    padding: 0 16px 16px 16px;
+}
+
+.recommended-authors .find-more {
+    box-sizing: border-box;
+    display: block;
+    padding: 7px 7px 7px 12px;
+    left: 0;
+    width: 100%;
+    font-size: 13px;
+    color: #787878;
+    background-color: #f7f7f7;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+}
+
+.recommended-authors .find-more:hover {
+    text-decoration: none;
+}
+
+.ic-link:before { 
+    content: "\E616"; 
 }

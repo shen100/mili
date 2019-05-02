@@ -20,6 +20,7 @@ import {
 export default {
     props: [
         'url',
+        'start',
         'query'
     ],
     data () {
@@ -27,7 +28,7 @@ export default {
             isLoading: false,
             isComplete: false,
             theOnScroll: null,
-            page: 1,
+            page: this.start || 1,
         };
     },
     mounted () {

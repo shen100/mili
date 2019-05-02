@@ -27,6 +27,21 @@
                 {% include '../component/cms/articles.njk' %}
             </div>
 
+            {% if baiduAd.ad580x90 %}
+            <div class="article-list-baiduad">
+                <script type="text/javascript">
+                    (function() {
+                        var s = "_" + Math.random().toString(36).slice(2);
+                        document.write('<div style="" id="' + s + '"></div>');
+                        (window.slotbydup = window.slotbydup || []).push({
+                            id: "{{baiduAd.ad580x90}}",
+                            container: s
+                        });
+                    })();
+                </script>
+            </div>
+            {% endif %}
+
             <div style="background: #fff;">
                 <div id="articleList"></div>
             </div>
@@ -34,14 +49,6 @@
             <!-- <a class="load-more">阅读更多</a> -->
         </div>
         <div class="home-sidebar">
-            <a class="home-sidebar-weixin">
-                <img class="home-sidebar-qrcode" src="{{imgPath}}/index/qrcode.png" />
-                <div class="home-sidebar-info">
-                    <div class="home-sidebar-weixintitle">下载简书手机App<i class="iconfont ic-link"></i></div>
-                    <div class="home-sidebar-desc">一个开源的全栈社区</div>
-                </div>
-            </a>
-
             <div class="recommended-books">
                 <div class="title">
                     <span>推荐小册</span>
@@ -70,39 +77,29 @@
                 </ul>
             </div>
 
-            <div class="recommended-authors">
-                <div class="title">
-                    <span>推荐作者</span>
-                    <a class="page-change">
-                        <i class="iconfont ic-search-change" style="transform: rotate(0deg);"></i>
-                        换一批
-                    </a>
-                </div>
-                <ul class="list">
-                    <li>
-                        <a href="" target="_blank" class="avatar">
-                            <img src="//upload.jianshu.io/users/upload_avatars/8781442/79bf6acc-5dd3-49d1-9e2b-6c58066c1442.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96/format/webp">
-                        </a>
-                        <a class="follow"><i class="iconfont ic-follow"></i>关注</a>
-                        <a href="" target="_blank" class="name">胡七筒</a>
-                        <p>写了231.7k字 · 9.5k喜欢</p>
-                    </li>
-                    <li>
-                        <a href="" target="_blank" class="avatar">
-                            <img src="//upload.jianshu.io/users/upload_avatars/8781442/79bf6acc-5dd3-49d1-9e2b-6c58066c1442.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96/format/webp">
-                        </a>
-                        <a class="follow" state="0"><i class="iconfont ic-follow"></i>关注</a>
-                        <a href="" target="_blank" class="name">胡七筒</a>
-                        <p>写了231.7k字 · 9.5k喜欢</p>
-                    </li>
-                </ul>
-                <div class="find-more-box">
-                    <a href="" target="_blank" class="find-more">查看全部<i class="iconfont ic-link"></i></a>
-                </div>
+            {% include '../component/recommendusers.njk' %}
+
+            {% if baiduAd.ad250x250 %}
+            <div class="home-sidebar-ad1">
+                <script type="text/javascript">
+                    (function() {
+                        var s = "_" + Math.random().toString(36).slice(2);
+                        document.write('<div style="" id="' + s + '"></div>');
+                        (window.slotbydup = window.slotbydup || []).push({
+                            id: "{{baiduAd.ad250x250}}",
+                            container: s
+                        });
+                    })();
+                </script>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block libjs %}
+<script src="//cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript" async="async" defer="defer"></script>
 {% endblock %}
 
 {% block devjs %}

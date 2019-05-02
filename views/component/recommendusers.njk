@@ -1,0 +1,30 @@
+<div class="recommended-authors">
+    <div class="title">
+        <span style="color: #333;">{{siteName}}优秀作者</span>
+    </div>
+    <ul class="list">
+        {% for user in recommendUsers %}
+        <li>
+            <a href="/users/{{user.id}}.html" target="_blank">
+                <div class="avatar">
+                    <img src="{{user.avatarURL}}">
+                </div>
+                <div>
+                    <div class="name">{{user.username}}</div>
+                    {% if user.job %}
+                    <p>{{user.job}}</p>
+                    {% elif user.introduce %}
+                    <p>{{user.introduce}}</p>
+                    {% else %}
+                    <p>xxxxxxxxxxxxxxxxxxxxx</p>
+                    {% endif %}
+                    <p>xxxxxxxxxxxxxxxxxxxxx</p>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="find-more-box">
+        <a href="/recommendations/users" target="_blank" class="find-more">查看更多<i class="iconfont ic-link"></i></a>
+    </div>
+</div>

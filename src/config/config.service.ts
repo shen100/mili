@@ -84,6 +84,8 @@ class ServerConfig extends BaseConfig {
 
 class BaiduAdConfig extends BaseConfig {
     readonly ad250x250: string;
+    readonly ad580x90: string;
+    readonly ad580x90_2: string;
 
     constructor(cfg) {
         super(cfg);

@@ -99,18 +99,20 @@
                 </div>
             </div>
 
+            {% if baiduAd.ad580x90 %}
             <div class="web-note-ad">
                 <script type="text/javascript">
                     (function() {
                         var s = "_" + Math.random().toString(36).slice(2);
                         document.write('<div style="" id="' + s + '"></div>');
                         (window.slotbydup = window.slotbydup || []).push({
-                            id: "u3748016",
+                            id: "{{baiduAd.ad580x90}}",
                             container: s
                         });
                     })();
                 </script>
             </div>
+            {% endif %}
 
             <div>
                 <div id="comment-list" class="comment-list">
@@ -150,18 +152,20 @@
                 </div>
             </div>
 
+            {% if baiduAd.ad580x90_2 %}
             <div class="web-note-ad">
                 <script type="text/javascript">
                     (function() {
                         var s = "_" + Math.random().toString(36).slice(2);
                         document.write('<div style="" id="' + s + '"></div>');
                         (window.slotbydup = window.slotbydup || []).push({
-                            id: "u3748022",
-                            container:  s
+                            id: "{{baiduAd.ad580x90_2}}",
+                            container: s
                         });
                     })();
                 </script>
             </div>
+            {% endif %}
         </div>
     </div>
 

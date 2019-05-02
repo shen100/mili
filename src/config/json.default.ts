@@ -49,6 +49,8 @@ export default {
     },
     baiduAd: {
         ad250x250: '',
+        ad580x90: '',
+        ad580x90_2: '',
     },
     aliyunOSS: {
         accessKeyID: '',

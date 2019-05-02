@@ -505,4 +505,16 @@ export class UserService {
             pageSize,
         };
     }
+
+    async recommendUsers() {
+        return await this.userRepository.find({
+            select: {
+                id: true,
+                username: true,
+                avatarURL: true,
+                introduce: true,
+            },
+            take: 3,
+        });
+    }
 }

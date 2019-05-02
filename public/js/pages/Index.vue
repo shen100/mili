@@ -1,6 +1,6 @@
 <template>
     <div class="search-view">
-        <Pinterest url="/articles" @load="onLoad">
+        <Pinterest url="/articles" :start="2" @load="onLoad">
             <template v-slot:loading>
                 <div style="padding: 20px; padding-top: 10px;">
                     <ArticleLoading />

@@ -3,18 +3,24 @@ import {
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CurUser } from '../common/decorators/user.decorator';
+import { UserService } from '../user/user.service';
 
 @Controller()
 export class IndexController {
     constructor(
         private readonly articleService: ArticleService,
+        private readonly userService: UserService,
     ) {}
 
     @Get('/')
     async index(@CurUser() user, @Query('c') c: number, @Res() res) {
-        const result = await this.articleService.list(1, 20);
+        const [result, recommendUsers] = await Promise.all([
+            this.articleService.list(1, 20),
+            this.userService.recommendUsers(),
+        ]);
         res.render('pages/index', {
             user,
+            recommendUsers,
             articles: result.list,
             categoryID: parseInt((c as any), 10) || 0,
             categories: [
