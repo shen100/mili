@@ -22,6 +22,9 @@ export class RecommendController {
     async likes(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
         const result = await this.recommendService.recommendUsersWithRecentUpdate(page, 90);
 
+        result.list.forEach((userData: any) => {
+            userData.isSelf = false;
+        });
         if (user) {
             const users = result.list.map(u => u.id);
             const followedUsers = await this.userService.findUsersFilterByfollowerID(user.id, users);
@@ -31,6 +34,7 @@ export class RecommendController {
             });
             result.list.forEach((userData: any) => {
                 userData.isFollowed = !!userMap[userData.id];
+                userData.isSelf = user.id === userData.id;
             });
         }
         return result;

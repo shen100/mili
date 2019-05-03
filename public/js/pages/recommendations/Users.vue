@@ -7,15 +7,17 @@
                         <img class="avatar" :src="user.avatarURL">
                         <h4 class="name">
                             {{user.username}}
-                            <i class="iconfont ic-man"></i>
+                            <i v-if="user.sex === UserSex.Male" class="iconfont ic-man"></i>
+                            <i v-else-if="user.sex === UserSex.Female" class="iconfont ic-woman"></i>
                         </h4>
                         <p class="description">{{user.introduce}}</p>
                     </a>
-                    <BigFollow :userID="user.id" :userFollowed="user.isFollowed" />
+                    <BigFollow v-if="!user.isSelf" :userID="user.id" :userFollowed="user.isFollowed" />
+                    <div v-else style="height: 45px;"></div>
                     <hr>
                     <div class="meta">最近更新</div>
                     <div class="recent-update">
-                        <a :key="`${update.id}-${update.id}`" v-for="update in user.updates" class="new" target="_blank" :href="`/p/${update.id}.html`">{{update.name}}</a>
+                        <a :key="`${update.updateType}-${update.id}`" v-for="update in user.updates" class="new" target="_blank" :href="`/p/${update.id}.html`">{{update.name}}</a>
                     </div>
                 </div>
             </div>
@@ -26,13 +28,16 @@
 
 <script>
 import { ErrorCode } from '~/js/constants/error.js';
+import { UserSex } from '~/js/constants/entity.js';
 import { myHTTP } from '~/js/common/net.js';
 import BigFollow from '~/js/components/user/BigFollow.vue';
 
 export default {
     data () {
         return {
+            UserSex,
             page: 1,
+            userID: window.userID,
             users: [],
             loaderVisible: false,
             isLoading: false,

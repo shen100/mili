@@ -30,6 +30,7 @@ export class RecommendService {
                 select: {
                     id: true,
                     username: true,
+                    sex: true,
                     avatarURL: true,
                     introduce: true,
                 },
