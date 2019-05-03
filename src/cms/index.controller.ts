@@ -4,19 +4,20 @@ import {
 import { ArticleService } from './article.service';
 import { CurUser } from '../common/decorators/user.decorator';
 import { UserService } from '../user/user.service';
+import { RecommendService } from './recommend.service';
 
 @Controller()
 export class IndexController {
     constructor(
         private readonly articleService: ArticleService,
-        private readonly userService: UserService,
+        private readonly recommendService: RecommendService,
     ) {}
 
     @Get('/')
     async index(@CurUser() user, @Query('c') c: number, @Res() res) {
         const [result, recommendUsers] = await Promise.all([
             this.articleService.list(1, 20),
-            this.userService.recommendUsers(),
+            this.recommendService.recommendUsers(),
         ]);
         res.render('pages/index', {
             user,

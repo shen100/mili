@@ -1,0 +1,23 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="container">
+    <img class="recommend-banner" src="{{imgPath}}/recommendations/recommend-author.png" />
+    <div id="userList"></div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block pageData %}
+<script>
+</script>
+{% endblock %}
+
+{% block devjs %}
+    {{ loadjs('entry/recommendations/users.js') }}
+{% endblock %}

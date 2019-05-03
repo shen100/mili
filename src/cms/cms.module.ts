@@ -28,6 +28,8 @@ import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
 import { HandbookController } from './handbook.controller';
 import { SearchService } from './search.service';
+import { RecommendController } from './recommend.controller';
+import { RecommendService } from './recommend.service';
 
 @Module({
     imports: [
@@ -54,6 +56,7 @@ import { SearchService } from './search.service';
         EditorController,
         MessageController,
         SearchController,
+        RecommendController,
         AdminController,
     ],
     providers: [
@@ -64,6 +67,7 @@ import { SearchService } from './search.service';
         MessageService,
         UploadService,
         CollectionService,
+        RecommendService,
         SearchService,
     ],
 })
