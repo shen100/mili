@@ -49,3 +49,7 @@ export const defaultValue = (val: any, defaultVal: any): any => {
     }
     return val;
 };
+
+export const readDuration = (wordCount: number): string => {
+    return parseInt((wordCount / 300 * 60) as any, 10) + '分钟';
+};

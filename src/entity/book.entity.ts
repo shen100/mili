@@ -1,0 +1,177 @@
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne, JoinColumn } from 'typeorm';
+import { ArticleContentType } from './article.entity';
+import { User } from './user.entity';
+
+@Entity({name: 'book_categories'})
+export class BookCategory {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column('datetime', { name: 'created_at' })
+    createdAt: Date;
+
+    @Column('datetime', { name: 'updated_at' })
+    updatedAt: Date;
+
+    @Column('datetime', { name: 'deleted_at', nullable: true, default: null })
+    deletedAt: Date;
+
+    @Column('varchar', { length: 200 })
+    name: string;
+
+    @Column('int')
+    sequence: number;
+
+    @Column('int', { name: 'parent_id' })
+    parentID: number;
+}
+
+export enum BookStatus {
+	// BookUnpublish 未发布
+	BookUnpublish = 'book_unpublish',
+
+	// BookVerifying 审核中
+	BookVerifying = 'book_verifying',
+
+	// BookVerifySuccess 审核通过
+	BookVerifySuccess = 'book_verify_success',
+
+	// BookVerifyFail 审核未通过
+	BookVerifyFail = 'book_verify_fail',
+}
+
+@Entity({name: 'books'})
+export class Book {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column('datetime', { name: 'created_at' })
+    createdAt: Date;
+
+    @Column('datetime', { name: 'updated_at' })
+    updatedAt: Date;
+
+    @Column('datetime', { name: 'deleted_at', nullable: true, default: null })
+    deletedAt: Date;
+
+    @Column('varchar', { length: 200 })
+    name: string;
+
+    @Column('int', { name: 'browse_count' })
+    browseCount: number;
+
+    @Column('int', { name: 'comment_count' })
+    commentCount: number;
+
+    @Column('int', { name: 'collect_count' })
+    collectCount: number;
+
+    @Column('int', { name: 'chapter_count' })
+    chapterCount: number;
+
+    @Column('int', { name: 'word_count' })
+    wordCount: number;
+
+    @Column('varchar', { name: 'cover_url', length: 200, nullable: true, default: null })
+    coverURL: string;
+
+    @Column('int')
+    status: BookStatus;
+
+    @Column('int', { name: 'star' })
+    star: number;
+
+    @Column('int', { name: 'one_star_count' })
+    oneStarCount: number;
+
+    @Column('int', { name: 'two_star_count' })
+    twoStarCount: number;
+
+    @Column('int', { name: 'three_star_count' })
+    threeStarCount: number;
+
+    @Column('int', { name: 'four_star_count' })
+    fourStarCount: number;
+
+    @Column('int', { name: 'five_star_count' })
+    fiveStarCount: number;
+
+    @Column('int', { name: 'total_star_count' })
+    totalStarCount: number;
+
+    @Column('text', { nullable: true, default: null })
+    content: string;
+
+    @Column('text', { name: 'html_content', nullable: true, default: null })
+    htmlContent: string;
+
+    @Column('int', { name: 'content_type' })
+    contentType: ArticleContentType;
+
+    @ManyToMany(type => BookCategory)
+    @JoinTable({
+        name: 'book_category',
+        joinColumn: {
+            name: 'book_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'book_category_id',
+            referencedColumnName: 'id',
+        },
+    })
+    categories: BookCategory[];
+
+    @Column('int', { name: 'user_id' })
+    userID: number;
+
+    @ManyToOne(type => User)
+    @JoinColumn({ name: 'user_id' })
+    user: User;
+}
+
+@Entity({name: 'book_chapters'})
+export class BookChapter {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column('datetime', { name: 'created_at' })
+    createdAt: Date;
+
+    @Column('datetime', { name: 'updated_at' })
+    updatedAt: Date;
+
+    @Column('datetime', { name: 'deleted_at', nullable: true, default: null })
+    deletedAt: Date;
+
+    @Column('varchar', { length: 200 })
+    name: string;
+
+    @Column('int', { name: 'browse_count' })
+    browseCount: number;
+
+    @Column('int', { name: 'comment_count' })
+    commentCount: number;
+
+    @Column('text', { nullable: true, default: null })
+    content: string;
+
+    @Column('text', { name: 'html_content', nullable: true, default: null })
+    htmlContent: string;
+
+    @Column('int', { name: 'content_type' })
+    contentType: ArticleContentType;
+
+    @Column('int', { name: 'user_id' })
+    userID: number;
+
+    @ManyToOne(type => User)
+    @JoinColumn({ name: 'user_id' })
+    user: User;
+
+    @Column('int', { name: 'parent_id' })
+    parentID: number;
+
+    @Column('int', { name: 'book_id' })
+    bookID: number;
+}

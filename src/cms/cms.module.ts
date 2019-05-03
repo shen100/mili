@@ -30,6 +30,9 @@ import { HandbookController } from './handbook.controller';
 import { SearchService } from './search.service';
 import { RecommendController } from './recommend.controller';
 import { RecommendService } from './recommend.service';
+import { BookController } from './book.controller';
+import { BookService } from './book.service';
+import { Book, BookCategory } from '../entity/book.entity';
 
 @Module({
     imports: [
@@ -42,10 +45,13 @@ import { RecommendService } from './recommend.service';
             Category,
             Draft,
             PostMsg,
+            Book,
+            BookCategory,
         ]),
         UserModule,
     ],
     controllers: [
+        BookController,
         IndexController,
         ArticleController,
         CategoryController,
@@ -61,6 +67,7 @@ import { RecommendService } from './recommend.service';
     ],
     providers: [
         ArticleService,
+        BookService,
         CommentService,
         DraftService,
         CategoryService,

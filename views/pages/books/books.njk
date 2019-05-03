@@ -1,0 +1,77 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="container">
+    <div class="category-nav-box">
+        <div class="category-nav">
+            <ul class="category-list">
+                <li><a href="/books" class="category-item {% if not categoryID %}category-item-select {% endif %}">全部</a></li>
+                {% for category in categories %}
+                <li><a href="/books?c={{category.id}}" class="category-item {% if categoryID == category.id %}category-item-select {% endif %}">{{category.name}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="book-view-box">
+        <div class="book-view">
+            {% include '../../component/book/bookList.njk' %}
+            <div id="books"></div>
+        </div>
+        <div class="side-box">
+            <div class="recommended-books">
+                <div class="title">
+                    <span>推荐小册</span>
+                </div>
+                <ul>
+                    {% for handBook in recommendHandBooks %}
+                    <li class="book-item">
+                        <img class="book-item-img" src="{{handBook.coverURL}}">
+                        <div class="book-item-info">
+                            <div class="book-item-title">{{handBook.name}}</div>
+                            <div style="margin-top: 2px;">
+                                <span class="book-item-buycount">{{handBook.saleCount}}人已购买</span>
+                                <span class="try-read">购买</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% if baiduAd.ad250x250 %}
+            <div class="search-side-ad1">
+                <script type="text/javascript">
+                    (function() {
+                        var s = "_" + Math.random().toString(36).slice(2);
+                        document.write('<div style="" id="' + s + '"></div>');
+                        (window.slotbydup = window.slotbydup || []).push({
+                            id: "{{baiduAd.ad250x250}}",
+                            container: s
+                        });
+                    })();
+                </script>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block pageData %}
+<script>
+</script>
+{% endblock %}
+
+{% block libjs %}
+<script src="//cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript" async="async" defer="defer"></script>
+{% endblock %}
+
+{% block devjs %}
+    {{ loadjs('entry/book/books.js') }}
+{% endblock %}

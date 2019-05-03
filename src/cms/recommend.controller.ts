@@ -20,7 +20,7 @@ export class RecommendController {
 
     @Get('/api/v1/recommendations/users')
     async likes(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
-        const result = await this.recommendService.recommendUsersWithRecentUpdate(page, 90);
+        const result = await this.recommendService.recommendUsersWithRecentUpdate(page, 24);
 
         result.list.forEach((userData: any) => {
             userData.isSelf = false;

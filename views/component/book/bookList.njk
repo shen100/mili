@@ -1,0 +1,45 @@
+<div class="handbooks">
+    {% for book in books %}
+    <div>
+        <a href="/books/{{book.id}}.html" target="_blank" class="item"
+            {% if loop.last %} style="border-bottom: none;"{% endif %}>
+            <div class="poster">
+                <div class="lazy thumb poster-img loaded" style="background-image: url({{book.coverURL}}); background-size: cover;"></div>
+            </div>
+            <div class="info">
+                <div class="title">
+                    <span>{{book.name}}</span>
+                </div>
+                <div class="desc">{{book.summary}}</div>
+                <div class="author">
+                    <div class="author-info">
+                        <div target="_blank" class="user">
+                            <div class="lazy avatar hero loaded" style="background-image: url(book.user.avatarURL);"></div>
+                            <span>lucefer</span>
+                        </div>
+                    </div>
+                    <div class="author-desc">
+                    </div>
+                </div>
+                <div class="other">
+                    <div class="messages">
+                        <span class="message">
+                            <span>{{book.chapterCount}}小节</span>
+                        </span>
+                        <span class="dot">·</span>
+                        <span class="message">
+                            <span>阅读时长{{book.wordCount | readDuration}}</span>
+                        </span>
+                        <span class="dot">·</span>
+                        <span class="message">
+                            <span>{{book.userCount}}</span>
+                            <span>人已阅读</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="footer-bar" style="display: none;"></div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>

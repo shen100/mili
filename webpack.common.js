@@ -25,6 +25,7 @@ module.exports = {
         'entry/editor/editRichDraft': './public/js/entry/editor/editRichDraft.js',
         'entry/editor/published': './public/js/entry/editor/published.js',
         'entry/editor/drafts': './public/js/entry/editor/drafts.js',
+        'entry/book/books': './public/js/entry/book/books.js',
         'entry/handbook/handbooks': './public/js/entry/handbook/handbooks.js',
         'entry/handbook/handbookDetail': './public/js/entry/handbook/handbookDetail.js',
         'entry/search/search': './public/js/entry/search/search.js',
