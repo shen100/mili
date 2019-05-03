@@ -6,6 +6,7 @@
     <ul class="navbar-nav">
       <li {% if reqPath === '/' %}class="navbar-nav-select"{% endif %}><a href="/">首页</a></li>
       <li {% if reqPath.startsWith('/handbooks') %}class="navbar-nav-select"{% endif %}><a href="/handbooks">小册</a></li>
+      <li {% if reqPath.startsWith('/books') %}class="navbar-nav-select"{% endif %}><a href="/books">开源图书</a></li>
       {% if user %}
       <li><a href="/">关注</a></li>
       <li><a href="/message">消息</a></li>

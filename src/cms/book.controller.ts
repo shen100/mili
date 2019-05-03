@@ -24,7 +24,12 @@ export class BookController {
                 coverURL: '/images/index/book1.jpg',
             },
         ];
-        const categories = await this.bookService.allCategories();
+        const page = 1;
+        const pageSize = 20;
+        const [categories, [books, count]] = await Promise.all([
+            this.bookService.allCategories(),
+            this.bookService.list(2, page, pageSize),
+        ]);
         if (c) {
             let found = false;
             for (const category of categories) {
@@ -40,8 +45,12 @@ export class BookController {
 
         res.render('pages/books/books', {
             recommendHandBooks,
+            books,
             categoryID: c,
             categories,
+            page,
+            pageSize,
+            count,
         });
     }
 }

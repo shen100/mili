@@ -25,33 +25,17 @@ export class BookService {
     }
 
     async list(categoryID: number, page: number, pageSize: number) {
-        const condition = {
-            deletedAt: null,
-            status: BookStatus.BookVerifySuccess,
-        };
-        const [list, count] = await Promise.all([
-            this.bookRepository.find({
-                select: {
-                    id: true,
-                    name: true,
-                    user: {
-                        id: true,
-                        username: true,
-                        avatarURL: true,
-                    },
-                } as any,
-                relations: ['user'],
-                where: condition,
-                skip: (page - 1) * pageSize,
-                take: pageSize,
-            }),
-            this.bookRepository.count(condition),
-        ]);
-        return {
-            list,
-            count,
-            page,
-            pageSize,
-        };
+        const result = await this.bookRepository.createQueryBuilder('b')
+                .select(['b.id', 'b.name', 'b.coverURL', 'b.chapterCount',
+                    'b.wordCount', 'b.userCount', 'b.summary',
+                    'u.id', 'u.username', 'u.avatarURL',
+                    'c.id', 'c.name'])
+                .leftJoin('b.user', 'u')
+                .leftJoin('b.categories', 'c')
+                .where('b.status = :status', { status: BookStatus.BookVerifySuccess })
+                .andWhere('c.id = :id', { id: categoryID })
+                .skip((page - 1) * pageSize).take(pageSize)
+                .getManyAndCount();
+        return result;
     }
 }

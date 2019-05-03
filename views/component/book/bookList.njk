@@ -14,8 +14,8 @@
                 <div class="author">
                     <div class="author-info">
                         <div target="_blank" class="user">
-                            <div class="lazy avatar hero loaded" style="background-image: url(book.user.avatarURL);"></div>
-                            <span>lucefer</span>
+                            <div class="lazy avatar hero loaded" style="background-image: url({{book.user.avatarURL}});"></div>
+                            <span>{{book.user.username}}</span>
                         </div>
                     </div>
                     <div class="author-desc">
@@ -42,4 +42,18 @@
         </a>
     </div>
     {% endfor %}
+    {% if baiduAd.ad580x90 %}
+    <div class="book-list-baiduad">
+        <script type="text/javascript">
+            (function() {
+                var s = "_" + Math.random().toString(36).slice(2);
+                document.write('<div style="" id="' + s + '"></div>');
+                (window.slotbydup = window.slotbydup || []).push({
+                    id: "{{baiduAd.ad580x90}}",
+                    container: s
+                });
+            })();
+        </script>
+    </div>
+    {% endif %}
 </div>

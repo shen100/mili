@@ -6,6 +6,9 @@ const config = new ConfigService();
 (async function run() {
     const connection = await createConnection(config.db);
     try {
+        await connection.manager.query(`alter table books add column summary varchar(500)`);
+        await connection.manager.query(`alter table books add column word_count int default 0`);
+        await connection.manager.query(`alter table books add column user_count int default 0`);
 
         await connection.manager.query(`alter table categories add column follower_count int default 0`);
         await connection.manager.query(`alter table categories add column article_count int default 0`);
