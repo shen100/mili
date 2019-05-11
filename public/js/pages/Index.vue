@@ -9,7 +9,7 @@
             <template v-slot:content>
                 <div>
                     <div class="article-list">
-                        <ArticleItem :key="article.id" v-for="article in articles" :article="article"/>
+                        <ArticleItem :key="article.id" v-for="article in articles" :article="article" />
                     </div>
                 </div>
             </template>
