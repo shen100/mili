@@ -94,34 +94,51 @@ export class ArticleService {
     }
 
     async list(page: number, pageSize: number) {
-        const condition = {
-            deletedAt: null,
-            status: Not(ArticleStatus.VerifyFail),
-        };
-        const [list, count] = await Promise.all([
-            this.articleRepository.find({
-                select: {
+        const [list, count] = await this.articleRepository.findAndCount({
+            select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                summary: true,
+                commentCount: true,
+                likeCount: true,
+                coverURL: true,
+                user: {
                     id: true,
-                    name: true,
-                    createdAt: true,
-                    summary: true,
-                    commentCount: true,
-                    likeCount: true,
-                    user: {
-                        id: true,
-                        username: true,
-                    },
-                } as any,
-                relations: ['user'],
-                where: condition,
-                order: {
-                    createdAt: 'DESC',
+                    username: true,
+                    avatarURL: true,
                 },
-                skip: (page - 1) * 20,
-                take: 20,
-            }),
-            this.articleRepository.count(condition),
-        ]);
+            },
+            relations: ['user'],
+            where: {
+                status: Not(ArticleStatus.VerifyFail),
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    async listInCategory(categoryID: number, page: number, pageSize: number) {
+        const [list, count] = await this.articleRepository.createQueryBuilder('a')
+            .select(['a.id', 'a.name', 'a.createdAt', 'a.summary', 'a.commentCount',
+                'a.coverURL', 'a.likeCount', 'user.id', 'user.username', 'user.avatarURL'])
+            .leftJoin('a.user', 'user')
+            .leftJoin('a.categories', 'c')
+            .where('a.status != :status AND c.id = :categoryID', {
+                status: ArticleStatus.VerifyFail,
+                categoryID,
+            })
+            .skip((page - 1) * pageSize).take(pageSize)
+            .orderBy({'a.createdAt': 'DESC'}).getManyAndCount();
         return {
             list,
             count,
@@ -142,7 +159,7 @@ export class ArticleService {
                     username: true,
                     avatarURL: true,
                 },
-            } as any,
+            },
             relations: ['user'],
             where: {
                 deletedAt: null,

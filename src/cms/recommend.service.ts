@@ -12,7 +12,7 @@ export class RecommendService {
         private readonly articleService: ArticleService,
     ) {}
 
-    async recommendUsers() {
+    async recommendUsers(): Promise<Array<User>> {
         return await this.userRepository.find({
             select: {
                 id: true,
@@ -21,6 +21,9 @@ export class RecommendService {
                 introduce: true,
             },
             take: 3,
+            order: {
+                articleCount: 'DESC',
+            },
         });
     }
 

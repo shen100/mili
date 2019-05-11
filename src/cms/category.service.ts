@@ -23,6 +23,15 @@ export class CategoryService {
         return categories;
     }
 
+    async all(): Promise<Array<Category>> {
+        return await this.categoryRepository.find({
+            select: {
+                id: true,
+                name: true,
+            },
+        });
+    }
+
     async isExists(id: number): Promise<boolean> {
         const category = await this.categoryRepository.findOne({
             select: ['id'],
