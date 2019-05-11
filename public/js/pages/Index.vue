@@ -1,6 +1,6 @@
 <template>
     <div class="search-view">
-        <Pinterest url="/articles" :start="2" @load="onLoad">
+        <Pinterest url="/articles" :start="2" :query="{c: categoryID}" @load="onLoad">
             <template v-slot:loading>
                 <div style="padding: 20px; padding-top: 10px;">
                     <ArticleLoading />
@@ -27,7 +27,8 @@ import Pinterest from '~/js/components/common/Pinterest.vue';
 export default {
     data () {
         return {
-            articles: []
+            articles: [],
+            categoryID: window.categoryID || undefined,
         };
     },
     mounted() {

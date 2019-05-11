@@ -45,7 +45,9 @@ export default {
             let url = this.url + '?page=' + this.page;
             if (this.query) {
                 for (let key in this.query) {
-                    url += ('&' + key + '=' + this.query[key]);
+                    if (typeof this.query[key] !== 'undefined') {
+                        url += ('&' + key + '=' + this.query[key]);
+                    }
                 }
             }
             myHTTP.get(url)
