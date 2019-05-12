@@ -14,26 +14,22 @@ export class RecommendController {
     ) {}
 
     @Get('/recommendations/users')
-    async users(@Res() res) {
+    async usersView(@Res() res) {
         res.render('pages/recommendations/users');
     }
 
     @Get('/api/v1/recommendations/users')
-    async likes(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
+    async users(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
         const result = await this.recommendService.recommendUsersWithRecentUpdate(page, 24);
-
-        result.list.forEach((userData: any) => {
-            userData.isSelf = false;
-        });
         if (user) {
             const users = result.list.map(u => u.id);
-            const followedUsers = await this.userService.findUsersFilterByfollowerID(user.id, users);
-            const userMap = {};
+            const followedUsers = await this.userService.usersFilterByfollowerID(users, user.id);
+            const userFollowedMap = {};
             followedUsers.forEach(followedUser => {
-                userMap[followedUser.userID] = true;
+                userFollowedMap[followedUser.userID] = true;
             });
             result.list.forEach((userData: any) => {
-                userData.isFollowed = !!userMap[userData.id];
+                userData.isFollowed = !!userFollowedMap[userData.id];
                 userData.isSelf = user.id === userData.id;
             });
         }

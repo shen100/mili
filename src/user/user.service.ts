@@ -451,7 +451,8 @@ export class UserService {
         return false;
     }
 
-    async findUsersFilterByfollowerID(followerID: number, users: number[]) {
+    // 在一组用户（users）中， 用户 followerID 关注了哪些人
+    async usersFilterByfollowerID(users: number[], followerID: number) {
         if (!users || users.length <= 0) {
             return [];
         }

@@ -37,7 +37,6 @@ export default {
         return {
             UserSex,
             page: 1,
-            userID: window.userID,
             users: [],
             loaderVisible: false,
             isLoading: false,
@@ -68,6 +67,7 @@ export default {
             this.isLoading = true;
             myHTTP.get(`/recommendations/users?page=${this.page}`)
                 .then((result) => {
+                    this.isLoading = false;
                     if (this.isLoadFirstPage) {
                         this.isLoadFirstPage = false;
                         this.loaderVisible = true;
@@ -78,12 +78,13 @@ export default {
                         const pageSize = result.data.data.pageSize;
                         const list = result.data.data.list;
                         this.users = this.users.concat(list);
-                        this.page = page + 1;
-                        this.isLoading = false;
                         if (page * pageSize >= count) {
                             this.loaderVisible = false;
                         }
+                        this.page = page + 1;
                     }
+                }).catch(err => {
+                    this.isLoading = false;
                 });
         }
     },

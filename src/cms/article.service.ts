@@ -5,7 +5,7 @@ import * as striptags from 'striptags';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Article, ArticleStatus, ArticleContentType } from '../entity/article.entity';
 import { ArticleConstants } from '../constants/constants';
-import { Repository, Not, Like } from 'typeorm';
+import { Repository, Not, Like, In } from 'typeorm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../entity/category.entity';
@@ -15,6 +15,7 @@ import { ConfigService } from '../config/config.service';
 import { UserRole, User } from '../entity/user.entity';
 import { ErrorCode } from '../constants/error';
 import { MyHttpException } from '../common/exception/my-http.exception';
+import { ListResult } from '../entity/interface';
 
 @Injectable()
 export class ArticleService {
@@ -93,7 +94,7 @@ export class ArticleService {
         });
     }
 
-    async list(page: number, pageSize: number) {
+    async list(page: number, pageSize: number): Promise<ListResult> {
         const [list, count] = await this.articleRepository.findAndCount({
             select: {
                 id: true,
@@ -127,7 +128,7 @@ export class ArticleService {
         };
     }
 
-    async listInCategory(categoryID: number, page: number, pageSize: number) {
+    async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult> {
         const [list, count] = await this.articleRepository.createQueryBuilder('a')
             .select(['a.id', 'a.name', 'a.createdAt', 'a.summary', 'a.commentCount',
                 'a.coverURL', 'a.likeCount', 'user.id', 'user.username', 'user.avatarURL'])
@@ -234,10 +235,53 @@ export class ArticleService {
         });
     }
 
-    async threeRecentArticles(userID: number): Promise<Article[]> {
+    // 单个用户最近发表的N篇文章
+    async userRecentArticles(userID: number, limit: number): Promise<Article[]> {
         return await this.userArticles(userID, 1, 3, {
             createdAt: 'DESC',
         });
+    }
+
+    // 一组用户最近发表的N篇文章
+    async usersRecentArticles(users: number[], limitArticleCount: number) {
+        const sql = `SELECT user.id, user.username, user.sex, user.avatar_url as avatarURL, user.introduce,
+                     user.article_count as articleCount, a.id as articleID, a.name as articleTitle, a.created_at as articleCreatedAt
+                     FROM users user
+                     LEFT JOIN articles a ON user.id = a.user_id AND a.status != ${ArticleStatus.VerifyFail}
+                     WHERE user.id in (${users.join(',')}) AND ${limitArticleCount} >
+                        (SELECT COUNT(*) FROM articles b WHERE b.user_id = user.id
+                            AND b.created_at > a.created_at)
+                     ORDER BY articleCount DESC, articleCreatedAt DESC`;
+        const list = await this.articleRepository.manager.query(sql);
+        const userArr = [];
+        const userMap = {};
+        for (const item of list) {
+            let user;
+            if (!userMap[item.id]) {
+                user = {
+                    id: item.id,
+                    username: item.username,
+                    sex: item.sex,
+                    avatarURL: item.avatarURL,
+                    introduce: item.introduce,
+                    articleCount: item.articleCount,
+                };
+                userMap[item.id] = user;
+                userArr.push(user);
+            } else {
+                user = userMap[item.id];
+            }
+            user.updates = user.updates || [];
+            if (item.articleID) {
+                user.updates.push({
+                    id: item.articleID,
+                    name: item.articleTitle,
+                    createdAt: item.articleCreatedAt,
+                    updateType: 'article',
+                });
+            }
+        }
+        return userArr;
     }
 
     async create(createArticleDto: CreateArticleDto, userID: number) {

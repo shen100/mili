@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { ArticleService } from './article.service';
+import { ListResult } from '../entity/interface';
 
 @Injectable()
 export class RecommendService {
@@ -27,30 +28,19 @@ export class RecommendService {
         });
     }
 
-    async recommendUsersWithRecentUpdate(page: number, pageSize: number) {
-        const [users, count] = await Promise.all([
-            this.userRepository.find({
-                select: {
-                    id: true,
-                    username: true,
-                    sex: true,
-                    avatarURL: true,
-                    introduce: true,
-                },
-                skip: (page - 1) * pageSize,
-                take: pageSize,
-            }),
-            this.userRepository.count(),
-        ]);
-        const list = [];
-        for (const user of users) {
-            const articles = await this.articleService.threeRecentArticles(user.id);
-            list.push({
-                ...user,
-                introduce: '资深媒体人，思、史、诗皆是爱好，以业余的态度...',
-                updates: articles,
-            });
-        }
+    async recommendUsersWithRecentUpdate(page: number, pageSize: number): Promise<ListResult> {
+        const [users, count] = await this.userRepository.findAndCount({
+            select: {
+                id: true,
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+            order: {
+                articleCount: 'DESC',
+            },
+        });
+        const userIDArr = users.map(user => user.id);
+        const list = await this.articleService.usersRecentArticles(userIDArr, 3);
         return {
             list,
             count,
