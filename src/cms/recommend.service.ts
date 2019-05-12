@@ -37,6 +37,7 @@ export class RecommendService {
             take: pageSize,
             order: {
                 articleCount: 'DESC',
+                id: 'DESC',
             },
         });
         const userIDArr = users.map(user => user.id);
