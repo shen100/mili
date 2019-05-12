@@ -5,10 +5,10 @@
             <div v-if="user" class="tips-card">
                 <div class="card-content">
                     <div class="summary">
-                        <a target="_blank" :href="`/u/${userID}.html`" class="avatar"
+                        <a target="_blank" :href="`/users/${userID}.html`" class="avatar"
                             :style="{'background-image': `url(${user.avatarURL})`}"></a>
                         <div class="name">
-                            <a target="_blank" :href="`/u/${userID}.html`" class="nickname">{{user.username}}</a>
+                            <a target="_blank" :href="`/users/${userID}.html`" class="nickname">{{user.username}}</a>
                         </div>
                         <div class="intro">{{user.introduce}}</div>
                         <div class="list">
@@ -127,7 +127,7 @@ export default {
         this.timeoutID = setTimeout(() => {
             this.isShowed = true;
             const userID = this.userID;
-            myHTTP.get(`/u/${userID}/businesscard`).then((res) => {
+            myHTTP.get(`/users/${userID}/businesscard`).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.user = res.data.data.user;
                     this.articles = res.data.data.articles;

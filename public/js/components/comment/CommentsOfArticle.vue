@@ -48,13 +48,13 @@
                                     @mouseenter="onMouseEnterUser(comment.id)"
                                     @mouseleave="onMouseLeaveUser()">
                                     <div class="v-tooltip-content">
-                                        <a :href="`/u/${comment.user.id}.html`" target="_blank" class="avatar"><img :src="comment.user.avatarURL"></a>
+                                        <a :href="`/users/${comment.user.id}.html`" target="_blank" class="avatar"><img :src="comment.user.avatarURL"></a>
                                         <UserBusinessCard v-if="comment.id === mouseenterCommentID"
                                             :userID="comment.user.id" :followerID="userID" :onChange="onFollowChange"/>
                                     </div>
                                 </div>
                                 <div class="info">
-                                    <a :href="`/u/${comment.user.id}.html`" target="_blank" class="name">{{comment.user.username}}</a>
+                                    <a :href="`/users/${comment.user.id}.html`" target="_blank" class="name">{{comment.user.username}}</a>
                                     <span v-if="comment.user.id === authorID" class="author-tag">作者</span>
                                     <div class="meta"><span>{{i + 1}}楼 · {{comment.createdAtLabel}}</span></div>
                                 </div>
@@ -83,14 +83,14 @@
                                         @mouseenter="onMouseEnterUser2(subcomment.id)"
                                         @mouseleave="onMouseLeaveUser2()">
                                         <div class="v-tooltip-content">
-                                            <a class="comment-user-name" :href="`/u/${subcomment.user.id}.html`" target="_blank">{{subcomment.user.username}}{{subcomment.user.id === authorID ? '(作者)' : ''}}</a>：
+                                            <a class="comment-user-name" :href="`/users/${subcomment.user.id}.html`" target="_blank">{{subcomment.user.username}}{{subcomment.user.id === authorID ? '(作者)' : ''}}</a>：
                                             <UserBusinessCard v-if="subcomment.id === mouseenterCommentID2" 
                                                 :userID="subcomment.user.id" :followerID="userID" :onChange="onFollowChange" />
                                         </div>
                                     </div>
                                     <span style="display: inline-block;">
                                         <a v-if="!subcomment.parentIsRoot" 
-                                            :href="`/u/${subcomment.parentComment.user.id}.html`" 
+                                            :href="`/users/${subcomment.parentComment.user.id}.html`" 
                                             class="maleskine-author comment-user-name" target="_blank">@{{subcomment.parentComment.user.username}}{{subcomment.parentComment.user.id === authorID ? '(作者)' : ''}}</a> 
                                     </span>
                                     <div class="comment-content-box" v-html="subcomment.htmlContent"></div>

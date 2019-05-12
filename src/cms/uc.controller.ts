@@ -55,7 +55,7 @@ export class UCController {
         });
     }
 
-    @Get('/u/articles')
+    @Get('/users/articles')
     async list(@Query('userID', MustIntPipe) userID: number,
                @Query('page', MustIntPipe) page: number,
                @Query('format') format: string,
@@ -92,11 +92,11 @@ export class UCController {
         return result;
     }
 
-    @Get('/api/v1/u/:userID/businesscard')
+    @Get('/api/v1/users/:userID/businesscard')
     async businessCard(@CurUser() user, @Param('userID', MustIntPipe) userID: number) {
         const [userInfo, articles, isFollowed] = await Promise.all([
             this.userService.detail(userID),
-            this.articleService.threeRecentArticles(userID),
+            this.articleService.userRecentArticles(userID, 3),
             user ? this.userService.isUserFollowed(user.id, userID) : Promise.resolve(false),
         ]);
         return {
