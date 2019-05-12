@@ -1,12 +1,11 @@
 import {
-    Controller, Post, Body, Put, UseGuards, Get, Query, Param, Render, Res,
+    Controller, Post, Body, Put, UseGuards, Get, Query, Param, Res,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
 import { RedisService } from '../redis/redis.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { ConfigService } from '../config/config.service';
 import { ActiveGuard } from '../common/guards/active.guard';
 import { CurUser } from '../common/decorators/user.decorator';
 import { MustIntPipe } from '../common/pipes/must-int.pipe';
@@ -18,26 +17,14 @@ export class ArticleController {
         private readonly articleService: ArticleService,
         private readonly userService: UserService,
         private readonly redisService: RedisService,
-        private readonly configService: ConfigService,
     ) {}
 
-    @Get('/api/v1/articles')
-    async list(@Query('c') c: number, @Query('page', ParsePagePipe) page: number) {
-        const categoryID = parseInt((c as any), 10) || 0;
-        const pageSize = 20;
-        if (categoryID) {
-            return this.articleService.listInCategory(categoryID, page, pageSize);
-        }
-        return this.articleService.list(page, pageSize);
-    }
-
     @Get('/p/:id.html')
-    async detail(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
-        id = id;
+    async detailView(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
         const [userLiked, article, recommends] = await Promise.all([
             user ? this.articleService.isUserLiked(id, user.id) : Promise.resolve(false),
             this.articleService.detail(id),
-            this.articleService.recommendList(1),
+            this.articleService.recommendList(1, 20),
         ]);
         let userFollowed = false;
         if (user) {
@@ -49,6 +36,16 @@ export class ArticleController {
             article,
             recommends,
         });
+    }
+
+    @Get('/api/v1/articles')
+    async list(@Query('c') c: number, @Query('page', ParsePagePipe) page: number) {
+        const categoryID = parseInt((c as any), 10) || 0;
+        const pageSize = 20;
+        if (categoryID) {
+            return this.articleService.listInCategory(categoryID, page, pageSize);
+        }
+        return this.articleService.list(page, pageSize);
     }
 
     @Post('/api/v1/articles')
@@ -82,16 +79,14 @@ export class ArticleController {
     @UseGuards(ActiveGuard)
     async closeComment(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.articleService.closeOrOpenComment(id, user.id, false);
-        return {
-        };
+        return {};
     }
 
     @Put('/api/v1/articles/:id/opencomment')
     @UseGuards(ActiveGuard)
     async openComment(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.articleService.closeOrOpenComment(id, user.id, true);
-        return {
-        };
+        return {};
     }
 
     @Post('/api/v1/articles/:id/like')

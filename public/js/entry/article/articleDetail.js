@@ -117,6 +117,8 @@ new Vue({
                     articleLikeCount++;
                     articleUserLiked = true;
                     document.getElementById('articelLikeCount').innerHTML = articleLikeCount;
+                } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
+                    location.href = '/signin.html';
                 }
             });
         }

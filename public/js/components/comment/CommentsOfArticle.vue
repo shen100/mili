@@ -6,7 +6,7 @@
             @ok="onDeleteCommentOk" @cancel="onDeleteCommentCancel" />
         <div id="comments">
             <!-- 允许评论，并且用户没有登录 -->
-            <form v-if="isCommentEnabled && !userID" class="new-comment">
+            <form v-if="isCommentEnabled && !userID" class="new-comment" style="margin-top: 15px;">
                 <a href="javascript:void(0);" class="avatar" style="cursor: default;"><img style="cursor: default;" src="../../../images/avatar_default.png"></a>
                 <div class="sign-container">
                     <a href="/signin.html" class="btn btn-sign">登录</a>
@@ -184,6 +184,10 @@ export default {
             this.mouseenterCommentID2 = undefined;
         },
         onFirstComment() {
+            if (!this.userID) {
+                location.href = '/signin.html';
+                return;
+            }
             this.$refs.commentRichEditor.focus();
         },
         // 当前登录用户在这篇文章下的所有点过赞的评论

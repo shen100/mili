@@ -38,36 +38,46 @@ export class ArticleService {
     }
 
     async detail(id: number) {
-        return await this.articleRepository.findOne({
-            select: {
-                id: true,
-                name: true,
-                coverURL: true,
-                createdAt: true,
-                wordCount: true,
-                browseCount: true,
-                commentCount: true,
-                likeCount: true,
-                summary: true,
-                htmlContent: true,
-                commentEnabled: true,
-                user: {
+        const [ article ] = await Promise.all([
+            this.articleRepository.findOne({
+                select: {
                     id: true,
-                    username: true,
-                    avatarURL: true,
+                    name: true,
+                    coverURL: true,
+                    createdAt: true,
                     wordCount: true,
-                    followerCount: true,
+                    browseCount: true,
+                    commentCount: true,
                     likeCount: true,
-                    introduce: true,
+                    summary: true,
+                    htmlContent: true,
+                    commentEnabled: true,
+                    user: {
+                        id: true,
+                        username: true,
+                        avatarURL: true,
+                        wordCount: true,
+                        followerCount: true,
+                        likeCount: true,
+                        introduce: true,
+                    },
                 },
-            } as any,
-            relations: ['user'],
-            where: {
-                id,
-                deletedAt: null,
-                status: Not(ArticleStatus.VerifyFail),
-            },
-        });
+                relations: ['user'],
+                where: {
+                    id,
+                    status: Not(ArticleStatus.VerifyFail),
+                },
+            }),
+            this.articleRepository.createQueryBuilder()
+                .update()
+                .set({
+                    browseCount: () => 'browse_count + 1',
+                })
+                .where('id = :id', { id })
+                .execute(),
+        ]);
+        article.browseCount++;
+        return article;
     }
 
     async detailForEditor(id: number) {
@@ -148,7 +158,7 @@ export class ArticleService {
         };
     }
 
-    async recommendList(page: number) {
+    async recommendList(page: number, pageSize: number) {
         return await this.articleRepository.find({
             select: {
                 id: true,
@@ -163,14 +173,13 @@ export class ArticleService {
             },
             relations: ['user'],
             where: {
-                deletedAt: null,
                 status: Not(ArticleStatus.VerifyFail),
             },
             order: {
-                createdAt: 'DESC',
+                id: 'DESC',
             },
-            skip: (page - 1) * 20,
-            take: 20,
+            skip: (page - 1) * pageSize,
+            take: pageSize,
         });
     }
 
@@ -416,7 +425,7 @@ export class ArticleService {
         }, {
             commentEnabled,
         });
-        if (!result.raw.changedRows) {
+        if (!result.raw.affectedRows) {
             throw new MyHttpException({
                 errorCode: ErrorCode.Forbidden.CODE,
             });

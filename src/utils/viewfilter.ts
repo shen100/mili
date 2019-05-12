@@ -53,3 +53,10 @@ export const defaultValue = (val: any, defaultVal: any): any => {
 export const readDuration = (wordCount: number): string => {
     return parseInt((wordCount / 300 * 60) as any, 10) + '分钟';
 };
+
+export const getShareURL = (platform: string, title: string, content: string, imageURL: string): string => {
+    title = encodeURIComponent(title) || '';
+    title = encodeURIComponent(content) || '';
+    imageURL = imageURL || '';
+    return `/share?platform=${platform}&title=${title}&content=${content}&imgurl=${imageURL}`;
+};

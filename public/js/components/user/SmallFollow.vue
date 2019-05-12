@@ -83,6 +83,8 @@ export default {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isFollowed = !this.isFollowed;
                     this.onChange(this.isFollowed);
+                } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
+                    location.href = '/signin.html';
                 }
             });
         },

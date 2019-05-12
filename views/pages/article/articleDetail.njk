@@ -9,11 +9,11 @@
             {% endif %}
             <div class="article-title">{{article.name}}</div>
             <div class="author">
-                <a class="avatar" href="/u/{{article.user.id}}.html">
+                <a class="avatar" target="_blank" href="/users/{{article.user.id}}.html">
                     <img src="{{article.user.avatarURL}}" />
                 </a>
                 <div class="info">
-                    <span class="name"><a href="/u/{{article.user.id}}.html">{{article.user.username}}</a></span>
+                    <span class="name"><a href="/users/{{article.user.id}}.html" target="_blank">{{article.user.username}}</a></span>
                     {% if userFollowed %}
                     <a id="followUserSmallBtn" href="javascript:void(0)" class="btn btn-default following"><i class="iconfont ic-followed"></i><span>已关注</span></a>
                     {% else %}
@@ -21,8 +21,8 @@
                     {% endif %}
                     <div class="meta">
                         <span class="publish-time">{{article.createdAt | formatTime('YYYY.MM.DD HH:mm')}}</span>
-                        <span class="wordage">字数 {{article.wordCount}}</span>
-                        <span class="views-count">阅读 {{article.browseCount}}</span><span class="comments-count">评论 {{article.commentCount}}</span><span class="likes-count">喜欢 {{article.likeCount}}</span>
+                        <span class="wordage">字数 {{article.wordCount | defaultValue(0)}}</span>
+                        <span class="views-count">阅读 {{article.browseCount | defaultValue(0)}}</span><span class="comments-count">评论 {{article.commentCount | defaultValue(0)}}</span><span class="likes-count">喜欢 {{article.likeCount | defaultValue(0)}}</span>
                     </div>
                 </div>
             </div>
@@ -42,7 +42,7 @@
             </div> -->
             <div class="follow-detail">
                 <div class="info">
-                    <a class="avatar" href="/u/{{article.user.id}}.html">
+                    <a class="avatar" href="/users/{{article.user.id}}.html" target="_blank">
                         <img src="{{article.user.avatarURL}}" />
                     </a>
                     {% if userFollowed %}
@@ -50,8 +50,8 @@
                     {% else %}
                     <a id="followUserBigBtn" href="javascript:void(0)" class="btn big btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
                     {% endif %}
-                    <a class="title" href="/u/{{article.user.id}}.html">{{article.user.username}}</a>
-                    <p>写了 {{article.user.wordCount | defaultValue(0)}} 字，被 {{article.user.wordCount | defaultValue(0)}} 人关注，获得了 {{article.user.wordCount | defaultValue(0)}} 个喜欢</p>
+                    <a class="title" href="/users/{{article.user.id}}.html" target="_blank">{{article.user.username}}</a>
+                    <p>写了 {{article.user.wordCount | defaultValue(0)}} 字，被 {{article.user.followerCount | defaultValue(0)}} 人关注，获得了 {{article.user.likeCount | defaultValue(0)}} 个喜欢</p>
                 </div>
                 {% if article.user.introduce %}
                 <div class="introduce">{{article.user.introduce}}</div>
@@ -69,7 +69,7 @@
                     <a id="articleShareWeixinBtn" class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微信">
                         <i class="iconfont ic-wechat"></i>
                     </a>
-                    <a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=weibo" target="_blank" class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微博">
+                    <a href="{{apiPrefix}}{{'weibo' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank" class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微博">
                         <i class="iconfont ic-weibo"></i>
                     </a>
                     <a class="share-circle" data-toggle="tooltip" id="longshare" target="_blank">
@@ -87,11 +87,11 @@
                             <h3 class="popover-title" style="display: none;"></h3>
                             <div class="popover-content">
                                 <ul class="share-list">
-                                    <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=weibo" target="_blank"><i class="social-icon-sprite social-icon-zone"></i><span>分享到QQ空间</span></a></li>
-                                    <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=twitter" target="_blank"><i class="social-icon-sprite social-icon-twitter"></i><span>分享到Twitter</span></a></li>
-                                    <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=facebook" target="_blank"><i class="social-icon-sprite social-icon-facebook"></i><span>分享到Facebook</span></a></li>
-                                    <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=google" target="_blank"><i class="social-icon-sprite social-icon-google"></i><span>分享到Google+</span></a></li>
-                                    <li><a href="{{apiPrefix}}/share?title={{article.name}}&content={{article.summary}}&imgurl={{article.coverURL | defaultValue('')}}&platform=douban" target="_blank"><i class="social-icon-sprite social-icon-douban"></i><span>分享到豆瓣</span></a></li>
+                                    <li><a href="{{apiPrefix}}{{'weibo' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-zone"></i><span>分享到QQ空间</span></a></li>
+                                    <li><a href="{{apiPrefix}}{{'twitter' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-twitter"></i><span>分享到Twitter</span></a></li>
+                                    <li><a href="{{apiPrefix}}{{'facebook' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-facebook"></i><span>分享到Facebook</span></a></li>
+                                    <li><a href="{{apiPrefix}}{{'google' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-google"></i><span>分享到Google+</span></a></li>
+                                    <li><a href="{{apiPrefix}}{{'douban' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-douban"></i><span>分享到豆瓣</span></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -137,13 +137,13 @@
                     {% for recommend in recommends %}
                     <div class="note {% if recommend.coverURL %}have-img{% endif %}">
                         {% if recommend.coverURL %}
-                        <a class="recommend-img" href="/p/{{recommend.id}}.html">
+                        <a class="recommend-img" href="/p/{{recommend.id}}.html" target="_blank">
                             <img src="{{recommend.coverURL}}" />
                         </a>
                         {% endif %}
                         <a target="_blank" href="/p/{{recommend.id}}.html" class="title">{{recommend.name}}</a>
                         <p class="description">{{recommend.summary}}...</p>
-                        <a target="_blank" href="/u/{{recommend.user.id}}.html" class="author">
+                        <a target="_blank" href="/users/{{recommend.user.id}}.html" class="author">
                             <div class="avatar" style="background-image: url({{recommend.user.avatarURL}});"></div>
                             <span class="name">{{recommend.user.username}}</span>
                         </a>
@@ -193,7 +193,7 @@
 {% endblock %}
 
 {% block libjs %}
-<script src="//cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript" async="async" defer="defer" ></script>
+<script src="//cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript" async="async" defer="defer"></script>
 <script src="{{jsPath}}/libs/qrcode.min.js" type="text/javascript"></script>
 {% endblock %}
 
