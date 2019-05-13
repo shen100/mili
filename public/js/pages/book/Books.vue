@@ -1,8 +1,5 @@
 <template>
     <div id="books">
-        <div style="padding: 20px; padding-top: 10px; background: #fff;">
-                    <BookLoading />
-                </div>
         <Pinterest url="/books" :start="2" :query="{c: categoryID}" @load="onLoad">
             <template v-slot:loading>
                 <div style="padding: 20px; padding-top: 10px; background: #fff;">
