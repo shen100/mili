@@ -1,5 +1,8 @@
 <template>
     <div class="search-view">
+        <div>
+           <CategoryLoading />
+        </div>
         <Pinterest url="/search" :query="{ q: keyword, type: 'category' }" @load="onLoad">
             <template v-slot:loading>
                 <CategoryLoading />

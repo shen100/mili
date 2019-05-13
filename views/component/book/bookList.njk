@@ -1,5 +1,5 @@
 <div class="handbooks">
-    {% for book in books %}
+    {% for book in list %}
     <div>
         <a href="/books/{{book.id}}.html" target="_blank" class="item"
             {% if loop.last %} style="border-bottom: none;"{% endif %}>
@@ -42,6 +42,7 @@
         </a>
     </div>
     {% endfor %}
+    
     {% if baiduAd.ad580x90 %}
     <div class="book-list-baiduad">
         <script type="text/javascript">

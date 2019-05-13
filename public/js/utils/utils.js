@@ -36,3 +36,7 @@ export const countToK = (count) => {
     k = (parseInt(k) + Math.ceil(k - parseInt(k))) / 10;
     return k;
 };
+
+export const readDuration = (wordCount) => {
+    return parseInt((wordCount / 300 * 60), 10) + '分钟';
+};
