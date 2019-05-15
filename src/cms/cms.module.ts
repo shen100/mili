@@ -32,7 +32,7 @@ import { RecommendController } from './recommend.controller';
 import { RecommendService } from './recommend.service';
 import { BookController } from './book.controller';
 import { BookService } from './book.service';
-import { Book, BookCategory } from '../entity/book.entity';
+import { Book, BookCategory, BookChapter } from '../entity/book.entity';
 
 @Module({
     imports: [
@@ -46,6 +46,7 @@ import { Book, BookCategory } from '../entity/book.entity';
             Draft,
             PostMsg,
             Book,
+            BookChapter,
             BookCategory,
         ]),
         UserModule,

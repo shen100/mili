@@ -1,0 +1,30 @@
+{% extends '../../layout/empty.njk' %}
+
+{% block iviewcss %}
+{% endblock %}
+
+{% block iviewcss22 %}
+{% endblock %}
+
+{% block main %}
+<div id="chapterBox"></div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block pageData %}
+<script>
+    var categoryID = {{categoryID}};
+</script>
+{% endblock %}
+
+{% block libjs %}
+{% endblock %}
+
+{% block devjs %}
+    {{ loadjs('entry/book/chapter.js') }}
+{% endblock %}

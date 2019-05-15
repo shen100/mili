@@ -180,4 +180,8 @@ export class BookChapter {
 
     @Column('int', { name: 'book_id' })
     bookID: number;
+
+    @ManyToOne(type => Book)
+    @JoinColumn({ name: 'book_id' })
+    book: Book;
 }

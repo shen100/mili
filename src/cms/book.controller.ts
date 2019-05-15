@@ -1,9 +1,13 @@
 import {
-    Controller, Get, Res, Query,
+    Controller, Get, Res, Query, Param,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
 import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
+import { MustIntPipe } from '../common/pipes/must-int.pipe';
+import { BookStatus } from '../entity/book.entity';
+import { MyHttpException } from '../common/exception/my-http.exception';
+import { ErrorCode } from '../constants/error';
 
 @Controller()
 export class BookController {
@@ -39,6 +43,23 @@ export class BookController {
             categoryID,
             categories,
             ...listResult,
+        });
+    }
+
+    @Get('/books/:bookID/chapter/:chapterID.html')
+    async chapterView(@Param('id', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
+        const [chapters, chapter] = await Promise.all([
+            this.bookService.chapters(bookID),
+            this.bookService.chapterDetail(chapterID),
+        ]);
+        if (chapter.book.status !== BookStatus.BookVerifySuccess) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        res.render('pages/books/chapter', {
+            chapter,
+            chapters,
         });
     }
 
