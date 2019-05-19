@@ -6,20 +6,34 @@ const config = new ConfigService();
 (async function run() {
     const connection = await createConnection(config.db);
     try {
-        await connection.manager.query(`alter table books add column summary varchar(500)`);
-        await connection.manager.query(`alter table books add column word_count int default 0`);
-        await connection.manager.query(`alter table books add column user_count int default 0`);
+        // await connection.manager.query(`alter table books add column summary varchar(500)`);
+        // await connection.manager.query(`alter table books add column word_count int default 0`);
+        // await connection.manager.query(`alter table books add column user_count int default 0`);
 
-        await connection.manager.query(`alter table categories add column follower_count int default 0`);
-        await connection.manager.query(`alter table categories add column article_count int default 0`);
-        await connection.manager.query(`alter table categories add column cover_url varchar(500)`);
+        // await connection.manager.query(`alter table categories add column follower_count int default 0`);
+        // await connection.manager.query(`alter table categories add column article_count int default 0`);
+        // await connection.manager.query(`alter table categories add column cover_url varchar(500)`);
 
-        await connection.manager.query(`CREATE TABLE follower_category (
+        // await connection.manager.query(`CREATE TABLE follower_category (
+        //     user_id int(11) unsigned NOT NULL,
+        //     category_id int(11) unsigned NOT NULL,
+        //     date datetime DEFAULT CURRENT_TIMESTAMP,
+        //     PRIMARY KEY (user_id, category_id)
+        // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+
+        const sql = `CREATE TABLE handbooks (
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            name varchar(200) NOT NULL,
+            word_count int(11) unsigned NOT NULL DEFAULT '0',
+            sale_count int(11) unsigned NOT NULL DEFAULT '0',
+            comment_count int(11) unsigned NOT NULL DEFAULT '0',
+            cover_url varchar(500) NOT NULL,
             user_id int(11) unsigned NOT NULL,
-            category_id int(11) unsigned NOT NULL,
-            date datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (user_id, category_id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+            PRIMARY KEY (id)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        await connection.manager.query(sql);
 
         // await connection.manager.query(`CREATE TABLE userlikearticles (
         //     id int(11) unsigned NOT NULL AUTO_INCREMENT,

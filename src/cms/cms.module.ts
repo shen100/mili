@@ -26,13 +26,15 @@ import { PostMsg } from '../entity/postmsg.entity';
 import { Comment } from '../entity/comment.entity';
 import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
-import { HandbookController } from './handbook.controller';
+import { HandBookController } from './handBook.controller';
 import { SearchService } from './search.service';
 import { RecommendController } from './recommend.controller';
 import { RecommendService } from './recommend.service';
 import { BookController } from './book.controller';
 import { BookService } from './book.service';
 import { Book, BookCategory, BookChapter } from '../entity/book.entity';
+import { HandBook } from '../entity/handbook.entity';
+import { HandBookService } from './handbook.service';
 
 @Module({
     imports: [
@@ -46,6 +48,7 @@ import { Book, BookCategory, BookChapter } from '../entity/book.entity';
             Draft,
             PostMsg,
             Book,
+            HandBook,
             BookChapter,
             BookCategory,
         ]),
@@ -57,7 +60,7 @@ import { Book, BookCategory, BookChapter } from '../entity/book.entity';
         ArticleController,
         CategoryController,
         CommentController,
-        HandbookController,
+        HandBookController,
         UCController,
         CollectionController,
         EditorController,
@@ -72,6 +75,7 @@ import { Book, BookCategory, BookChapter } from '../entity/book.entity';
         CommentService,
         DraftService,
         CategoryService,
+        HandBookService,
         MessageService,
         UploadService,
         CollectionService,

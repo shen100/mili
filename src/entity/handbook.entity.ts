@@ -8,7 +8,7 @@ import {
 import { User } from './user.entity';
 
 @Entity({name: 'handbooks'})
-export class Handbook {
+export class HandBook {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -18,13 +18,10 @@ export class Handbook {
     @Column('datetime', { name: 'updated_at' })
     updatedAt: Date;
 
-    @Column('datetime', { name: 'deleted_at', nullable: true, default: null })
-    deletedAt: Date;
-
     @Column('varchar', { length: 200 })
     name: string;
 
-    @Column('varchar', { name: 'avatar_url', length: 500 })
+    @Column('varchar', { name: 'cover_url', length: 500 })
     coverURL: string; // 封面图片
 
     @Column('int', { name: 'word_count' })
@@ -42,7 +39,4 @@ export class Handbook {
     @ManyToOne(type => User)
     @JoinColumn({ name: 'user_id' })
     user: User;
-
-    @Column('int', { name: 'category_id' })
-    categoryID: number;
 }

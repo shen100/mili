@@ -7,11 +7,15 @@ import { MyHttpException } from '../common/exception/my-http.exception';
 import { CurUser } from '../common/decorators/user.decorator';
 import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { ConfigService } from '../config/config.service';
+import { ActiveGuard } from '../common/guards/active.guard';
+import { CreateHandBookDto } from './dto/create-handbook.dto';
+import { HandBookService } from './handbook.service';
 
 @Controller()
-export class HandbookController {
+export class HandBookController {
     constructor(
         private readonly configService: ConfigService,
+        private readonly handBookService: HandBookService,
     ) {}
 
     @Get('/handbooks')
@@ -55,5 +59,16 @@ export class HandbookController {
                 {},
             ],
         });
+    }
+
+    @Post('/api/v1/handbooks')
+    @UseGuards(ActiveGuard)
+    async create(@CurUser() user, @Body() createHandBookDto: CreateHandBookDto) {
+        const [ createResult ] = await Promise.all([
+            this.handBookService.create(createHandBookDto, user.id),
+        ]);
+        return {
+            id: createResult.id,
+        };
     }
 }
