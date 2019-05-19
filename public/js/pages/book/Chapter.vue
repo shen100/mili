@@ -9,7 +9,8 @@
                     <div class="label">小册</div>
                 </div>
                 <div class="book-directory bought">
-                    <a :key="c.id" v-for="(c, i) in traverseArr" :href="`/books/${chapter.book.id}/chapters/${c.id}.html`"
+                    <a :key="c.id" v-for="(c, i) in traverseArr" 
+                        :href="`/${isHandbook ? '/handbooks' : '/books'}/${book.id}/chapters/${c.id}.html`"
                         class="section section-link"
                         :class="{'route-active': c.id === chapter.id}"
                         :style="{'padding-left': (c.depth * 20) + 'px'}">
@@ -30,7 +31,7 @@
                         <img src="../../../images/handbook/menu.svg">
                     </div>
                     <div class="title">
-                        <a :href="`/books/${chapter.book.id}.html`">{{book.name}}</a>
+                        <a :href="`/${isHandbook ? '/handbooks' : '/books'}/${book.id}.html`">{{book.name}}</a>
                     </div>
                 </div>
                 <div class="book-body transition--next">
@@ -101,10 +102,11 @@ export default {
     },
     methods: {
         gotoPrevChapter () {
-            location.href = `/books/${this.book.id}/chapters/${this.prevChapter.id}.html`;
+            const path = isHandbook ? '/handbooks' : '/books';
+            location.href = `/${path}/${this.book.id}/chapters/${this.prevChapter.id}.html`;
         },
         gotoNextChapter () {
-            location.href = `/books/${this.book.id}/chapters/${this.nextChapter.id}.html`;
+            location.href = `/${path}/${this.book.id}/chapters/${this.nextChapter.id}.html`;
         },
         onMenuClick () {
             this.menuToggled = !this.menuToggled;
