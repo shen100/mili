@@ -45,6 +45,9 @@ export const parseTree = (nodes, options) => {
         }
         stores.splice(0, 1);
     }
+    if (options.returnRoot) {
+        return root;
+    }
     return root.children;
 };
 

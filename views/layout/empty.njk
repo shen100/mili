@@ -1,47 +1,38 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+        {% block libcss %}
+        {% endblock %}
 
-  {% block iviewcss %}
-  <link rel="stylesheet" href="{{cssPath}}/libs/iview-3.3.3.min.css">
-  {% endblock %}
-  
-  {% block libcss %}
-  {% endblock %}
+        {% block css %}
+        {% endblock %}
+    </head>
 
-  {% block css %}
-  {% endblock %}
-</head>
+    <body {% if env === 'development' %} style="display: none;"{% endif %}>
+        {% from '../macros/js.njk' import loadjs %}
 
-<body {% if env === 'development' %} style="display: none;"{% endif %}>
-  {% from '../macros/js.njk' import loadjs %}
+        {% block main %}
+        {% endblock %}
+        
+        <script>
+            {# dump 在一个对象上调用JSON.stringify，并将结果输出到模板上 #}
+            var globalConfig = {{ globalConfig | dump | safe }};
+        </script>
+        
+        {% block pageData %}
+        {% endblock %}
 
-  {% block main %}
-  {% endblock %}
-  
-  <script>
-    {# dump 在一个对象上调用JSON.stringify，并将结果输出到模板上 #}
-    var globalConfig = {{ globalConfig | dump | safe }};
-  </script>
-  
-  {% block pageData %}
-  {% endblock %}
+        {% block libjs %}
+        {% endblock %}
 
-  {% block jquery %}
-    <script src="{{jsPath}}/libs/jquery-1.11.3.min.js"></script>
-  {% endblock %}
+        {% block devjs %}
+        {% endblock %}
 
-  {% block libjs %}
-  {% endblock %}
-
-  {% block devjs %}
-  {% endblock %}
-
-  {% block js %}
-  {% endblock %}
-</body>
+        {% block js %}
+        {% endblock %}
+    </body>
 </html>

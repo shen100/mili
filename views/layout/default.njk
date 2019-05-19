@@ -37,6 +37,9 @@
         {% include '../component/sidetool.njk' %}
     {% endblock %}
 
+    {% block footer %}
+    {% endblock %}
+
     <script>
         {# dump 在一个对象上调用JSON.stringify，并将结果输出到模板上 #}
         var globalConfig = {{ globalConfig | dump | safe }};

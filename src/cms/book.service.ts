@@ -27,6 +27,21 @@ export class BookService {
         });
     }
 
+    async detail(bookID: number) {
+        return await this.bookRepository.findOne({
+            select: {
+                id: true,
+                name: true,
+                userCount: true,
+                coverURL: true,
+            },
+            where: {
+                id: bookID,
+                status: BookStatus.BookVerifySuccess,
+            },
+        });
+    }
+
     async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult> {
         let query = await this.bookRepository.createQueryBuilder('b')
             .select(['b.id', 'b.name', 'b.coverURL', 'b.chapterCount',
@@ -49,23 +64,18 @@ export class BookService {
         };
     }
 
-    async bookBasic(id: number) {
-        return await this.bookRepository.findOne({
-            id,
-            status: BookStatus.BookVerifySuccess,
-        }, {
-            select: ['id', 'name'],
-        });
-    }
-
     async chapters(bookID: number) {
         return await this.chapterRepository.find({
             select: {
                 id: true,
                 name: true,
+                parentID: true,
             },
             where: {
                 bookID,
+            },
+            order: {
+                createdAt: 'ASC',
             },
         });
     }
@@ -75,6 +85,7 @@ export class BookService {
             select: {
                 id: true,
                 name: true,
+                htmlContent: true,
                 book: {
                     id: true,
                     name: true,

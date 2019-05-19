@@ -23,7 +23,7 @@ export class RecommendController {
         const result = await this.recommendService.recommendUsersWithRecentUpdate(page, 24);
         if (user) {
             const users = result.list.map(u => u.id);
-            const followedUsers = await this.userService.usersFilterByfollowerID(users, user.id);
+            const followedUsers = await this.userService.usersFilterByFollowerID(users, user.id);
             const userFollowedMap = {};
             followedUsers.forEach(followedUser => {
                 userFollowedMap[followedUser.userID] = true;

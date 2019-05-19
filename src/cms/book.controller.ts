@@ -8,6 +8,7 @@ import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { BookStatus } from '../entity/book.entity';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
+import { CurUser } from '../common/decorators/user.decorator';
 
 @Controller()
 export class BookController {
@@ -31,7 +32,7 @@ export class BookController {
         ];
 
         const categoryID = parseInt((c as any), 10) || 0;
-        const pageSize = 2;
+        const pageSize = 20;
 
         const [categories, listResult] = await Promise.all([
             this.bookService.allCategories(),
@@ -46,13 +47,31 @@ export class BookController {
         });
     }
 
-    @Get('/books/:bookID/chapter/:chapterID.html')
-    async chapterView(@Param('id', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
+    @Get('/books/:id.html')
+    async bookView(@Param('id', MustIntPipe) id: number, @Res() res) {
+        const [book, chapters] = await Promise.all([
+            this.bookService.detail(id),
+            this.bookService.chapters(id),
+        ]);
+
+        if (!book) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        res.render('pages/books/bookDetail', {
+            book,
+            chapters,
+        });
+    }
+
+    @Get('/books/:bookID/chapters/:chapterID.html')
+    async chapterView(@CurUser() user, @Param('bookID', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
         const [chapters, chapter] = await Promise.all([
             this.bookService.chapters(bookID),
             this.bookService.chapterDetail(chapterID),
         ]);
-        if (chapter.book.status !== BookStatus.BookVerifySuccess) {
+        if (!chapter || chapter.book.status !== BookStatus.BookVerifySuccess) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });
@@ -60,13 +79,14 @@ export class BookController {
         res.render('pages/books/chapter', {
             chapter,
             chapters,
+            user,
         });
     }
 
     @Get('/api/v1/books')
     async list(@Query('c', ShouldIntPipe) c: number, @Query('page', ParsePagePipe) page: number) {
         const categoryID = parseInt((c as any), 10) || 0;
-        const pageSize = 2;
+        const pageSize = 20;
         const listResult = await this.bookService.listInCategory(categoryID, page, pageSize);
         return listResult;
     }

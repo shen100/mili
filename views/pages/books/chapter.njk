@@ -1,11 +1,5 @@
 {% extends '../../layout/empty.njk' %}
 
-{% block iviewcss %}
-{% endblock %}
-
-{% block iviewcss22 %}
-{% endblock %}
-
 {% block main %}
 <div id="chapterBox"></div>
 {% endblock %}
@@ -18,7 +12,9 @@
 
 {% block pageData %}
 <script>
-    var categoryID = {{categoryID}};
+    var user = {{ user | dump | safe }};
+    var chapter = {{ chapter | dump | safe }};
+    var chapters = {{ chapters | dump | safe }};
 </script>
 {% endblock %}
 
