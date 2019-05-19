@@ -265,6 +265,10 @@
     color: #222;
 }
 
+.book-content .book-content-inner .book-content__header .title a:hover {
+    text-decoration: none;
+}
+
 .book-content .book-content-inner .book-body {
     min-height: 100vh;
     box-sizing: border-box;
@@ -331,4 +335,20 @@
 #article-content-h1 {
     font-size: 30px;
     margin-bottom: 20px;
+}
+
+.book-chapter.fold-pc .book-content .book-content__header {
+    left: 0;
+}
+
+.book-chapter.fold-pc .book-summary {
+    left: -320px;
+}
+
+.book-chapter.fold-pc .book-content {
+    margin-left: 0;
+}
+
+.book-chapter.fold-pc .book-content .book-direction {
+    margin-left: 0;
 }

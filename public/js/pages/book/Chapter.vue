@@ -1,5 +1,5 @@
 <template>
-    <div class="book-chapter">
+    <div class="book-chapter" :class="{'fold-pc': menuToggled}">
         <div class="book-summary">
             <div class="book-summary-inner">
                 <div class="book-summary__header">
@@ -26,11 +26,11 @@
         <div class="book-content">
             <div class="book-content-inner">
                 <div class="book-content__header">
-                    <div class="menu">
-                        <img src="https://b-gold-cdn.xitu.io/v3/static/img/menu.74b9add.svg">
+                    <div @click="onMenuClick" class="menu">
+                        <img src="../../../images/handbook/menu.svg">
                     </div>
                     <div class="title">
-                        <a :href="`/books/${chapter.book.id}.html`">{{chapter.name}}</a>
+                        <a :href="`/books/${chapter.book.id}.html`">{{book.name}}</a>
                     </div>
                 </div>
                 <div class="book-body transition--next">
@@ -90,6 +90,7 @@ export default {
             prevChapter: getPrevNode(getTreeNode(chapter.id, treeData), treeData),
             nextChapter: getNextNode(getTreeNode(chapter.id, treeData), treeData),
             user: window.user,
+            menuToggled: false,
         };
     },
     mounted () {
@@ -104,6 +105,9 @@ export default {
         },
         gotoNextChapter () {
             location.href = `/books/${this.book.id}/chapters/${this.nextChapter.id}.html`;
+        },
+        onMenuClick () {
+            this.menuToggled = !this.menuToggled;
         }
     },
     components: {
