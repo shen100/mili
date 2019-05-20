@@ -19,6 +19,8 @@ export class UserMiddleware implements NestMiddleware {
             const tokenName: string = this.configService.server.tokenName;
             const tokenSecret: string = this.configService.server.tokenSecret;
             const token: string = req.cookies[tokenName] || '';
+            req.user = null;
+            res.locals.user = null;
             if (!token) {
                 next();
                 return;

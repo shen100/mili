@@ -8,7 +8,6 @@ import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { BookStatus } from '../entity/book.entity';
 import { MyHttpException } from '../common/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
-import { CurUser } from '../common/decorators/user.decorator';
 
 @Controller()
 export class BookController {
@@ -66,7 +65,7 @@ export class BookController {
     }
 
     @Get('/books/:bookID/chapters/:chapterID.html')
-    async chapterView(@CurUser() user, @Param('bookID', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
+    async chapterView(@Param('bookID', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
         const [chapters, chapter] = await Promise.all([
             this.bookService.chapters(bookID),
             this.bookService.chapterDetail(chapterID),
@@ -79,7 +78,6 @@ export class BookController {
         res.render('pages/books/chapter', {
             chapter,
             chapters,
-            user,
         });
     }
 

@@ -3,14 +3,14 @@
         <div class="book-summary">
             <div class="book-summary-inner">
                 <div class="book-summary__header">
-                    <a :href="isHandbook ? '/handbooks' : '/books'" class="logo">
+                    <a :href="`/${isHandbook ? 'handbooks' : 'books'}`" class="logo">
                         <img src="https://b-gold-cdn.xitu.io/v3/static/img/logo.a7995ad.svg">
                     </a>
-                    <div class="label">小册</div>
+                    <div class="label">{{isHandbook ? '小册' : '开源图书'}}</div>
                 </div>
                 <div class="book-directory bought">
                     <a :key="c.id" v-for="(c, i) in traverseArr" 
-                        :href="`/${isHandbook ? '/handbooks' : '/books'}/${book.id}/chapters/${c.id}.html`"
+                        :href="`/${isHandbook ? 'handbooks' : 'books'}/${book.id}/chapters/${c.id}.html`"
                         class="section section-link"
                         :class="{'route-active': c.id === chapter.id}"
                         :style="{'padding-left': (c.depth * 20) + 'px'}">
@@ -31,7 +31,7 @@
                         <img src="../../../images/handbook/menu.svg">
                     </div>
                     <div class="title">
-                        <a :href="`/${isHandbook ? '/handbooks' : '/books'}/${book.id}.html`">{{book.name}}</a>
+                        <a :href="`/${isHandbook ? 'handbooks' : 'books'}/${book.id}.html`">{{book.name}}</a>
                     </div>
                 </div>
                 <div class="book-body transition--next">
@@ -102,10 +102,11 @@ export default {
     },
     methods: {
         gotoPrevChapter () {
-            const path = isHandbook ? '/handbooks' : '/books';
+            const path = this.isHandbook ? 'handbooks' : 'books';
             location.href = `/${path}/${this.book.id}/chapters/${this.prevChapter.id}.html`;
         },
         gotoNextChapter () {
+            const path = this.isHandbook ? 'handbooks' : 'books';
             location.href = `/${path}/${this.book.id}/chapters/${this.nextChapter.id}.html`;
         },
         onMenuClick () {
