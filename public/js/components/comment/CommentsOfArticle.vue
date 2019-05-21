@@ -252,28 +252,25 @@ export default {
                 }
                 const comments = res.data.data.comments || [];
                 // key为评论的id，value为评论（所有的评论，包括子评论）
-                const commentMap = {};
+                const commentMap = this.commentMap || {};
                 comments.forEach(comment => {
                     comment.editorToggled = false;
                     comment.userLiked = false;
-                    comment.comments = [];
+                    comment.comments = comment.comments || [];
                     commentMap[comment.id] = comment;
-                });
-                const subComments = res.data.data.subComments || [];
-                subComments.forEach(comment => {
-                    commentMap[comment.id] = comment;
-                });
-                subComments.forEach(subComment => {
-                    subComment.editorToggled = false;
-                    subComment.userLiked = false;
-                    commentMap[subComment.rootID].comments.push(subComment);
-                    subComment.parentComment = commentMap[subComment.parentID];
-                    subComment.rootComment = commentMap[subComment.rootID];
-                    if (subComment.parentID === subComment.rootID) {
-                        subComment.parentIsRoot = true;
-                    } else {
-                        subComment.parentIsRoot = false;
-                    }
+                    const subComments = comment.comments;
+                    subComments.forEach(subComment => {
+                        subComment.editorToggled = false;
+                        subComment.userLiked = false;
+                        subComment.parentComment = commentMap[subComment.parentID];
+                        subComment.rootComment = commentMap[subComment.rootID];
+                        if (subComment.parentID === subComment.rootID) {
+                            subComment.parentIsRoot = true;
+                        } else {
+                            subComment.parentIsRoot = false;
+                        }
+                        commentMap[subComment.id] = subComment;
+                    });
                 });
                 this.commentMap = commentMap;
                 this.comments = this.comments.concat(comments);

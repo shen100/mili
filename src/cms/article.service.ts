@@ -22,8 +22,10 @@ export class ArticleService {
     constructor(
         @InjectRepository(Article)
         private readonly articleRepository: Repository<Article>,
+
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+
         private readonly logger: MyLoggerService,
         private readonly configService: ConfigService,
     ) {}

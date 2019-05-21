@@ -4,9 +4,13 @@ import * as moment from 'moment';
 import { Injectable } from '@nestjs/common';
 import { Repository, Not, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Comment, CommentContentType, CommentStatus } from '../entity/comment.entity';
+import { Comment,
+    CommentContentType,
+    CommentStatus,
+    ChapterComment,
+} from '../entity/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { NO_PARENT } from '../constants/constants';
+import { NO_PARENT, CommentConstants } from '../constants/constants';
 import { ErrorCode } from '../constants/error';
 import { recentTime } from '../utils/viewfilter';
 import { MyHttpException } from '../common/exception/my-http.exception';
@@ -16,6 +20,9 @@ export class CommentService {
     constructor(
         @InjectRepository(Comment)
         private readonly commentRepository: Repository<Comment>,
+
+        @InjectRepository(ChapterComment)
+        private readonly chapterCommentRepository: Repository<ChapterComment>,
     ) {}
 
     async findOne(commentID: number, select) {
@@ -27,31 +34,45 @@ export class CommentService {
         return comment;
     }
 
-    async isExist(id: number, articleID?: number) {
+    async isExist(commentType: string, id: number, articleID?: number) {
         const conditions = { id, articleID };
-        if (!articleID) {
-            delete conditions.articleID;
-        }
-        const comment = await this.commentRepository.findOne(conditions, {
+        const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
+        const entityRepository = {
+            [CommentTypeNormal]: this.commentRepository,
+            [CommentTypeChapter]: this.chapterCommentRepository,
+        };
+        const comment = await entityRepository[commentType].findOne(conditions, {
             select: ['id', 'articleID'],
         });
         return comment !== null;
     }
 
-    async list(articleID: number, authorID: number, dateOrderASC: boolean, page: number) {
-        const limit: number = 20;
-        const self = this;
+    /*
+     * options: {
+     *   authorID: 123, 如果传了 authorID，表示只看作者的回复
+     *   page: 1,
+     *   pageSize: 20,
+     *   dateASC: true 是否按 createdAt 升序
+     * }
+     */
+    async list(commentType: string, articleID: number, options: any = {}) {
+        const authorID = options.authorID || undefined;
+        const dateASC = !!options.dateASC;
+        const page = options.page || 1;
+        const limit: number = options.pageSize || 20;
+        const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
+        const entityRepository = {
+            [CommentTypeNormal]: this.commentRepository,
+            [CommentTypeChapter]: this.chapterCommentRepository,
+        };
         async function findComments(rootIDs: number[]) {
+            // rootIDs 为空的话，那么查询文章的直接回复, rootIDs不为空的话，查询的是子回复
             const condition = {
                 articleID,
                 rootID: rootIDs ? In(rootIDs) : NO_PARENT,
-                deletedAt: null,
                 userID: authorID,
                 status: Not(CommentStatus.VerifyFail),
             };
-            if (!articleID) {
-                delete condition.articleID;
-            }
             if (!authorID) {
                 delete condition.userID;
             }
@@ -68,44 +89,38 @@ export class CommentService {
                         avatarURL: true,
                     },
                     likeCount: true,
-                } as any,
+                },
                 relations: ['user'],
                 where: condition,
                 order: {
-                    createdAt: dateOrderASC ? 'ASC' : 'DESC',
+                    createdAt: dateASC ? 'ASC' : 'DESC',
                 },
                 skip: (page - 1) * limit,
                 take: limit,
-            };
+            } as any;
+            // TODO: 暂时把每个评论的子评论全部查出来，将来再分页
             if (rootIDs) {
                 delete query.skip;
                 delete query.take;
             }
-            let count: number = 0;
-            let commentArr;
-            if (!rootIDs) {
-                [commentArr, count] = await Promise.all([
-                    self.commentRepository.find(query as any),
-                    self.commentRepository.count(condition),
-                ]);
-                return {
-                    comments: commentArr,
-                    totalCount: count,
-                };
-            }
-            commentArr = await self.commentRepository.find(query as any);
+            const [commentArr, count] = await Promise.all([
+                entityRepository[commentType].find(query),
+                entityRepository[commentType].count(condition),
+            ]);
             return {
                 comments: commentArr,
                 totalCount: count,
             };
         }
 
+        // 查文章的直接回复
         const result = await findComments(null);
         const comments = result.comments || [];
         const totalCount = result.totalCount || 0;
         let subResult;
         if (comments.length) {
             const commentIDs = _.map(comments, 'id');
+            // 查回复的子回复
             subResult = await findComments(commentIDs);
         }
         const obj = {
@@ -115,13 +130,17 @@ export class CommentService {
             pageSize: limit,
             totalCount,
         };
+        const rootCommentMap = {};
         obj.comments = obj.comments.map(comment => {
-            return {
+            rootCommentMap[comment.id] = {
                 ...comment,
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD HH:mm'),
+                comments: [],
             };
+            return rootCommentMap[comment.id];
         });
         obj.subComments = obj.subComments.map(comment => {
+            rootCommentMap[comment.rootID].comments.push(comment);
             return {
                 ...comment,
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD HH:mm'),
@@ -130,8 +149,14 @@ export class CommentService {
         return obj;
     }
 
-    async create(createCommentDto: CreateCommentDto, userID: number) {
-        const comment = new Comment();
+    async create(commentType: string, createCommentDto: CreateCommentDto, userID: number) {
+        const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
+        let comment: Comment;
+        if (commentType === CommentTypeNormal) {
+            comment = new Comment();
+        } else if (commentType === CommentTypeChapter) {
+            comment = new ChapterComment();
+        }
         comment.articleID = createCommentDto.articleID;
         comment.contentType = CommentContentType.HTML;
         comment.htmlContent = createCommentDto.content;
@@ -144,8 +169,14 @@ export class CommentService {
         comment.commentCount = 0;
 
         await this.commentRepository.manager.connection.transaction(async manager => {
-            const sql = `UPDATE articles SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
-            const commentRepository = manager.getRepository(Comment);
+            let sql = `UPDATE articles SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
+            if (commentType === CommentTypeChapter) {
+                sql = `UPDATE chaptercomments SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
+            }
+            let commentRepository = manager.getRepository(Comment);
+            if (commentType === CommentTypeChapter) {
+                commentRepository = manager.getRepository(ChapterComment);
+            }
             await commentRepository.save(comment);
             await manager.query(sql);
         });

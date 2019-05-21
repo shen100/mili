@@ -40,6 +40,12 @@
                             <div class="section-page book-section-view">
                                 <h1 id="article-content-h1">{{chapter.name}}</h1>
                                 <div class="mili-editor" v-html="chapter.htmlContent"></div>
+                                <div id="ad580x90_2" class="baidu-ad-580x90"></div>
+                                <div>
+                                    <CommentsOfArticle :articleID="chapter.id" :userID="userID" 
+                                        :username="username" :avatarURL="avatarURL" 
+                                        :authorID="authorID" :commentEnabled="true" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -60,6 +66,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { parseTree, getTreeNode, getPrevNode, getNextNode } from '~/js/utils/tree';
+import CommentsOfArticle from '~/js/components/comment/CommentsOfArticle.vue';
 
 export default {
     data () {
@@ -91,11 +98,19 @@ export default {
             prevChapter: getPrevNode(getTreeNode(chapter.id, treeData), treeData),
             nextChapter: getNextNode(getTreeNode(chapter.id, treeData), treeData),
             user: window.user,
+            userID: window.user && window.user.id || undefined,
+            username: window.user && window.user.username || '',
+            avatarURL: window.user && window.user.avatarURL || '',
+            authorID: chapter.user.id,
             menuToggled: false,
+            baiduAd: window.baiduAd,
         };
     },
     mounted () {
-        this.$nextTick(function () {
+        this.$nextTick(() => {
+            if (this.baiduAd && this.baiduAd.ad580x90_2) {
+                window.BAIDU_CLB_fillSlotAsync(this.baiduAd.ad580x90_2, 'ad580x90_2')
+            }
         })
     },
     filters: {
@@ -114,6 +129,7 @@ export default {
         }
     },
     components: {
+        CommentsOfArticle,
     }
 }
 </script>

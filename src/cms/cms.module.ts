@@ -23,7 +23,7 @@ import { Settings } from '../entity/settings.entity';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { PostMsg } from '../entity/postmsg.entity';
-import { Comment } from '../entity/comment.entity';
+import { Comment, ChapterComment } from '../entity/comment.entity';
 import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
 import { HandBookController } from './handBook.controller';
@@ -43,6 +43,7 @@ import { HandBookService } from './handbook.service';
             Settings,
             Article,
             Comment,
+            ChapterComment,
             Collection,
             Category,
             Draft,

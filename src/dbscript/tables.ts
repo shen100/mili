@@ -21,19 +21,37 @@ const config = new ConfigService();
         //     PRIMARY KEY (user_id, category_id)
         // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
-        const sql = `CREATE TABLE handbooks (
+        // const sql = `CREATE TABLE handbooks (
+        //     id int(11) unsigned NOT NULL AUTO_INCREMENT,
+        //     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        //     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        //     name varchar(200) NOT NULL,
+        //     word_count int(11) unsigned NOT NULL DEFAULT '0',
+        //     sale_count int(11) unsigned NOT NULL DEFAULT '0',
+        //     comment_count int(11) unsigned NOT NULL DEFAULT '0',
+        //     cover_url varchar(500) NOT NULL,
+        //     user_id int(11) unsigned NOT NULL,
+        //     PRIMARY KEY (id)
+        //   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        // await connection.manager.query(sql);
+
+        const sql = `CREATE TABLE chaptercomments (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            name varchar(200) NOT NULL,
-            word_count int(11) unsigned NOT NULL DEFAULT '0',
-            sale_count int(11) unsigned NOT NULL DEFAULT '0',
-            comment_count int(11) unsigned NOT NULL DEFAULT '0',
-            cover_url varchar(500) NOT NULL,
+            content text,
+            html_content text,
+            content_type int(11) NOT NULL,
+            parent_id int(11) NOT NULL DEFAULT '0',
+            status int(11) NOT NULL,
+            article_id int(11) DEFAULT NULL,
             user_id int(11) unsigned NOT NULL,
+            created_at datetime NOT NULL,
+            updated_at datetime NOT NULL,
+            deleted_at datetime DEFAULT NULL,
+            root_id int(11) NOT NULL DEFAULT '0',
+            like_count int(11) NOT NULL DEFAULT '0',
+            comment_count int(11) NOT NULL DEFAULT '0',
             PRIMARY KEY (id)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
-        await connection.manager.query(sql);
+          ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
 
         // await connection.manager.query(`CREATE TABLE userlikearticles (
         //     id int(11) unsigned NOT NULL AUTO_INCREMENT,

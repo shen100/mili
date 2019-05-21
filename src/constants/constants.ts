@@ -36,3 +36,8 @@ export class PeriodConstants {
     static readonly WEEK: number = 2; // 一周内
     static readonly THREE_MONTHS: number = 3; // 三月内
 }
+
+export class CommentConstants {
+    static readonly CommentTypeNormal: string = 'comments';
+    static readonly CommentTypeChapter: string = 'chaptercomments';
+}

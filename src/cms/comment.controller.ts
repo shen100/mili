@@ -12,47 +12,78 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { MustIntPipe } from '../common/pipes/must-int.pipe';
 import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
 import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
+import { APIPrefix, CommentConstants } from '../constants/constants';
+import { BookService } from './book.service';
 
 @Controller()
 export class CommentController {
     constructor(
         private readonly articleService: ArticleService,
+        private readonly bookService: BookService,
         private readonly commentService: CommentService,
     ) {}
 
-    @Get('/api/v1/comments/likes/:articleID')
+    private isValidCommentType(commentType: string) {
+        const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
+        return [CommentTypeNormal, CommentTypeChapter].indexOf(commentType) >= 0;
+    }
+
+    @Get(`${APIPrefix}/comments/likes/:articleID`)
     async likes(@CurUser() user, @Param('articleID', MustIntPipe) articleID: number) {
         const likes = await this.commentService.userLikesInArticle(articleID, user.id);
         return { likes };
     }
 
-    @Get('/api/v1/comments/:articleID')
-    async comments(@Param('articleID', MustIntPipe) articleID: number,
-                   @Query('author', ShouldIntPipe) authorID: number, @Query('page', ParsePagePipe) page: number) {
-        return await this.commentService.list(articleID, authorID, true, page);
+    @Get(`${APIPrefix}/:commentType/:articleID`)
+    async comments(@Param('commentType') commentType: string,
+                   @Param('articleID', MustIntPipe) articleID: number,
+                   @Query('author', ShouldIntPipe) authorID: number,
+                   @Query('page', ParsePagePipe) page: number) {
+        if (!this.isValidCommentType(commentType)) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        return await this.commentService.list(commentType, articleID, {
+            authorID,
+            dateASC: true,
+            page,
+            pageSize: 20,
+        });
     }
 
-    @Post('/api/v1/comments')
+    @Post(`${APIPrefix}/:commentType`)
     @UseGuards(ActiveGuard)
-    async create(@CurUser() user, @Body() createCommentDto: CreateCommentDto) {
+    async create(@CurUser() user, @Param('commentType') commentType: string, @Body() createCommentDto: CreateCommentDto) {
+        if (!this.isValidCommentType(commentType)) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
         if (createCommentDto.parentID) {
-            const isExists = await this.commentService.isExist(createCommentDto.parentID, createCommentDto.articleID);
+            const isExists = await this.commentService.isExist(commentType, createCommentDto.parentID, createCommentDto.articleID);
             if (!isExists) {
                 throw new MyHttpException({
                     errorCode: ErrorCode.ParamsError.CODE,
                     message: '无效的参数',
                 });
             }
-        }
-        const isArticleExist = await this.articleService.isExist(createCommentDto.articleID);
-        if (!isArticleExist) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.ParamsError.CODE,
-                message: '无效的articleID',
-            });
+        } else {
+            const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
+            const isExist = {
+                [CommentTypeNormal]: this.articleService.isExist,
+                [CommentTypeChapter]: this.bookService.isChapterExist,
+            };
+            const isArticleExist = await isExist[commentType](createCommentDto.articleID);
+            if (!isArticleExist) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.ParamsError.CODE,
+                    message: '无效的articleID',
+                });
+            }
         }
 
-        const comment = await this.commentService.create(createCommentDto, user.id);
+        const comment = await this.commentService.create(commentType, createCommentDto, user.id);
 
         return {
             comment,

@@ -42,6 +42,15 @@ export class BookService {
         });
     }
 
+    async isChapterExist(id: number) {
+        const chapter = await this.chapterRepository.findOne({
+            id,
+        }, {
+            select: ['id'],
+        });
+        return chapter !== null;
+    }
+
     async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult> {
         let query = await this.bookRepository.createQueryBuilder('b')
             .select(['b.id', 'b.name', 'b.coverURL', 'b.chapterCount',
@@ -86,13 +95,18 @@ export class BookService {
                 id: true,
                 name: true,
                 htmlContent: true,
+                user: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
                 book: {
                     id: true,
                     name: true,
                     status: true,
                 },
             },
-            relations: ['book'],
+            relations: ['book', 'user'],
             where: {
                 id,
             },
