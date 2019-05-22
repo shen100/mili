@@ -34,17 +34,18 @@ export class CommentService {
         return comment;
     }
 
-    async isExist(commentType: string, id: number, articleID?: number) {
-        const conditions = { id, articleID };
-        const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
+    async getParent(commentType: string, id: number, fields = []) {
+        const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
         const entityRepository = {
-            [CommentTypeNormal]: this.commentRepository,
+            [CommentTypeArticle]: this.commentRepository,
             [CommentTypeChapter]: this.chapterCommentRepository,
         };
-        const comment = await entityRepository[commentType].findOne(conditions, {
-            select: ['id', 'articleID'],
+        return await entityRepository[commentType].findOne({
+            select: fields,
+            where: {
+                id,
+            },
         });
-        return comment !== null;
     }
 
     /*
@@ -60,9 +61,9 @@ export class CommentService {
         const dateASC = !!options.dateASC;
         const page = options.page || 1;
         const limit: number = options.pageSize || 20;
-        const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
+        const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
         const entityRepository = {
-            [CommentTypeNormal]: this.commentRepository,
+            [CommentTypeArticle]: this.commentRepository,
             [CommentTypeChapter]: this.chapterCommentRepository,
         };
         async function findComments(rootIDs: number[]) {
@@ -98,7 +99,7 @@ export class CommentService {
                 skip: (page - 1) * limit,
                 take: limit,
             } as any;
-            // TODO: 暂时把每个评论的子评论全部查出来，将来再分页
+            // TODO: 暂时把回复的子回复一次性查出来，将来再分页
             if (rootIDs) {
                 delete query.skip;
                 delete query.take;
@@ -125,11 +126,11 @@ export class CommentService {
         }
         const obj = {
             comments,
-            subComments: subResult && subResult.comments || [],
             page,
             pageSize: limit,
             totalCount,
         };
+        const subComments = subResult && subResult.comments || [];
         const rootCommentMap = {};
         obj.comments = obj.comments.map(comment => {
             rootCommentMap[comment.id] = {
@@ -139,20 +140,19 @@ export class CommentService {
             };
             return rootCommentMap[comment.id];
         });
-        obj.subComments = obj.subComments.map(comment => {
-            rootCommentMap[comment.rootID].comments.push(comment);
-            return {
+        subComments.map(comment => {
+            rootCommentMap[comment.rootID].comments.push({
                 ...comment,
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD HH:mm'),
-            };
+            });
         });
         return obj;
     }
 
     async create(commentType: string, createCommentDto: CreateCommentDto, userID: number) {
-        const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
+        const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
         let comment: Comment;
-        if (commentType === CommentTypeNormal) {
+        if (commentType === CommentTypeArticle) {
             comment = new Comment();
         } else if (commentType === CommentTypeChapter) {
             comment = new ChapterComment();
@@ -171,7 +171,7 @@ export class CommentService {
         await this.commentRepository.manager.connection.transaction(async manager => {
             let sql = `UPDATE articles SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
             if (commentType === CommentTypeChapter) {
-                sql = `UPDATE chaptercomments SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
+                sql = `UPDATE book_chapters SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
             }
             let commentRepository = manager.getRepository(Comment);
             if (commentType === CommentTypeChapter) {

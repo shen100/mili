@@ -42,11 +42,12 @@ export class BookService {
         });
     }
 
-    async isChapterExist(id: number) {
+    async isChapterExist(id: number): Promise<boolean> {
         const chapter = await this.chapterRepository.findOne({
-            id,
-        }, {
             select: ['id'],
+            where: {
+                id,
+            },
         });
         return chapter !== null;
     }

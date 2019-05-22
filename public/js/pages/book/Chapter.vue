@@ -43,7 +43,7 @@
                                 <div id="ad580x90_2" class="baidu-ad-580x90"></div>
                                 <div>
                                     <CommentsOfArticle :articleID="chapter.id" :userID="userID" 
-                                        :username="username" :avatarURL="avatarURL" 
+                                        :commentType="'chapter'" :username="username" :avatarURL="avatarURL" 
                                         :authorID="authorID" :commentEnabled="true" />
                                 </div>
                             </div>
@@ -109,7 +109,12 @@ export default {
     mounted () {
         this.$nextTick(() => {
             if (this.baiduAd && this.baiduAd.ad580x90_2) {
-                window.BAIDU_CLB_fillSlotAsync(this.baiduAd.ad580x90_2, 'ad580x90_2')
+                const intervalID = setInterval(() => {
+                    if (window.BAIDU_CLB_fillSlotAsync) {
+                        clearInterval(intervalID);
+                        window.BAIDU_CLB_fillSlotAsync(this.baiduAd.ad580x90_2, 'ad580x90_2');
+                    }
+                }, 1000);
             }
         })
     },

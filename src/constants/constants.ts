@@ -38,6 +38,6 @@ export class PeriodConstants {
 }
 
 export class CommentConstants {
-    static readonly CommentTypeNormal: string = 'comments';
-    static readonly CommentTypeChapter: string = 'chaptercomments';
+    static readonly CommentTypeArticle: string = 'article';
+    static readonly CommentTypeChapter: string = 'chapter';
 }

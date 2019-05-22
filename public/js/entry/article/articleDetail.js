@@ -70,6 +70,7 @@ registerDirective(Vue);
     new Vue({
         render: h => h(CommentsOfArticle, {
             props: {
+                commentType: 'article',
                 articleID: window.articleID,
                 userID: window.userID,
                 username: window.username,

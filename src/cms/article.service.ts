@@ -30,7 +30,7 @@ export class ArticleService {
         private readonly configService: ConfigService,
     ) {}
 
-    async isExist(id: number) {
+    async isExist(id: number): Promise<boolean> {
         const article = await this.articleRepository.findOne({
             id,
         }, {

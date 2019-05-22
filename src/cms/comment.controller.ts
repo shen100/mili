@@ -24,8 +24,8 @@ export class CommentController {
     ) {}
 
     private isValidCommentType(commentType: string) {
-        const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
-        return [CommentTypeNormal, CommentTypeChapter].indexOf(commentType) >= 0;
+        const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
+        return [CommentTypeArticle, CommentTypeChapter].indexOf(commentType) >= 0;
     }
 
     @Get(`${APIPrefix}/comments/likes/:articleID`)
@@ -34,9 +34,9 @@ export class CommentController {
         return { likes };
     }
 
-    @Get(`${APIPrefix}/:commentType/:articleID`)
-    async comments(@Param('commentType') commentType: string,
-                   @Param('articleID', MustIntPipe) articleID: number,
+    @Get(`${APIPrefix}/comments/:articleID`)
+    async comments(@Param('articleID', MustIntPipe) articleID: number,
+                   @Query('commentType') commentType: string,
                    @Query('author', ShouldIntPipe) authorID: number,
                    @Query('page', ParsePagePipe) page: number) {
         if (!this.isValidCommentType(commentType)) {
@@ -52,29 +52,48 @@ export class CommentController {
         });
     }
 
-    @Post(`${APIPrefix}/:commentType`)
+    @Post(`${APIPrefix}/comments`)
     @UseGuards(ActiveGuard)
-    async create(@CurUser() user, @Param('commentType') commentType: string, @Body() createCommentDto: CreateCommentDto) {
+    async create(@CurUser() user, @Query('commentType') commentType: string, @Body() createCommentDto: CreateCommentDto) {
         if (!this.isValidCommentType(commentType)) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
         if (createCommentDto.parentID) {
-            const isExists = await this.commentService.isExist(commentType, createCommentDto.parentID, createCommentDto.articleID);
-            if (!isExists) {
+            const parentComment = await this.commentService.getParent(commentType, createCommentDto.parentID, ['id', 'articleID', 'rootID']);
+            if (!parentComment) {
                 throw new MyHttpException({
                     errorCode: ErrorCode.ParamsError.CODE,
-                    message: '无效的参数',
+                    message: '无效的parentID',
+                });
+            }
+            if (createCommentDto.articleID !== parentComment.articleID) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.ParamsError.CODE,
+                    message: '无效的articleID',
+                });
+            }
+            if (parentComment.rootID && createCommentDto.rootID !== parentComment.rootID) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.ParamsError.CODE,
+                    message: '无效的rootID',
+                });
+            }
+            if (!parentComment.rootID && createCommentDto.rootID !== parentComment.id) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.ParamsError.CODE,
+                    message: '无效的rootID',
                 });
             }
         } else {
-            const { CommentTypeNormal, CommentTypeChapter } = CommentConstants;
-            const isExist = {
-                [CommentTypeNormal]: this.articleService.isExist,
-                [CommentTypeChapter]: this.bookService.isChapterExist,
-            };
-            const isArticleExist = await isExist[commentType](createCommentDto.articleID);
+            const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
+            let isArticleExist = false;
+            if (commentType === CommentTypeArticle) {
+                isArticleExist = await this.articleService.isExist(createCommentDto.articleID);
+            } else if (commentType === CommentTypeChapter) {
+                isArticleExist = await this.bookService.isChapterExist(createCommentDto.articleID);
+            }
             if (!isArticleExist) {
                 throw new MyHttpException({
                     errorCode: ErrorCode.ParamsError.CODE,
@@ -82,9 +101,7 @@ export class CommentController {
                 });
             }
         }
-
         const comment = await this.commentService.create(commentType, createCommentDto, user.id);
-
         return {
             comment,
         };

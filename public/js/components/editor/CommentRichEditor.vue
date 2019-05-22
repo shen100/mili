@@ -34,6 +34,7 @@ import CommentRichEditorEmoji from '~/js/components/editor/CommentRichEditorEmoj
 export default {
     name: 'CommentRichEditor',
     props: [
+        'commentType',
         'articleID',
         'parentID',
         'rootID',
@@ -99,7 +100,7 @@ export default {
                 this.$emit('error', '回复内容不能为空');
                 return;
             }
-            const url = `/comments`;
+            const url = `/comments?commentType=${this.commentType}`;
             const reqData = {
                 articleID: this.articleID,
                 content: content,
@@ -218,6 +219,7 @@ export default {
 }
 
 .comment-editor-box .btn-send {
+    box-sizing: border-box;
     float: right;
     width: 78px;
     margin: 10px 0;

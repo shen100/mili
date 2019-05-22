@@ -25,7 +25,8 @@
                 <template v-if="isCommentEnabled">
                     <CommentRichEditor ref="commentRichEditor" v-if="userID" :articleID="articleID" 
                         emptyPlaceholder="写下你的评论" @success="addCommentSuccess"
-                        @error="addCommentError" :sendDefVisible="false" />
+                        @error="addCommentError" :sendDefVisible="false"
+                        :commentType="commentType" />
                     <div :style="{marginTop: interestingComments.length ? '0' : '24px'}" class="top-title" :class="{'no-border-bottom': totalCount <= 0}">
                         <span>全部评论（{{totalCount}}）</span> 
                         <a v-if="totalCount" @click="onAuthorOnly" class="author-only" :class="{active: isAuthorOnly}">只看作者</a> 
@@ -74,7 +75,9 @@
                             </div>
                             <CommentRichEditor v-if="userID && comment.editorToggled" :articleID="articleID" :emptyPlaceholder="`回复${comment.user.username}`"
                                 :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
-                                @error="addCommentError" :parentID="comment.id" @cancel="onCancelComment(comment)" />
+                                @error="addCommentError" :parentID="comment.id" 
+                                @cancel="onCancelComment(comment)"
+                                :commentType="commentType" />
                         </div>
                         <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
                             <div :id="`comment-${subcomment.id}`" :key="`comment-${subcomment.id}`" v-for="subcomment in comment.comments" class="sub-comment">
@@ -105,7 +108,9 @@
                                 </div>
                                 <CommentRichEditor v-if="userID && subcomment.editorToggled" :emptyPlaceholder="`回复${subcomment.user.username}`"
                                     :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
-                                    @error="addCommentError" :parentID="subcomment.id" @cancel="onCancelComment(subcomment)" />
+                                    @error="addCommentError" :parentID="subcomment.id" 
+                                    @cancel="onCancelComment(subcomment)" 
+                                    :commentType="commentType" />
                             </div>
                             <!--
                             <div v-if="comment.comments.length" class="sub-comment more-comment">
@@ -140,6 +145,7 @@ import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
 export default {
     name: 'CommentsOfArticle',
     props: [
+        'commentType',
         'articleID',
         'authorID',
         'userID',
@@ -196,7 +202,7 @@ export default {
                 this.isUserCommentsLikesLoaded = true;
                 return;
             }
-            const url = `/comments/likes/${this.articleID}`;
+            const url = `/comments/likes/${this.articleID}?commentType=${this.commentType}`;
             myHTTP.get(url).then((res) => {
                 const userCommentsLikesMap = {};
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
@@ -241,7 +247,7 @@ export default {
                 return;
             }
             this.isLoading = true;
-            let url = `/comments/${this.articleID}?page=${page}`;
+            let url = `/comments/${this.articleID}?page=${page}&commentType=${this.commentType}`;
             if (this.isAuthorOnly) {
                 url += `&author=${this.authorID}`;
             }
@@ -326,6 +332,7 @@ export default {
             } else {
                 this.comments.push(comment);
             }
+            this.totalCount += 1;
         },
         addCommentError(message) {
             this.$refs.errorTip.show(message);
@@ -334,7 +341,7 @@ export default {
             comment.editorToggled = false;
         },
         onLikeOrNot(comment) {
-            let url = `/comments/${comment.id}/like`;
+            let url = `/comments/${comment.id}/like?commentType=${this.commentType}`;
             if (!comment.userLiked) {
                 myHTTP.post(url).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
@@ -352,7 +359,7 @@ export default {
             }
         },
         openComment() {
-            const url = `/articles/${this.articleID}/opencomment`;
+            const url = `/articles/${this.articleID}/opencomment?commentType=${this.commentType}`;
             myHTTP.put(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isCommentEnabled = true;
@@ -362,7 +369,7 @@ export default {
             });
         },
         closeComment() {
-            const url = `/articles/${this.articleID}/closecomment`;
+            const url = `/articles/${this.articleID}/closecomment?commentType=${this.commentType}`;
             myHTTP.put(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isCommentEnabled = false;
@@ -379,7 +386,7 @@ export default {
             if (!this.curWillDeleteComment) {
                 return;
             }
-            const url = `/comments/${this.curWillDeleteComment.id}`;
+            const url = `/comments/${this.curWillDeleteComment.id}?commentType=${this.commentType}`;
             myHTTP.delete(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.$refs.successTip.show('评论已删除');
@@ -847,7 +854,44 @@ export default {
     border-top: none!important;
 }
 
+.comments .avatar {
+    margin-right: 5px;
+    width: 38px;
+    height: 38px;
+    vertical-align: middle;
+    display: inline-block;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.avatar img {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
 .comments .avatar img {
     border: none;
+}
+
+.author .info {
+    vertical-align: middle;
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.author .meta {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #969696;
+}
+
+.author .meta span {
+    padding-right: 5px;
 }
 </style>
