@@ -34,6 +34,17 @@ export class HandBookService {
         });
     }
 
+    async isOwner(id: number, userID) {
+        const handbook = await this.handBookRepository.findOne({
+            select: ['id'],
+            where: {
+                id,
+                userID,
+            },
+        });
+        return !!handbook;
+    }
+
     async chapters(bookID: number) {
         return await this.handBookChapterRepository.find({
             select: {
@@ -49,7 +60,7 @@ export class HandBookService {
         });
     }
 
-    async createChapter(userID: number, bookID: number) {
+    async createChapter(bookID: number, userID: number) {
         const chapter = new HandBookChapter();
         chapter.name = '';
         chapter.bookID = bookID;
@@ -58,5 +69,14 @@ export class HandBookService {
         chapter.createdAt = new Date();
         chapter.updatedAt = chapter.createdAt;
         return await this.handBookChapterRepository.save(chapter);
+    }
+
+    async updateChapterTitle(id: number, name: string, userID: number) {
+        return await this.handBookChapterRepository.update({
+            id,
+            userID,
+        }, {
+            name,
+        });
     }
 }

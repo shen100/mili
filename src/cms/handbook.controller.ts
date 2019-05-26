@@ -1,5 +1,5 @@
 import {
-    Controller, Post, Body, UseGuards, Get, Query, Param, Delete, Res,
+    Controller, Post, Body, UseGuards, Get, Query, Param, Delete, Res, Put,
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { ErrorCode } from '../constants/error';
@@ -11,6 +11,8 @@ import { ActiveGuard } from '../common/guards/active.guard';
 import { CreateHandBookDto } from './dto/create-handbook.dto';
 import { HandBookService } from './handbook.service';
 import { UploadService } from './upload.service';
+import { APIPrefix } from '../constants/constants';
+import { UpdateHandbookChapterDto } from './dto/update-handbook-chapter.dto';
 
 @Controller()
 export class HandBookController {
@@ -74,7 +76,7 @@ export class HandBookController {
     @Get('/handbooks/:id/chapter/:chapterID/edit.html')
     @UseGuards(ActiveGuard)
     async edit(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
-        const [ handBook, chapters, uploadPolicy ] = await Promise.all([
+        const [ handbook, chapters, uploadPolicy ] = await Promise.all([
             this.handBookService.basic(id),
             this.handBookService.chapters(id),
             this.uploadService.requestPolicy(),
@@ -82,9 +84,34 @@ export class HandBookController {
 
         res.render('pages/handbook/editHandbook', {
             user,
-            handBook,
+            handbook,
             chapters,
             uploadPolicy,
         });
+    }
+
+    @Post(`${APIPrefix}/handbooks/:id/chapters`)
+    @UseGuards(ActiveGuard)
+    async createChapter(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        const isHandbookOwner = this.handBookService.isOwner(id, user.id);
+        if (!isHandbookOwner) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        const createResult = await this.handBookService.createChapter(id, user.id);
+        return {
+            id: createResult.id,
+        };
+    }
+
+    @Put(`${APIPrefix}/handbooks/chapters/:chapterID/title`)
+    @UseGuards(ActiveGuard)
+    async updateChapterTitle(@CurUser() user, @Param('chapterID', MustIntPipe) chapterID: number,
+                             @Body() updateChapterDto: UpdateHandbookChapterDto) {
+        await this.handBookService.updateChapterTitle(chapterID, updateChapterDto.name, user.id);
+        return {
+            name: updateChapterDto.name,
+        };
     }
 }

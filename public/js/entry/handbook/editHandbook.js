@@ -2,6 +2,7 @@ import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
 import '~/styles/editor/editDraft.scss';
 import '~/styles/editor/md.editor.scss';
+import '~/styles/handbook/editHandbook.scss';
 
 import Vue from 'vue';
 import {

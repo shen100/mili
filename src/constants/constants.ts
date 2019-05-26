@@ -41,3 +41,7 @@ export class CommentConstants {
     static readonly CommentTypeArticle: string = 'article';
     static readonly CommentTypeChapter: string = 'chapter';
 }
+
+export class HandbookConstants {
+    static readonly CHAPTER_NAME_MAX_LENGTH: number = 100;
+}
