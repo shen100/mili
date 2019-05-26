@@ -15,6 +15,22 @@ import { ErrorCode } from '../constants/error';
 import { recentTime } from '../utils/viewfilter';
 import { MyHttpException } from '../common/exception/my-http.exception';
 
+const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
+const userLikeTableMap = {
+    [CommentTypeArticle]: 'userlikecomments',
+    [CommentTypeChapter]: 'userlikechapter_comments',
+};
+
+const commentTableMap = {
+    [CommentTypeArticle]: 'comments',
+    [CommentTypeChapter]: 'chaptercomments',
+};
+
+const articleTableMap = {
+    [CommentTypeArticle]: 'articles',
+    [CommentTypeChapter]: 'book_chapters',
+};
+
 @Injectable()
 export class CommentService {
     constructor(
@@ -25,17 +41,25 @@ export class CommentService {
         private readonly chapterCommentRepository: Repository<ChapterComment>,
     ) {}
 
-    async findOne(commentID: number, select) {
-        const comment = await this.commentRepository.findOne({
-            id: commentID,
-        }, {
-            select,
-        });
+    async findOne(commentType: string, commentID: number, select) {
+        let comment;
+        if (commentType === CommentTypeArticle) {
+            comment = await this.commentRepository.findOne({
+                id: commentID,
+            }, {
+                select,
+            });
+        } else if (commentType === CommentTypeChapter) {
+            comment = await this.chapterCommentRepository.findOne({
+                id: commentID,
+            }, {
+                select,
+            });
+        }
         return comment;
     }
 
     async getParent(commentType: string, id: number, fields = []) {
-        const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
         const entityRepository = {
             [CommentTypeArticle]: this.commentRepository,
             [CommentTypeChapter]: this.chapterCommentRepository,
@@ -61,7 +85,6 @@ export class CommentService {
         const dateASC = !!options.dateASC;
         const page = options.page || 1;
         const limit: number = options.pageSize || 20;
-        const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
         const entityRepository = {
             [CommentTypeArticle]: this.commentRepository,
             [CommentTypeChapter]: this.chapterCommentRepository,
@@ -150,7 +173,6 @@ export class CommentService {
     }
 
     async create(commentType: string, createCommentDto: CreateCommentDto, userID: number) {
-        const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
         let comment: Comment;
         if (commentType === CommentTypeArticle) {
             comment = new Comment();
@@ -183,8 +205,12 @@ export class CommentService {
         return comment;
     }
 
-    async delete(commentID: number, userID: number) {
-        const comment = await this.findOne(commentID, ['id', 'articleID', 'parentID', 'rootID']);
+    async delete(commentType: string, commentID: number, userID: number) {
+        const userLikeTable = userLikeTableMap[commentType];
+        const commentTable = commentTableMap[commentType];
+        const articleTable = articleTableMap[commentType];
+
+        const comment = await this.findOne(commentType, commentID, ['id', 'articleID', 'parentID', 'rootID']);
         if (!comment) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
@@ -196,36 +222,35 @@ export class CommentService {
             });
         }
         await this.commentRepository.manager.connection.transaction(async manager => {
-            let sql1 = `DELETE FROM comments WHERE id = ${commentID}`;
-            let sql2 = `DELETE FROM userlikecomments WHERE comment_id = ${commentID}`;
+            let sql1 = `DELETE FROM ${commentTable} WHERE id = ${commentID}`;
+            let sql2 = `DELETE FROM ${userLikeTable} WHERE comment_id = ${commentID}`;
             if (!comment.parentID) {
-                sql1 = `DELETE FROM comments WHERE id = ${commentID} or root_id = ${commentID}`;
-                sql2 = `DELETE FROM userlikecomments WHERE comment_id = ${commentID} or root_id = ${commentID}`;
+                sql1 = `DELETE FROM ${commentTable} WHERE id = ${commentID} or root_id = ${commentID}`;
+                sql2 = `DELETE FROM ${userLikeTable} WHERE comment_id = ${commentID} or root_id = ${commentID}`;
             }
             const deleteResult = await manager.query(sql1);
             await manager.query(sql2);
-            const sql3 = `UPDATE articles SET comment_count = comment_count - ${deleteResult.affectedRows} WHERE id = ${comment.articleID}`;
+            const sql3 = `UPDATE ${articleTable} SET comment_count = comment_count - ${deleteResult.affectedRows} WHERE id = ${comment.articleID}`;
             await manager.query(sql3);
         });
     }
 
     // articleID是个冗余字段，为了方便查询用户在某篇文章下点过赞的所有评论
-    async like(commentID: number, userID: number) {
-        const comment = await this.findOne(commentID, ['id', 'articleID', 'parentID', 'rootID']);
+    async like(commentType: string, commentID: number, userID: number) {
+        const comment = await this.findOne(commentType, commentID, ['id', 'articleID', 'parentID', 'rootID']);
         if (!comment) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
             });
         }
-        if (comment.userID !== userID) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.Forbidden.CODE,
-            });
-        }
+
+        const userLikeTable = userLikeTableMap[commentType];
+        const commentTable = commentTableMap[commentType];
+
         const articleID = comment.articleID;
         const parentID = comment.parentID || NO_PARENT;
         const rootID = comment.rootID || NO_PARENT;
-        const sql = `SELECT comment_id, user_id FROM userlikecomments
+        const sql = `SELECT comment_id, user_id FROM ${userLikeTable}
             WHERE comment_id = ${commentID} AND user_id = ${userID}`;
         let result = await this.commentRepository.manager.query(sql);
         result = result || [];
@@ -236,17 +261,20 @@ export class CommentService {
             });
         }
         await this.commentRepository.manager.connection.transaction(async manager => {
-            const sql2 = `INSERT INTO userlikecomments (comment_id, user_id, created_at, article_id, parent_id, root_id)
+            const sql2 = `INSERT INTO ${userLikeTable} (comment_id, user_id, created_at, article_id, parent_id, root_id)
                 VALUES(${commentID}, ${userID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}", ${articleID},
                 ${parentID}, ${rootID})`;
-            const sql3 = `UPDATE comments SET like_count = like_count + 1 WHERE id = ${commentID}`;
+            const sql3 = `UPDATE ${commentTable} SET like_count = like_count + 1 WHERE id = ${commentID}`;
             await manager.query(sql2);
             await manager.query(sql3);
         });
     }
 
-    async deleteLike(commentID: number, userID: number) {
-        const sql = `SELECT comment_id, user_id FROM userlikecomments
+    async deleteLike(commentType: string, commentID: number, userID: number) {
+        const userLikeTable = userLikeTableMap[commentType];
+        const commentTable = commentTableMap[commentType];
+
+        const sql = `SELECT comment_id, user_id FROM ${userLikeTable}
             WHERE comment_id = ${commentID} AND user_id = ${userID}`;
         let result = await this.commentRepository.manager.query(sql);
         result = result || [];
@@ -257,9 +285,9 @@ export class CommentService {
             });
         }
         await this.commentRepository.manager.connection.transaction(async manager => {
-            const sql2 = `DELETE FROM userlikecomments
+            const sql2 = `DELETE FROM ${userLikeTable}
                 WHERE comment_id = ${commentID} AND user_id = ${userID}`;
-            const sql3 = `UPDATE comments SET like_count = like_count - 1 WHERE id = ${commentID}`;
+            const sql3 = `UPDATE ${commentTable} SET like_count = like_count - 1 WHERE id = ${commentID}`;
             await manager.query(sql2);
             await manager.query(sql3);
         });
@@ -267,8 +295,17 @@ export class CommentService {
         return result;
     }
 
-    async userLikesInArticle(articleID: number, userID: number) {
-        const sql = `SELECT comment_id as commentID FROM userlikecomments
+    // 文章或章节下用户点过赞的评论
+    // 不传 userID 的话，是未登录用户，直接返回 []
+    async userLikesInArticle(commentType: string, articleID: number, userID: number) {
+        if (!userID) {
+            return [];
+        }
+        const table = {
+            [CommentTypeArticle]: 'userlikecomments',
+            [CommentTypeChapter]: 'userlikechapter_comments',
+        }[commentType];
+        const sql = `SELECT comment_id as commentID FROM ${table}
             WHERE article_id = ${articleID} AND user_id = ${userID}`;
         let result = await this.commentRepository.manager.query(sql);
         result = result || [];

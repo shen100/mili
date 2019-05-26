@@ -35,23 +35,46 @@ const config = new ConfigService();
         //   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         // await connection.manager.query(sql);
 
-        const sql = `CREATE TABLE chaptercomments (
+        // const sql = `CREATE TABLE chaptercomments (
+        //     id int(11) unsigned NOT NULL AUTO_INCREMENT,
+        //     content text,
+        //     html_content text,
+        //     content_type int(11) NOT NULL,
+        //     parent_id int(11) NOT NULL DEFAULT '0',
+        //     status int(11) NOT NULL,
+        //     article_id int(11) DEFAULT NULL,
+        //     user_id int(11) unsigned NOT NULL,
+        //     created_at datetime NOT NULL,
+        //     updated_at datetime NOT NULL,
+        //     deleted_at datetime DEFAULT NULL,
+        //     root_id int(11) NOT NULL DEFAULT '0',
+        //     like_count int(11) NOT NULL DEFAULT '0',
+        //     comment_count int(11) NOT NULL DEFAULT '0',
+        //     PRIMARY KEY (id)
+        //   ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
+
+          const sql = `CREATE TABLE handbook_chapters (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            content text,
-            html_content text,
-            content_type int(11) NOT NULL,
-            parent_id int(11) NOT NULL DEFAULT '0',
-            status int(11) NOT NULL,
-            article_id int(11) DEFAULT NULL,
-            user_id int(11) unsigned NOT NULL,
             created_at datetime NOT NULL,
             updated_at datetime NOT NULL,
-            deleted_at datetime DEFAULT NULL,
-            root_id int(11) NOT NULL DEFAULT '0',
-            like_count int(11) NOT NULL DEFAULT '0',
-            comment_count int(11) NOT NULL DEFAULT '0',
+            name varchar(200) NOT NULL DEFAULT '',
+            browse_count int(11) unsigned NOT NULL,
+            comment_count int(11) unsigned NOT NULL,
+            content longtext,
+            user_id int(11) unsigned NOT NULL,
+            book_id int(11) unsigned NOT NULL,
             PRIMARY KEY (id)
-          ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+
+        //   const sql = `CREATE TABLE `userlikechapter_comments` (
+        //     `comment_id` int(11) unsigned NOT NULL,
+        //     `user_id` int(11) unsigned NOT NULL,
+        //     `parent_id` int(11) unsigned NOT NULL,
+        //     `root_id` int(11) unsigned NOT NULL,
+        //     `article_id` int(11) unsigned NOT NULL,
+        //     `created_at` datetime NOT NULL,
+        //     PRIMARY KEY (`comment_id`,`user_id`)
+        //   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`;
 
         // await connection.manager.query(`CREATE TABLE userlikearticles (
         //     id int(11) unsigned NOT NULL AUTO_INCREMENT,

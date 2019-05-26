@@ -10,12 +10,14 @@ import { ConfigService } from '../config/config.service';
 import { ActiveGuard } from '../common/guards/active.guard';
 import { CreateHandBookDto } from './dto/create-handbook.dto';
 import { HandBookService } from './handbook.service';
+import { UploadService } from './upload.service';
 
 @Controller()
 export class HandBookController {
     constructor(
         private readonly configService: ConfigService,
         private readonly handBookService: HandBookService,
+        private readonly uploadService: UploadService,
     ) {}
 
     @Get('/handbooks')
@@ -61,14 +63,28 @@ export class HandBookController {
         });
     }
 
-    @Post('/api/v1/handbooks')
+    @Get('/handbooks/new')
     @UseGuards(ActiveGuard)
-    async create(@CurUser() user, @Body() createHandBookDto: CreateHandBookDto) {
-        const [ createResult ] = await Promise.all([
-            this.handBookService.create(createHandBookDto, user.id),
+    async create(@CurUser() user, @Query() query, @Res() res) {
+        const handBook = await this.handBookService.create(user.id);
+        const chapter = await this.handBookService.createChapter(user.id, handBook.id);
+        res.redirect(`/handbooks/${handBook.id}/chapter/${chapter.id}/edit.html`);
+    }
+
+    @Get('/handbooks/:id/chapter/:chapterID/edit.html')
+    @UseGuards(ActiveGuard)
+    async edit(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
+        const [ handBook, chapters, uploadPolicy ] = await Promise.all([
+            this.handBookService.basic(id),
+            this.handBookService.chapters(id),
+            this.uploadService.requestPolicy(),
         ]);
-        return {
-            id: createResult.id,
-        };
+
+        res.render('pages/handbook/editHandbook', {
+            user,
+            handBook,
+            chapters,
+            uploadPolicy,
+        });
     }
 }

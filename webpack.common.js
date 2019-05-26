@@ -30,6 +30,7 @@ module.exports = {
         'entry/book/chapter': './public/js/entry/book/chapter.js',
         'entry/handbook/handbooks': './public/js/entry/handbook/handbooks.js',
         'entry/handbook/handbookDetail': './public/js/entry/handbook/handbookDetail.js',
+        'entry/handbook/editHandbook': './public/js/entry/handbook/editHandbook.js',
         'entry/search/search': './public/js/entry/search/search.js',
         'entry/recommendations/users': './public/js/entry/recommendations/users.js',
         'entry/admin/app': './public/js/entry/admin/app.js',

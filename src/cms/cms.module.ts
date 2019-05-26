@@ -33,7 +33,7 @@ import { RecommendService } from './recommend.service';
 import { BookController } from './book.controller';
 import { BookService } from './book.service';
 import { Book, BookCategory, BookChapter } from '../entity/book.entity';
-import { HandBook } from '../entity/handbook.entity';
+import { HandBook, HandBookChapter } from '../entity/handbook.entity';
 import { HandBookService } from './handbook.service';
 
 @Module({
@@ -50,6 +50,7 @@ import { HandBookService } from './handbook.service';
             PostMsg,
             Book,
             HandBook,
+            HandBookChapter,
             BookChapter,
             BookCategory,
         ]),

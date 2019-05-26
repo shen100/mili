@@ -29,8 +29,13 @@ export class CommentController {
     }
 
     @Get(`${APIPrefix}/comments/likes/:articleID`)
-    async likes(@CurUser() user, @Param('articleID', MustIntPipe) articleID: number) {
-        const likes = await this.commentService.userLikesInArticle(articleID, user.id);
+    async likes(@CurUser() user, @Query('commentType') commentType: string, @Param('articleID', MustIntPipe) articleID: number) {
+        if (!this.isValidCommentType(commentType)) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        const likes = await this.commentService.userLikesInArticle(commentType, articleID, user && user.id);
         return { likes };
     }
 
@@ -107,25 +112,39 @@ export class CommentController {
         };
     }
 
-    @Delete('/api/v1/comments/:commentID')
+    @Delete(`${APIPrefix}/comments/:commentID`)
     @UseGuards(ActiveGuard)
-    async delete(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number) {
-        await this.commentService.delete(commentID, user.id);
-        return {
-        };
-    }
-
-    @Post('/api/v1/comments/:commentID/like')
-    @UseGuards(ActiveGuard)
-    async like(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number) {
-        await this.commentService.like(commentID, user.id);
+    async delete(@CurUser() user, @Query('commentType') commentType: string, @Param('commentID', MustIntPipe) commentID: number) {
+        if (!this.isValidCommentType(commentType)) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        await this.commentService.delete(commentType, commentID, user.id);
         return {};
     }
 
-    @Delete('/api/v1/comments/:commentID/like')
+    @Post(`${APIPrefix}/comments/:commentID/like`)
     @UseGuards(ActiveGuard)
-    async deleteLike(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number) {
-        await this.commentService.deleteLike(commentID, user.id);
+    async like(@CurUser() user, @Query('commentType') commentType: string, @Param('commentID', MustIntPipe) commentID: number) {
+        if (!this.isValidCommentType(commentType)) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        await this.commentService.like(commentType, commentID, user.id);
+        return {};
+    }
+
+    @Delete(`${APIPrefix}/comments/:commentID/like`)
+    @UseGuards(ActiveGuard)
+    async deleteLike(@CurUser() user, @Query('commentType') commentType: string, @Param('commentID', MustIntPipe) commentID: number) {
+        if (!this.isValidCommentType(commentType)) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        await this.commentService.deleteLike(commentType, commentID, user.id);
         return {};
     }
 }

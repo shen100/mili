@@ -1,0 +1,27 @@
+{% extends '../../layout/empty.njk' %}
+
+{% block main %}
+<div id="app">
+</div>
+{% endblock %}
+
+{% block pageData %}
+<script>
+    var env = '{{ env }}';
+    var userID = {{ user.id }};
+    var avatarURL = '{{ user.avatarURL }}';
+    var uploadPolicy = {{ uploadPolicy | dump | safe }};
+</script>
+{% endblock %}
+
+{% block libcss %}
+<link charset="utf-8" href="{{cssPath}}/libs/simplemde.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block libjs %}
+<script src="{{jsPath}}/libs/simplemde.min.js"></script>
+{% endblock %}
+
+{% block devjs %}
+    {{ loadjs('entry/handbook/editHandbook.js') }}
+{% endblock %}
