@@ -3,14 +3,14 @@ import {
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { ErrorCode } from '../constants/error';
-import { MyHttpException } from '../common/exception/my-http.exception';
-import { CurUser } from '../common/decorators/user.decorator';
-import { MustIntPipe } from '../common/pipes/must-int.pipe';
+import { MyHttpException } from '../core/exception/my-http.exception';
+import { CurUser } from '../core/decorators/user.decorator';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ConfigService } from '../config/config.service';
-import { ActiveGuard } from '../common/guards/active.guard';
+import { ActiveGuard } from '../core/guards/active.guard';
 import { CreateHandBookDto } from './dto/create-handbook.dto';
 import { HandBookService } from './handbook.service';
-import { UploadService } from './upload.service';
+import { OSSService } from '../common/oss.service';
 import { APIPrefix } from '../constants/constants';
 import { UpdateHandbookChapterDto } from './dto/update-handbook-chapter.dto';
 
@@ -19,7 +19,7 @@ export class HandBookController {
     constructor(
         private readonly configService: ConfigService,
         private readonly handBookService: HandBookService,
-        private readonly uploadService: UploadService,
+        private readonly ossService: OSSService,
     ) {}
 
     @Get('/handbooks')
@@ -79,7 +79,7 @@ export class HandBookController {
         const [ handbook, chapters, uploadPolicy ] = await Promise.all([
             this.handBookService.basic(id),
             this.handBookService.chapters(id),
-            this.uploadService.requestPolicy(),
+            this.ossService.requestPolicy(),
         ]);
 
         res.render('pages/handbook/editHandbook', {

@@ -1,9 +1,9 @@
 import { ConfigService } from './config/config.service';
 import * as helmet from 'helmet';
-import { TransformResInterceptor } from './common/interceptors/transform-res.interceptor';
+import { TransformResInterceptor } from './core/interceptors/transform-res.interceptor';
 import { MyLoggerService } from './logger/logger.service';
-import { GlobalExceptionFilter } from './common/filters/global-exceptoin.filter';
-import { ValidateDtoPipe } from './common/pipes/validate-dto.pipe';
+import { GlobalExceptionFilter } from './core/filters/global-exceptoin.filter';
+import { ValidateDtoPipe } from './core/pipes/validate-dto.pipe';
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
 import * as rateLimit from 'express-rate-limit';

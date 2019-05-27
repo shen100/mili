@@ -14,7 +14,7 @@ import { MyLoggerService } from '../logger/logger.service';
 import { ConfigService } from '../config/config.service';
 import { UserRole, User } from '../entity/user.entity';
 import { ErrorCode } from '../constants/error';
-import { MyHttpException } from '../common/exception/my-http.exception';
+import { MyHttpException } from '../core/exception/my-http.exception';
 import { ListResult } from '../entity/interface';
 
 @Injectable()

@@ -4,15 +4,15 @@ import {
 import * as bluebird from 'bluebird';
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
-import { MustIntPipe } from '../common/pipes/must-int.pipe';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ConfigService } from '../config/config.service';
 import { Article } from 'entity/article.entity';
 import { ErrorCode } from '../constants/error';
-import { CurUser } from '../common/decorators/user.decorator';
-import { MyHttpException } from '../common/exception/my-http.exception';
+import { CurUser } from '../core/decorators/user.decorator';
+import { MyHttpException } from '../core/exception/my-http.exception';
 import { CollectionService } from './collection.service';
 import { Collection } from 'entity/collection.entity';
-import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
+import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 
 @Controller()
 export class UCController {

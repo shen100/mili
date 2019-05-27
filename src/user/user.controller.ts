@@ -16,16 +16,16 @@ import axios from 'axios';
 import { UserConstants } from '../constants/constants';
 import { UserService } from './user.service';
 import { SignUpDto } from './dto/signup.dto';
-import { MyHttpException } from '../common/exception/my-http.exception';
+import { MyHttpException } from '../core/exception/my-http.exception';
 import { RedisService } from '../redis/redis.service';
 import { SMSDto } from './dto/sms.dto';
-import { CurUser } from '../common/decorators/user.decorator';
+import { CurUser } from '../core/decorators/user.decorator';
 import { ErrorCode } from '../constants/error';
 import { ConfigService } from '../config/config.service';
 import { User } from '../entity/user.entity';
 import { SigninDto } from './dto/signin.dto';
-import { ActiveGuard } from '../common/guards/active.guard';
-import { MustIntPipe } from '../common/pipes/must-int.pipe';
+import { ActiveGuard } from '../core/guards/active.guard';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
 
 @Controller()
 export class UserController {

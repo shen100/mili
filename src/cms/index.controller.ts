@@ -2,7 +2,7 @@ import {
     Controller, Get, Res, Query,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { CurUser } from '../common/decorators/user.decorator';
+import { CurUser } from '../core/decorators/user.decorator';
 import { RecommendService } from './recommend.service';
 import { CategoryService } from './category.service';
 

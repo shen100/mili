@@ -2,7 +2,7 @@ import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus } 
 import { User, UserStatus } from '../../entity/user.entity';
 import { ConfigService } from '../../config/config.service';
 import { ErrorCode } from '../../constants/error';
-import { MyHttpException } from '../../common/exception/my-http.exception';
+import { MyHttpException } from '../exception/my-http.exception';
 
 @Injectable()
 export class ActiveGuard implements CanActivate {

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult, In, Like } from 'typeorm';
 import { User, UserStatus, UserRole, UserSex } from '../entity/user.entity';
-import { MyHttpException } from '../common/exception/my-http.exception';
+import { MyHttpException } from '../core/exception/my-http.exception';
 import * as jwt from 'jsonwebtoken';
 import * as SMSClient from '@alicloud/sms-sdk';
 import { ConfigService } from '../config/config.service';

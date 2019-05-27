@@ -9,12 +9,12 @@ import { UserService } from './user.service';
 import { ConfigService } from '../config/config.service';
 import { UpdateUserStatusDto } from './dto/update-userstatus.dto';
 import * as util from 'util';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../core/guards/roles.guard';
+import { Roles } from '../core/decorators/roles.decorator';
 import { UserRole, User } from '../entity/user.entity';
 import { RedisService } from '../redis/redis.service';
-import { ActiveGuard } from '../common/guards/active.guard';
-import { CurUser } from '../common/decorators/user.decorator';
+import { ActiveGuard } from '../core/guards/active.guard';
+import { CurUser } from '../core/decorators/user.decorator';
 
 @Controller('admin/users')
 @UseGuards(ActiveGuard, RolesGuard)

@@ -5,20 +5,20 @@ import * as _ from 'lodash';
 import * as bluebird from 'bluebird';
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
-import { MustIntPipe } from '../common/pipes/must-int.pipe';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { strToPage } from '../utils/common';
 import { ConfigService } from '../config/config.service';
 import { Article } from 'entity/article.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
-import { UploadService } from './upload.service';
+import { OSSService } from '../common/oss.service';
 import { CollectionService } from './collection.service';
 import { Collection, ArticleCollectionStatus } from '../entity/collection.entity';
 import { ErrorCode } from '../constants/error';
-import { MyHttpException } from '../common/exception/my-http.exception';
-import { CurUser } from '../common/decorators/user.decorator';
-import { ActiveGuard } from '../common/guards/active.guard';
+import { MyHttpException } from '../core/exception/my-http.exception';
+import { CurUser } from '../core/decorators/user.decorator';
+import { ActiveGuard } from '../core/guards/active.guard';
 import { User, Follower } from '../entity/user.entity';
-import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
+import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 
 @Controller()
 export class CollectionController {
@@ -26,7 +26,7 @@ export class CollectionController {
         private readonly articleService: ArticleService,
         private readonly userService: UserService,
         private readonly configService: ConfigService,
-        private readonly uploadService: UploadService,
+        private readonly ossService: OSSService,
         private readonly collectionService: CollectionService,
     ) {}
 
@@ -73,7 +73,7 @@ export class CollectionController {
     @Get('/collections/new')
     @UseGuards(ActiveGuard)
     async createView(@Res() res) {
-        const uploadPolicy = await this.uploadService.requestPolicy();
+        const uploadPolicy = await this.ossService.requestPolicy();
         res.render('pages/collection/edit', {
             uploadPolicy,
             collection: {},
@@ -85,7 +85,7 @@ export class CollectionController {
     async editView(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
         const [collection, uploadPolicy] = await bluebird.all([
             this.collectionService.findById(id),
-            this.uploadService.requestPolicy(),
+            this.ossService.requestPolicy(),
         ]);
         if (!collection) {
             throw new MyHttpException({

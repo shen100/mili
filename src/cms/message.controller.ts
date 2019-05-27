@@ -1,10 +1,10 @@
 import {
     Controller, Get, Res, UseGuards, Query,
 } from '@nestjs/common';
-import { ActiveGuard } from '../common/guards/active.guard';
+import { ActiveGuard } from '../core/guards/active.guard';
 import { MessageService } from './message.service';
-import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
-import { CurUser } from '../common/decorators/user.decorator';
+import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
+import { CurUser } from '../core/decorators/user.decorator';
 import { recentTime } from '../utils/viewfilter';
 import moment = require('moment');
 

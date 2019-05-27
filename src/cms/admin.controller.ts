@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 
 import { ConfigService } from '../config/config.service';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../core/guards/roles.guard';
+import { Roles } from '../core/decorators/roles.decorator';
 import { UserRole } from '../entity/user.entity';
 import { RedisService } from '../redis/redis.service';
-import { ActiveGuard } from '../common/guards/active.guard';
+import { ActiveGuard } from '../core/guards/active.guard';
 import { ArticleService } from '../cms/article.service';
 
 @Controller('admin/articles')

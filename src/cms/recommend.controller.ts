@@ -2,8 +2,8 @@ import {
     Controller, Get, Res, Query,
 } from '@nestjs/common';
 import { RecommendService } from './recommend.service';
-import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
-import { CurUser } from '../common/decorators/user.decorator';
+import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
+import { CurUser } from '../core/decorators/user.decorator';
 import { UserService } from '../user/user.service';
 
 @Controller()

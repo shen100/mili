@@ -2,11 +2,11 @@ import {
     Controller, Get, Res, Query, Param,
 } from '@nestjs/common';
 import { BookService } from './book.service';
-import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
-import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
-import { MustIntPipe } from '../common/pipes/must-int.pipe';
+import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
+import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { BookStatus } from '../entity/book.entity';
-import { MyHttpException } from '../common/exception/my-http.exception';
+import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 
 @Controller()

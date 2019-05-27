@@ -6,10 +6,10 @@ import { UserService } from '../user/user.service';
 import { RedisService } from '../redis/redis.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { ActiveGuard } from '../common/guards/active.guard';
-import { CurUser } from '../common/decorators/user.decorator';
-import { MustIntPipe } from '../common/pipes/must-int.pipe';
-import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
+import { ActiveGuard } from '../core/guards/active.guard';
+import { CurUser } from '../core/decorators/user.decorator';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
+import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 
 @Controller()
 export class ArticleController {

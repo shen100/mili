@@ -7,7 +7,6 @@ import { CategoryService } from './category.service';
 import { User } from '../entity/user.entity';
 import { Article } from '../entity/article.entity';
 import { UserModule } from '../user/user.module';
-import { UploadService } from './upload.service';
 import { AdminController } from './admin.controller';
 import { IndexController } from './index.controller';
 import { UCController } from './uc.controller';
@@ -35,6 +34,7 @@ import { BookService } from './book.service';
 import { Book, BookCategory, BookChapter } from '../entity/book.entity';
 import { HandBook, HandBookChapter } from '../entity/handbook.entity';
 import { HandBookService } from './handbook.service';
+import { Tag } from 'entity/tag.entity';
 
 @Module({
     imports: [
@@ -53,6 +53,7 @@ import { HandBookService } from './handbook.service';
             HandBookChapter,
             BookChapter,
             BookCategory,
+            Tag,
         ]),
         UserModule,
     ],
@@ -79,7 +80,6 @@ import { HandBookService } from './handbook.service';
         CategoryService,
         HandBookService,
         MessageService,
-        UploadService,
         CollectionService,
         RecommendService,
         SearchService,

@@ -13,7 +13,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { NO_PARENT, CommentConstants } from '../constants/constants';
 import { ErrorCode } from '../constants/error';
 import { recentTime } from '../utils/viewfilter';
-import { MyHttpException } from '../common/exception/my-http.exception';
+import { MyHttpException } from '../core/exception/my-http.exception';
 
 const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
 const userLikeTableMap = {

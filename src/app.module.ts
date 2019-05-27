@@ -7,11 +7,11 @@ import { ConfigModule } from './config/config.module';
 import { SocketModule } from './socket/socket.module';
 import { RedisModule } from './redis/redis.module';
 import { CMSModule } from './cms/cms.module';
-import { UserMiddleware } from './common/middleware/user.middleware';
+import { UserMiddleware } from './core/middleware/user.middleware';
 import { LoggerModule } from './logger/logger.module';
 import { StatsModule } from './stats/stats.module';
 import * as csurf from 'csurf';
-import { LocalsMiddleware } from './common/middleware/locals.middleware';
+import { LocalsMiddleware } from './core/middleware/locals.middleware';
 
 @Module({
     imports: [

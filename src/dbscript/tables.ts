@@ -53,16 +53,26 @@ const config = new ConfigService();
         //     PRIMARY KEY (id)
         //   ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
 
-          const sql = `CREATE TABLE handbook_chapters (
+          // const sql = `CREATE TABLE handbook_chapters (
+          //   id int(11) unsigned NOT NULL AUTO_INCREMENT,
+          //   created_at datetime NOT NULL,
+          //   updated_at datetime NOT NULL,
+          //   name varchar(200) NOT NULL DEFAULT '',
+          //   browse_count int(11) unsigned NOT NULL,
+          //   comment_count int(11) unsigned NOT NULL,
+          //   content longtext,
+          //   user_id int(11) unsigned NOT NULL,
+          //   book_id int(11) unsigned NOT NULL,
+          //   PRIMARY KEY (id)
+          // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+
+          const sql = `CREATE TABLE tags (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             created_at datetime NOT NULL,
-            updated_at datetime NOT NULL,
             name varchar(200) NOT NULL DEFAULT '',
-            browse_count int(11) unsigned NOT NULL,
-            comment_count int(11) unsigned NOT NULL,
-            content longtext,
-            user_id int(11) unsigned NOT NULL,
-            book_id int(11) unsigned NOT NULL,
+            follower_count int(11) unsigned NOT NULL,
+            article_count int(11) unsigned NOT NULL,
+            icon_url varchar(500) DEFAULT NULL,
             PRIMARY KEY (id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
 

@@ -5,19 +5,19 @@ import {
 import moment = require('moment');
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
-import { ActiveGuard } from '../common/guards/active.guard';
-import { CurUser } from '../common/decorators/user.decorator';
+import { ActiveGuard } from '../core/guards/active.guard';
+import { CurUser } from '../core/decorators/user.decorator';
 import { strToPage } from '../utils/common';
-import { MustIntPipe } from '../common/pipes/must-int.pipe';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ErrorCode } from '../constants/error';
-import { UploadService } from './upload.service';
+import { OSSService } from '../common/oss.service';
 import { DraftService } from './draft.service';
 import { APIPrefix } from '../constants/constants';
 import { CreateDraftDto } from './dto/create-draft.dto';
 import { ArticleContentType } from '../entity/article.entity';
 import { SwitchEditorDto } from './dto/switch-editor.dto';
 import { Draft } from '../entity/draft.entity';
-import { MyHttpException } from '../common/exception/my-http.exception';
+import { MyHttpException } from '../core/exception/my-http.exception';
 import { CollectionService } from './collection.service';
 import { RedisService } from '../redis/redis.service';
 
@@ -28,7 +28,7 @@ export class EditorController {
         private readonly userService: UserService,
         private readonly articleService: ArticleService,
         private readonly draftService: DraftService,
-        private readonly uploadService: UploadService,
+        private readonly ossService: OSSService,
         private readonly collectionService: CollectionService,
     ) {}
 
@@ -43,7 +43,7 @@ export class EditorController {
     async createDraft(@CurUser() user, @Query() query, @Res() res) {
         const [settings, uploadPolicy] = await Promise.all([
             this.userService.findSettings(user.id),
-            this.uploadService.requestPolicy(),
+            this.ossService.requestPolicy(),
         ]);
         if (!settings || settings.editorType === ArticleContentType.Markdown) {
             res.render('pages/editor/editMarkdownArticle', {
@@ -63,7 +63,7 @@ export class EditorController {
     async editDraftView(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const [draft, uploadPolicy] = await Promise.all([
             this.draftService.detail(id),
-            this.uploadService.requestPolicy(),
+            this.ossService.requestPolicy(),
         ]);
         if (!draft) {
             throw new MyHttpException({
@@ -90,7 +90,7 @@ export class EditorController {
     async editPostView(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const [article, uploadPolicy] = await Promise.all([
             this.articleService.detailForEditor(id),
-            this.uploadService.requestPolicy(),
+            this.ossService.requestPolicy(),
         ]);
         if (article.contentType === ArticleContentType.HTML) {
             res.render('pages/editor/editRichArticle', {

@@ -4,14 +4,14 @@ import {
 import * as _ from 'lodash';
 import { ArticleService } from './article.service';
 import { ErrorCode } from '../constants/error';
-import { MyHttpException } from '../common/exception/my-http.exception';
-import { CurUser } from '../common/decorators/user.decorator';
-import { ActiveGuard } from '../common/guards/active.guard';
+import { MyHttpException } from '../core/exception/my-http.exception';
+import { CurUser } from '../core/decorators/user.decorator';
+import { ActiveGuard } from '../core/guards/active.guard';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { MustIntPipe } from '../common/pipes/must-int.pipe';
-import { ShouldIntPipe } from '../common/pipes/should-int.pipe';
-import { ParsePagePipe } from '../common/pipes/parse-page.pipe';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
+import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
+import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 import { APIPrefix, CommentConstants } from '../constants/constants';
 import { BookService } from './book.service';
 

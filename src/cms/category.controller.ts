@@ -5,10 +5,10 @@ import {
 import { CategoryConstants } from '../constants/constants';
 import { CategoryService } from './category.service';
 import { Category } from '../entity/category.entity';
-import { ActiveGuard } from '../common/guards/active.guard';
-import { CurUser } from '../common/decorators/user.decorator';
-import { MustIntPipe } from '../common/pipes/must-int.pipe';
-import { MyHttpException } from '../common/exception/my-http.exception';
+import { ActiveGuard } from '../core/guards/active.guard';
+import { CurUser } from '../core/decorators/user.decorator';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
+import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 
 @Controller()
