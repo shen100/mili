@@ -2,6 +2,7 @@ import {
     Controller, Get, Query, Post, UseGuards, Param, Delete,
 } from '@nestjs/common';
 
+import { APIPrefix } from '../constants/constants';
 import { CategoryConstants } from '../constants/constants';
 import { CategoryService } from './category.service';
 import { Category } from '../entity/category.entity';
@@ -43,9 +44,9 @@ export class CategoryController {
         return {};
     }
 
-    @Get('/api/v1/categories/hot')
-    async hot() {
-        const categories: Array<Category> = await this.categoryService.hot();
+    @Get(`${APIPrefix}/categories`)
+    async all() {
+        const categories: Array<Category> = await this.categoryService.all();
         return categories;
     }
 

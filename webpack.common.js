@@ -20,6 +20,7 @@ module.exports = {
         'entry/messages': './public/js/entry/messages.js',
         'entry/article/articleDetail': './public/js/entry/article/articleDetail.js',
         'entry/tag/tag': './public/js/entry/tag/tag.js',
+        'entry/tag/tagDetail': './public/js/entry/tag/tagDetail.js',
         'entry/collection/collection': './public/js/entry/collection/collection.js',
         'entry/collection/edit': './public/js/entry/collection/edit.js',
         'entry/editor/editMarkdownDraft': './public/js/entry/editor/editMarkdownDraft.js',

@@ -3,9 +3,10 @@
         <div id="editorBox">
             <EditorHeader 
                 :draftID="draftID"
-                :articleID="articleID" 
+                :articleID="articleID"
                 :title="initialTitle"
                 :initialCategories="initialCategories"
+                :initialTags="initialTags"
                 :getEditorMarkdown="getEditorMarkdown"
                 :isRich="false" 
                 :userID="userID" 
@@ -30,6 +31,7 @@ export default {
         let initialTitle = '';
         let initialContent = '';
         let initialCategories;
+        let initialTags;
         let draftID;
         let articleID;
         // draft 和 article 不会同时存在，有draft时是编辑草稿, 有article时是编辑文章
@@ -39,12 +41,14 @@ export default {
             initialTitle = window.draft.name;
             initialContent = window.draft.content;
             initialCategories = window.draft.categories || [];
+            initialTags = window.draft.tags || [];
         }
         if (window.article) {
             initialTitle = window.article.name;
             initialContent = window.article.content;
             articleID = window.article.id;
             initialCategories = window.article.categories || [];
+            initialTags = window.article.tags || [];
         }
         return {
             userID: window.userID,
@@ -55,6 +59,7 @@ export default {
             draftID,
             articleID,
             initialCategories,
+            initialTags,
         };
     },
     methods: {

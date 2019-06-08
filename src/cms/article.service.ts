@@ -16,6 +16,7 @@ import { UserRole, User } from '../entity/user.entity';
 import { ErrorCode } from '../constants/error';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ListResult } from '../entity/interface';
+import { Tag } from '../entity/tag.entity';
 
 @Injectable()
 export class ArticleService {
@@ -97,7 +98,7 @@ export class ArticleService {
                 content: true,
                 htmlContent: true,
             },
-            relations: ['categories'],
+            relations: ['categories', 'tags'],
             where: {
                 id,
                 deletedAt: null,
@@ -302,9 +303,16 @@ export class ArticleService {
             c.id = cate.id;
             return c;
         });
+        const uniqTags = _.uniqBy(createArticleDto.tags, (t) => t.id);
+        const tags: Tag[] = uniqTags.map(t => {
+            const tag = new Tag();
+            tag.id = t.id;
+            return tag;
+        });
         const article = new Article();
         article.name = createArticleDto.name;
         article.categories = categories;
+        article.tags = tags;
         article.collectCount = 0;
         article.commentCount = 0;
         article.browseCount = 0;
@@ -348,10 +356,17 @@ export class ArticleService {
             c.id = cate.id;
             return c;
         });
+        const uniqTags = _.uniqBy(updateArticleDto.tags, (t) => t.id);
+        const tags: Tag[] = uniqTags.map(t => {
+            const tag = new Tag();
+            tag.id = t.id;
+            return tag;
+        });
         const newArticle = new Article();
         newArticle.id = updateArticleDto.id;
         newArticle.name = updateArticleDto.name;
         newArticle.categories = categories;
+        newArticle.tags = tags;
         if (updateArticleDto.coverURL) {
             newArticle.coverURL = updateArticleDto.coverURL;
         }

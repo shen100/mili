@@ -12,6 +12,7 @@ import { Category } from './category.entity';
 import { Comment } from './comment.entity';
 import { User } from './user.entity';
 import { Collection } from './collection.entity';
+import { Tag } from './tag.entity';
 
 export enum ArticleStatus {
 	Verifying = 1, // 审核中
@@ -93,6 +94,20 @@ export class Article {
         },
     })
     categories: Category[];
+
+    @ManyToMany(type => Tag)
+    @JoinTable({
+        name: 'article_tag',
+        joinColumn: {
+            name: 'article_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'tag_id',
+            referencedColumnName: 'id',
+        },
+    })
+    tags: Tag[];
 
     @ManyToMany(type => Collection, collection => collection.articles)
     @JoinTable({

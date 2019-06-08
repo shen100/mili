@@ -10,6 +10,7 @@ import {
 import { Category } from './category.entity';
 import { User } from './user.entity';
 import { ArticleContentType } from './article.entity';
+import { Tag } from './tag.entity';
 
 @Entity({name: 'drafts'})
 export class Draft {
@@ -53,6 +54,20 @@ export class Draft {
         },
     })
     categories: Category[];
+
+    @ManyToMany(type => Tag)
+    @JoinTable({
+        name: 'draft_tag',
+        joinColumn: {
+            name: 'draft_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'tag_id',
+            referencedColumnName: 'id',
+        },
+    })
+    tags: Tag[];
 
     @Column('int', { name: 'user_id' })
     userID: number;

@@ -1,0 +1,22 @@
+{% extends '../layout/default.njk' %}
+
+{% block main %}
+<div class="container">
+    <div id="articleBox">
+        {% include '../../component/article/articles.njk' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block pageData %}
+<script>
+</script>
+{% endblock %}
+
+{% block libjs %}
+<script src="//cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript" async="async" defer="defer"></script>
+{% endblock %}
+
+{% block devjs %}
+    {{ loadjs('entry/tag/tagDetail.js') }}
+{% endblock %}

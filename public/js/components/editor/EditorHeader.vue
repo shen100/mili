@@ -17,20 +17,20 @@
                 <div v-if="publishToggled" class="panel">
                     <div class="title">{{isEditArticle ? '更新': '发布'}}文章</div>
                     <div class="category-box">
-                        <div class="sub-title">热门分类</div>
+                        <div class="sub-title">分类</div>
                         <div class="category-list">
-                            <div @click="onSelectHotCategory(c.id)" :key="c.id" v-for="c in hotCategories" :class="{active: selectHotCategoryID === c.id}" class="item">{{c.name}}</div>
+                            <div @click="onSelectCategory(c.id)" :key="c.id" v-for="c in categories" :class="{active: categoryID === c.id}" class="item">{{c.name}}</div>
                         </div>
                     </div>
-                    <div class="category-box">
-                        <div class="sub-title" :style="{'margin-bottom': curSelectCategory ? '10px' : '2px'}">输入分类</div>
-                        <div v-show="curSelectCategory" class="user-category-list">
-                            <div @click="onCancelSelectCategory" class="item">{{curSelectCategory && curSelectCategory.name}}</div>
+                    <div class="tag-box category-box">
+                        <div class="sub-title" :style="{'margin-bottom': curSelectTag ? '10px' : '2px'}">标签</div>
+                        <div v-show="curSelectTag" class="user-category-list">
+                            <div @click="onCancelSelectTag" class="item">{{curSelectTag && curSelectTag.name}}</div>
                         </div>
-                        <div v-show="!curSelectCategory" class="tag-input tag-input">
-                            <Select @on-change="onSelectCategoryChange" v-model="selectCategoryID" placeholder="输入1个分类"
-                                filterable remote :remote-method="requestCategories" :loading="isLoadingCategory">
-                                <Option v-for="c in categories" :value="c.id" :key="c.id">{{c.name}}</Option>
+                        <div v-show="!curSelectTag" class="tag-input tag-input">
+                            <Select @on-change="onSelectTagChange" v-model="tagID" placeholder="添加1个标签"
+                                filterable remote :remote-method="requestTags" :loading="isLoadingTag">
+                                <Option v-for="t in tags" :value="t.id" :key="t.id">{{t.name}}</Option>
                             </Select>
                         </div>
                     </div>
@@ -89,26 +89,28 @@ export default {
         'getEditorMarkdown',
         'draftID',
         'articleID',
-        'initialCategories'
+        'initialCategories',
+        'initialTags'
     ],
     data () {
         return {
-            isEditDraft: !!this.draftID, // 有draftID时，是编辑草稿(draftID和articleID不会同时存在)
-            isEditArticle: !!this.articleID, // 有articleID时，是编辑文章(draftID和articleID不会同时存在)
+            isEditDraft: !!this.draftID, // 有draftID时，是编辑草稿(draftID 和 articleID 不会同时存在)
+            isEditArticle: !!this.articleID, // 有articleID时，是编辑文章(draftID 和 articleID 不会同时存在)
             articleTitle: !this.isRich ? this.title : '',
             coverURL: '',
             isCoverUploading: false, // 是否正在上传文章封面图片
             coverToggled: false,
             publishToggled: false,
             markdownToggled: false,
-            // 如果是编辑文章，或编辑草稿，那么会传分类(initialCategories)，用户选择分类后,
-            // 再使用用户选择的分类，而不使用 initialCategories
+            // 如果是编辑文章，或编辑草稿，那么会传分类、标签(initialCategories、initialTags)，用户选择分类、标签后,
+            // 再使用用户选择的分类、标签，而不使用 initialCategories、initialTags
             notUseInitialCategories: false,
-            selectHotCategoryID: undefined,
-            hotCategories: [],
-            selectCategoryID: undefined,
+            notUseInitialTags: false,
+            categoryID: undefined,
             categories: [],
-            isLoadingCategory: false,
+            tagID: undefined,
+            tags: [],
+            isLoadingTag: false,
             switchEditorAlertVisible: false,
             switchEditorAlertText: '切换编辑器后，当前内容不会迁移，但会自动保存为草稿。',
             lastQueryText: '',
@@ -121,41 +123,40 @@ export default {
             lastSaveDraftTitle: '',
             lastSaveDraftContent: '',
             lastSaveCategoryID: undefined,
+            lastSaveTagID: undefined,
             lastSaveCoverURL: ''
         }
     },
     mounted() {
-        const url = '/categories/hot';
-        myHTTP.get(url).then((result) => {
-            this.hotCategories = result.data.data || [];
-            const initialCategories = this.initialCategories;
-            if ((this.isEditArticle || this.isEditDraft) && initialCategories && initialCategories.length) {
+        if (this.isEditArticle || this.isEditDraft) {
+            if (this.initialCategories && this.initialCategories.length) {
                 // 目前只支持选择一个分类
-                const category = this.initialCategories[0];
-                for (let i = 0; i < this.hotCategories.length; i++) {
-                    if (this.hotCategories[i].id === category.id) {
-                        this.selectHotCategoryID = category.id;
-                        return;
-                    }
-                }
-                this.selectCategoryID = category.id;
+                this.categoryID = this.initialCategories[0].id;
             }
+            if (this.initialTags && this.initialTags.length) {
+                // 目前只支持选择一个标签
+                this.tagID = this.initialTags[0].id;
+            }
+        }
+        const url = '/categories';
+        myHTTP.get(url).then((result) => {
+            this.categories = result.data.data || [];
         });
         this.autoSaveDraftTimeoutID = setTimeout(this.autoSaveDraft, 1000 * this.getAutoSaveTime());
     },
     computed: {
-        curSelectCategory: function() {
-            if (!this.selectCategoryID) {
+        curSelectTag: function() {
+            if (!this.tagID) {
                 return null;
             }
-            // 编辑文章或编辑草稿时，会传initialCategories
-            if (!this.notUseInitialCategories && this.initialCategories && this.initialCategories.length) {
-                // 目前只支持选择一个分类
-                return this.initialCategories[0];
+            // 编辑文章或编辑草稿时，会传initialTags
+            if (!this.notUseInitialTags && this.initialTags && this.initialTags.length) {
+                // 目前只支持添加一个标签
+                return this.initialTags[0];
             }
-            for (let i = 0; i < this.categories.length; i++) {
-                if (this.categories[i].id === this.selectCategoryID) {
-                    return this.categories[i];
+            for (let i = 0; i < this.tags.length; i++) {
+                if (this.tags[i].id === this.tagID) {
+                    return this.tags[i];
                 }
             }
             return null;
@@ -171,13 +172,15 @@ export default {
             }
             const articleTitle = trim(this.getTitle()) || '';
             const articleContent = this.getContent() || '';
-            const cID = this.selectHotCategoryID || this.selectCategoryID || undefined;
+            const cID = this.categoryID || undefined;
+            const tagID = this.tagID || undefined;
             const coverURL = this.coverURL || '';
             if (!articleTitle && isContentEmpty(articleContent, this.isRich)) {
                 return;
             }
             if (this.lastSaveDraftTitle === articleTitle && this.lastSaveDraftContent === articleContent
-                && this.lastSaveCategoryID === cID && this.lastSaveCoverURL === coverURL) {
+                && this.lastSaveCategoryID === cID && this.lastSaveTagID === tagID
+                && this.lastSaveCoverURL === coverURL) {
                 return;
             }
             
@@ -188,7 +191,8 @@ export default {
                 name: articleTitle,
                 content: articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
-                categories: cID ? [ { id: cID } ] : null
+                categories: cID ? [ { id: cID } ] : null,
+                tags: tagID ? [ { id: tagID } ] : null,
             };
             if (coverURL) {
                 reqData.coverURL = coverURL;
@@ -200,6 +204,7 @@ export default {
                     this.lastSaveDraftTitle = articleTitle;
                     this.lastSaveDraftContent = articleContent;
                     this.lastSaveCategoryID = cID;
+                    this.lastSaveTagID = tagID;
                     this.lastSaveCoverURL = coverURL;
                 }
             }).catch((err) => {
@@ -235,19 +240,22 @@ export default {
                 this.$refs.errorTip.show('请输入正文');
                 return;
             }
-            const cID = this.selectHotCategoryID || this.selectCategoryID;
-            if (!cID) {
-                this.$refs.errorTip.show('请至少选择一个分类');
+            if (!this.categoryID) {
+                this.$refs.errorTip.show('请选择分类');
                 return;
             }
-            // 编辑草稿，点击发布，会创建文章
+            if (!this.tagID) {
+                this.$refs.errorTip.show('请添加标签');
+                return;
+            }
             let url = '/articles';
             let reqMethod = myHTTP.post;
             const reqData = {
                 name: this.articleTitle,
                 content: this.articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
-                categories: [ { id: cID } ],
+                categories: [ { id: this.categoryID } ],
+                tags: [ { id: this.tagID } ],
             };
             if (this.coverURL) {
                 reqData.coverURL = this.coverURL;
@@ -267,30 +275,22 @@ export default {
                     location.href = `/p/${this.articleID}.html`;
                     return;
                 }
-                // 非编辑文章，那么就是直接创建文章，或编辑草稿，
-                // 编辑草稿时，点击发布，同样是创建文章
+                // 非编辑文章，那么就是直接创建文章，或编辑草稿后点击发布，同样也会创建文章
                 location.href = `/editor/published.html`;
             });
         },
-        onCancelSelectCategory() {
+        onSelectCategory(id) {
             this.notUseInitialCategories = true;
-            this.selectCategoryID = undefined;
+            this.categoryID = id;
         },
-        onSelectHotCategory(id) {
-            this.notUseInitialCategories = true;
-            this.selectHotCategoryID = id;
-            this.selectCategoryID = undefined;
-            this.$nextTick(() => {
-                // 下面这行代码不能去掉，对this.selectCategoryID赋值时，会调用onSelectCategoryChange
-                // 然后又对 this.selectHotCategoryID 进行赋值
-                this.selectHotCategoryID = id;
-            });
+        onSelectTagChange() {
+            this.notUseInitialTags = true;
         },
-        onSelectCategoryChange() {
-            this.notUseInitialCategories = true;
-            this.selectHotCategoryID = undefined;
+        onCancelSelectTag() {
+            this.notUseInitialTags = true;
+            this.tagID = undefined;
         },
-        requestCategories(queryText) {
+        requestTags(queryText) {
             queryText = trim(queryText);
             if (this.lastQueryText === queryText) {
                 return;
@@ -299,13 +299,13 @@ export default {
             if (!queryText) {
                 return;
             }
-            this.isLoadingCategory = true;
-            const url = `/categories/search?name=${encodeURIComponent(queryText)}`;
+            this.isLoadingTag = true;
+            const url = `/tags/search?q=${encodeURIComponent(queryText)}`;
             myHTTP.get(url).then((result) => {
-                this.categories = result.data.data;
-                this.isLoadingCategory = false;
+                this.tags = result.data.data || [];
+                this.isLoadingTag = false;
             }).catch((err) => {
-                this.isLoadingCategory = false;
+                this.isLoadingTag = false;
             });
         },
         switchEditor() {
@@ -315,14 +315,14 @@ export default {
         onSwitchEditorAlertOk() {
             const articleTitle = trim(this.getTitle());
             const articleContent = this.getContent();
-            const cID = this.selectHotCategoryID || this.selectCategoryID;
             const coverURL = this.coverURL;
             const url = '/editor/switch';
             const reqData = {
                 name: articleTitle,
                 content: articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
-                categories: cID ? [ { id: cID } ] : null,
+                categories: this.categoryID ? [ { id: this.categoryID } ] : null,
+                tags: this.tagID ? [ { id: this.tagID } ] : null,
                 editorType: this.isRich ? ArticleContentType.Markdown : ArticleContentType.HTML,
             };
             if (coverURL) {

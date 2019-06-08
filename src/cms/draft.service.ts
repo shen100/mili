@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../entity/category.entity';
 import { Draft } from '../entity/draft.entity';
 import { CreateDraftDto } from './dto/create-draft.dto';
+import { Tag } from '../entity/tag.entity';
 
 @Injectable()
 export class DraftService {
@@ -23,9 +24,16 @@ export class DraftService {
             c.id = cate.id;
             return c;
         });
+        const uniqTags = _.uniqBy(createDraftDto.tags, (t) => t.id);
+        const tags: Tag[] = uniqTags.map(t => {
+            const tag = new Tag();
+            tag.id = t.id;
+            return tag;
+        });
         const draft = new Draft();
         draft.name = createDraftDto.name;
         draft.categories = categories;
+        draft.tags = tags;
         draft.contentType = createDraftDto.contentType;
         if (draft.contentType === ArticleContentType.Markdown) {
             draft.content = createDraftDto.content;
@@ -87,7 +95,7 @@ export class DraftService {
                 wordCount: true,
                 contentType: true,
             },
-            relations: ['categories'],
+            relations: ['categories', 'tags'],
             where: {
                 id,
             },

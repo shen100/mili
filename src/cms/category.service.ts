@@ -13,16 +13,6 @@ export class CategoryService {
         private readonly categoryRepository: Repository<Category>,
     ) {}
 
-    async hot(): Promise<Array<Category>> {
-        const categories: Array<Category> = await this.categoryRepository.find({
-                select: {
-                    id: true,
-                    name: true,
-                },
-            });
-        return categories;
-    }
-
     async all(): Promise<Array<Category>> {
         return await this.categoryRepository.find({
             select: {

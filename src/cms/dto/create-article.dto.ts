@@ -14,10 +14,18 @@ import {
 } from 'class-validator';
 import { ArticleContentType } from '../../entity/article.entity';
 import { Type } from 'class-transformer';
+import { ArticleConstants } from '../../constants/constants';
 
 class CategoryDto {
     @IsInt({
         message: '无效的分类id',
+    })
+    readonly id: number;
+}
+
+class TagDto {
+    @IsInt({
+        message: '无效的标签id',
     })
     readonly id: number;
 }
@@ -59,7 +67,7 @@ export class CreateArticleDto {
     @ArrayMinSize(1, {
         message: '请选择分类',
     })
-    @ArrayMaxSize(5, {
+    @ArrayMaxSize(ArticleConstants.MAX_CATEGORY_COUNT, {
         message: '最多只能选择 $constraint1 个分类',
     })
     @IsArray({
@@ -68,4 +76,17 @@ export class CreateArticleDto {
     @ValidateNested({ each: true })
     @Type(() => CategoryDto)
     readonly categories: CategoryDto[];
+
+    @ArrayMinSize(1, {
+        message: '请添加标签',
+    })
+    @ArrayMaxSize(ArticleConstants.MAX_TAG_COUNT, {
+        message: '最多只能添加 $constraint1 个标签',
+    })
+    @IsArray({
+        message: '请添加标签',
+    })
+    @ValidateNested({ each: true })
+    @Type(() => TagDto)
+    readonly tags: TagDto[];
 }

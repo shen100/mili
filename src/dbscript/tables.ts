@@ -82,6 +82,18 @@ const config = new ConfigService();
             PRIMARY KEY (user_id, tag_id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
 
+          sql = `CREATE TABLE draft_tag (
+            draft_id int(11) unsigned NOT NULL,
+            tag_id int(11) unsigned NOT NULL,
+            PRIMARY KEY (draft_id, tag_id)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+
+          sql = `CREATE TABLE article_tag (
+            article_id int(11) unsigned NOT NULL,
+            tag_id int(11) unsigned NOT NULL,
+            PRIMARY KEY (article_id, tag_id)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+
         //   const sql = `CREATE TABLE `userlikechapter_comments` (
         //     `comment_id` int(11) unsigned NOT NULL,
         //     `user_id` int(11) unsigned NOT NULL,

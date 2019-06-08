@@ -51,6 +51,40 @@ export class CustomCategory implements ValidatorConstraintInterface {
     }
 }
 
+class TagDto {
+    @IsInt({
+        message: '无效的标签id',
+    })
+    readonly id: number;
+}
+
+@ValidatorConstraint({ name: 'customTag', async: false })
+export class CustomTag implements ValidatorConstraintInterface {
+
+    validate(tags: TagDto[], args: ValidationArguments) {
+        if (tags === null || tags === undefined ) {
+            return true;
+        }
+        if (tags.constructor !== Array) {
+            return false;
+        }
+        if (tags.length > ArticleConstants.MAX_TAG_COUNT) {
+            return false;
+        }
+        const validator = new Validator();
+        for (const tag of tags) {
+            if (!validator.isInt(tag.id)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    defaultMessage(args: ValidationArguments) { // here you can provide default error message if validation failed
+        return `无效的标签 或 超过${ArticleConstants.MAX_TAG_COUNT}个标签`;
+    }
+}
+
 export class CreateDraftDto {
     @MaxLength(100, {
         message: '名称不能超过 $constraint1 个字符',
@@ -81,4 +115,7 @@ export class CreateDraftDto {
 
     @Validate(CustomCategory)
     readonly categories: CategoryDto[];
+
+    @Validate(CustomTag)
+    readonly tags: TagDto[];
 }

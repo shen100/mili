@@ -26,6 +26,15 @@ export class TagController {
         res.render('pages/tag/tag');
     }
 
+    @Get(`${APIPrefix}/tags/search`)
+    async search(@Query('q') q: string) {
+        if (q) {
+            q = decodeURIComponent(q);
+        }
+        const listResult = await this.tagService.list(1, 20, 'hot', q);
+        return listResult.list;
+    }
+
     @Get(`${APIPrefix}/tags`)
     async list(@CurUser() user, @Query('type') type: string,
                @Query('order') order: string, @Query('q') q: string,
