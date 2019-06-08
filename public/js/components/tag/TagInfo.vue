@@ -3,26 +3,69 @@
         <div class="tag">
             <div class="info-box">
                 <a href="/tag/%" target="_blank">
-                    <div class="lazy thumb loaded" :style="{'background-image': `url(${tag.iconURL})`}"></div>
-                    <div class="title">{{tag.name}}</div>
+                    <div class="lazy thumb loaded" :style="{'background-image': `url(${iconURL})`}"></div>
+                    <div class="title">{{name}}</div>
                 </a>
                 <div class="meta-box">
-                    <div class="meta subscribe">{{tag.followerCount}} 关注</div>
-                    <div class="meta article">{{tag.articleCount}} 文章</div>
+                    <div class="meta subscribe">{{followerCount}} 关注</div>
+                    <div class="meta article">{{articleCount}} 文章</div>
                 </div>
             </div>
             <div class="action-box">
-                <button class="subscribe-btn subscribed">已关注</button>
+                <button @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave"
+                    class="subscribe-btn" :class="{subscribed: isFollowed}">{{followText}}</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
+
 export default {
     props: [
         'tag'
-    ]
+    ],
+    data () {
+        return {
+            ...this.tag,
+            isMouseEnter: false,
+        };
+    },
+    computed: {
+        followText() {
+            if (this.isFollowed && this.isMouseEnter) {
+                return '取消关注';
+            }
+            if (this.isFollowed) {
+                return '已关注';
+            }
+            return '关注';
+        }
+    },
+    methods: {
+        onMouseenter() {
+            this.isMouseEnter = true;
+        },
+        onMouseleave() {
+            this.isMouseEnter = false;
+        },
+        onFollow () {
+            const url = `/tags/${this.id}/follow`;
+            let reqMethod;
+            if (this.isFollowed) {
+                reqMethod = myHTTP.delete;
+            } else {
+                reqMethod = myHTTP.post;
+            }
+            reqMethod(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.isFollowed = !this.isFollowed;
+                }
+            });
+        },
+    }
 }
 </script>
 
@@ -115,7 +158,12 @@ export default {
 }
 
 .subscribe-btn {
+    cursor: pointer;
     border: 1px solid #37c700;
+    padding-left: 0;
+    padding-right: 0;
+    width: 76px;
+    text-align: center;
     background-color: #fff;
     color: #37c700;
     margin: 12px auto;
@@ -125,6 +173,14 @@ export default {
 .subscribe-btn.subscribed {
     background-color: #37c700;
     color: #fff;
+}
+
+.subscribe-btn.subscribed:hover {
+    background-color: #3cb40e;
+}
+
+.info-box a:hover {
+    text-decoration: none;
 }
 </style>
 

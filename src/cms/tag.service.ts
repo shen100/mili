@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { Tag } from '../entity/tag.entity';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { OSSService } from '../common/oss.service';
@@ -26,7 +26,7 @@ export class TagService {
         return await this.tagRepository.save(tag);
     }
 
-    async list(page: number, pageSize: number): Promise<ListResult> {
+    async list(page: number, pageSize: number, order: string, keyword: string): Promise<ListResult> {
         const [list, count] = await this.tagRepository.findAndCount({
             select: {
                 id: true,
@@ -35,6 +35,8 @@ export class TagService {
                 followerCount: true,
                 iconURL: true,
             },
+            where: keyword ? { name: Like(`%${keyword}%`) } : {},
+            order: order === 'hot' ? { followerCount: 'DESC' } : { createdAt: 'DESC' },
             skip: (page - 1) * pageSize,
             take: pageSize,
         });
@@ -46,11 +48,14 @@ export class TagService {
         };
     }
 
-    async subscribedList(userID: number, page: number, pageSize: number): Promise<ListResult> {
+    async subscribedList(userID: number, page: number, pageSize: number, order: string, keyword: string): Promise<ListResult> {
+        const orderField = order === 'hot' ? 'follower_count' : 'created_at';
+        const likeSQL = keyword ? `AND tags.name LIKE "%${keyword}%"` : '';
         const sql1 = `SELECT tags.id as id, tags.name as name, tags.article_count as articleCount,
                 tags.follower_count as followerCount, tags.icon_url as iconURL
             FROM tags, user_subscribed_tag
-            WHERE user_subscribed_tag.user_id = ${userID} AND tags.id = user_subscribed_tag.tag_id
+            WHERE user_subscribed_tag.user_id = ${userID} AND tags.id = user_subscribed_tag.tag_id ${likeSQL}
+            ORDER BY ${orderField} DESC
             LIMIT ${(page - 1) * pageSize}, ${pageSize}`;
         const sql2 = `SELECT COUNT(*) as count FROM tags, user_subscribed_tag
             WHERE user_subscribed_tag.user_id = ${userID} AND tags.id = user_subscribed_tag.tag_id`;
@@ -86,5 +91,14 @@ export class TagService {
             .relation(Tag, 'followers')
             .of(tagID)
             .remove(userID);
+    }
+
+    async tagsFilterByFollowerID(tags: number[], followerID: number) {
+        if (!tags || tags.length <= 0) {
+            return [];
+        }
+        const sql = `SELECT user_id as userID, tag_id as tagID FROM user_subscribed_tag
+            WHERE user_id = ${followerID} AND tag_id IN (${tags.join(',')})`;
+        return await this.tagRepository.manager.query(sql);
     }
 }

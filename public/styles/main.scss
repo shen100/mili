@@ -139,7 +139,7 @@ a {
     border-color: #42c02e;
 }
 
-.btn-success:hover {
+.btn-success:hover { 
     color: #fff;
     background-color: #3db922;
     border-color: #318f22;
@@ -148,6 +148,7 @@ a {
 .top-nav {
     width: 100%;
     box-sizing: border-box;
+    position: fixed;
     top: 0;
     border-bottom: 1px #f0f0f0 solid;
     z-index: 1000;

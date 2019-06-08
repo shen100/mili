@@ -81,13 +81,11 @@ export default {
         },
     },
     watch: {
-        url (newURL, oldURL) {
-            if (newURL !== oldURL) {
-                this.isLoading = false;
-                this.isComplete = false;
-                this.page = this.start || 1;
-                this.load();
-            }
+        query (newQuery, oldQuery) {
+            this.isLoading = false;
+            this.isComplete = false;
+            this.page = this.start || 1;
+            this.load();
         }
     },
     destroyed () {

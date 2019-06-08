@@ -13,6 +13,7 @@ import { CurUser } from '../core/decorators/user.decorator';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
+import { ListResult } from '../entity/interface';
 
 @Controller()
 export class TagController {
@@ -20,22 +21,46 @@ export class TagController {
         private readonly tagService: TagService,
     ) {}
 
-    @Get('/tag')
+    @Get('/tags')
     async tagView(@Res() res) {
         res.render('pages/tag/tag');
     }
 
-    @Get(`${APIPrefix}/tags/all`)
-    async all(@Query('page', ParsePagePipe) page: number) {
+    @Get(`${APIPrefix}/tags`)
+    async list(@CurUser() user, @Query('type') type: string,
+               @Query('order') order: string, @Query('q') q: string,
+               @Query('page', ParsePagePipe) page: number) {
         const pageSize = 20;
-        return await this.tagService.list(page, pageSize);
-    }
-
-    @Get(`${APIPrefix}/tags/subscribed`)
-    @UseGuards(ActiveGuard)
-    async subscribed(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
-        const pageSize = 20;
-        return await this.tagService.subscribedList(user.id, page, pageSize);
+        if (q) {
+            q = decodeURIComponent(q);
+        }
+        let listResult: ListResult;
+        if (type === 'all') {
+            listResult = await this.tagService.list(page, pageSize, order, q);
+        } else {
+            if (!user) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.Forbidden.CODE,
+                });
+            }
+            listResult = await this.tagService.subscribedList(user.id, page, pageSize, order, q);
+        }
+        if (user) {
+            const tags = listResult.list.map(tag => tag.id);
+            const followedTags = await this.tagService.tagsFilterByFollowerID(tags, user.id);
+            const tagMap = {};
+            followedTags.forEach(followedTag => {
+                tagMap[followedTag.tagID] = true;
+            });
+            listResult.list.forEach((tag: any) => {
+                tag.isFollowed = !!tagMap[tag.id];
+            });
+        } else {
+            listResult.list.forEach((tag: any) => {
+                tag.isFollowed = false;
+            });
+        }
+        return listResult;
     }
 
     @Post(`${APIPrefix}/tags/:id/follow`)

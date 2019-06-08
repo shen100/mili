@@ -124,7 +124,7 @@ export class SearchController {
             }
             if (user) {
                 const users = result.list.map(u => u.id);
-                const followedUsers = await this.userService.usersFilterByFollowerID(user.id, users);
+                const followedUsers = await this.userService.usersFilterByFollowerID(users, user.id);
                 const userMap = {};
                 followedUsers.forEach(followedUser => {
                     userMap[followedUser.userID] = true;

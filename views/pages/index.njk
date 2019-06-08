@@ -8,7 +8,7 @@
             {% for category in categories %}
             <li><a class="category-item {% if categoryID == category.id %}category-item-select{% endif %}" href="/?c={{category.id}}">{{category.name}}</a></li>
             {% endfor %}
-            <li style="float: right;margin-right: 0;"><a class="category-item" href="">分类管理</a></li>
+            <li style="float: right;margin-right: 0;"><a class="category-item" href="/tags">标签管理</a></li>
         </ul>
     </div>
 </div>

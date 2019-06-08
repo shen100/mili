@@ -1,68 +1,65 @@
 <template>
-    <div>
+    <div style="padding-top: 60px;">
         <div class="view-nav">
             <div class="tag-nav">
                 <ul class="nav-list">
-                    <li @click="onTagNavClick('subscribed')" v-if="userID" class="nav-item">
+                    <li @click="onTagNavClick('subscribed')" v-if="userID" class="nav-item" :class="{active: query.type !== 'all'}">
                         <a href="javascript:void(0)" class="text-muted1">已关注标签</a>
                     </li>
-                    <li @click="onTagNavClick('all')" class="nav-item router-link-exact-active route-active active">
+                    <li @click="onTagNavClick('all')" class="nav-item router-link-exact-active route-active" :class="{active: query.type === 'all'}">
                         <a href="javascript:void(0)" class="text-muted1">全部标签</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <header class="list-header">
+        <header v-if="query.type === 'all'" class="list-header">
             <nav class="list-nav">
                 <ul class="nav-list">
-                    <li class="nav-item active">
+                    <li @click="onSortNavClick('hot')" class="nav-item" :class="{active: query.order === 'hot'}">
                         <a>最热</a>
                     </li>
-                    <li class="nav-item">
+                    <li @click="onSortNavClick('new')" class="nav-item" :class="{active: query.order === 'new'}">
                         <a>最新</a>
                     </li>
                     <li class="nav-item search">
-                        <form class="search-form">
-                            <input maxlength="32" placeholder="搜索标签" class="search-input">
-                        </form>
+                        <input @keyup.enter="onSearch" maxlength="32" placeholder="搜索标签" class="search-input">
                     </li>
                 </ul>
             </nav>
         </header>
-        <div class="tag-box">
-            <Pinterest :url="tagURL" @load="onLoad">
+        <div class="tag-box" :style="{'padding-top': query.type === 'all' ? '0' : '20px'}">
+            <Pinterest url="/tags" :query="query" @load="onLoad">
                 <template v-slot:content>
                     <div>
                         <TagInfo :key="tag.id" :tag="tag" v-for="tag in tags" />
                     </div>
                 </template>
             </Pinterest>
+            <div v-if="query.type !== 'all' && !tags.length" class="status text-muted">列表为空</div>
         </div>
     </div>
 </template>
 
 <script>
-import { myHTTP } from '~/js/common/net.js';
-import { ErrorCode } from '~/js/constants/error.js';
 import Pinterest from '~/js/components/common/Pinterest.vue';
 import TagInfo from '~/js/components/tag/TagInfo.vue';
 
 export default {
     data () {
         let type;
-        let tagURL;
         if (window.userID) {
             type = 'subscribed';
-            tagURL = '/tags/subscribed';
         } else {
             type = 'all';
-            tagURL = '/tags/all';
         }
         return {
             userID: window.userID,
-            type,
-            tagURL,
-            tags: []
+            tags: [],
+            query: {
+                order: 'hot',
+                q: '',
+                type,
+            }
         };
     },
     mounted() {
@@ -74,16 +71,31 @@ export default {
             this.tags = this.tags.concat(result.data.data.list);
         },
         onTagNavClick(type) {
-            if (type === this.type) {
+            if (type === this.query.type) {
                 return;
             }
             this.tags = [];
-            this.type = type;
-            if (type === 'all') {
-                this.tagURL = '/tags/all';
-            } else {
-                this.tagURL = '/tags/subscribed';
+            this.query = {
+                ...this.query,
+                type,
+            };
+        },
+        onSortNavClick(order) {
+            if (order === this.query.order) {
+                return;
             }
+            this.tags = [];
+            this.query = {
+                ...this.query,
+                order,
+            };
+        },
+        onSearch(event) {
+            this.tags = [];
+            this.query = {
+                ...this.query,
+                q: event.target.value,
+            };
         }
     },
     components: {
@@ -229,5 +241,13 @@ export default {
     font-size: 14px;
     border: 1px solid hsla(0, 0%, 59.2%, .2);
     outline: none;
+}
+
+.status {
+    padding: 24px 0;
+    width: 100%;
+    font-size: 14px;
+    text-align: center;
+    color: #666;
 }
 </style>
