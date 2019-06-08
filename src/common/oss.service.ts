@@ -1,7 +1,7 @@
 import {
     Injectable,
 } from '@nestjs/common';
-import stream from 'stream';
+import * as stream from 'stream';
 import axios from 'axios';
 import * as moment from 'moment';
 import * as util from 'util';
@@ -69,6 +69,5 @@ export class OSSService {
         const basename = urlBaseName(url);
         const result = client.putStream(`tags/${basename}`, res.data.pipe(new PassThrough()));
         return '';
-        console.log();
     }
 }

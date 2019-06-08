@@ -21,6 +21,11 @@ export class CategoryConstants {
     static readonly CATEGORY_MAX_LENGTH: number = 20;
 }
 
+export class TagConstants {
+    static readonly TAG_MIN_LENGTH: number = 1;
+    static readonly TAG_MAX_LENGTH: number = 20;
+}
+
 export class CollectionConstants {
     static readonly NAME_MIN_LENGTH: number = 1; // 专题名称最小长度
     static readonly NAME_MAX_LENGTH: number = 50; // 专题名称最大长度

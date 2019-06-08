@@ -4,12 +4,13 @@ import {
     MaxLength,
     IsUrl,
 } from 'class-validator';
+import { TagConstants } from '../../constants/constants';
 
 export class CreateTagDto {
-    @MinLength(1, {
+    @MinLength(TagConstants.TAG_MIN_LENGTH, {
         message: '名称不能为空',
     })
-    @MaxLength(100, {
+    @MaxLength(TagConstants.TAG_MAX_LENGTH, {
         message: '名称不能超过 $constraint1 个字符',
     })
     @IsString()

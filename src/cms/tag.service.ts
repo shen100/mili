@@ -1,8 +1,7 @@
-import axios from 'axios';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Tag } from 'entity/tag.entity';
+import { Tag } from '../entity/tag.entity';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { OSSService } from '../common/oss.service';
 

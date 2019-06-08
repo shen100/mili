@@ -34,7 +34,9 @@ import { BookService } from './book.service';
 import { Book, BookCategory, BookChapter } from '../entity/book.entity';
 import { HandBook, HandBookChapter } from '../entity/handbook.entity';
 import { HandBookService } from './handbook.service';
-import { Tag } from 'entity/tag.entity';
+import { Tag } from '../entity/tag.entity';
+import { TagService } from './tag.service';
+import { TagController } from './tag.controller';
 
 @Module({
     imports: [
@@ -71,6 +73,7 @@ import { Tag } from 'entity/tag.entity';
         SearchController,
         RecommendController,
         AdminController,
+        TagController,
     ],
     providers: [
         ArticleService,
@@ -83,6 +86,7 @@ import { Tag } from 'entity/tag.entity';
         CollectionService,
         RecommendService,
         SearchService,
+        TagService,
     ],
 })
 export class CMSModule {}
