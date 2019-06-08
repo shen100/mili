@@ -82,6 +82,7 @@
     "@types/node": "^10.7.1",
     "@types/redis": "^2.8.7",
     "@types/supertest": "^2.0.5",
+    "@types/uuid": "^3.4.4",
     "autoprefixer": "^9.4.7",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",

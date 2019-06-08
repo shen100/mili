@@ -2,7 +2,9 @@ import {
     Entity,
     Column,
     PrimaryGeneratedColumn,
+    ManyToMany,
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity({name: 'tags'})
 export class Tag {
@@ -23,4 +25,7 @@ export class Tag {
 
     @Column('varchar', { name: 'icon_url', length: 500, nullable: true, default: null })
     iconURL: string;
+
+    @ManyToMany(type => User, user => user.followedTags)
+    followers: User[];
 }

@@ -80,6 +80,16 @@ export default {
             }
         },
     },
+    watch: {
+        url (newURL, oldURL) {
+            if (newURL !== oldURL) {
+                this.isLoading = false;
+                this.isComplete = false;
+                this.page = this.start || 1;
+                this.load();
+            }
+        }
+    },
     destroyed () {
         window.removeEventListener('scroll', this.theOnScroll);
     },

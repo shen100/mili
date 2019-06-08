@@ -37,6 +37,7 @@ import { HandBookService } from './handbook.service';
 import { Tag } from '../entity/tag.entity';
 import { TagService } from './tag.service';
 import { TagController } from './tag.controller';
+import { OSSService } from '../common/oss.service';
 
 @Module({
     imports: [
@@ -85,6 +86,7 @@ import { TagController } from './tag.controller';
         MessageService,
         CollectionService,
         RecommendService,
+        OSSService,
         SearchService,
         TagService,
     ],

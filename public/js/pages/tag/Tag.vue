@@ -1,0 +1,233 @@
+<template>
+    <div>
+        <div class="view-nav">
+            <div class="tag-nav">
+                <ul class="nav-list">
+                    <li @click="onTagNavClick('subscribed')" v-if="userID" class="nav-item">
+                        <a href="javascript:void(0)" class="text-muted1">已关注标签</a>
+                    </li>
+                    <li @click="onTagNavClick('all')" class="nav-item router-link-exact-active route-active active">
+                        <a href="javascript:void(0)" class="text-muted1">全部标签</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <header class="list-header">
+            <nav class="list-nav">
+                <ul class="nav-list">
+                    <li class="nav-item active">
+                        <a>最热</a>
+                    </li>
+                    <li class="nav-item">
+                        <a>最新</a>
+                    </li>
+                    <li class="nav-item search">
+                        <form class="search-form">
+                            <input maxlength="32" placeholder="搜索标签" class="search-input">
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div class="tag-box">
+            <Pinterest :url="tagURL" @load="onLoad">
+                <template v-slot:content>
+                    <div>
+                        <TagInfo :key="tag.id" :tag="tag" v-for="tag in tags" />
+                    </div>
+                </template>
+            </Pinterest>
+        </div>
+    </div>
+</template>
+
+<script>
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
+import Pinterest from '~/js/components/common/Pinterest.vue';
+import TagInfo from '~/js/components/tag/TagInfo.vue';
+
+export default {
+    data () {
+        let type;
+        let tagURL;
+        if (window.userID) {
+            type = 'subscribed';
+            tagURL = '/tags/subscribed';
+        } else {
+            type = 'all';
+            tagURL = '/tags/all';
+        }
+        return {
+            userID: window.userID,
+            type,
+            tagURL,
+            tags: []
+        };
+    },
+    mounted() {
+        this.$nextTick(() => {
+        });
+    },
+    methods: {
+        onLoad(result) {
+            this.tags = this.tags.concat(result.data.data.list);
+        },
+        onTagNavClick(type) {
+            if (type === this.type) {
+                return;
+            }
+            this.tags = [];
+            this.type = type;
+            if (type === 'all') {
+                this.tagURL = '/tags/all';
+            } else {
+                this.tagURL = '/tags/subscribed';
+            }
+        }
+    },
+    components: {
+        Pinterest,
+        TagInfo,
+    }
+}
+</script>
+
+<style scoped>
+.view-nav {
+    width: 100%;
+    height: 46px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+    transition: all .2s;
+    transform: translateZ(0);
+}
+
+.tag-nav {
+    width: 960px;
+    height: 100%;
+    margin: auto;
+}
+
+.tag-nav .nav-list {
+    align-items: center;
+    line-height: 1;
+    width: 960px;
+    height: 100%;
+    margin: auto;
+    display: flex;
+}
+
+.nav-item {
+    position: relative;
+    cursor: pointer;
+}
+
+.tag-nav .nav-list .nav-item {
+    height: 100%;
+    flex-shrink: 0;
+    color: #71777c;
+    align-items: center;
+    display: flex;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 12px;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom .3s, color .3s;
+}
+
+.tag-nav .nav-list .nav-item:first-child {
+    padding: 0 12px 0 0;
+}
+
+.tag-nav .nav-list .nav-item:hover .text-muted1 {
+    color: #007fff;
+}
+
+.text-muted1 {
+    color: #909090;
+}
+
+.text-muted1:hover {
+    text-decoration: none;
+}
+
+.nav-item>a:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.tag-nav .nav-list .nav-item:last-child {
+    padding: 0 0 0 12px;
+}
+
+.tag-nav .nav-list .nav-item.active, .tag-nav .nav-list .nav-item:hover {
+    color: #007fff;
+}
+
+.tag-nav .nav-list .nav-item.active, .tag-nav .nav-list .nav-item:hover {
+    border-bottom-color: #007fff;
+}
+
+.tag-nav .nav-list .nav-item.active a {
+    color: #007fff;
+}
+
+.tag-box {
+    width: 960px;
+    margin: 0 auto;
+}
+
+.list-header {
+    width: 960px;
+    margin: 0 auto;
+    padding: 16px 12px;
+    border-bottom: none;
+}
+
+.list-header .list-nav, .list-header .nav-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.list-header .nav-list {
+    align-items: center;
+    line-height: 1;
+}
+
+.nav-item {
+    position: relative;
+    cursor: pointer;
+}
+
+.nav-list .nav-item {
+    padding: 7px 12px;
+    margin-left: 10px;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.list-header .nav-list .nav-item a {
+    color: #909090;
+}
+
+.list-header .nav-list .nav-item.active a, .list-header .nav-list .nav-item a:hover {
+    color: #007fff;
+    text-decoration: none;
+}
+
+.nav-list .nav-item.search .search-input {
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid hsla(0, 0%, 59.2%, .2);
+    outline: none;
+}
+</style>

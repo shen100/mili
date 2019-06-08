@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMan
 import { Exclude } from 'class-transformer';
 import { Collection } from './collection.entity';
 import { Category } from './category.entity';
+import { Tag } from './tag.entity';
 
 class UserScoreDef {
     readonly CreateArticle: number = 5;
@@ -140,6 +141,20 @@ export class User {
         },
     })
     followedCategories: Category[]; // 关注的分类
+
+    @ManyToMany(type => Tag, tag => tag.followers)
+    @JoinTable({
+        name: 'user_subscribed_tag',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'tag_id',
+            referencedColumnName: 'id',
+        },
+    })
+    followedTags: Tag[]; // 关注的标签
 
     @ManyToMany(type => Collection, collection => collection.admins)
     @JoinTable({

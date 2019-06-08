@@ -2,13 +2,14 @@ import {
     Injectable,
 } from '@nestjs/common';
 import * as stream from 'stream';
+import * as uuid from 'uuid';
 import axios from 'axios';
 import * as moment from 'moment';
 import * as util from 'util';
-import OSS from 'ali-oss';
+import * as OSS from 'ali-oss';
 import { base64Encode, hmacSHA1 } from '../utils/security';
 import { ConfigService } from '../config/config.service';
-import { urlBaseName } from '../utils/common';
+import { extName, urlBaseName } from '../utils/common';
 
 const PassThrough = stream.PassThrough;
 
@@ -66,8 +67,14 @@ export class OSSService {
             url,
             responseType: 'stream',
         });
-        const basename = urlBaseName(url);
-        const result = client.putStream(`tags/${basename}`, res.data.pipe(new PassThrough()));
-        return '';
+        const baseName = urlBaseName(url);
+        const ext = extName(baseName);
+        const uploadName = `${this.configService.aliyunOSS.uploadPrefix}/tags/${uuid.v4() + ext}`;
+        const result = await client.putStream(uploadName, res.data.pipe(new PassThrough()));
+        let name = result.name || '';
+        if (name.charAt(0) !== '/') {
+            name = '/' + name;
+        }
+        return this.configService.static.uploadImgURL + name;
     }
 }

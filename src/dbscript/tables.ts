@@ -66,7 +66,7 @@ const config = new ConfigService();
           //   PRIMARY KEY (id)
           // ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
 
-          const sql = `CREATE TABLE tags (
+          let sql = `CREATE TABLE tags (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             created_at datetime NOT NULL,
             name varchar(200) NOT NULL DEFAULT '',
@@ -74,6 +74,12 @@ const config = new ConfigService();
             article_count int(11) unsigned NOT NULL,
             icon_url varchar(500) DEFAULT NULL,
             PRIMARY KEY (id)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+
+          sql = `CREATE TABLE user_subscribed_tag (
+            user_id int(11) unsigned NOT NULL,
+            tag_id int(11) unsigned NOT NULL,
+            PRIMARY KEY (user_id, tag_id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
 
         //   const sql = `CREATE TABLE `userlikechapter_comments` (
