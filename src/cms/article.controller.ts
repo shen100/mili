@@ -31,6 +31,7 @@ export class ArticleController {
             userFollowed = await this.userService.isUserFollowed(user.id, article.user.id);
         }
         res.render('pages/article/articleDetail', {
+            isAuthorSelf: user && user.id === article.user.id,
             userLiked,
             userFollowed,
             article,

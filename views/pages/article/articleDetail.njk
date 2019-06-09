@@ -14,17 +14,23 @@
                 </a>
                 <div class="info">
                     <span class="name"><a href="/users/{{article.user.id}}.html" target="_blank">{{article.user.username}}</a></span>
-                    {% if userFollowed %}
-                    <a id="followUserSmallBtn" href="javascript:void(0)" class="btn btn-default following"><i class="iconfont ic-followed"></i><span>已关注</span></a>
-                    {% else %}
-                    <a id="followUserSmallBtn" href="javascript:void(0)" class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>                    
+                    {% if not isAuthorSelf %}
+                        {% if userFollowed %}
+                        <a id="followUserSmallBtn" href="javascript:void(0)" class="btn btn-default following"><i class="iconfont ic-followed"></i><span>已关注</span></a>
+                        {% else %}
+                        <a id="followUserSmallBtn" href="javascript:void(0)" class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>                    
+                        {% endif %}
                     {% endif %}
                     <div class="meta">
                         <span class="publish-time">{{article.createdAt | formatTime('YYYY.MM.DD HH:mm')}}</span>
                         <span class="wordage">字数 {{article.wordCount | defaultValue(0)}}</span>
-                        <span class="views-count">阅读 {{article.browseCount | defaultValue(0)}}</span><span class="comments-count">评论 {{article.commentCount | defaultValue(0)}}</span><span class="likes-count">喜欢 {{article.likeCount | defaultValue(0)}}</span>
+                        <span class="views-count">阅读 {{article.browseCount | defaultValue(0)}}</span>
+                        <span class="comments-count">评论 {{article.commentCount | defaultValue(0)}}</span>
+                        <span class="likes-count">喜欢 {{article.likeCount | defaultValue(0)}}</span>
+                        <span class="dot">·</span>
                     </div>
                 </div>
+                <a href="/editor/posts/{{article.id}}.html" target="_blank" class="article-edit-link">编辑文章</a>
             </div>
             <div class="article-content">
                 <div class="mili-editor">
@@ -45,10 +51,12 @@
                     <a class="avatar" href="/users/{{article.user.id}}.html" target="_blank">
                         <img src="{{article.user.avatarURL}}" />
                     </a>
-                    {% if userFollowed %}
-                    <a id="followUserBigBtn" href="javascript:void(0)" class="btn big btn-success following"><i class="iconfont ic-followed"></i><span>已关注</span></a>
-                    {% else %}
-                    <a id="followUserBigBtn" href="javascript:void(0)" class="btn big btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+                    {% if not isAuthorSelf %}
+                        {% if userFollowed %}
+                        <a id="followUserBigBtn" href="javascript:void(0)" class="btn big btn-success following"><i class="iconfont ic-followed"></i><span>已关注</span></a>
+                        {% else %}
+                        <a id="followUserBigBtn" href="javascript:void(0)" class="btn big btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
+                        {% endif %}
                     {% endif %}
                     <a class="title" href="/users/{{article.user.id}}.html" target="_blank">{{article.user.username}}</a>
                     <p>写了 {{article.user.wordCount | defaultValue(0)}} 字，被 {{article.user.followerCount | defaultValue(0)}} 人关注，获得了 {{article.user.likeCount | defaultValue(0)}} 个喜欢</p>
@@ -179,6 +187,7 @@
 {% block pageData %}
 <script>
   var articleID = {{ article.id }};
+  var isAuthorSelf = {{ isAuthorSelf }};
   var userLiked = {{ userLiked }};
   var userFollowed = {{ userFollowed }};
   var articleLikeCount = {{ article.likeCount }};

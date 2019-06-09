@@ -161,6 +161,23 @@
     padding-right: 5px;
 }
 
+.article-edit-link {
+    float: right;
+    margin-top: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+    border: 1px solid #dcdcdc;
+    color: #9b9b9b;
+    line-height: 30px;
+    border-radius: 50px;
+}
+
+.article-edit-link:hover {
+    background-color: hsla(0, 0%, 71%, .1);
+    text-decoration: none;
+    color: #9b9b9b;
+}
+
 .article-content {
     color: #2f2f2f;
     word-break: break-word!important;

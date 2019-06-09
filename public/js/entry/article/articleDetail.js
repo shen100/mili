@@ -42,29 +42,31 @@ registerDirective(Vue);
         }
     }
 
-    // 关注作者
-    new Vue({
-        render: h => h(SmallFollow, {
-            props: {
-                userID: window.authorID,
-                userFollowed: window.userFollowed,
-                onChange: onChange,
-                methodProxy: methodProxy1,
-            },
-        }),
-    }).$mount('#followUserSmallBtn');
+    if (!window.isAuthorSelf) {
+        // 关注作者
+        new Vue({
+            render: h => h(SmallFollow, {
+                props: {
+                    userID: window.authorID,
+                    userFollowed: window.userFollowed,
+                    onChange: onChange,
+                    methodProxy: methodProxy1,
+                },
+            }),
+        }).$mount('#followUserSmallBtn');
 
-    // 关注作者
-    new Vue({
-        render: h => h(BigFollow, {
-            props: {
-                userID: window.authorID,
-                userFollowed: window.userFollowed,
-                onChange: onChange,
-                methodProxy: methodProxy2,
-            },
-        }),
-    }).$mount('#followUserBigBtn');
+        // 关注作者
+        new Vue({
+            render: h => h(BigFollow, {
+                props: {
+                    userID: window.authorID,
+                    userFollowed: window.userFollowed,
+                    onChange: onChange,
+                    methodProxy: methodProxy2,
+                },
+            }),
+        }).$mount('#followUserBigBtn');
+    }
 
     // 评论列表
     new Vue({
