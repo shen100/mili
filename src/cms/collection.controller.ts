@@ -6,7 +6,6 @@ import * as bluebird from 'bluebird';
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
-import { strToPage } from '../utils/common';
 import { ConfigService } from '../config/config.service';
 import { Article } from 'entity/article.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';

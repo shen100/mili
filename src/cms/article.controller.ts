@@ -68,11 +68,11 @@ export class ArticleController {
     @Put('/api/v1/articles')
     @UseGuards(ActiveGuard)
     async update(@CurUser() user, @Body() updateArticleDto: UpdateArticleDto) {
-        const [ updateResult ] = await Promise.all([
+        await Promise.all([
             this.articleService.update(updateArticleDto, user.id),
         ]);
         return {
-            id: updateResult.id,
+            id: updateArticleDto.id,
         };
     }
 

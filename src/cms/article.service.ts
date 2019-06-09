@@ -161,6 +161,32 @@ export class ArticleService {
         };
     }
 
+    async listInTag(tagID: number, order: string, page: number, pageSize: number): Promise<ListResult> {
+        let orderStr = '';
+        if (order === 'new') {
+            orderStr = 'a.createdAt';
+        } else {
+            orderStr = 'a.browseCount';
+        }
+        const [list, count] = await this.articleRepository.createQueryBuilder('a')
+            .select(['a.id', 'a.name', 'a.createdAt', 'a.summary', 'a.commentCount', 'a.browseCount',
+                'a.coverURL', 'a.likeCount', 'user.id', 'user.username', 'user.avatarURL'])
+            .leftJoin('a.user', 'user')
+            .leftJoin('a.tags', 't')
+            .where('a.status != :status AND t.id = :tagID', {
+                status: ArticleStatus.VerifyFail,
+                tagID,
+            })
+            .skip((page - 1) * pageSize).take(pageSize)
+            .orderBy({[orderStr]: 'DESC'}).getManyAndCount();
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
     async recommendList(page: number, pageSize: number) {
         return await this.articleRepository.find({
             select: {
@@ -350,38 +376,26 @@ export class ArticleService {
     }
 
     async update(updateArticleDto: UpdateArticleDto, userID: number) {
+        const insertCategories = [];
+        const categoryIDs = [];
+        const insertTags = [];
+        const tagIDs = [];
         const uniqCates = _.uniqBy(updateArticleDto.categories, (c) => c.id);
-        const categories: Category[] = uniqCates.map(cate => {
-            const c = new Category();
-            c.id = cate.id;
-            return c;
+        uniqCates.map(c => {
+            categoryIDs.push(c.id);
+            insertCategories.push(`(${updateArticleDto.id}, ${c.id})`);
         });
         const uniqTags = _.uniqBy(updateArticleDto.tags, (t) => t.id);
-        const tags: Tag[] = uniqTags.map(t => {
-            const tag = new Tag();
-            tag.id = t.id;
-            return tag;
+        uniqTags.map(t => {
+            tagIDs.push(t.id);
+            insertTags.push(`(${updateArticleDto.id}, ${t.id})`);
         });
-        const newArticle = new Article();
-        newArticle.id = updateArticleDto.id;
-        newArticle.name = updateArticleDto.name;
-        newArticle.categories = categories;
-        newArticle.tags = tags;
-        if (updateArticleDto.coverURL) {
-            newArticle.coverURL = updateArticleDto.coverURL;
-        }
-        if (updateArticleDto.contentType === ArticleContentType.Markdown) {
-            newArticle.content = updateArticleDto.content;
-        } else {
-            newArticle.htmlContent = updateArticleDto.content;
-        }
-
-        const article: Article = await this.articleRepository.findOne({
-            select: [
-                'id', 'userID',
-            ],
-            where: { id: updateArticleDto.id },
-        });
+        const article: Article = await this.articleRepository.createQueryBuilder('a')
+            .select(['a.id', 'a.userID', 't.id', 'c.id'])
+            .leftJoin('a.tags', 't')
+            .leftJoin('a.categories', 'c')
+            .where({ id: updateArticleDto.id })
+            .getOne();
 
         if (!article) {
             throw new MyHttpException({
@@ -395,15 +409,35 @@ export class ArticleService {
                 errorCode: ErrorCode.Forbidden.CODE,
             });
         }
-        try {
-            return await this.articleRepository.save(newArticle);
-        } catch (err) {
-            this.logger.error(err, '');
-            throw new HttpException({
-                errorCode: ErrorCode.ParamsError,
-                msg: '无效的分类',
-            }, HttpStatus.OK);
+        const updateData = {
+            name: updateArticleDto.name,
+            coverURL: updateArticleDto.coverURL || '',
+            content: '',
+            htmlContent: '',
+        };
+        if (updateArticleDto.contentType === ArticleContentType.Markdown) {
+            updateData.content = updateArticleDto.content;
+            delete updateData.htmlContent;
+        } else {
+            updateData.htmlContent = updateArticleDto.content;
+            delete updateData.content;
         }
+
+        const oldCategoryIDs = article.categories.map(c => c.id);
+        const oldTagIDs = article.tags.map(t => t.id);
+        await this.articleRepository.manager.connection.transaction(async manager => {
+            await manager.update(Article, {
+                id: article.id,
+            }, updateData);
+            await manager.query(`DELETE FROM article_category WHERE article_id = ${article.id}`);
+            await manager.query(`DELETE FROM article_tag WHERE article_id = ${article.id}`);
+            await manager.query(`UPDATE categories SET article_count = article_count - 1 WHERE id IN (${oldCategoryIDs.join(',')})`);
+            await manager.query(`UPDATE tags SET article_count = article_count - 1 WHERE id IN (${oldTagIDs.join(',')})`);
+            await manager.query(`UPDATE categories SET article_count = article_count + 1 WHERE id IN (${categoryIDs.join(',')})`);
+            await manager.query(`UPDATE tags SET article_count = article_count + 1 WHERE id IN (${tagIDs.join(',')})`);
+            await manager.query(`INSERT INTO article_category (article_id, category_id) VALUES ${insertCategories.join(',')}`);
+            await manager.query(`INSERT INTO article_tag (article_id, tag_id) VALUES ${insertTags.join(',')}`);
+        });
     }
 
     async allVerifyFail(userID: number) {

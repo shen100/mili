@@ -14,16 +14,43 @@ import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ListResult } from '../entity/interface';
+import { ArticleService } from './article.service';
 
 @Controller()
 export class TagController {
     constructor(
         private readonly tagService: TagService,
+        private readonly articleService: ArticleService,
     ) {}
 
     @Get('/tags')
     async tagView(@Res() res) {
         res.render('pages/tag/tag');
+    }
+
+    @Get('/tags/:id.html')
+    async tagDetailView(@Res() res, @CurUser() user, @Param('id', MustIntPipe) id: number) {
+        const [tag, isFollowed] = await Promise.all([
+            this.tagService.detail(id),
+            user ? this.tagService.isFollowed(user.id, id) : Promise.resolve(false),
+        ]);
+        if (!tag) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        res.render('pages/tag/tagDetail', {
+            isFollowed,
+            tag,
+        });
+    }
+
+    @Get(`${APIPrefix}/tags/:id/articles`)
+    async articles(@Param('id', MustIntPipe) id: number, @Query('page', ParsePagePipe) page: number,
+                   @Query('order') order: string) {
+        const pageSize = 20;
+        const listResult = await this.articleService.listInTag(id, order, page, pageSize);
+        return listResult;
     }
 
     @Get(`${APIPrefix}/tags/search`)

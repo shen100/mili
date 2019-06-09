@@ -26,6 +26,15 @@ export class TagService {
         return await this.tagRepository.save(tag);
     }
 
+    async detail(id: number) {
+        return await this.tagRepository.findOne({
+            select: ['id', 'name', 'followerCount', 'articleCount', 'iconURL', 'createdAt'],
+            where: {
+                id,
+            },
+        });
+    }
+
     async list(page: number, pageSize: number, order: string, keyword: string): Promise<ListResult> {
         const [list, count] = await this.tagRepository.findAndCount({
             select: {
@@ -100,5 +109,11 @@ export class TagService {
         const sql = `SELECT user_id as userID, tag_id as tagID FROM user_subscribed_tag
             WHERE user_id = ${followerID} AND tag_id IN (${tags.join(',')})`;
         return await this.tagRepository.manager.query(sql);
+    }
+
+    async isFollowed(userID: number, tagID: number): Promise<boolean> {
+        const sql = `SELECT * FROM user_subscribed_tag WHERE user_id = ${userID} AND tag_id = ${tagID}`;
+        const arr = await this.tagRepository.manager.query(sql);
+        return arr && arr.length > 0;
     }
 }
