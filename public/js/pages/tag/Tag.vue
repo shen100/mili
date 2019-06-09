@@ -22,7 +22,7 @@
                         <a>最新</a>
                     </li>
                     <li class="nav-item search">
-                        <input @keyup.enter="onSearch" maxlength="32" placeholder="搜索标签" class="search-input">
+                        <input v-model="tempInputQ" @keyup.enter="onSearch" maxlength="32" placeholder="搜索标签" class="search-input">
                     </li>
                 </ul>
             </nav>
@@ -31,11 +31,11 @@
             <Pinterest url="/tags" :query="query" @load="onLoad">
                 <template v-slot:content>
                     <div>
-                        <TagInfo :key="tag.id" :tag="tag" v-for="tag in tags" />
+                        <TagInfo @on-cancel="onFollowCancel(tag.id)" :key="tag.id" :tag="tag" v-for="tag in tags" />
                     </div>
                 </template>
             </Pinterest>
-            <div v-if="query.type !== 'all' && !tags.length" class="status text-muted">列表为空</div>
+            <div v-if="!isLoading && !tags.length" class="status text-muted">列表为空</div>
         </div>
     </div>
 </template>
@@ -59,7 +59,9 @@ export default {
                 order: 'hot',
                 q: '',
                 type,
-            }
+            },
+            tempInputQ: '',
+            isLoading: true,
         };
     },
     mounted() {
@@ -69,11 +71,13 @@ export default {
     methods: {
         onLoad(result) {
             this.tags = this.tags.concat(result.data.data.list);
+            this.isLoading = false;
         },
         onTagNavClick(type) {
             if (type === this.query.type) {
                 return;
             }
+            this.isLoading = true;
             this.tags = [];
             this.query = {
                 ...this.query,
@@ -84,6 +88,7 @@ export default {
             if (order === this.query.order) {
                 return;
             }
+            this.isLoading = true;
             this.tags = [];
             this.query = {
                 ...this.query,
@@ -91,11 +96,23 @@ export default {
             };
         },
         onSearch(event) {
+            this.isLoading = true;
             this.tags = [];
             this.query = {
                 ...this.query,
                 q: event.target.value,
             };
+        },
+        onFollowCancel(tagID) {
+            if (this.query.type === 'all') {
+                return;
+            }
+            for (let i = 0; i < this.tags.length; i++) {
+                if (this.tags[i].id === tagID) {
+                    this.tags.splice(i, 1);
+                    break;
+                }
+            }
         }
     },
     components: {

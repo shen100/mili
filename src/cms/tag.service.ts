@@ -89,17 +89,23 @@ export class TagService {
     }
 
     async addFollower(tagID: number, userID: number) {
-        await this.tagRepository.createQueryBuilder()
-            .relation(Tag, 'followers')
-            .of(tagID)
-            .add(userID);
+        await this.tagRepository.manager.connection.transaction(async manager => {
+            await manager.createQueryBuilder()
+                .relation(Tag, 'followers')
+                .of(tagID)
+                .add(userID);
+            await manager.query(`UPDATE tags SET follower_count = follower_count + 1 WHERE id = ${tagID}`);
+        });
     }
 
     async removeFollower(tagID: number, userID: number) {
-        await this.tagRepository.createQueryBuilder()
-            .relation(Tag, 'followers')
-            .of(tagID)
-            .remove(userID);
+        await this.tagRepository.manager.connection.transaction(async manager => {
+            await manager.createQueryBuilder()
+                .relation(Tag, 'followers')
+                .of(tagID)
+                .remove(userID);
+            await manager.query(`UPDATE tags SET follower_count = follower_count - 1 WHERE id = ${tagID}`);
+        });
     }
 
     async tagsFilterByFollowerID(tags: number[], followerID: number) {

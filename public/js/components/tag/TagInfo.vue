@@ -62,6 +62,12 @@ export default {
             reqMethod(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isFollowed = !this.isFollowed;
+                    if (this.isFollowed) {
+                        this.followerCount++;
+                    } else {
+                        this.followerCount--;
+                    }
+                    this.$emit(this.isFollowed ? 'on-follow' : 'on-cancel');
                 }
             });
         },
