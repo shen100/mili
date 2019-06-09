@@ -56,7 +56,7 @@ export const readDuration = (wordCount: number): string => {
 
 export const getShareURL = (platform: string, title: string, content: string, imageURL: string): string => {
     title = encodeURIComponent(title) || '';
-    title = encodeURIComponent(content) || '';
+    content = encodeURIComponent(content) || '';
     imageURL = imageURL || '';
     return `/share?platform=${platform}&title=${title}&content=${content}&imgurl=${imageURL}`;
 };

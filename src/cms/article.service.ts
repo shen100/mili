@@ -65,7 +65,7 @@ export class ArticleService {
                         introduce: true,
                     },
                 },
-                relations: ['user'],
+                relations: ['user', 'tags'],
                 where: {
                     id,
                     status: Not(ArticleStatus.VerifyFail),

@@ -46,6 +46,18 @@
                     <ul class="support-list"></ul>
                 </div>
             </div> -->
+            <div class="tag-list-box">
+                <div class="tag-list-title">关注下面的标签，发现更多相似文章</div>
+                <div class="tag-list">
+                    {% for tag in article.tags %}
+                    <a href="/tags/{{tag.id}}.html" target="_blank" class="item">
+                        <div class="tag-icon" style="background-image: url({{tag.iconURL}});"></div>
+                        <div class="tag-title">{{tag.name}}</div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
             <div class="follow-detail">
                 <div class="info">
                     <a class="avatar" href="/users/{{article.user.id}}.html" target="_blank">
