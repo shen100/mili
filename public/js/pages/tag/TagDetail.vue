@@ -96,6 +96,12 @@ export default {
             reqMethod(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isFollowed = !this.isFollowed;
+                    if (this.isFollowed) {
+                        tag.followerCount++;
+                    } else {
+                        tag.followerCount--;
+                    }
+                    document.getElementById('followerAndArticleCount').innerHTML = `${tag.followerCount} 关注，${tag.articleCount} 文章`;
                 }
             });
         },
