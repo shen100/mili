@@ -5,10 +5,18 @@ dist
 # IDE
 /.idea
 /.awcache
-/.vscode
+.vscode
 
 # Log files
 npm-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
 package-lock.json
 
 src/config/json.development.ts
