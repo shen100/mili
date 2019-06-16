@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { ConfigService } from './config/config.service';
 import { ConfigModule } from './config/config.module';
-import { SocketModule } from './socket/socket.module';
 import { RedisModule } from './redis/redis.module';
 import { CMSModule } from './cms/cms.module';
 import { UserMiddleware } from './core/middleware/user.middleware';
@@ -32,7 +31,6 @@ import { LocalsMiddleware } from './core/middleware/locals.middleware';
             inject: [ ConfigService ],
         }),
         UserModule,
-        SocketModule,
         CMSModule,
         StatsModule,
     ],
