@@ -1,6 +1,9 @@
-import * as fs from 'fs';
 import * as _ from 'lodash';
-import defaultJSON from './json.default';
+import defaultJSON from './c.default';
+import developmentJSON from './c.development';
+import testJSON from './c.test';
+import stagingJSON from './c.staging';
+import productionJSON from './c.production';
 import { Logger } from 'typeorm/logger/Logger';
 import { LoggerOptions } from 'typeorm/logger/LoggerOptions';
 
@@ -165,32 +168,6 @@ export class ConfigService {
     readonly weibo: Weibo;
 
     constructor() {
-        let developmentJSON, testJSON, stagingJSON, productionJSON;
-        // 程序初次读取配置时，可以使用同步API, 通常情况请使用异步API
-        try {
-            developmentJSON = fs.readFileSync('./json.development');
-        } catch (err) {
-            developmentJSON = null;
-        }
-
-        try {
-            testJSON = fs.readFileSync('./json.test');
-        } catch (err) {
-            testJSON = null;
-        }
-
-        try {
-            stagingJSON = fs.readFileSync('./json.staging');
-        } catch (err) {
-            stagingJSON = null;
-        }
-
-        try {
-            productionJSON = fs.readFileSync('./json.production');
-        } catch (err) {
-            productionJSON = null;
-        }
-
         const envConfigMap = {
             development: developmentJSON,
             test: testJSON,

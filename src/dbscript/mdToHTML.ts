@@ -1,31 +1,23 @@
-import { createConnection } from 'typeorm';
 import { Article } from '../entity/article.entity';
-import { ConfigService } from '../config/config.service';
 import * as marked from 'marked';
 import * as striptags from 'striptags';
-
-const config = new ConfigService();
 
 let errCount = 0;
 
 const summaryLenth = 500;
 const summaryStripLenth = 100;
 
-(async function run() {
-    const connection = await createConnection(config.db);
+export const mdToHTML = async function (connection) {
     const articleRepository = connection.getRepository(Article);
 
     try {
-        // await connection.manager.query(`alter table users change signature introduce varchar(500)`);
-        // await connection.manager.query(`alter table articles add column summary varchar(${summaryLenth})`);
-        // await connection.manager.query(`alter table articles add column like_count int default 0`);
-        // await connection.manager.query(`alter table articles add column word_count int default 0`);
-        // await connection.manager.query(`alter table articles add column hot int default 0`);
+        await connection.manager.query(`alter table articles add column summary varchar(${summaryLenth})`);
+        await connection.manager.query(`alter table articles add column like_count int default 0`);
+        await connection.manager.query(`alter table articles add column word_count int default 0`);
+        await connection.manager.query(`alter table articles add column hot int default 0`);
         await connection.manager.query(`alter table articles add column comment_enabled tinyint(1) NOT NULL DEFAULT '1'`);
         await connection.manager.query(`alter table articles add column cover_url varchar(500) DEFAULT NULL`);
         await connection.manager.query(`ALTER TABLE articles ADD INDEX (user_id, created_at)`);
-
-        return ;
 
         const articles = await articleRepository.find({
             select: {
@@ -68,4 +60,4 @@ const summaryStripLenth = 100;
         console.log('errCount: ', errCount);
         process.exit(-1);
     }
-}());
+};

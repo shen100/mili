@@ -1,18 +1,14 @@
-import { createConnection } from 'typeorm';
-import { ConfigService } from '../config/config.service';
 import * as marked from 'marked';
 import * as bluebird from 'bluebird';
 import { CommentContentType, TempComment, VoteComment } from '../entity/comment.entity';
 
-const config = new ConfigService();
-
-(async function run() {
-    const connection = await createConnection(config.db);
+export const commentRun = async function (connection) {
     const commentRepository = connection.getRepository(TempComment);
     const voteRepository = connection.getRepository(VoteComment);
 
     try {
         // todo: 增加id作为主键
+        console.log('???????????????????????????????????');
         await connection.manager.query(`CREATE TABLE userlikecomments (
             comment_id int(11) unsigned NOT NULL,
             user_id int(11) unsigned NOT NULL,
@@ -117,4 +113,4 @@ const config = new ConfigService();
         console.log('Error: ', error);
         process.exit(-1);
     }
-}());
+};

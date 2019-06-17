@@ -8,7 +8,7 @@ import { recentTime } from '../utils/viewfilter';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 import { CategoryService } from './category.service';
 import { UserService } from '../user/user.service';
-import { Category } from 'entity/category.entity';
+import { Category } from '../entity/category.entity';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 import { CurUser } from '../core/decorators/user.decorator';
 

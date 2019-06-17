@@ -6,12 +6,12 @@ import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ConfigService } from '../config/config.service';
-import { Article } from 'entity/article.entity';
+import { Article } from '../entity/article.entity';
 import { ErrorCode } from '../constants/error';
 import { CurUser } from '../core/decorators/user.decorator';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { CollectionService } from './collection.service';
-import { Collection } from 'entity/collection.entity';
+import { Collection } from '../entity/collection.entity';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 
 @Controller()

@@ -1,14 +1,13 @@
 import { createConnection, In } from 'typeorm';
 import { User } from '../entity/user.entity';
-import { ConfigService } from '../config/config.service';
 
-const config = new ConfigService();
-
-(async function run() {
-    const connection = await createConnection(config.db);
+export const userRun = async function (connection, config) {
     const userRepository = connection.getRepository(User);
 
     try {
+        await connection.manager.query(`alter table users drop column introduce`);
+        await connection.manager.query(`alter table users change signature introduce varchar(500)`);
+
         await connection.manager.query(`alter table users drop column score`);
         await connection.manager.query(`alter table users change name username varchar(100)`);
 
@@ -52,4 +51,4 @@ const config = new ConfigService();
         console.log('Error: ', error);
         process.exit(-1);
     }
-}());
+};

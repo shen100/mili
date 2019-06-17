@@ -13,7 +13,7 @@ import { SMSDto } from './dto/sms.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { RedisService } from '../redis/redis.service';
 import { Settings } from '../entity/settings.entity';
-import { ArticleContentType } from 'entity/article.entity';
+import { ArticleContentType } from '../entity/article.entity';
 import * as moment from 'moment';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import * as bluebird from 'bluebird';
-import { Injectable, NestInterceptor, ExecutionContext, HttpStatus, HttpException } from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map, throttleTime } from 'rxjs/operators';
 import { ConfigService } from '../../config/config.service';
@@ -14,11 +14,8 @@ export class TransformResInterceptor<T> implements NestInterceptor {
         private readonly logger: MyLoggerService,
     ) {}
 
-    intercept(
-        context: ExecutionContext,
-        call$: Observable<T>,
-    ): Observable<any> {
-        return call$.pipe(map(async (data) => {
+    intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+        return next.handle().pipe(map(async (data) => {
             if (typeof data === 'undefined') {
                 return data;
             }
