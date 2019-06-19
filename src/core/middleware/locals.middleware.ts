@@ -15,6 +15,7 @@ export class LocalsMiddleware implements NestMiddleware {
         res.locals.siteName = configService.server.siteName;
         res.locals.apiPrefix = configService.server.apiPrefix,
         res.locals.reqPath = req.originalUrl,
+        res.locals.staticPath = configService.static.staticPath;
         res.locals.cssPath = configService.static.cssPath;
         res.locals.jsPath = configService.static.jsPath;
         res.locals.imgPath = configService.static.imgPath;

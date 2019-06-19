@@ -18,6 +18,13 @@ export default {
         port: 6379,
     },
     static: {
+        // static.golang123.com 用来存放前端静态资源
+        staticPath: 'https://static.golang123.com',
+        cssPath: 'https://static.golang123.com/styles',
+        jsPath: 'https://static.golang123.com/js',
+        imgPath: 'https://static.golang123.com/images',
+        fontPath: 'https://static.golang123.com/fonts',
+        // img.golang123.com 用来存放用户上传的图片
         uploadImgURL: 'https://img.golang123.com',
     },
     server: {

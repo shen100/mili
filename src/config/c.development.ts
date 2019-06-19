@@ -63,6 +63,6 @@ export default {
         appKey: '741219799',
         appSecret: '90d9a012b2aeab8f274db0a84913ceb2',
         state: 'fjodyao3sfaoiuioa29', // 这个参数可用于防止跨站请求伪造（CSRF）攻击
-        redirectURL: `https://${hostname}/users/auth/weibo/callback.html`,
+        redirectURL: `http://localhost:9905/users/auth/weibo/callback.html`,
     },
 };

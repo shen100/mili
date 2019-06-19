@@ -1,5 +1,13 @@
 import * as moment from 'moment';
 
+export const imgAbsoluteURL = (staticURL: String, imgURL: string): string => {
+    imgURL = imgURL || '';
+    if (imgURL.indexOf('http') === 0) {
+        return imgURL;
+    }
+    return staticURL + imgURL;
+};
+
 export const formatTime = (time: Date | string | number, formatStr: string): string => {
     return moment(time).format(formatStr);
 };

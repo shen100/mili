@@ -19,11 +19,11 @@ export default {
         port: 6379,
     },
     static: {
-        cssPath: '/styles',
-        jsPath: '/js',
-        imgPath: '/images',
-        fontPath: '/fonts',
-        dllJSTimestamp: '1554027424530', // 前端dll升级时，改下时间戳
+        staticPath: 'http://localhost:9906',
+        cssPath: 'http://localhost:9906/styles',
+        jsPath: 'http://localhost:9906/js',
+        imgPath: 'http://localhost:9906/images',
+        fontPath: 'http://localhost:9906/fonts',
         uploadImgURL: '',
         imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
         imgMaxSize: 3,

@@ -7,7 +7,7 @@
         <li>
             <a href="/users/{{user.id}}.html" target="_blank">
                 <div class="avatar">
-                    <img src="{{user.avatarURL}}">
+                    <img src="{{staticPath | imgAbsoluteURL(user.avatarURL)}}">
                 </div>
                 <div>
                     <div class="name">{{user.username}}</div>
