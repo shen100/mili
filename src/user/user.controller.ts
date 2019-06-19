@@ -233,9 +233,11 @@ export class UserController {
         const tokenMaxAge: number = this.configService.server.tokenMaxAge;
         await this.redisService.setUserToken(user.id, token);
 
+        const secure = this.configService.server.url.indexOf('https') === 0;
+
         res.cookie(this.configService.server.tokenName, token, {
             maxAge: tokenMaxAge, // Convenient option for setting the expiry time relative to the current time in milliseconds
-            secure: true,
+            secure,
             domain: '',
             path: '/',
             httpOnly: true,

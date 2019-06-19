@@ -15,15 +15,17 @@ export class LocalsMiddleware implements NestMiddleware {
         res.locals.siteName = configService.server.siteName;
         res.locals.apiPrefix = configService.server.apiPrefix,
         res.locals.reqPath = req.originalUrl,
-        res.locals.staticPath = configService.static.staticPath;
+        res.locals.staticURL = configService.static.staticURL;
         res.locals.cssPath = configService.static.cssPath;
         res.locals.jsPath = configService.static.jsPath;
         res.locals.imgPath = configService.static.imgPath;
         res.locals.fontPath = configService.static.fontPath;
         res.locals.baiduAd = configService.baiduAd;
         res.locals.globalConfig = {
-            hostname: configService.server.hostname,
-            mHostName: configService.server.mHostName,
+            url: configService.server.url,
+            mURL: configService.server.mURL,
+            domain: configService.server.domain,
+            mDomain: configService.server.mDomain,
             csrfToken: configService.server.csrfProtect ? req.csrfToken() : '',
             apiPrefix: configService.server.apiPrefix,
             imgPath: configService.static.imgPath,

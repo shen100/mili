@@ -44,7 +44,7 @@ class RedisConfig extends BaseConfig {
 }
 
 class StaticConfig extends BaseConfig {
-    readonly staticPath: string; // 前端静态资源
+    readonly staticURL: string; // 前端静态资源
     readonly cssPath: string; // css路径
     readonly jsPath: string; // js路径
     readonly imgPath: string; // 图片路径
@@ -62,8 +62,10 @@ class StaticConfig extends BaseConfig {
 class ServerConfig extends BaseConfig {
     readonly siteName: string;
     readonly icp: string;
-    readonly hostname: string;
-    readonly mHostName: string;
+    readonly url: string;
+    readonly mURL: string;
+    readonly domain: string;
+    readonly mDomain: string;
     readonly port: number;
     readonly apiPrefix: string;
     readonly passSalt: string;

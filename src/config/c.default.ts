@@ -1,5 +1,13 @@
 import * as path from 'path';
 
+const domain = 'dev.golang123.com';
+const port = 9905;
+const url = `http://${domain}:${port}`;
+const mDomain = 'mdev.golang123.com';
+const mURL = `http://${mDomain}:${port}`;
+
+const staticURL = 'http://localhost:9906';
+
 export default {
     db: {
         type: 'mysql',
@@ -19,11 +27,11 @@ export default {
         port: 6379,
     },
     static: {
-        staticPath: 'http://localhost:9906',
-        cssPath: 'http://localhost:9906/styles',
-        jsPath: 'http://localhost:9906/js',
-        imgPath: 'http://localhost:9906/images',
-        fontPath: 'http://localhost:9906/fonts',
+        staticURL,
+        cssPath: `${staticURL}/styles`,
+        jsPath: `${staticURL}/js`,
+        imgPath: `${staticURL}/images`,
+        fontPath: `${staticURL}/fonts`,
         uploadImgURL: '',
         imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
         imgMaxSize: 3,
@@ -32,9 +40,11 @@ export default {
     server: {
         siteName: '米粒',
         icp: '京ICP备12045181号-2',
-        hostname: 'dev.golang123.com',
-        mHostName: 'mdev.golang123.com',
-        port: 8884,
+        url,
+        mURL,
+        domain,
+        mDomain,
+        port,
         apiPrefix: '/api/v1',
         passSalt: 'u5o2law8xi',
         tokenName: 'token',

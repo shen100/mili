@@ -1,6 +1,12 @@
 import * as path from 'path';
 
-const hostname = 'www.golang123.com';
+const domain = 'www.golang123.com';
+const port = 9905;
+const url = `https://${domain}`;
+const mDomain = 'm.golang123.com';
+const mURL = `https://${mDomain}`;
+
+const staticURL = 'https://static.golang123.com';
 
 export default {
     db: {
@@ -18,19 +24,20 @@ export default {
         port: 6379,
     },
     static: {
-        // static.golang123.com 用来存放前端静态资源
-        staticPath: 'https://static.golang123.com',
-        cssPath: 'https://static.golang123.com/styles',
-        jsPath: 'https://static.golang123.com/js',
-        imgPath: 'https://static.golang123.com/images',
-        fontPath: 'https://static.golang123.com/fonts',
+        staticURL,
+        cssPath: `${staticURL}/styles`,
+        jsPath: `${staticURL}/js`,
+        imgPath: `${staticURL}/images`,
+        fontPath: `${staticURL}/fonts`,
         // img.golang123.com 用来存放用户上传的图片
         uploadImgURL: 'https://img.golang123.com',
     },
     server: {
-        hostname,
-        mHostName: 'm.golang123.com',
-        port: 9905,
+        url,
+        mURL,
+        domain,
+        mDomain,
+        port,
         passSalt: 'erjoe8qp',
         tokenName: 'token',
         tokenSecret: 'Jmb28iOirJiYXIiLCJuYmYix',
@@ -64,6 +71,6 @@ export default {
         appKey: '741219799',
         appSecret: '90d9a012b2aeab8f274db0a84913ceb2',
         state: 'fjodyao3sfaoiuioa29', // 这个参数可用于防止跨站请求伪造（CSRF）攻击
-        redirectURL: `https://${hostname}/users/auth/weibo/callback.html`,
+        redirectURL: `${url}/users/auth/weibo/callback.html`,
     },
 };

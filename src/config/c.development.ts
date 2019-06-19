@@ -1,4 +1,8 @@
-const hostname = 'dev.golang123.com';
+const domain = 'dev.golang123.com';
+const port = 9905;
+const url = `http://${domain}:${port}`;
+const mDomain = 'mdev.golang123.com';
+const mURL = `http://${mDomain}:${port}`;
 
 export default {
     db: {
@@ -21,9 +25,10 @@ export default {
         uploadImgURL: 'https://golang123-img.oss-cn-hangzhou.aliyuncs.com',
     },
     server: {
-        hostname,
-        mHostName: 'mdev.golang123.com',
-        port: 9905,
+        url,
+        domain,
+        mDomain: 'mdev.golang123.com',
+        port,
         apiPrefix: '/api/v1',
         passSalt: 'erjoe8qp',
         tokenName: 'token',
@@ -63,6 +68,6 @@ export default {
         appKey: '741219799',
         appSecret: '90d9a012b2aeab8f274db0a84913ceb2',
         state: 'fjodyao3sfaoiuioa29', // 这个参数可用于防止跨站请求伪造（CSRF）攻击
-        redirectURL: `http://localhost:9905/users/auth/weibo/callback.html`,
+        redirectURL: `${url}/users/auth/weibo/callback.html`,
     },
 };
