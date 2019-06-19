@@ -55,6 +55,7 @@
     "@types/node": "^10.12.18",
     "@types/supertest": "^2.0.7",
     "concurrently": "^4.1.0",
+    "husky": "^2.4.1",
     "jest": "^23.6.0",
     "nodemon": "^1.18.9",
     "prettier": "^1.15.3",
@@ -65,6 +66,10 @@
     "tslint": "5.16.0",
     "typescript": "3.4.3",
     "wait-on": "^3.2.0"
+  },
+  "husky": {
+    "hooks": {
+    }
   },
   "jest": {
     "moduleFileExtensions": [
