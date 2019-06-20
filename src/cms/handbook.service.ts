@@ -27,7 +27,7 @@ export class HandBookService {
 
     async basic(id: number) {
         return await this.handBookRepository.findOne({
-            select: ['id', 'name'],
+            select: ['id', 'name', 'summary'],
             where: {
                 id,
             },
@@ -45,7 +45,7 @@ export class HandBookService {
         return !!handbook;
     }
 
-    async chapters(bookID: number) {
+    async getChapters(bookID: number) {
         return await this.handBookChapterRepository.find({
             select: {
                 id: true,
@@ -60,9 +60,25 @@ export class HandBookService {
         });
     }
 
-    async createChapter(bookID: number, userID: number) {
+    async getChapter(chapterID: number) {
+        return await this.handBookChapterRepository.find({
+            select: {
+                id: true,
+                name: true,
+                content: true,
+            },
+            where: {
+                id: chapterID,
+            },
+            order: {
+                createdAt: 'ASC',
+            },
+        });
+    }
+
+    async createChapter(bookID: number, chapterName: string, userID: number) {
         const chapter = new HandBookChapter();
-        chapter.name = '';
+        chapter.name = chapterName;
         chapter.bookID = bookID;
         chapter.userID = userID;
         chapter.browseCount = chapter.commentCount = 0;

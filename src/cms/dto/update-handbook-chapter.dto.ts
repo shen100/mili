@@ -1,17 +1,11 @@
 import {
-    IsString,
-    MinLength,
-    MaxLength,
+    IsInt,
 } from 'class-validator';
-import { HandbookConstants } from '../../constants/constants';
+import { CreateHandbookChapterDto } from './create-handbook-chapter.dto';
 
-export class UpdateHandbookChapterDto {
-    @MinLength(1, {
-        message: '名称不能为空',
+export class UpdateHandbookChapterDto extends CreateHandbookChapterDto {
+    @IsInt({
+        message: '无效的id',
     })
-    @MaxLength(HandbookConstants.CHAPTER_NAME_MAX_LENGTH, {
-        message: '名称不能超过 $constraint1 个字符',
-    })
-    @IsString()
-    readonly name: string;
+    readonly id: number;
 }
