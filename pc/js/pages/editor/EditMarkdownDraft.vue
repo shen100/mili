@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import dom from '~/js/utils/dom.js';
+import { getWindowSize } from '~/js/utils/dom.js';
 import EditorHeader from '~/js/components/editor/EditorHeader.vue';
 import MarkdownEditor from '~/js/components/editor/MarkdownEditor.vue';
 
@@ -70,7 +70,8 @@ export default {
             this.logoBoxWidth = 0;
             if (!isSideBySide) {
                 // 隐藏预览区时, 编辑区的宽度是 850, 标题输入框的左内边距是12
-                this.logoBoxWidth = ($(window).width() - 850) / 2 - 12;
+                const winSize = getWindowSize();
+                this.logoBoxWidth = (winSize.width - 850) / 2 - 12;
             }
         }
     },

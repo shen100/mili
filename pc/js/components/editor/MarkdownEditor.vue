@@ -137,6 +137,10 @@ export default {
                 this.$nextTick(() => {
                     this.simplemde.value(this.initialContent);
                     this.mdContent = this.initialContent;
+                    const self = this;
+                    this.simplemde.codemirror.on('change', function () {
+                        self.mdContent = self.simplemde.value();
+                    });
                 });
             }, 100);
         },
@@ -166,21 +170,15 @@ export default {
         },
         getContent() {
             return this.mdContent;
+        },
+        setContent(content) {
+            this.simplemde.value(content);
         }
     },
     mounted() {
         this.$nextTick(() => {
             this.initSimplemde();
         });
-    },
-    watch: {
-        initialContent(newVal, oldVal) {
-            console.log('editor watch', newVal, oldVal);
-            if (newVal === oldVal) {
-                return;
-            }
-            this.simplemde.value(newVal);
-        }
     },
     components: {
         Uploader,

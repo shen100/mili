@@ -322,17 +322,30 @@ export class ArticleService {
         return userArr;
     }
 
+    private htmlToSummary(htmlContent: string) {
+        let summary = striptags(htmlContent);
+        summary = summary.replace(/^\s+|\s+$/g, '');
+        summary = summary.replace(/\s+|\n$/g, ' ');
+        const wordCount = summary.length;
+        summary = summary.substr(0, ArticleConstants.SUMMARY_LENGTH);
+        return { summary, wordCount };
+    }
+
     async create(createArticleDto: CreateArticleDto, userID: number) {
         const uniqCates = _.uniqBy(createArticleDto.categories, (c) => c.id);
+        const categoryIDs = [];
         const categories: Category[] = uniqCates.map(cate => {
             const c = new Category();
             c.id = cate.id;
+            categoryIDs.push(cate.id);
             return c;
         });
         const uniqTags = _.uniqBy(createArticleDto.tags, (t) => t.id);
+        const tagIDs = [];
         const tags: Tag[] = uniqTags.map(t => {
             const tag = new Tag();
             tag.id = t.id;
+            tagIDs.push(t.id);
             return tag;
         });
         const article = new Article();
@@ -352,11 +365,8 @@ export class ArticleService {
         } else {
             article.htmlContent = createArticleDto.content;
         }
-        let summary = striptags(article.htmlContent);
-        summary = summary.replace(/^\s+|\s+$/g, '');
-        summary = summary.replace(/\s+|\n$/g, ' ');
-        article.wordCount = summary.length;
-        summary = summary.substr(0, ArticleConstants.SUMMARY_LENGTH);
+        const { wordCount, summary } = this.htmlToSummary(article.htmlContent);
+        article.wordCount = wordCount;
         article.summary = summary;
         article.status = ArticleStatus.Verifying;
         article.userID = userID;
@@ -365,7 +375,13 @@ export class ArticleService {
         article.updatedAt = article.createdAt;
 
         try {
-            return await this.articleRepository.save(article);
+            let articleResult;
+            await this.articleRepository.manager.connection.transaction(async manager => {
+                articleResult = await manager.getRepository(Article).save(article);
+                await manager.query(`UPDATE categories SET article_count = article_count + 1 WHERE id IN (${categoryIDs.join(',')})`);
+                await manager.query(`UPDATE tags SET article_count = article_count + 1 WHERE id IN (${tagIDs.join(',')})`);
+            });
+            return articleResult;
         } catch (err) {
             this.logger.error(err, '');
             throw new HttpException({
@@ -411,17 +427,26 @@ export class ArticleService {
         }
         const updateData = {
             name: updateArticleDto.name,
+            contentType: ArticleContentType.Markdown,
             coverURL: updateArticleDto.coverURL || '',
             content: '',
             htmlContent: '',
+            summary: '',
+            wordCount: 0,
         };
+
+        updateData.contentType = updateArticleDto.contentType;
         if (updateArticleDto.contentType === ArticleContentType.Markdown) {
             updateData.content = updateArticleDto.content;
-            delete updateData.htmlContent;
+            updateData.htmlContent = marked(updateArticleDto.content);
         } else {
             updateData.htmlContent = updateArticleDto.content;
-            delete updateData.content;
         }
+
+        const { wordCount, summary } = this.htmlToSummary(article.htmlContent);
+
+        updateData.wordCount = wordCount;
+        updateData.summary = summary;
 
         const oldCategoryIDs = article.categories.map(c => c.id);
         const oldTagIDs = article.tags.map(t => t.id);

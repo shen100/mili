@@ -89,7 +89,7 @@ export default {
             userID: window.userID,
             avatarURL: window.avatarURL,
             initialTitle: '',
-            initialContent: '',
+            initialContent: handbook.summary || defaultSummary,
             moreToggled,
             curChapter: null,
         };
@@ -107,12 +107,20 @@ export default {
             }
         },
         onSummaryClick() {
-            this.changeChapterContent();
+            const content = this.$refs.mdEditor.getContent();
+            if (this.curChapter) {
+                this.curChapter.content = content;
+            }
             this.curChapter = null;
             this.isSummarySelected = true;
         },
         onChapterClick(chapter) {
-            this.changeChapterContent();
+            const content = this.$refs.mdEditor.getContent();
+            if (this.isSummarySelected) {
+                this.handbook.summary = content;
+            } else if (this.curChapter) {
+                this.curChapter.content = content;
+            }
             this.curChapter = chapter;
             this.isSummarySelected = false;
         },
@@ -190,11 +198,12 @@ export default {
             if (newVal === oldVal) {
                 return;
             }
+            // newVal为空，说明点击的是小册介绍
             if (!newVal) {
-                this.initialContent = this.summaryDisplay;
+                this.$refs.mdEditor.setContent(this.summaryDisplay);
                 return;
             }
-            this.initialContent = this.curChapter.content;
+            this.$refs.mdEditor.setContent(newVal.content || '');
         }
     },
     components: {
