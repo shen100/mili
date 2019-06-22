@@ -18,6 +18,7 @@ export class HandBookService {
         const handBook = new HandBook();
         handBook.name = '';
         handBook.saleCount = 0;
+        handBook.summary = '';
         handBook.coverURL = '';
         handBook.userID = userID;
         handBook.createdAt = new Date();
