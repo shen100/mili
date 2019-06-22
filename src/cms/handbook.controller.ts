@@ -105,10 +105,10 @@ export class HandBookController {
         });
     }
 
-    @Put(`${APIPrefix}/handbooks/:handbookID/summary`)
+    @Put(`${APIPrefix}/handbooks/:id/summary`)
     @UseGuards(ActiveGuard)
-    async updateHandbookSummary(@CurUser() user, @Body() updateDto: UpdateHandbookSummaryDto) {
-        await this.handBookService.updateSummary(updateDto.id, updateDto.summary, user.id);
+    async updateHandbookSummary(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateDto: UpdateHandbookSummaryDto) {
+        await this.handBookService.updateSummary(id, updateDto.summary, user.id);
         return {
         };
     }
@@ -129,19 +129,19 @@ export class HandBookController {
         };
     }
 
-    @Put(`${APIPrefix}/handbooks/chapters/title`)
+    @Put(`${APIPrefix}/handbooks/chapters/:id/title`)
     @UseGuards(ActiveGuard)
-    async updateChapterTitle(@CurUser() user, @Body() updateChapterDto: UpdateHandbookChapterNameDto) {
-        await this.handBookService.updateChapterTitle(updateChapterDto.id, updateChapterDto.name, user.id);
+    async updateChapterTitle(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateChapterDto: UpdateHandbookChapterNameDto) {
+        await this.handBookService.updateChapterTitle(id, updateChapterDto.name, user.id);
         return {
             name: updateChapterDto.name,
         };
     }
 
-    @Put(`${APIPrefix}/handbooks/chapters/content`)
+    @Put(`${APIPrefix}/handbooks/chapters/:id/content`)
     @UseGuards(ActiveGuard)
-    async updateChapterContent(@CurUser() user, @Body() updateChapterDto: UpdateHandbookChapterContentDto) {
-        await this.handBookService.updateChapterContent(updateChapterDto.id, updateChapterDto.content, user.id);
+    async updateChapterContent(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateChapterDto: UpdateHandbookChapterContentDto) {
+        await this.handBookService.updateChapterContent(id, updateChapterDto.content, user.id);
         return {
         };
     }

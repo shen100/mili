@@ -2,7 +2,7 @@
     <div id="app">
         <AddChapterAlert ref="chapterTitleAlert" width="450" @ok="onChapterTitleOk" @cancel="onChapterTitleCancel" />
         <div id="editorBox">
-            <HandbookHeader 
+            <HandbookHeader v-show="!isLoading"
                 :title="initialTitle"
                 :getEditorMarkdown="getEditorMarkdown"
                 :userID="userID" 
@@ -24,7 +24,7 @@
                                     <div v-clickoutside="onClickOutsideMoreMenu" :data-index="i" class="more">
                                         <div @click="onMoreToggle(i)" class="toggle-btn"><img src="../../../images/handbook/more.svg"></div>
                                         <div v-if="moreToggled[i].toggled" class="menu">
-                                            <div @click="updateChapterName(chapter, i)">修改标题</div>
+                                            <div @click="onUpdateChapterName(chapter, i)">修改标题</div>
                                             <div>设置为试读</div>
                                             <div>
                                                 <label>
@@ -38,7 +38,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button @click="updateChapterName()" class="btn-section">添加章节</button>
+                        <button @click="onCreateChapter" class="btn-section">添加章节</button>
                     </div>
                 </div>
                 <div class="md-editor-body-box-wrap">
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        <GlobalLoading v-if="false" />
+        <GlobalLoading v-if="isLoading" />
     </div>
 </template>
 
@@ -109,16 +109,8 @@ export default {
         getEditorMarkdown() {
             return this.$refs.mdEditor.getContent();
         },
-        changeChapterContent() {
-            const content = this.$refs.mdEditor.getContent();
-            if (this.curChapter) {
-                this.curChapter.content = content;
-            } else {
-                this.handbook.summary = content;
-            }
-        },
         onSummaryClick() {
-            const content = this.$refs.mdEditor.getContent();
+            const content = this.getEditorMarkdown();
             // this.curChapter 为空，是小册介绍切到小册介绍, 直接返回
             if (!this.curChapter) {
                 return;
@@ -129,36 +121,38 @@ export default {
                 this.isSummarySelected = true;
                 return;
             }
-            this.isLoading = true;
-            const url = `/handbooks/chapters/content`;
+            
+            const url = `/handbooks/chapters/${this.curChapter.id}/content`;
             const data = {
-                id: this.curChapter.id,
                 content,
             };
-
+            this.isLoading = true;
             myHTTP.put(url, data).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.curChapter.content = content;
                     this.curChapter = null;
                     this.isSummarySelected = true;
                 }
+                this.isLoading = false;
             }).catch((err) => {
                 this.isLoading = false;
             });
         },
 
         onChapterClick(chapter) {
-            const content = this.$refs.mdEditor.getContent();
+            const content = this.getEditorMarkdown();
             // 由小册介绍切到章节
             if (this.isSummarySelected) {
-                const putSummaryURL = '/handbooks/:handbookID/summary';
+                const putSummaryURL = `/handbooks/${this.handbook.id}/summary`;
                 const getChapterURL = `/handbooks/chapters/${chapter.id}`;
-                const data = {
-                    id: this.handbook.id,
+                const reqData = {
                     summary: content,
                 };
+
+                this.isLoading = true;
+
                 Promise.all([
-                    content !== this.handbook.summary ? myHTTP.put(putSummaryURL, data) : Promise.resolve(true),
+                    content !== this.handbook.summary ? myHTTP.put(putSummaryURL, reqData) : Promise.resolve(true),
                     !chapter.isLoad ? myHTTP.get(getChapterURL) : Promise.resolve(true)
                 ]).then((arr) => {
                     const [putRes, getRes] = arr;
@@ -183,14 +177,16 @@ export default {
 
             // 由章节切到章节
             const oldCurChapter = this.curChapter;
-            const putSummaryURL = '/handbooks/chapters/content';
+            const putChapterURL = `/handbooks/chapters/${oldCurChapter.id}/content`;
             const getChapterURL = `/handbooks/chapters/${chapter.id}`;
-            const putData = {
-                id: oldCurChapter.id,
+            const reqData = {
                 content,
             };
+
+            this.isLoading = true;
+
             Promise.all([
-                oldCurChapter.content !== content ? myHTTP.put(putSummaryURL, putData) : Promise.resolve(true),
+                oldCurChapter.content !== content ? myHTTP.put(putChapterURL, reqData) : Promise.resolve(true),
                 !chapter.isLoad ? myHTTP.get(getChapterURL) : Promise.resolve(true)
             ]).then((arr) => {
                 const [putRes, getRes] = arr;
@@ -203,6 +199,7 @@ export default {
                     }
                     oldCurChapter.content = content;
                     this.curChapter = chapter;
+                    this.isSummarySelected = false;
                 }
                 this.isLoading = false;
             }).catch((err) => {
@@ -210,18 +207,57 @@ export default {
                 this.isLoading = false;
             });
         },
-        updateChapterName(chapter, index) {
-            // order是弹框中要显示的章节序号
-            let order = this.chapters.length + 1;
-            let chapterName = chapter && chapter.name || '';
-            let chapterID = undefined;
-            if (chapter) {
-                order = index + 1;
-                chapterName = chapter.name;
-                chapterID = chapter.id;
-                this.moreToggled[index].toggled = false;
+
+        onCreateChapter(chapter, index) {
+            // 创建章节后，会选中新创建的章节，所以得事先保存当前选中的小册介绍或章节
+            const content = this.getEditorMarkdown();
+            if (this.isSummarySelected) {
+                if (content === this.handbook.summary) {
+                    this.$refs.chapterTitleAlert.show(this.chapters.length + 1, '', undefined);
+                    return;
+                }
+                const putSummaryURL = `/handbooks/${this.handbook.id}/summary`;
+                const reqData = {
+                    summary: content,
+                };
+                this.isLoading = true;
+                myHTTP.put(putSummaryURL, reqData).then((res) => {
+                    if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                        this.handbook.summary = content;
+                        this.$refs.chapterTitleAlert.show(this.chapters.length + 1, '', undefined);
+                    }
+                    this.isLoading = false;
+                    return;
+                }).catch((err) => {
+                    this.isLoading = false;
+                });
+            } else {
+                const curChapter = this.curChapter;
+                if (content === curChapter.content) {
+                    this.$refs.chapterTitleAlert.show(this.chapters.length + 1, '', undefined);
+                    return;
+                }
+                const putChapterURL = `/handbooks/chapters/${curChapter.id}/content`;
+                const reqData = {
+                    content,
+                };
+                this.isLoading = true;
+                myHTTP.put(putChapterURL, reqData).then((res) => {
+                    if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                        this.curChapter.content = content;
+                        this.$refs.chapterTitleAlert.show(this.chapters.length + 1, '', undefined);
+                    }
+                    this.isLoading = false;
+                    return;
+                }).catch((err) => {
+                    this.isLoading = false;
+                });
             }
-            this.$refs.chapterTitleAlert.show(order, chapterName, chapterID);
+        },
+        onUpdateChapterName(chapter, index) {
+            // 点击修改标题，出现修改章节标题的弹框，这时，并不会改变当前选中的章节或小册介绍
+            this.moreToggled[index].toggled = false;
+            this.$refs.chapterTitleAlert.show(index + 1, chapter.name || '', chapter.id);
         },
         onMoreToggle(index) {
             this.moreToggled[index].toggled = !this.moreToggled[index].toggled;
@@ -232,11 +268,11 @@ export default {
         onChapterTitleOk(data) {
             // 修改章节的标题
             if (data.chapterID) {
-                const url = `/handbooks/chapters/title`;
+                const url = `/handbooks/chapters/${data.chapterID}/title`;
                 const reqData = {
-                    id: data.chapterID,
                     name: data.chapterTitle,
                 };
+                this.isLoading = true;
                 myHTTP.put(url, reqData).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         for (let i = 0; i < this.chapters.length; i++) {
@@ -246,27 +282,33 @@ export default {
                             }
                         }
                     }
+                    this.isLoading = false;
                 }).catch((err) => {
                     console.log(err);
+                    this.isLoading = false;
                 });
                 return;
-            } else {
-                // 新建章节
-                const url = `/handbooks/${this.handbook.id}/chapters`;
-                myHTTP.post(url, { name: data.chapterTitle }).then((res) => {
-                    if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                        const newChapter = {
-                            id: res.data.data.id,
-                            name: res.data.data.name,
-                        };
-                        this.chapters.push(newChapter);
-                        this.moreToggled.push({ toggled: false });
-                        this.curChapter = newChapter;
-                        this.isSummarySelected = false;
-                    }
-                }).catch((err) => {
-                });
             }
+
+            // 新建章节
+            const url = `/handbooks/${this.handbook.id}/chapters`;
+            this.isLoading = true;
+            myHTTP.post(url, { name: data.chapterTitle }).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    const newChapter = {
+                        id: res.data.data.id,
+                        name: res.data.data.name,
+                        content: ''
+                    };
+                    this.chapters.push(newChapter);
+                    this.moreToggled.push({ toggled: false });
+                    this.curChapter = newChapter;
+                    this.isSummarySelected = false;
+                }
+                this.isLoading = false;
+            }).catch((err) => {
+                this.isLoading = false;
+            });
         },
         onChapterTitleCancel() {
 
