@@ -1,0 +1,288 @@
+.container {
+    width: 960px;
+    margin-top: 95px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container .main {
+    box-sizing: border-box;
+    width: 720px;
+    margin: 0 auto;
+    padding-top: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 100px;
+}
+
+.container .main h3 {
+    margin: 10px 0 20px;
+    font-size: 21px;
+    font-weight: 700;
+    color: #333;
+}
+
+.avatar-collection-box {
+    padding: 16px 0;
+}
+
+.avatar-collection {
+    display: inline-block;
+    cursor: default;
+    width: 100px;
+    height: 100px;
+    margin-right: 50px;
+}
+
+.avatar-collection img {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 10%;
+    vertical-align: middle;
+}
+
+.avatar-upload-btn {
+    border: 1px solid rgba(59, 194, 29, .7);
+    color: #42c02e!important;
+    font-size: 14px;
+    display: inline-block;
+    cursor: pointer;
+    padding: 4px 12px;
+    font-weight: 400;
+    line-height: normal;
+    border-radius: 40px;
+    background: none;
+    vertical-align: middle;
+}
+
+.avatar-upload-btn:hover {
+    border: 1px solid #42c02e;
+    color: #42c02e!important;
+    background-color: rgba(59, 194, 29, .05);
+}
+
+.container .main .form-item {
+    font-size: 0;
+    margin-bottom: 25px;
+}
+
+.container .main label {
+    font-size: 15px;
+    color: #969696;
+    padding: 16px 0;
+    width: 150px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.container .main input {
+    margin-top: 4px;
+    padding: 10px 15px;
+    font-size: 15px;
+    border: 1px solid #c8c8c8;
+    border-radius: 4px;
+    background-color: hsla(0, 0%, 71%, .1);
+    width: 540px;
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 21px;
+}
+
+.container .main textarea {
+    margin-top: 4px;
+    box-sizing: border-box;
+    width: 540px;
+    height: 100px;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    font-size: 15px;
+    border: 1px solid #c8c8c8;
+    border-radius: 4px;
+    background-color: hsla(0, 0%, 71%, .1);
+    display: inline-block;
+    resize: none;
+    outline-style: none;
+}
+
+.container .main input::-webkit-input-placeholder {
+    color: #aaa;
+}
+
+.container .main input::-moz-placeholder {   /* Mozilla Firefox 19+ */
+    color: #aaa;
+}
+
+.container .main input:-moz-placeholder {    /* Mozilla Firefox 4 to 18 */
+    color: #aaa;
+}
+
+.container .main input:-ms-input-placeholder {  /* Internet Explorer 10-11 */ 
+    color: #aaa;
+}
+
+.container .main textarea::-webkit-input-placeholder {
+    color: #aaa;
+}
+
+.container .main textarea::-moz-placeholder {   /* Mozilla Firefox 19+ */
+    color: #aaa;
+}
+
+.container .main textarea:-moz-placeholder {    /* Mozilla Firefox 4 to 18 */
+    color: #aaa;
+}
+
+.container .main textarea:-ms-input-placeholder {  /* Internet Explorer 10-11 */ 
+    color: #aaa;
+}
+
+.container .main .user-add {
+    box-sizing: border-box;
+    width: 540px;
+    display: inline-block;
+    position: relative;
+}
+
+.container .main .radio-btn {
+    padding-top: 16px;
+    box-sizing: border-box;
+    width: 135px;
+    display: inline-block;
+}   
+
+.container .main .radio-btn input {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+    margin-top: 0;
+}
+
+.container .main .radio-btn span {
+    margin: 0 5px 0 10px;
+    font-size: 15px;
+    color: #333;
+    vertical-align: middle;
+}
+
+.container .main .create {
+    margin: 20px 0 50px;
+    margin-top: 0;
+    border-radius: 20px;
+    padding: 8px 22px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+    font-size: 16px;
+}
+
+.container .main .create:hover {
+    border-color: #3db922!important;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    list-style: none;
+    font-size: 14px;
+    text-align: left;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    background-clip: padding-box;
+}
+
+.dropdown-menu {
+    margin-top: 0;
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, .1));
+    -webkit-filter: drop-shadow(0 2px 8px rgba(0, 0, 0, .1));
+}
+
+.open>.dropdown-menu {
+    display: block;
+}
+
+.container .main .dropdown-menu {
+    display: block;
+    left: 0;
+    min-height: 100px;
+    border-color: hsla(0, 0%, 71%, .2);
+}
+
+.container .main .dropdown-menu img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.container .main .dropdown-menu span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.container .main .user-tag {
+    margin: 0 10px 10px 0;
+    padding: 4px;
+    border: 1px solid #c8c8c8;
+    border-radius: 40px;
+    display: inline-block;
+    line-height: normal;
+}
+
+.container .main .user-tags {
+    width: 540px;
+    display: inline-block;
+    padding-top: 8px;
+}
+
+.container .main .user-tag .avatar {
+    width: 27px;
+    height: 27px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.container .main .user-tag .avatar img {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.container .main .user-tag span {
+    margin: 0;
+    font-size: 15px;
+    vertical-align: middle;
+}
+
+.container .main .user-tag .delete {
+    margin: 5px;
+    color: #969696;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.ic-unfollow:before {
+    content: "\E631";
+}
+
+.avatar-collection-box .ivu-upload {
+    display: inline-block;
+}

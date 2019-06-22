@@ -1,0 +1,126 @@
+@import '../variable.scss';
+@import '../article/articleDisplay.scss';
+
+$miliRichEditorWidth: 680px;
+
+// mili-editor 在编辑器、文章浏览页面中都存在的类
+.mili-editor {
+    width: $miliRichEditorWidth;
+    margin: 0 auto;
+    height: 100%;
+}
+
+.mili-editor-menubar {
+    z-index: 1;
+    background: #fff;
+    border: none!important;
+    position: fixed;
+    width: $miliRichEditorWidth + 15px;
+    top: 56px;
+    margin-left: -15px;
+}
+
+.mili-editor-menubar button {
+    width: 42px!important;
+    height: 42px!important;
+    padding: 0!important;
+    border: none;
+    background-color: #fff;
+    font-size: 0;
+}
+
+.mili-editor-menubar button:hover, .mili-editor-menubar-active {
+    background-color: #f6f7f8!important;
+}
+
+.mili-editor-menubar i {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: 50% no-repeat;
+    background-size: contain;
+}
+
+.mili-editor-icon-bold {
+    background-image: url(../../images/editor/rich.bold.png)!important;
+}
+
+.mili-editor-icon-italic {
+    background-image: url(../../images/editor/rich.italic.png)!important;
+}
+
+.mili-editor-icon-underline {
+    background-image: url(../../images/editor/rich.underline.png)!important;
+}
+
+.mili-editor-icon-h1 {
+    background-image: url(../../images/editor/rich.h1.png)!important;
+}
+
+.mili-editor-icon-h2 {
+    background-image: url(../../images/editor/rich.h2.png)!important;
+}
+
+.mili-editor-icon-blockquote {
+    background-image: url(../../images/editor/rich.blockquote.png)!important;
+}
+
+.mili-editor-icon-codeblock {
+    background-image: url(../../images/editor/rich.blockcode.png)!important;
+}
+
+.mili-editor-icon-code {
+    background-image: url(../../images/editor/rich.code.png)!important;
+}
+
+.mili-editor-icon-ol {
+    background-image: url(../../images/editor/rich.ol.png)!important;
+}
+
+.mili-editor-icon-ul {
+    background-image: url(../../images/editor/rich.ul.png)!important;
+}
+
+.mili-editor-icon-link {
+    background-image: url(../../images/editor/rich.link.png)!important;
+}
+
+.mili-editor-icon-image {
+    background-image: url(../../images/editor/rich.image.png)!important;
+}
+
+.rich-title-input {
+    margin: 128px 0 24px 0;
+    width: $miliRichEditorWidth;
+    padding: 0;
+    border: none;
+    font-size: 32px;
+    height: 40px;
+    line-height: 40px;
+    color: #000;
+    font-weight: 700;
+    resize: none;
+}
+
+.mili-editor-content {
+    height: 100%;
+    margin-bottom: 100px;
+    word-wrap: break-word;
+}
+
+.mili-editor-content * {
+    caret-color: currentColor;
+    outline: none;
+}
+
+.mili-editor-content p.is-empty:first-child::before {
+    content: attr(data-empty-text);
+    float: left;
+    color: #aaa;
+    pointer-events: none;
+    height: 0;
+}
+
+.mili-editor-content a {
+    cursor: text;
+}

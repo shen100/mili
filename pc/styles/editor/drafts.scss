@@ -1,0 +1,95 @@
+body {
+    background-color: #f4f5f5;
+}
+
+.draft-count {
+    padding: 20px;
+    padding-left: 15px;
+    font-size: 16px;
+    color: #000;
+}
+
+.draft-count i {
+    margin-left: 4px;
+}
+
+.draft-list {
+    width: 640px;
+    margin: 0 auto;
+    margin-top: 80px;
+    margin-bottom: 50px;
+    padding: 10px;
+    background: #fff;
+}
+
+.draft-item {
+    padding: 32px 15px;
+    border-top: 1px solid rgba(0, 0, 0, .05);
+}
+
+.draft-item .title {
+    color: #000;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.draft-item .title:hover {
+    text-decoration: none;
+}
+
+.info-box {
+    height: 24px;
+    margin-top: 10px;
+}
+
+.markdown-icon {
+    margin-top: 5px;
+    height: 14px;
+    margin-right: 12px;
+}
+
+.markdown-icon, .word-count, .dot, .date, .menu {
+    float: left;
+    line-height: 24px;
+    color: rgb(144, 144, 144);
+}
+
+.dot {
+    margin: 0 10px;
+}
+
+.menu {
+    margin-left: 12px;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+
+.ic-others:before {
+    content: "\E633";
+    font-size: 24px;
+}
+
+.menu .menu-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin: 0;
+    padding: 6px 0;
+    font-size: 12px;
+    white-space: nowrap;
+    background-color: #fff;
+    border-radius: 2px;
+    border: 1px solid #f1f1f1;
+    box-shadow: 0 1px 2px 1px hsla(0, 0%, 95%, .5);
+    list-style: none;
+}
+
+.menu .menu-list .item {
+    padding: 6px 22px;
+    line-height: normal;
+}
+
+.menu .menu-list .item:hover {
+    background-color: #f8f9fa;
+}

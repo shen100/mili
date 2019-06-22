@@ -1,0 +1,231 @@
+.edit-wrap {
+    display: -ms-flexbox;
+    display: flex;
+    height: 100%;
+}
+
+.edit-wrap .directory-box {
+    padding-top: 56px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    width: 320px;
+    height: 100%;
+    background-color: #fff;
+}
+
+.md-editor-body-box-wrap {
+    flex: 1;
+    transform: scale3d(1, 1, 1);
+}
+
+.edit-wrap .directory-box .summary {
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    height: 56px;
+    padding-left: 25px;
+    font-size: 15px;
+    color: #000;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: #fff;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f5;
+}
+
+.directory-box .summary.route-active {
+    background-color: #e9e9e9;
+    transition: background .3s linear;
+}
+
+.directory-box .summary:before {
+    content: "";
+    display: block;
+    width: 5px;
+    margin-right: 6px;
+    background-color: #000;
+    height: 16px;
+}
+
+.list .list-transition {
+    color: transparent;
+}
+
+.item {
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: 14px;
+    height: 56px;
+    padding-left: 25px;
+    border-bottom: 1px solid #f3f4f5;
+    background-color: #fff;
+    color: #8f9193;
+    cursor: pointer;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+}
+
+.item.route-active {
+    transition: background .3s, color linear;
+    background-color: #e9e9e9;
+    color: #000;
+}
+
+.item .item-cont {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 100%;
+    overflow: hidden;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+}
+
+.item .item-cont .order {
+    margin-right: 3px;
+    min-width: 15px;
+}
+
+.item .item-cont .title {
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 10px;
+}
+
+.item .bar {
+    cursor: pointer;
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+    -ms-flex-preferred-size: 20px;
+    flex-basis: 20px;
+}
+
+.item .more {
+    cursor: pointer;
+    -ms-flex-preferred-size: 30px;
+    flex-basis: 30px;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.item .more .menu {
+    position: absolute;
+    right: 0;
+    top: 90%;
+    background-color: #fff;
+    box-shadow: -1px 3px 8px rgba(0, 0, 0, .2);
+    font-size: 14px;
+    border-radius: 2px;
+    z-index: 1;
+}
+
+.item:first-child .more .menu, .item:nth-child(2) .more .menu {
+    top: 90%;
+    bottom: auto;
+}
+
+.item:last-child .more .menu, .item:nth-last-child(2) .more .menu {
+    top: auto;
+    bottom: 90%;
+}
+
+.item .more .menu div {
+    color: #71777c;
+    width: auto;
+    padding-left: 18px;
+    padding-right: 18px;
+    height: 40px;
+    line-height: 40px;
+    min-width: 140px;
+}
+
+.item .more .menu label {
+    display: block;
+    cursor: pointer;
+}
+
+.item .more .menu label .check {
+    margin-left: 5px;
+}
+
+[type=checkbox], [type=radio] {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.btn-section {
+    width: 122px;
+    height: 36px;
+    border-radius: 2px;
+    border: 1px solid #ea6f5a;
+    color: #ea6f5a;
+    font-size: 14px;
+    margin-left: auto;
+    margin-top: 25px;
+    margin-right: auto;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.md-editor-footer {
+    border: 1px solid #ddd;
+}
+
+.item:not(.route-active):hover {
+    background-color: #e9e9e9;
+    color: #000;
+}
+
+.item.route-active {
+    transition: background .3s,color linear;
+    background-color: #e9e9e9;
+    color: #000;
+}
+
+.item:last-child .more .menu, .item:nth-last-child(2) .more .menu {
+    top: auto;
+    bottom: 90%;
+}
+
+.item:first-child .more .menu, .item:nth-child(2) .more .menu {
+    top: 90%;
+    bottom: auto;
+}
+
+.item .more .menu div:hover {
+    color: #333;
+    background-color: rgba(0, 0, 0, .05);
+}
+
+.edit-wrap .directory-box .summary:not(.route-active):hover {
+    background-color: #e9e9e9;
+}

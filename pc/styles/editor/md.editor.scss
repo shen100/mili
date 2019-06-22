@@ -1,0 +1,239 @@
+@import '../variable.scss';
+@import '../article/articleDisplay.scss';
+
+// 隐藏预览区时, 编辑区的宽度
+$noSideBySideWidth: 850px;
+
+// mili-editor 在编辑器、文章浏览页面中都存在的类
+.mili-editor .cm-header-1 {
+    font-size: $miliEditorSizeH1!important;
+}
+
+.mili-editor .cm-header-2 {
+    font-size: $miliEditorSizeH2!important;
+}
+
+.mili-editor .cm-header-3 {
+    font-size: $miliEditorSizeH3!important;
+}
+
+.mili-editor .cm-header-4 {
+    font-size: $miliEditorSizeH4!important;
+}
+
+.mili-editor .cm-header-5 {
+    font-size: $miliEditorSizeH5!important;
+}
+
+.mili-editor .cm-header-6 {
+    font-size: $miliEditorSizeH6!important;
+}
+
+.mili-editor .CodeMirror-placeholder {
+    position: absolute;
+    line-height: 1.42857;
+    padding: 0;
+    border: none;
+}
+
+.md-editor-body-box {
+    width: 100%;
+    height: 100%;
+}
+
+.md-editor-body {
+    height: 100%;
+    padding-top: 56px;
+    padding-bottom: 42px;
+    box-sizing: border-box;
+}
+
+.md-editor-footer {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+    bottom: 0;
+    height: 42px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+}
+
+.md-editor-footer-left, .md-editor-footer-right {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+}
+
+.md-editor-footer-right {
+    border-left: 1px solid #ddd;
+    right: 0;
+    box-sizing: unset;
+}
+
+.md-editor-footer-preview {
+    color: #ddd;
+    font-size: 14px;
+    line-height: 16px;
+    margin-top: 13px;
+    margin-left: 12px;
+    font-family: $fontFamily;
+    float: left;
+}
+
+.md-editor-footer-wordcount {
+    float: right;
+    color: #ddd;
+    font-size: 14px;
+    margin-top: 13px;
+    margin-right: 12px;
+}
+
+.md-editor-markdown-btn {
+    cursor: pointer;
+    padding: 4px;
+    float: left;
+    font-size: 0;
+    margin-top: 10px;
+    margin-left: 8px;
+    margin-right: 15px;
+    position: relative;
+}
+
+.md-editor-markdown-btn:hover img {
+    opacity: .8;
+}
+
+.md-editor-uploadimg-btn {
+    float: left;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 0;
+    margin-top: 10px;
+}
+
+.md-editor-uploadimg-btn:hover img {
+    opacity: .8;
+}
+
+.md-editor-togglelayout-btn {
+    float: right;
+    margin: 14px 10px 0 0;
+    cursor: pointer;
+}
+
+.md-editor-togglelayout-btn:hover img {
+    opacity: .8;
+}
+
+.CodeMirror, .CodeMirror-scroll {
+    min-height: 1px;
+}
+
+// editor-preview-side 是 simplemde 加的类
+// 执行 simplemde.toggleSideBySide() 隐藏预览区时，会加 CodeMirror-fullscreen 类
+.CodeMirror-fullscreen, .editor-preview-side {
+    top: 58px!important;
+    bottom: 40px;
+}
+
+.editor-preview-side {
+    border-left: none;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.CodeMirror-fullscreen {
+    box-sizing: border-box;
+    background: #fafafa;
+}
+
+.md-editor-expand .CodeMirror-sizer {
+    width: $noSideBySideWidth;
+    margin-left: auto!important;
+    margin-right: auto;
+}
+
+.md-editor-markdown-btn:hover .md-editor-shotcut-panel {
+    display: block;
+}
+
+.md-editor-shotcut-panel {
+    display: none;
+    cursor: default;
+    border: 1px solid #ddd;
+    position: absolute;
+    background: #fff;
+    bottom: 36px;
+    z-index: 10;
+    padding: 32px;
+    width: 400px;
+    font-size: 0;
+    box-sizing: border-box;
+}
+
+.md-editor-shotcut-panel:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 30px;
+    height: 20px;
+}
+
+.md-editor-panel-title {
+    font-size: 24px;
+    color: hsla(218, 9%, 51%, .8);
+}
+
+.md-editor-more-link {
+    float: right;
+    padding-top: 4px;
+    margin: 0 0;
+    font-size: 14px;
+    color: #08c;
+    text-decoration: none;
+}
+
+.md-editor-shotcut-table {
+    width: 100%;
+}
+
+.md-editor-shotcut-row {
+    width: 100%;
+    padding-top: 20px;
+}
+
+.md-editor-shotcut-col0 {
+    width: 100px;
+    font-size: 13px;
+    display: inline-block;
+    color: #666;
+}
+
+.md-editor-shotcut-col1 {
+    width: 100px;
+    font-size: 13px;
+    display: inline-block;
+    color: #666;
+}
+
+.md-editor-shotcut-col2 {
+    width: 120px;
+    font-size: 13px;
+    display: inline-block;
+    color: #666;
+}
+
+.md-editor-shotcut-col1 pre, .md-editor-shotcut-col1 code {
+    color: #4e5980;
+    background-color: #f8f8f8;
+    padding: 2px 6px;
+    display: inline-block;
+    border-radius: 3px;
+}
+
+.md-editor-shotcut-col1 a {
+    cursor: default;
+    text-decoration: none;
+    color: #0796de;
+}

@@ -1,0 +1,125 @@
+body {
+    background: #f4f5f5;
+}
+
+.container {
+    margin-top: 60px;
+}
+
+.tag-info-box {
+    position: relative;
+    height: 150px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.tag-info {
+    width: 960px;
+    margin: 0 auto;
+    text-align: center;
+    color: #666;
+    padding: 48px 0;
+    box-sizing: border-box;
+}
+
+.tag-info .title {
+    font-size: 25px;
+    line-height: 30px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+#tag-entry-list-box {
+    width: 960px;
+    margin: 0 auto;
+    background: #fff;
+}
+
+.article-list {
+    width: 100%;
+}
+
+.list-header {
+    border-bottom: 1px solid hsla(0, 0%, 59.2%, .1);
+    background: #f4f5f5;
+    justify-content: space-between;
+    padding: 3.6px;
+    display: flex;
+    align-items: center;
+}
+
+.list-header .left, .list-header {
+    display: flex;
+    align-items: center;
+}
+
+.list-header .left .tag-icon {
+    width: auto;
+    height: 24px;
+    margin-right: 24px;
+}
+
+.button, button {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #007fff;
+    color: #fff;
+    border-radius: 2px;
+    border: none;
+    padding: 6px 0;
+    outline: none;
+    transition: background-color .3s, color .3s;
+    cursor: pointer;
+}
+
+.subscribe-btn {
+    width: 76px;
+    border: 1px solid #37c700;
+    background-color: #fff;
+    color: #37c700;
+    margin: 12px auto;
+    font-size: 13px;
+}
+
+.list-header .subscribe-btn {
+    white-space: nowrap;
+}
+
+.list-header .list-nav, .list-header .nav-list {
+    justify-content: space-between;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.nav-item {
+    position: relative;
+    cursor: pointer;
+}
+
+.list-header .nav-list .nav-item {
+    font-size: 16px;
+    margin-left: 24px;
+}
+
+.list-header .nav-list .nav-item.active {
+    color: #007fff;
+}
+
+.list-header .nav-list .nav-item.active a, .list-header .nav-list .nav-item a:hover {
+    color: #007fff;
+    text-decoration: none;
+}
+
+.list-header .nav-list .nav-item a {
+    color: #909090;
+}
+
+.subscribe-btn.subscribed {
+    background-color: #37c700;
+    color: #fff;
+}
+
+.subscribe-btn.subscribed:hover {
+    background-color: #3cb40e;
+}
