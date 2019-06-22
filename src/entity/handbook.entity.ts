@@ -67,6 +67,12 @@ export class HandBookChapter {
     @Column('text', { nullable: true, default: null })
     content: string;
 
+    @Column('text', { name: 'html_content', nullable: true, default: null })
+    htmlContent: string;
+
+    @Column('int', { name: 'word_count' })
+    wordCount: number;
+
     @Column('int', { name: 'user_id' })
     userID: number;
 

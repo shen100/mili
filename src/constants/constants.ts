@@ -49,5 +49,10 @@ export class CommentConstants {
 }
 
 export class HandbookConstants {
+    static readonly SUMMARY_MIN_LENGTH: number = 1;
+    static readonly SUMMARY_MAX_LENGTH: number = 100000;
+
     static readonly CHAPTER_NAME_MAX_LENGTH: number = 100;
+    static readonly CHAPTER_CONTENT_MIN_LENGTH: number = 1;
+    static readonly CHAPTER_CONTENT_MAX_LENGTH: number = 100000;
 }

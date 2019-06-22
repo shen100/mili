@@ -49,64 +49,67 @@ export const tablesRun = async function (connection) {
             comment_count int(11) NOT NULL DEFAULT '0',
             PRIMARY KEY (id)
           ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
-          await connection.manager.query(sql);
 
-          sql = `CREATE TABLE handbook_chapters (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            created_at datetime NOT NULL,
-            updated_at datetime NOT NULL,
-            name varchar(200) NOT NULL DEFAULT '',
-            browse_count int(11) unsigned NOT NULL,
-            comment_count int(11) unsigned NOT NULL,
-            content longtext,
-            user_id int(11) unsigned NOT NULL,
-            book_id int(11) unsigned NOT NULL,
-            PRIMARY KEY (id)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
-          await connection.manager.query(sql);
+        await connection.manager.query(sql);
 
-          sql = `CREATE TABLE tags (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            created_at datetime NOT NULL,
-            name varchar(200) NOT NULL DEFAULT '',
-            follower_count int(11) unsigned NOT NULL,
-            article_count int(11) unsigned NOT NULL,
-            icon_url varchar(500) DEFAULT NULL,
-            PRIMARY KEY (id)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
-          await connection.manager.query(sql);
+        sql = `CREATE TABLE handbook_chapters (
+          id int(11) unsigned NOT NULL AUTO_INCREMENT,
+          created_at datetime NOT NULL,
+          updated_at datetime NOT NULL,
+          name varchar(200) NOT NULL DEFAULT '',
+          browse_count int(11) unsigned NOT NULL,
+          comment_count int(11) unsigned NOT NULL,
+          content text,
+          html_content text,
+          word_count int(11) DEFAULT '0',
+          user_id int(11) unsigned NOT NULL,
+          book_id int(11) unsigned NOT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        await connection.manager.query(sql);
 
-          sql = `CREATE TABLE user_subscribed_tag (
-            user_id int(11) unsigned NOT NULL,
-            tag_id int(11) unsigned NOT NULL,
-            PRIMARY KEY (user_id, tag_id)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
-          await connection.manager.query(sql);
+        sql = `CREATE TABLE tags (
+          id int(11) unsigned NOT NULL AUTO_INCREMENT,
+          created_at datetime NOT NULL,
+          name varchar(200) NOT NULL DEFAULT '',
+          follower_count int(11) unsigned NOT NULL,
+          article_count int(11) unsigned NOT NULL,
+          icon_url varchar(500) DEFAULT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        await connection.manager.query(sql);
 
-          sql = `CREATE TABLE draft_tag (
-            draft_id int(11) unsigned NOT NULL,
-            tag_id int(11) unsigned NOT NULL,
-            PRIMARY KEY (draft_id, tag_id)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
-          await connection.manager.query(sql);
+        sql = `CREATE TABLE user_subscribed_tag (
+          user_id int(11) unsigned NOT NULL,
+          tag_id int(11) unsigned NOT NULL,
+          PRIMARY KEY (user_id, tag_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        await connection.manager.query(sql);
 
-          sql = `CREATE TABLE article_tag (
-            article_id int(11) unsigned NOT NULL,
-            tag_id int(11) unsigned NOT NULL,
-            PRIMARY KEY (article_id, tag_id)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
-          await connection.manager.query(sql);
+        sql = `CREATE TABLE draft_tag (
+          draft_id int(11) unsigned NOT NULL,
+          tag_id int(11) unsigned NOT NULL,
+          PRIMARY KEY (draft_id, tag_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        await connection.manager.query(sql);
 
-          sql = `CREATE TABLE userlikechapter_comments (
-            comment_id int(11) unsigned NOT NULL,
-            user_id int(11) unsigned NOT NULL,
-            parent_id int(11) unsigned NOT NULL,
-            root_id int(11) unsigned NOT NULL,
-            article_id int(11) unsigned NOT NULL,
-            created_at datetime NOT NULL,
-            PRIMARY KEY (comment_id, user_id)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`;
-          await connection.manager.query(sql);
+        sql = `CREATE TABLE article_tag (
+          article_id int(11) unsigned NOT NULL,
+          tag_id int(11) unsigned NOT NULL,
+          PRIMARY KEY (article_id, tag_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        await connection.manager.query(sql);
+
+        sql = `CREATE TABLE userlikechapter_comments (
+          comment_id int(11) unsigned NOT NULL,
+          user_id int(11) unsigned NOT NULL,
+          parent_id int(11) unsigned NOT NULL,
+          root_id int(11) unsigned NOT NULL,
+          article_id int(11) unsigned NOT NULL,
+          created_at datetime NOT NULL,
+          PRIMARY KEY (comment_id, user_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`;
+        await connection.manager.query(sql);
 
         await connection.manager.query(`CREATE TABLE userlikearticles (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,

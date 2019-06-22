@@ -9,6 +9,7 @@ import {
     Modal,
     Select,
     Option,
+    Spin,
 } from 'iview';
 import App from '~/js/pages/handbook/EditHandBook.vue';
 
@@ -21,6 +22,7 @@ registerDirective(Vue);
 Vue.component('Modal', Modal);
 Vue.component('Select', Select);
 Vue.component('Option', Option);
+Vue.component('Spin', Spin);
 
 new Vue({
     render: h => h(App),

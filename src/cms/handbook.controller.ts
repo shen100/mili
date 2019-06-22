@@ -11,9 +11,10 @@ import { ActiveGuard } from '../core/guards/active.guard';
 import { HandBookService } from './handbook.service';
 import { OSSService } from '../common/oss.service';
 import { APIPrefix } from '../constants/constants';
-import { UpdateHandbookChapterDto } from './dto/update-handbook-chapter.dto';
+import { UpdateHandbookChapterNameDto, UpdateHandbookChapterContentDto } from './dto/update-handbook-chapter.dto';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { CreateHandbookChapterDto } from './dto/create-handbook-chapter.dto';
+import { UpdateHandbookSummaryDto } from './dto/update-handbook.dto';
 
 @Controller()
 export class HandBookController {
@@ -81,12 +82,12 @@ export class HandBookController {
         if (chapterID === 'summary') {
             isQueryChapger = false;
         } else {
-            theChapterID = parseInt(chapterID);
+            theChapterID = parseInt(chapterID, 10);
             if (isNaN(theChapterID) || theChapterID <= 0) {
                 throw new MyHttpException({
                     errorCode: ErrorCode.NotFound.CODE,
                 });
-            }    
+            }
         }
         const [ handbook, chapters, chapter, uploadPolicy ] = await Promise.all([
             this.handBookService.basic(handbookID),
@@ -102,6 +103,14 @@ export class HandBookController {
             chapter,
             uploadPolicy,
         });
+    }
+
+    @Put(`${APIPrefix}/handbooks/:handbookID/summary`)
+    @UseGuards(ActiveGuard)
+    async updateHandbookSummary(@CurUser() user, @Body() updateDto: UpdateHandbookSummaryDto) {
+        await this.handBookService.updateSummary(updateDto.id, updateDto.summary, user.id);
+        return {
+        };
     }
 
     @Post(`${APIPrefix}/handbooks/:id/chapters`)
@@ -122,10 +131,38 @@ export class HandBookController {
 
     @Put(`${APIPrefix}/handbooks/chapters/title`)
     @UseGuards(ActiveGuard)
-    async updateChapterTitle(@CurUser() user, @Body() updateChapterDto: UpdateHandbookChapterDto) {
+    async updateChapterTitle(@CurUser() user, @Body() updateChapterDto: UpdateHandbookChapterNameDto) {
         await this.handBookService.updateChapterTitle(updateChapterDto.id, updateChapterDto.name, user.id);
         return {
             name: updateChapterDto.name,
+        };
+    }
+
+    @Put(`${APIPrefix}/handbooks/chapters/content`)
+    @UseGuards(ActiveGuard)
+    async updateChapterContent(@CurUser() user, @Body() updateChapterDto: UpdateHandbookChapterContentDto) {
+        await this.handBookService.updateChapterContent(updateChapterDto.id, updateChapterDto.content, user.id);
+        return {
+        };
+    }
+
+    @Get(`${APIPrefix}/handbooks/chapters/:id`)
+    @UseGuards(ActiveGuard)
+    async getChapter(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        const chapter = await this.handBookService.getChapter(id);
+        if (!chapter) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        if (chapter.userID !== user.id) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.Forbidden.CODE,
+            });
+        }
+        chapter.content = chapter.content || '';
+        return {
+            chapter,
         };
     }
 }

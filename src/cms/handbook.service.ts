@@ -1,4 +1,6 @@
 import * as _ from 'lodash';
+import * as marked from 'marked';
+import * as striptags from 'striptags';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,6 +26,15 @@ export class HandBookService {
         handBook.createdAt = new Date();
         handBook.updatedAt = handBook.createdAt;
         return await this.handBookRepository.save(handBook);
+    }
+
+    async updateSummary(id: number, summary: string, userID: number) {
+        return await this.handBookRepository.update({
+            id,
+            userID,
+        }, {
+            summary,
+        });
     }
 
     async basic(id: number) {
@@ -62,11 +73,12 @@ export class HandBookService {
     }
 
     async getChapter(chapterID: number) {
-        return await this.handBookChapterRepository.find({
+        return await this.handBookChapterRepository.findOne({
             select: {
                 id: true,
                 name: true,
                 content: true,
+                userID: true,
             },
             where: {
                 id: chapterID,
@@ -94,6 +106,23 @@ export class HandBookService {
             userID,
         }, {
             name,
+        });
+    }
+
+    async updateChapterContent(id: number, content: string, userID: number) {
+        const htmlContent = marked(content);
+        let text = striptags(htmlContent);
+        text = text.replace(/^\s+|\s+$/g, '');
+        text = text.replace(/\s+|\n$/g, ' ');
+        const wordCount = text.length;
+
+        return await this.handBookChapterRepository.update({
+            id,
+            userID,
+        }, {
+            content,
+            htmlContent,
+            wordCount,
         });
     }
 }
