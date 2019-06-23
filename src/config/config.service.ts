@@ -61,6 +61,7 @@ class StaticConfig extends BaseConfig {
 
 class ServerConfig extends BaseConfig {
     readonly siteName: string;
+    readonly companyName: string;
     readonly icp: string;
     readonly url: string;
     readonly mURL: string;
@@ -78,6 +79,7 @@ class ServerConfig extends BaseConfig {
     readonly rateLimitWindowMs: number; // 时间窗口，单位毫秒
     readonly rateLimitMax: number; // limit each IP to rateLimitMax requests per windowMs
     readonly swaggerPrefix: string;
+    readonly xiaoceEmail: string;
 
     constructor(cfg) {
         super(cfg);

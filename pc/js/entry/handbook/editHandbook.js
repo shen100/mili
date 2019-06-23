@@ -10,6 +10,7 @@ import {
     Select,
     Option,
     Spin,
+    DatePicker,
 } from 'iview';
 import App from '~/js/pages/handbook/EditHandBook.vue';
 
@@ -23,6 +24,7 @@ Vue.component('Modal', Modal);
 Vue.component('Select', Select);
 Vue.component('Option', Option);
 Vue.component('Spin', Spin);
+Vue.component('Spin', DatePicker);
 
 new Vue({
     render: h => h(App),

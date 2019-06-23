@@ -64,6 +64,9 @@ export class HandBookChapter {
     @Column('int', { name: 'comment_count' })
     commentCount: number;
 
+    @Column('tinyint', { name: 'try_read' })
+    tryRead: boolean;
+
     @Column('text', { nullable: true, default: null })
     content: string;
 

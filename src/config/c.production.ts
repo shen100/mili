@@ -33,6 +33,7 @@ export default {
         uploadImgURL: 'https://img.golang123.com',
     },
     server: {
+        companyName: '北京xxxxxxx有限公司',
         url,
         mURL,
         domain,
@@ -43,6 +44,7 @@ export default {
         tokenSecret: 'Jmb28iOirJiYXIiLCJuYmYix',
         cookieSecret: 'yiwuskgu87wwiwjz',
         displayViewDataSecret: 'ykmtjeury7euew1oa6zxu2we',
+        xiaoceEmail: 'xiaoce@golang123.com',
     },
     aliyunOSS: {
         accessKeyID: 'LTAIheawpFed9efU',

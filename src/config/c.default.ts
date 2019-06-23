@@ -39,6 +39,7 @@ export default {
     },
     server: {
         siteName: '米粒',
+        companyName: '',
         icp: '京ICP备12045181号-2',
         url,
         mURL,
@@ -56,6 +57,7 @@ export default {
         rateLimitWindowMs: 15 * 60 * 1000, // 时间窗口，单位毫秒
         rateLimitMax: 1000, // limit each IP to rateLimitMax requests per windowMs
         swaggerPrefix: 'api/v1',
+        xiaoceEmail: '',
     },
     baiduAd: {
         ad250x250: '',

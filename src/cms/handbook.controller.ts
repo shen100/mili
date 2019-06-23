@@ -11,8 +11,11 @@ import { ActiveGuard } from '../core/guards/active.guard';
 import { HandBookService } from './handbook.service';
 import { OSSService } from '../common/oss.service';
 import { APIPrefix } from '../constants/constants';
-import { UpdateHandbookChapterNameDto, UpdateHandbookChapterContentDto } from './dto/update-handbook-chapter.dto';
-import { CreateArticleDto } from './dto/create-article.dto';
+import { 
+    UpdateHandbookChapterNameDto, 
+    UpdateHandbookChapterContentDto, 
+    UpdateHandbookChapterTryReadDto 
+} from './dto/update-handbook-chapter.dto';
 import { CreateHandbookChapterDto } from './dto/create-handbook-chapter.dto';
 import { UpdateHandbookSummaryDto } from './dto/update-handbook.dto';
 
@@ -97,6 +100,7 @@ export class HandBookController {
         ]);
 
         res.render('pages/handbook/editHandbook', {
+            siteName: this.configService.server.siteName,
             user,
             handbook,
             chapters,
@@ -143,6 +147,15 @@ export class HandBookController {
     async updateChapterContent(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateChapterDto: UpdateHandbookChapterContentDto) {
         await this.handBookService.updateChapterContent(id, updateChapterDto.content, user.id);
         return {
+        };
+    }
+
+    @Put(`${APIPrefix}/handbooks/chapters/:id/tryread`)
+    @UseGuards(ActiveGuard)
+    async updateChapterTryRead(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateChapterDto: UpdateHandbookChapterTryReadDto) {
+        await this.handBookService.updateChapterTryRead(id, updateChapterDto.tryRead, user.id);
+        return {
+            tryRead: updateChapterDto.tryRead,
         };
     }
 

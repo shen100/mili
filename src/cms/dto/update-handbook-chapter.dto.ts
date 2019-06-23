@@ -1,5 +1,5 @@
 import {
-    IsInt, MinLength, MaxLength, IsString,
+    IsInt, MinLength, MaxLength, IsString, IsBoolean,
 } from 'class-validator';
 import { HandbookConstants } from '../../constants/constants';
 
@@ -23,4 +23,9 @@ export class UpdateHandbookChapterContentDto {
     })
     @IsString()
     readonly content: string;
+}
+
+export class UpdateHandbookChapterTryReadDto {
+    @IsBoolean()
+    readonly tryRead: boolean;
 }

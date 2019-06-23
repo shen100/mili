@@ -11,6 +11,46 @@
                     <i v-else class="fa fa-caret-up"></i>
                 </div>
                 <div v-if="publishToggled" class="panel">
+                    <div class="title">更新</div>
+                    <div class="summary-box">
+                        <div class="sub-title">摘要</div>
+                        <textarea placeholder="必填，摘要将显示在小册详情页标题的下方，建议 50 字以内" max-length="50" class="summary-textarea"></textarea>
+                    </div>
+                    <div class="price-box">
+                        <div class="sub-title">
+                            <span>作者简介</span>
+                        </div>
+                        <input type="text" :placeholder="`公司+职位，如：${siteName}创始人`" class="price-input">
+                    </div>
+                    <div class="price-box">
+                        <div class="sub-title">
+                            <span>小册价格</span>
+                            <span class="quarterly-earnings">!</span>
+                        </div>
+                        <input type="number" placeholder="输入价格，例：99，不填写则为免费" class="price-input">
+                    </div>
+                    <div class="price-box">
+                        <div class="sub-title">
+                            <span>小册完成时间</span>
+                        </div>
+                        <div>
+                            <DatePicker type="date" placeholder="请选择日期" style="width: 286px;"></DatePicker>
+                        </div>
+                    </div>
+                    <label class="line-confirmation">
+                        <input type="checkbox">
+                        <div class="txt">
+                            <span>我已阅读同意</span>
+                            <span class="agreement">《{{siteName}}小册写作线上协议》</span>
+                        </div>
+                    </label>
+                    <label class="line-confirmation">
+                        <input type="checkbox">
+                        <div class="txt">
+                            <span>所有章节已完成</span>
+                        </div>
+                    </label>
+                    <button class="publish-btn handbook-publish">确定并更新</button>
                 </div>
             </div>
             <div v-clickoutside="onClickOutsideCoverToggle" class="upload-cover">
@@ -38,10 +78,12 @@
 </template>
 
 <script>
+import { DatePicker } from 'iview';
 import UserDropdown from '~/js/components/common/UserDropdown.vue';
 import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import Alert from '~/js/components/common/Alert.vue';
+import AgreementAlert from '~/js/components/handbook/AgreementAlert.vue';
 import { ArticleContentType } from '~/js/constants/article.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
@@ -57,13 +99,14 @@ export default {
     ],
     data () {
         return {
+            siteName: window.siteName,
             articleTitle: '',
             coverURL: '',
             isCoverUploading: false, // 是否正在上传文章封面图片
             coverToggled: false,
             publishToggled: false,
             autoSaveDraftTip: '文章将自动保存至草稿',
-        }
+        };
     },
     mounted() {
     },
@@ -112,6 +155,8 @@ export default {
         Uploader,
         ErrorTip,
         Alert,
+        DatePicker,
+        AgreementAlert,
     }
 }
 </script>
@@ -162,5 +207,113 @@ export default {
         height: 100%;
         -o-object-fit: cover;
         object-fit: cover;
+    }
+
+    .panel .title {
+        margin-bottom: 18px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+    }
+
+    .panel .summary-box {
+        margin-bottom: 12px;
+    }
+
+    .panel .sub-title {
+        margin-bottom: 12px;
+        font-size: 16px;
+        color: #333;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .panel .summary-box .summary-textarea {
+        width: 100%;
+        height: 90px;
+        line-height: 18px;
+        padding: 8px;
+        resize: none;
+        outline: none;
+        border: 1px solid #ccc;
+        overflow: auto;
+        font-size: 14px;
+        color: #000;
+    }
+
+    .panel .summary-box .summary-textarea::-webkit-input-placeholder {
+        color: #888;
+    }
+
+    .panel .price-box {
+        margin-bottom: 20px;
+    }
+
+    .panel .price-box .sub-title {
+        margin-bottom: 8px;
+    }
+
+    .panel .price-box .price-input {
+        padding-left: 10px;
+        width: 100%;
+        height: 40px;
+        outline: none;
+        border: 1px solid #ccc;
+        overflow: visible;
+        font-size: 14px;
+    }
+
+    .panel .price-box .price-input::-webkit-input-placeholder {
+        color: #888;
+    }
+
+    .panel .sub-title .quarterly-earnings {
+        width: 16px;
+        height: 16px;
+        border: 1px solid #007fff;
+        color: #007fff;
+        text-align: center;
+        line-height: 16px;
+        border-radius: 50%;
+        font-size: 12px;
+        font-weight: 700;
+        margin-left: 5px;
+        cursor: pointer;
+    }
+
+    .panel input:focus, .panel textarea:focus {
+        border: 1px solid #007fff!important;
+    }
+
+    .panel .line-confirmation {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        cursor: pointer;
+        margin-bottom: 5px;
+        color: #000;
+    }
+
+    .panel .line-confirmation input {
+        margin-right: 5px;
+    }
+
+    [type=checkbox], [type=radio] {
+        box-sizing: border-box;
+        padding: 0;
+    }
+
+    .panel .line-confirmation .agreement {
+        color: #007fff;
+        text-decoration: none;
+    }
+
+    .panel .handbook-publish {
+        margin-top: 20px;
+        font-size: 14px;
+        padding: 7px 14px!important;
     }
 </style>

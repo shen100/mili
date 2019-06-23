@@ -229,3 +229,38 @@
 .edit-wrap .directory-box .summary:not(.route-active):hover {
     background-color: #e9e9e9;
 }
+
+.item .item-cont .title .to-read {
+    width: 40px;
+    height: 20px;
+    color: #fff;
+    line-height: 20px;
+    border-radius: 2px;
+    margin-top: 3px;
+    margin-right: 10px;
+    text-align: center;
+    font-size: 12px;
+    background-color: #fa5600;
+}
+
+.panel .ivu-input-with-suffix {
+    border-radius: 0!important;
+    border-color: #ccc;
+}
+
+.panel .ivu-input {
+    height: 40px;
+    font-size: 14px;
+}
+
+.panel .ivu-input:focus {
+    border-color: #007fff;
+}
+
+.panel .ivu-input::-webkit-input-placeholder {
+    color: #888;
+}
+
+.panel .ivu-input-prefix i, .ivu-input-suffix i {
+    line-height: 40px;
+}

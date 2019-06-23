@@ -25,6 +25,7 @@ export default {
         uploadImgURL: 'https://golang123-img.oss-cn-hangzhou.aliyuncs.com',
     },
     server: {
+        companyName: '北京xxxxxxx有限公司',
         url,
         domain,
         mDomain: 'mdev.golang123.com',
@@ -35,6 +36,7 @@ export default {
         tokenSecret: 'xma28i0irJiYXIkLCJuymeix',
         cookieSecret: 'yiwuskgu87wwiwjz',
         csrfProtect: false,
+        xiaoceEmail: 'xiaoce@golang123.com',
     },
     baiduAd: {
         ad250x250: 'u3382899',

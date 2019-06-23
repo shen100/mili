@@ -62,6 +62,7 @@ export const tablesRun = async function (connection) {
           content text,
           html_content text,
           word_count int(11) DEFAULT '0',
+          try_read tinyint(1) DEFAULT '0',
           user_id int(11) unsigned NOT NULL,
           book_id int(11) unsigned NOT NULL,
           PRIMARY KEY (id)

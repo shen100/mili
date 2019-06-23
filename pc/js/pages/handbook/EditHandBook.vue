@@ -18,20 +18,23 @@
                                     :class="{'route-active': curChapter && curChapter.id === chapter.id}">
                                     <div @click="onChapterClick(chapter)" class="item-cont">
                                         <div class="order">{{i + 1}}.</div>
-                                        <div class="title"><div class="text">{{chapter.name || '小册章节标题'}}</div></div>
+                                        <div class="title">
+                                            <div class="text">{{chapter.name || '小册章节标题'}}</div>
+                                            <div v-if="chapter.tryRead" class="to-read">试读</div>
+                                        </div>
                                     </div>
-                                    <div class="bar"><img src="../../../images/handbook/dir.svg"></div>
+                                    <!-- <div class="bar"><img src="../../../images/handbook/dir.svg"></div> -->
                                     <div v-clickoutside="onClickOutsideMoreMenu" :data-index="i" class="more">
                                         <div @click="onMoreToggle(i)" class="toggle-btn"><img src="../../../images/handbook/more.svg"></div>
                                         <div v-if="moreToggled[i].toggled" class="menu">
                                             <div @click="onUpdateChapterName(chapter, i)">修改标题</div>
-                                            <div>设置为试读</div>
-                                            <div>
+                                            <div @click="onUpdateChapterTryRead(chapter)">{{chapter.tryRead ? '设置为试读' : '取消试读'}}</div>
+                                            <!-- <div>
                                                 <label>
                                                     <span>本章节已完成</span>
                                                     <input type="checkbox" class="check">
                                                 </label>
-                                            </div>
+                                            </div> -->
                                             <div>删除</div>
                                         </div>
                                     </div>
@@ -61,24 +64,6 @@ import AddChapterAlert from '~/js/components/handbook/AddChapterAlert.vue';
 import HandbookHeader from '~/js/components/handbook/HandbookHeader.vue';
 import MarkdownEditor from '~/js/components/editor/MarkdownEditor.vue';
 
-const defaultSummary = `## 作者介绍  
-
-## 小册介绍  
-
-## 你会学到什么？   
-
-## 适宜人群  
-
-## 购买须知  
-
-1. 本小册为图文形式内容服务，共计 N 节；  
-2. 全部文章预计 x 月 x 日更新完成；  
-3. 购买用户可享有小册永久的阅读权限；  
-4. 购买用户可进入小册微信群，与作者互动；  
-5. 掘金小册为虚拟内容服务，一经购买成功概不退款；  
-6. 掘金小册版权归北京北比信息技术有限公司所有，任何机构、媒体、网站或个人未经本网协议授权不得转载、链接、转贴或以其他方式复制发布/发表，违者将依法追究责任；  
-7. 在掘金小册阅读过程中，如有任何问题，请邮件联系 xiaoce@xitu.io  
-`
 export default {
     data () {
         const moreToggled = [];
@@ -99,7 +84,7 @@ export default {
             userID: window.userID,
             avatarURL: window.avatarURL,
             initialTitle: window.handbook.name || '',
-            initialContent: window.chapter && window.chapter.content || handbook.summary || defaultSummary,
+            initialContent: window.chapter && window.chapter.content || handbook.summary,
             moreToggled,
             curChapter: window.chapter || null,
             isLoading: false,
@@ -312,14 +297,25 @@ export default {
         },
         onChapterTitleCancel() {
 
+        },
+        onUpdateChapterTryRead(chapter) {
+            const url = `/handbooks/chapters/${data.chapterID}/tryread`;
+            const reqData = {
+                tryRead: !chapter.tryRead,
+            };
+            this.isLoading = true;
+            myHTTP.put(url, reqData).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    chapter.tryRead = res.data.data.tryRead;
+                }
+                this.isLoading = false;
+            }).catch((err) => {
+                console.log(err);
+                this.isLoading = false;
+            });
         }
     },
     mounted () {
-    },
-    computed: {
-        summaryDisplay() {
-            return handbook.summary || defaultSummary;
-        }
     },
     watch: {
         curChapter(newVal, oldVal) {
@@ -328,7 +324,7 @@ export default {
             }
             // newVal为空，说明点击的是小册介绍
             if (!newVal) {
-                this.$refs.mdEditor.setContent(this.summaryDisplay);
+                this.$refs.mdEditor.setContent(this.handbook.summary);
                 return;
             }
             this.$refs.mdEditor.setContent(newVal.content || '');
