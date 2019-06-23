@@ -1,8 +1,9 @@
 <template>
     <div class="editor-header">
         <ErrorTip ref="errorTip" />
-        <AgreementAlert ref="agreementAlert" width="556" />
-        <input v-model="articleTitle" class="editor-title-input" type="text" placeholder="输入小册标题..." />
+        <AgreementAlert ref="agreementAlert" @cancel="onAgreementAlertCancel" width="556" />
+        <PriceAlert ref="priceAlert" @cancel="onPriceAlertCancel" width="500" />
+        <input v-model="handbookTitle" class="editor-title-input" type="text" placeholder="输入小册标题..." />
         <div class="user-actions-box">
             <UserDropdown :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
             <div v-clickoutside="onClickOutsidePublishToggle" class="publish-popup">
@@ -26,7 +27,7 @@
                     <div class="price-box">
                         <div class="sub-title">
                             <span>小册价格</span>
-                            <span class="quarterly-earnings">!</span>
+                            <span @click="onShowPriceAlert" class="quarterly-earnings">!</span>
                         </div>
                         <input type="number" placeholder="输入价格，例：99，不填写则为免费" class="price-input">
                     </div>
@@ -48,7 +49,7 @@
                     <label class="line-confirmation">
                         <input type="checkbox">
                         <div class="txt">
-                            <span>所有章节已完成</span>
+                            <span>所有章节已完成, 申请发布到线上</span>
                         </div>
                     </label>
                     <button class="publish-btn handbook-publish">确定并更新</button>
@@ -73,7 +74,6 @@
                     </div>
                 </div>
             </div>
-            <div class="auto-save">{{autoSaveDraftTip}}<a>存草稿</a></div>
         </div>
     </div>
 </template>
@@ -85,6 +85,7 @@ import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import Alert from '~/js/components/common/Alert.vue';
 import AgreementAlert from '~/js/components/handbook/AgreementAlert.vue';
+import PriceAlert from '~/js/components/handbook/PriceAlert.vue';
 import { ArticleContentType } from '~/js/constants/article.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
@@ -96,17 +97,16 @@ export default {
         'userID',
         'avatarURL',
         'title',
-        'getEditorMarkdown',
+        'isContentSaved',
     ],
     data () {
         return {
             siteName: window.siteName,
-            articleTitle: '',
+            handbookTitle: '',
             coverURL: '',
-            isCoverUploading: false, // 是否正在上传文章封面图片
+            isCoverUploading: false, // 是否正在上传封面图片
             coverToggled: false,
             publishToggled: false,
-            autoSaveDraftTip: '文章将自动保存至草稿',
         };
     },
     mounted() {
@@ -114,10 +114,14 @@ export default {
     computed: {
     },
     methods: {
-        getContent() {
-            return this.getEditorMarkdown();
-        },
         onPublish() {
+            this.isContentSaved((result) => {
+                if (!result) {
+                    this.$refs.errorTip.show('没有网络连接，请稍后重试');
+                    return;
+                }
+                
+            });
         },
         onRemoveCover() {
             this.coverURL = '';
@@ -152,6 +156,33 @@ export default {
         },
         onShowAgreement() {
             this.$refs.agreementAlert.show();
+        },
+        onShowPriceAlert() {
+            this.$refs.priceAlert.show();
+        },
+        onAgreementAlertCancel() {
+            // 此时 onClickOutsidePublishToggle 也会执行，设个延时，把发布的面板再次显示出来
+            setTimeout(() => {
+                this.publishToggled = true;
+            }, 30);
+            setTimeout(() => {
+                this.publishToggled = true;
+            }, 60);
+            setTimeout(() => {
+                this.publishToggled = true;
+            }, 90);
+        },
+        onPriceAlertCancel() {
+            // 此时 onClickOutsidePublishToggle 也会执行，设个延时，把发布的面板再次显示出来
+            setTimeout(() => {
+                this.publishToggled = true;
+            }, 30);
+            setTimeout(() => {
+                this.publishToggled = true;
+            }, 60);
+            setTimeout(() => {
+                this.publishToggled = true;
+            }, 90);
         }
     },
     components: {
@@ -161,6 +192,7 @@ export default {
         Alert,
         DatePicker,
         AgreementAlert,
+        PriceAlert,
     }
 }
 </script>

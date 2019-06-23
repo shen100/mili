@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HandBook, HandBookChapter } from '../entity/handbook.entity';
 import { ConfigService } from '../config/config.service';
 
-const defaultSummary = `## 作者介绍
+const defaultIntroduce = `## 作者介绍
 
 ## 小册介绍
 
@@ -39,18 +39,18 @@ export class HandBookService {
     ) {}
 
     async create(userID: number) {
-        let summary = defaultSummary;
+        let introduce = defaultIntroduce;
         let regExp = new RegExp('{{xiaoceEmail}}', 'g');
-        summary = summary.replace(regExp, this.configService.server.xiaoceEmail);
+        introduce = introduce.replace(regExp, this.configService.server.xiaoceEmail);
         regExp = new RegExp('{{siteName}}', 'g');
-        summary = summary.replace(regExp, this.configService.server.siteName);
+        introduce = introduce.replace(regExp, this.configService.server.siteName);
         regExp = new RegExp('{{companyName}}', 'g');
-        summary = summary.replace(regExp, this.configService.server.companyName);
+        introduce = introduce.replace(regExp, this.configService.server.companyName);
 
         const handBook = new HandBook();
         handBook.name = '';
         handBook.saleCount = 0;
-        handBook.summary = summary;
+        handBook.introduce = introduce;
         handBook.coverURL = '';
         handBook.userID = userID;
         handBook.createdAt = new Date();
@@ -58,18 +58,18 @@ export class HandBookService {
         return await this.handBookRepository.save(handBook);
     }
 
-    async updateSummary(id: number, summary: string, userID: number) {
+    async updateIntroduce(id: number, introduce: string, userID: number) {
         return await this.handBookRepository.update({
             id,
             userID,
         }, {
-            summary,
+            introduce,
         });
     }
 
     async basic(id: number) {
         return await this.handBookRepository.findOne({
-            select: ['id', 'name', 'summary'],
+            select: ['id', 'name', 'introduce'],
             where: {
                 id,
             },

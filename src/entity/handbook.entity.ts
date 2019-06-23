@@ -22,7 +22,7 @@ export class HandBook {
     name: string;
 
     @Column('text', { nullable: true, default: null })
-    summary: string;
+    introduce: string;
 
     @Column('varchar', { name: 'cover_url', length: 500 })
     coverURL: string; // 封面图片

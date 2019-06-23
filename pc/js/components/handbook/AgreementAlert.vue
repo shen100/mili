@@ -1,5 +1,5 @@
 <template>
-    <Modal v-model="modalVisible" class-name="vertical-center-modal" 
+    <Modal v-model="modalVisible" @on-visible-change="onVisibleChange" class-name="vertical-center-modal" 
         :width="width" :closable="false" :mask-closable="true" footer-hide>
         <div slot="header" class="alert-modal-header alert-agreement-modal-header">
             <button @click="onClose" type="button" class="close">×</button>
@@ -101,8 +101,7 @@
 （四）按本协议第9.1条之约定，不可抗力事件发生并持续超过九十（90）天。
             </div>
         </div>
-        <div class="alert-modal-footer alert-agreement-modal-footer">
-        </div>
+        <div class="alert-modal-footer alert-agreement-modal-footer"></div>
     </Modal>
 </template>
 
@@ -129,18 +128,22 @@ export default {
         };
     },
     methods: {
-        show(chapterOrder, chapterTitle, chapterID) {
+        show() {
             this.modalVisible = true;
         },
         onClose() {
             this.modalVisible = false;
+        },
+        onVisibleChange(visible) {
+            if (!visible) {
+                this.$emit('cancel');
+            }
         }
     }
 }
 </script>
 
 <style>
-
 .alert-agreement-modal-header {
     padding: 20px;
 }

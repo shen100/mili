@@ -1,5 +1,5 @@
 <template>
-    <Modal v-model="modalVisible" class-name="vertical-center-modal" 
+    <Modal v-model="modalVisible" @on-visible-change="onVisibleChange" class-name="vertical-center-modal" 
         :width="width" :closable="false" :mask-closable="true" footer-hide>
         <div slot="header" class="alert-modal-header">
             <button @click="onCancel" type="button" class="close">×</button>
@@ -53,8 +53,12 @@ export default {
             this.modalVisible = false;
         },
         onCancel() {
-            this.$emit('cancel');
             this.modalVisible = false;
+        },
+        onVisibleChange(visible) {
+            if (!visible) {
+                this.$emit('cancel');
+            }
         }
     }
 }
@@ -119,5 +123,3 @@ export default {
     padding: 5px;
 }
 </style>
-
-

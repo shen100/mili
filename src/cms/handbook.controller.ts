@@ -17,7 +17,7 @@ import {
     UpdateHandbookChapterTryReadDto 
 } from './dto/update-handbook-chapter.dto';
 import { CreateHandbookChapterDto } from './dto/create-handbook-chapter.dto';
-import { UpdateHandbookSummaryDto } from './dto/update-handbook.dto';
+import { UpdateHandbookIntroduceDto } from './dto/update-handbook.dto';
 
 @Controller()
 export class HandBookController {
@@ -74,7 +74,7 @@ export class HandBookController {
     @UseGuards(ActiveGuard)
     async create(@CurUser() user, @Query() query, @Res() res) {
         const handBook = await this.handBookService.create(user.id);
-        res.redirect(`/handbooks/${handBook.id}/chapter/summary/edit`);
+        res.redirect(`/handbooks/${handBook.id}/chapter/introduce/edit`);
     }
 
     @Get('/handbooks/:handbookID/chapter/:chapterID/edit')
@@ -82,7 +82,7 @@ export class HandBookController {
     async edit(@CurUser() user, @Param('handbookID', MustIntPipe) handbookID: number, @Param('chapterID') chapterID: string, @Res() res) {
         let isQueryChapger = true;
         let theChapterID;
-        if (chapterID === 'summary') {
+        if (chapterID === 'introduce') {
             isQueryChapger = false;
         } else {
             theChapterID = parseInt(chapterID, 10);
@@ -110,10 +110,18 @@ export class HandBookController {
         });
     }
 
-    @Put(`${APIPrefix}/handbooks/:id/summary`)
+    @Put(`${APIPrefix}/handbooks/:id/introduce`)
     @UseGuards(ActiveGuard)
-    async updateHandbookSummary(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateDto: UpdateHandbookSummaryDto) {
-        await this.handBookService.updateSummary(id, updateDto.summary, user.id);
+    async updateHandbookIntroduce(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateDto: UpdateHandbookIntroduceDto) {
+        await this.handBookService.updateIntroduce(id, updateDto.introduce, user.id);
+        return {
+        };
+    }
+
+    @Put(`${APIPrefix}/handbooks/:id/commit`)
+    @UseGuards(ActiveGuard)
+    async commitHandbook(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateDto: UpdateHandbookIntroduceDto) {
+        await this.handBookService.updateIntroduce(id, updateDto.introduce, user.id);
         return {
         };
     }

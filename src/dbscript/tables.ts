@@ -22,7 +22,7 @@ export const tablesRun = async function (connection) {
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             name varchar(200) NOT NULL,
-            summary text,
+            introduce text,
             word_count int(11) unsigned NOT NULL DEFAULT '0',
             sale_count int(11) unsigned NOT NULL DEFAULT '0',
             comment_count int(11) unsigned NOT NULL DEFAULT '0',
