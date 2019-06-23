@@ -101,6 +101,7 @@ export class HandBookController {
 
         res.render('pages/handbook/editHandbook', {
             siteName: this.configService.server.siteName,
+            companyName: this.configService.server.companyName,
             user,
             handbook,
             chapters,

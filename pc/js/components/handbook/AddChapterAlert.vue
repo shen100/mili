@@ -62,7 +62,7 @@ export default {
 
 <style>
 .ivu-modal-mask {
-    background-color: hsla(0, 0%, 100%, .7);
+    background-color: hsla(0, 0%, 100%, .8);
 }
 
 .ivu-modal-header {

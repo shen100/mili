@@ -1,6 +1,7 @@
 <template>
     <div class="editor-header">
         <ErrorTip ref="errorTip" />
+        <AgreementAlert ref="agreementAlert" width="556" />
         <input v-model="articleTitle" class="editor-title-input" type="text" placeholder="输入小册标题..." />
         <div class="user-actions-box">
             <UserDropdown :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
@@ -41,7 +42,7 @@
                         <input type="checkbox">
                         <div class="txt">
                             <span>我已阅读同意</span>
-                            <span class="agreement">《{{siteName}}小册写作线上协议》</span>
+                            <span @click="onShowAgreement" class="agreement">《{{siteName}}小册写作线上协议》</span>
                         </div>
                     </label>
                     <label class="line-confirmation">
@@ -148,6 +149,9 @@ export default {
         },
         onClickOutsidePublishToggle() {
             this.publishToggled = false;
+        },
+        onShowAgreement() {
+            this.$refs.agreementAlert.show();
         }
     },
     components: {

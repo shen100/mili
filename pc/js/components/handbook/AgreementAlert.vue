@@ -1,26 +1,12 @@
 <template>
     <Modal v-model="modalVisible" class-name="vertical-center-modal" 
         :width="width" :closable="false" :mask-closable="true" footer-hide>
-        <div slot="header" class="alert-modal-header">
-            <button @click="onCancel" type="button" class="close">×</button>
+        <div slot="header" class="alert-modal-header alert-agreement-modal-header">
+            <button @click="onClose" type="button" class="close">×</button>
         </div>
-        <div class="alert-modal-body">
-            <h4>输入章节标题</h4>
-        </div>
-        <div class="alert-modal-footer">
-        </div>
-    </Modal>
-</template>
-
-<script>
-import Vue from 'vue';
-import {
-    Modal,
-} from 'iview';
-
-Vue.component('Modal', Modal);
-
-const a = `本协议系由北京北比信息技术有限公司（以下简称“北比”）与所有通过掘金小册平台发布作品的主体（以下简称“作者”）就资源的引入、使用及相关服务所订立的有效合约，所有作者必须同意并遵守本协议。作者通过作者发布程序阅读本协议并点击"同意"按钮或以任何方式参与数字作品提交均被视为作者完全接受本协议。
+        <div class="alert-modal-body alert-agreement-modal-body">
+            <h2 class="agreement-heading">{{siteName}}小册平台写作线上协议</h2>
+            <div class="agreement-content">本协议系由{{companyName}}（以下简称“北比”）与所有通过{{siteName}}小册平台发布作品的主体（以下简称“作者”）就资源的引入、使用及相关服务所订立的有效合约，所有作者必须同意并遵守本协议。作者通过作者发布程序阅读本协议并点击"同意"按钮或以任何方式参与数字作品提交均被视为作者完全接受本协议。
 
 一、总则
 1.1 本协议内容包括掘金小册与作者（线上）协议及所有北比已经发布的或将来可能发布的各类规则。所有规则为本协议不可分割的组成部分，与协议正文具有同等法律效力。
@@ -112,7 +98,24 @@ const a = `本协议系由北京北比信息技术有限公司（以下简称“
 （一）一方严重违反本协议，且对于可补救的违约，未在收到对方书面通知后三十（30）天内予以补救；
 （二）一方严重违约致使不能实现合同目的；
 （三）一方破产、无力偿债、进入清算或解散程序、不再从事业务或不能清偿到期债务；
-（四）按本协议第9.1条之约定，不可抗力事件发生并持续超过九十（90）天。`
+（四）按本协议第9.1条之约定，不可抗力事件发生并持续超过九十（90）天。
+            </div>
+        </div>
+        <div class="alert-modal-footer alert-agreement-modal-footer">
+        </div>
+    </Modal>
+</template>
+
+<script>
+import Vue from 'vue';
+import {
+    Modal,
+} from 'iview';
+
+Vue.component('Modal', Modal);
+
+const siteName = window.siteName;
+const companyName = window.companyName;
 
 export default {
     props: [
@@ -121,27 +124,15 @@ export default {
     data () {
         return {
             modalVisible: false,
-            chapterTitle: '',
-            chapterOrder: 1,
-            chapterID: undefined,
+            siteName,
+            companyName,
         };
     },
     methods: {
         show(chapterOrder, chapterTitle, chapterID) {
             this.modalVisible = true;
-            this.chapterOrder = chapterOrder;
-            this.chapterTitle = chapterTitle;
-            this.chapterID = chapterID;
         },
-        onOk() {
-            this.$emit('ok', {
-                chapterTitle: this.chapterTitle,
-                chapterID: this.chapterID,
-            });
-            this.modalVisible = false;
-        },
-        onCancel() {
-            this.$emit('cancel');
+        onClose() {
             this.modalVisible = false;
         }
     }
@@ -149,8 +140,26 @@ export default {
 </script>
 
 <style>
+
+.alert-agreement-modal-header {
+    padding: 20px;
+}
+
 .ivu-modal-mask {
-    background-color: hsla(0, 0%, 100%, .7);
+    background-color: hsla(0, 0%, 100%, .8);
+}
+
+.agreement-heading {
+    font-weight: 700;
+    color: #000;
+    font-size: 18px;
+    padding-top: 0;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.alert-agreement-modal-body {
+    display: block;
 }
 
 .ivu-modal-header {
@@ -176,6 +185,30 @@ export default {
     box-shadow: 0 5px 25px rgba(0, 0, 0, .1);
     border: 1px solid rgba(0, 0, 0, .1);
     border-radius: 3px;
+}
+
+.agreement-content {
+    height: 420px;
+    font-size: 14px;
+    overflow-y: auto;
+    white-space: pre-line;
+}
+
+.agreement-content::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+
+.agreement-content::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+.alert-agreement-modal-footer {
+    padding: 0;
+    height: 30px;
 }
 </style>
 
