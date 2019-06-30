@@ -261,6 +261,58 @@
     color: #888;
 }
 
+.panel .ivu-date-picker-focused input {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0);
+}
+
 .panel .ivu-input-prefix i, .ivu-input-suffix i {
     line-height: 40px;
+}
+
+.panel .ivu-select-dropdown {
+    font-size: 12px;
+}
+
+.price-input-number {
+    border: 1px#ccc solid;
+}
+
+.price-input-number:focus-within {
+    border-color: #007fff;
+}
+
+.price-input-number .ivu-input-number {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    border-color: rgba(0, 0, 0, 0);
+    border-radius: 0;
+}
+
+.price-input-number .ivu-input-number-input:focus {
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.price-input-number .ivu-input-number-handler {
+    height: 20px;
+    padding-top: 2px;
+}
+
+.price-input-number .ivu-input-number-input-wrap {
+    height: 40px;
+}
+
+.price-input-number .ivu-input-number-input {
+    height: 40px;
+    font-size: 14px;
+}
+
+.price-input-number .ivu-input-number-input::-webkit-input-placeholder {
+    color: #888;
+}
+
+.ivu-input-number-focused {
+    border-color: #57a3f3;
+    outline: 0;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0);
 }

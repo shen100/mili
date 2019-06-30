@@ -51,6 +51,9 @@ export class CommentConstants {
 export class HandbookConstants {
     static readonly MAX_PRICE: number = 100000000;
 
+    static readonly TITLE_MIN_LENGTH: number = 1;
+    static readonly TITLE_MAX_LENGTH: number = 100000;
+
     static readonly INTRODUCE_MIN_LENGTH: number = 1;
     static readonly INTRODUCE_MAX_LENGTH: number = 100000;
 

@@ -3,7 +3,7 @@
         <ErrorTip ref="errorTip" />
         <AgreementAlert ref="agreementAlert" @cancel="onAgreementAlertCancel" width="556" />
         <PriceAlert ref="priceAlert" @cancel="onPriceAlertCancel" width="500" />
-        <input v-model="handbookTitle" class="editor-title-input" type="text" placeholder="输入小册标题..." />
+        <input v-model="name" class="editor-title-input" type="text" placeholder="输入小册标题..." />
         <div class="user-actions-box">
             <UserDropdown :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
             <div v-clickoutside="onClickOutsidePublishToggle" class="publish-popup">
@@ -16,43 +16,45 @@
                     <div class="title">更新</div>
                     <div class="summary-box">
                         <div class="sub-title">摘要</div>
-                        <textarea placeholder="必填，摘要将显示在小册详情页标题的下方，建议 50 字以内" max-length="50" class="summary-textarea"></textarea>
+                        <textarea v-model="summary" placeholder="必填，摘要将显示在小册详情页标题的下方，建议 50 字以内" max-length="50" class="summary-textarea"></textarea>
                     </div>
                     <div class="price-box">
                         <div class="sub-title">
                             <span>作者简介</span>
                         </div>
-                        <input type="text" :placeholder="`公司+职位，如：${siteName}创始人`" class="price-input">
+                        <input v-model="authorIntro" type="text" :placeholder="`公司+职位，如：${siteName}创始人`" class="price-input">
                     </div>
                     <div class="price-box">
                         <div class="sub-title">
                             <span>小册价格</span>
                             <span @click="onShowPriceAlert" class="quarterly-earnings">!</span>
                         </div>
-                        <input type="number" placeholder="输入价格，例：99，不填写则为免费" class="price-input">
+                        <div class="price-input-number">
+                            <InputNumber placeholder="输入价格，如9.99元，不填写则为免费" :step="0.01" :max="100000000" :min="0" v-model="price"></InputNumber>
+                        </div>
                     </div>
                     <div class="price-box">
                         <div class="sub-title">
                             <span>小册完成时间</span>
                         </div>
                         <div>
-                            <DatePicker type="date" placeholder="请选择日期" style="width: 286px;"></DatePicker>
+                            <DatePicker @on-change="onDateChange" :value="completionAt" :clearable="false" type="date" placeholder="请选择日期" style="width: 286px;"></DatePicker>
                         </div>
                     </div>
                     <label class="line-confirmation">
-                        <input type="checkbox">
+                        <input v-model="isAgree" type="checkbox">
                         <div class="txt">
                             <span>我已阅读同意</span>
                             <span @click="onShowAgreement" class="agreement">《{{siteName}}小册写作线上协议》</span>
                         </div>
                     </label>
                     <label class="line-confirmation">
-                        <input type="checkbox">
+                        <input v-model="isAllDone" type="checkbox">
                         <div class="txt">
                             <span>所有章节已完成, 申请发布到线上</span>
                         </div>
                     </label>
-                    <button class="publish-btn handbook-publish">确定并更新</button>
+                    <button @click="onFinalPublish" class="publish-btn handbook-publish">确定并更新</button>
                 </div>
             </div>
             <div v-clickoutside="onClickOutsideCoverToggle" class="upload-cover">
@@ -79,7 +81,8 @@
 </template>
 
 <script>
-import { DatePicker } from 'iview';
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
 import UserDropdown from '~/js/components/common/UserDropdown.vue';
 import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
@@ -87,40 +90,89 @@ import Alert from '~/js/components/common/Alert.vue';
 import AgreementAlert from '~/js/components/handbook/AgreementAlert.vue';
 import PriceAlert from '~/js/components/handbook/PriceAlert.vue';
 import { ArticleContentType } from '~/js/constants/article.js';
-import { ErrorCode } from '~/js/constants/error.js';
-import { myHTTP } from '~/js/common/net.js';
 import { trim } from '~/js/utils/utils.js';
 import { isContentEmpty } from '~/js/utils/dom.js';
 
 export default {
     props: [
-        'userID',
-        'avatarURL',
-        'title',
         'isContentSaved',
     ],
     data () {
-        return {
+        const theData = {
+            userID: window.userID,
+            avatarURL: window.avatarURL,
             siteName: window.siteName,
-            handbookTitle: '',
-            coverURL: '',
+            id: window.handbook.id,
+            name: window.handbook.name || '',
+            summary: window.handbook.summary,
+            authorIntro: window.handbook.authorIntro,
+            price: window.handbook.price ? window.handbook.price / 100 : null,
+            completionAt: window.handbook.completionAt ? new Date(window.handbook.completionAt) : null,
+            isAgree: !!window.handbook.isAgree,
+            isAllDone: !!window.handbook.isAllDone,
+            coverURL: window.handbook.coverURL,
             isCoverUploading: false, // 是否正在上传封面图片
             coverToggled: false,
             publishToggled: false,
         };
+        console.log(theData);
+        return theData;
     },
     mounted() {
     },
     computed: {
     },
     methods: {
-        onPublish() {
+        onDateChange(date) {
+            this.completionAt = new Date(date);
+        },
+        onFinalPublish() {
+            if (this.isAllDone) {
+                if (!this.name) {
+                    this.$refs.errorTip.show('小册标题不能为空');
+                    return;
+                }
+                if (!this.summary) {
+                    this.$refs.errorTip.show('摘要不能为空');
+                    return;
+                }
+                if (!this.authorIntro) {
+                    this.$refs.errorTip.show('作者简介不能为空');
+                    return;
+                }
+            }
+
+            if (!this.isAgree) {
+                this.$refs.errorTip.show('请先同意小册写作线上协议');
+                return;
+            }
+
+            if (!this.completionAt) {
+                this.$refs.errorTip.show('请选择小册完成时间');
+                return;
+            }
+
             this.isContentSaved((result) => {
                 if (!result) {
                     this.$refs.errorTip.show('没有网络连接，请稍后重试');
                     return;
                 }
-                
+                const url = `/handbooks/${this.id}/commit`;
+                myHTTP.put(url, {
+                    name: this.name || '',
+                    summary: this.summary || '',
+                    authorIntro: this.authorIntro || '',
+                    price: this.price && 100 * this.price || 0,
+                    completionAt: this.completionAt && this.completionAt.getTime() || undefined,
+                    isAgree: this.isAgree,
+                    isAllDone: this.isAllDone,
+                    coverURL: this.coverURL || '',
+                }).then(function(res) {
+                    const result = res.data;
+                    if (result.errorCode === ErrorCode.SUCCESS.CODE) {
+
+                    }
+                });
             });
         },
         onRemoveCover() {
@@ -190,7 +242,6 @@ export default {
         Uploader,
         ErrorTip,
         Alert,
-        DatePicker,
         AgreementAlert,
         PriceAlert,
     }

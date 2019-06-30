@@ -24,6 +24,24 @@ export class HandBook {
     @Column('text', { nullable: true, default: null })
     introduce: string;
 
+    @Column('varchar', { name: 'summary', length: 200 })
+    summary: string; // 摘要
+
+    @Column('varchar', { name: 'author_intro', length: 200 })
+    authorIntro: string; // 作者简介
+
+    @Column('int', { name: 'price' })
+    price: number;
+
+    @Column('datetime', { name: 'completion_at' })
+    completionAt: Date; // 小册完成时间
+
+    @Column('boolean', { name: 'is_all_done' })
+    isAllDone: boolean; // 所有章节已完成
+
+    @Column('boolean', { name: 'is_agree' })
+    isAgree: boolean;
+
     @Column('varchar', { name: 'cover_url', length: 500 })
     coverURL: string; // 封面图片
 

@@ -1,12 +1,11 @@
 <template>
     <div id="app">
+        <Alert ref="delChapterAlert" width="450" 
+            @ok="onDelChapterOk" @cancel="onDelChapterCancel" />
         <AddChapterAlert ref="chapterTitleAlert" width="450" @ok="onChapterTitleOk" @cancel="onChapterTitleCancel" />
         <div id="editorBox">
             <HandbookHeader v-show="!isLoading"
-                :title="initialTitle"
-                :isContentSaved="isContentSaved"
-                :userID="userID" 
-                :avatarURL="avatarURL" />
+                :isContentSaved="isContentSaved" />
             <div class="edit-wrap">
                 <div class="directory-box">
                     <div @click="onIntroduceClick" class="summary" :class="{'route-active': isIntroduceSelected}">小册介绍</div>
@@ -35,7 +34,7 @@
                                                     <input type="checkbox" class="check">
                                                 </label>
                                             </div> -->
-                                            <div>删除</div>
+                                            <div @click="onDeleteChapter(chapter.id)">删除</div>
                                         </div>
                                     </div>
                                 </div>
@@ -58,6 +57,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import Alert from '~/js/components/common/Alert.vue';
 import GlobalLoading from '~/js/components/common/GlobalLoading';
 import { getWindowSize } from '~/js/utils/dom.js';
 import AddChapterAlert from '~/js/components/handbook/AddChapterAlert.vue';
@@ -81,12 +81,10 @@ export default {
             handbook: window.handbook,
             isIntroduceSelected: !window.chapter,
             chapters,
-            userID: window.userID,
-            avatarURL: window.avatarURL,
-            initialTitle: window.handbook.name || '',
             initialContent: window.chapter && window.chapter.content || handbook.introduce,
             moreToggled,
             curChapter: window.chapter || null,
+            delChapterID: 0,
             isLoading: false,
         };
     },
@@ -119,6 +117,9 @@ export default {
                 return callback(true);
             }
             const putChapterURL = `/handbooks/chapters/${this.curChapter.id}/content`;
+            const reqData = {
+                content,
+            };
 
             myHTTP.put(putChapterURL, reqData).then(res => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
@@ -227,7 +228,6 @@ export default {
                 this.isLoading = false;
             });
         },
-
         onCreateChapter(chapter, index) {
             // 创建章节后，会选中新创建的章节，所以得事先保存当前选中的小册介绍或章节
             const content = this.getEditorMarkdown();
@@ -278,6 +278,31 @@ export default {
             // 点击修改标题，出现修改章节标题的弹框，这时，并不会改变当前选中的章节或小册介绍
             this.moreToggled[index].toggled = false;
             this.$refs.chapterTitleAlert.show(index + 1, chapter.name || '', chapter.id);
+        },
+        onDeleteChapter(id) {
+            this.delChapterID = id;
+            this.$refs.delChapterAlert.show('删除章节', '此操作将删除该章节的内容，不可恢复，确定删除吗?');
+        },
+        onDelChapterOk() {
+            const delChapterID = this.delChapterID;
+            const url = `/handbooks/chapters/${delChapterID}`;
+            this.isDraftSaving = true;
+            myHTTP.delete(url).then((res) => {
+                this.isDraftSaving = false;
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    for (let i = 0; i < this.chapters.length; i++) {
+                        if (this.chapters[i].id === delChapterID) {
+                            this.chapters.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+            }).catch((err) => {
+                this.isDraftSaving = false;
+            });
+        },
+        onDelChapterCancel() {
+
         },
         onMoreToggle(index) {
             this.moreToggled[index].toggled = !this.moreToggled[index].toggled;
@@ -372,6 +397,7 @@ export default {
         HandbookHeader,
         MarkdownEditor,
         AddChapterAlert,
+        Alert,
     }
 }
 </script>

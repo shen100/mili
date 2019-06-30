@@ -51,6 +51,10 @@ export class HandBookService {
         handBook.name = '';
         handBook.saleCount = 0;
         handBook.introduce = introduce;
+        handBook.summary = '';
+        handBook.price = 0;
+        handBook.authorIntro = '';
+        handBook.isAllDone = false;
         handBook.coverURL = '';
         handBook.userID = userID;
         handBook.createdAt = new Date();
@@ -67,9 +71,24 @@ export class HandBookService {
         });
     }
 
+    async updateHandbook(id: number, data: any, userID: number) {
+        return await this.handBookRepository.update({
+            id,
+            userID,
+        }, {
+            name: data.name,
+            summary: data.summary,
+            authorIntro: data.authorIntro,
+            price: data.price,
+            completionAt: data.completionAt,
+            isAllDone: data.isAllDone,
+            isAgree: data.isAgree,
+        });
+    }
+
     async basic(id: number) {
         return await this.handBookRepository.findOne({
-            select: ['id', 'name', 'introduce'],
+            select: ['id', 'name', 'introduce', 'summary', 'authorIntro', 'price', 'completionAt', 'isAllDone', 'coverURL', 'isAgree'],
             where: {
                 id,
             },
@@ -165,6 +184,13 @@ export class HandBookService {
             userID,
         }, {
             tryRead: !!tryRead,
+        });
+    }
+
+    async deleteChapter(id: number, userID: number) {
+        return await this.handBookChapterRepository.delete({
+            id,
+            userID,
         });
     }
 }

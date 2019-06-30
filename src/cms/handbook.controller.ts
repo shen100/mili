@@ -17,7 +17,7 @@ import {
     UpdateHandbookChapterTryReadDto 
 } from './dto/update-handbook-chapter.dto';
 import { CreateHandbookChapterDto } from './dto/create-handbook-chapter.dto';
-import { UpdateHandbookIntroduceDto } from './dto/update-handbook.dto';
+import { UpdateHandbookIntroduceDto, CommitHandbookDto } from './dto/update-handbook.dto';
 
 @Controller()
 export class HandBookController {
@@ -103,7 +103,10 @@ export class HandBookController {
             siteName: this.configService.server.siteName,
             companyName: this.configService.server.companyName,
             user,
-            handbook,
+            handbook: {
+                ...handbook,
+                completionAt: handbook.completionAt ? handbook.completionAt.getTime() : undefined,
+            },
             chapters,
             chapter,
             uploadPolicy,
@@ -120,8 +123,25 @@ export class HandBookController {
 
     @Put(`${APIPrefix}/handbooks/:id/commit`)
     @UseGuards(ActiveGuard)
-    async commitHandbook(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateDto: UpdateHandbookIntroduceDto) {
-        await this.handBookService.updateIntroduce(id, updateDto.introduce, user.id);
+    async commitHandbook(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() handbookDto: CommitHandbookDto) {
+        if (!handbookDto.isAgree) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.Forbidden.CODE,
+            });
+        }
+        const data = {
+            name: handbookDto.name || '',
+            summary: handbookDto.summary || '',
+            authorIntro: handbookDto.authorIntro || '',
+            price: handbookDto.price || 0,
+            completionAt: handbookDto.completionAt ? new Date(handbookDto.completionAt) : null,
+            isAllDone: handbookDto.isAllDone,
+            isAgree: handbookDto.isAgree,
+        };
+        if (!data.completionAt) {
+            delete data.completionAt;
+        }
+        await this.handBookService.updateHandbook(id, data, user.id);
         return {
         };
     }
@@ -165,6 +185,14 @@ export class HandBookController {
         await this.handBookService.updateChapterTryRead(id, updateChapterDto.tryRead, user.id);
         return {
             tryRead: updateChapterDto.tryRead,
+        };
+    }
+
+    @Delete(`${APIPrefix}/handbooks/chapters/:id`)
+    @UseGuards(ActiveGuard)
+    async deleteChapter(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        await this.handBookService.deleteChapter(id, user.id);
+        return {
         };
     }
 
