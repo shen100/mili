@@ -1,9 +1,9 @@
 import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
-import '~/styles/codeReview.scss';
+import '~/styles/codeStats.scss';
 import '~/js/common/default.js';
 import Vue from 'vue';
-import App from '~/js/components/CodeReview.vue';
+import App from '~/js/pages/CodeStats.vue';
 import {
     Tree,
     Row,

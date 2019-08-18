@@ -13,7 +13,7 @@ module.exports = {
     mode: 'development',
     entry: {
         'entry/index': './js/entry/index.js',
-        'entry/codeReview': './js/entry/codeReview.js',
+        'entry/codeStats': './js/entry/codeStats.js',
         'entry/signin': './js/entry/signin.js',
         'entry/signup': './js/entry/signup.js',
         'entry/user/user': './js/entry/user/user.js',

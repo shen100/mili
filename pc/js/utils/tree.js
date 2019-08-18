@@ -3,6 +3,8 @@
  * options:
  *   titleKey: 结点名称对应的key，即结点显示时的文本
  *   dataKeys: 自定义数据的key组成的数组
+ *   withParentRef: 结点是否保留父结点的引用
+ *   rootID: 根结点的id
  */
 export const parseTree = (nodes, options) => {
     if (!nodes || nodes.length <= 0) {
@@ -10,21 +12,27 @@ export const parseTree = (nodes, options) => {
     }
     options = options || { titleKey: 'title', };
     options.titleKey = options.titleKey || 'title';
-    const NO_PARENT = 0;
+    let rootID = 0;
+    if (typeof options.noParent !== '') {
+        rootID = options.noParent;
+    }
     let copyList = nodes.slice();
     let root = {
-        id: NO_PARENT,
+        id: rootID,
         title: '无',
         depth: 0,
-        parentID: 0,
+        parentID: rootID,
         children: [],
     };
+    if (options.withParentRef) {
+        root.parent = null;
+    }
     let stores = [];
     stores.push(root);
     while (stores.length) {
         let tree = stores[0];
         for (let i = copyList.length - 1; i >= 0; i--) {
-            copyList[i].parentID = copyList[i].parentID || NO_PARENT;
+            copyList[i].parentID = copyList[i].parentID || rootID;
             if (copyList[i].parentID === tree.id) {
                 let node = {
                     id: copyList[i].id,
@@ -33,6 +41,9 @@ export const parseTree = (nodes, options) => {
                     parentID: tree.id,
                     children: [],
                 };
+                if (options.withParentRef) {
+                    node.parent = tree;
+                }
                 if (options.dataKeys) {
                     for (let j = 0; j < options.dataKeys.length; j++) {
                         let key = options.dataKeys[j];

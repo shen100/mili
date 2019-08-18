@@ -1,8 +1,6 @@
 # dependencies
 node_modules/
 
-dist
-
 # IDE
 /.idea
 /.awcache
@@ -17,6 +15,8 @@ npm-debug.log*
 # Tests
 /coverage
 /.nyc_output
+
+dist
 
 src/config/json.development.ts
 src/config/json.staging.ts

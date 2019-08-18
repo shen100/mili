@@ -38,7 +38,6 @@ import { Tag } from '../entity/tag.entity';
 import { TagService } from './tag.service';
 import { TagController } from './tag.controller';
 import { OSSService } from '../common/oss.service';
-import { CodeReviewController } from './codereview.controller';
 
 @Module({
     imports: [
@@ -66,7 +65,6 @@ import { CodeReviewController } from './codereview.controller';
         IndexController,
         ArticleController,
         CategoryController,
-        CodeReviewController,
         CommentController,
         HandBookController,
         UCController,
