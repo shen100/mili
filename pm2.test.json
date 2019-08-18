@@ -1,0 +1,32 @@
+{
+    "apps": [
+        {
+            "name": "mili_app",
+			"script": "bin/www",
+			"cwd": "/data/app",
+			"instances": "max",
+            "exec_mode": "cluster",
+            "env": {
+				"PORT": 8080,
+				"NODE_ENV": "test"
+            },
+            "autorestart": true,
+            "out_file": "/data/log/app.out.log",
+            "error_file": "/data/log/app.error.log"
+        },
+        {
+            "name": "mili_cron",
+			"script": "bin/cron",
+			"cwd": "/data/app",
+			"instances": "1",
+            "exec_mode": "fork",
+            "treekill": false,
+            "env": {
+				"NODE_ENV": "test"
+            },
+            "autorestart": true,
+            "out_file": "/data/log/cron.out.log",
+            "error_file": "/data/log/cron.error.log"
+        }
+    ]
+}

@@ -1,5 +1,6 @@
 # dependencies
 node_modules/
+
 dist
 
 # IDE
@@ -16,8 +17,6 @@ npm-debug.log*
 # Tests
 /coverage
 /.nyc_output
-
-package-lock.json
 
 src/config/json.development.ts
 src/config/json.staging.ts

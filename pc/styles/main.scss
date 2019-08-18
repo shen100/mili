@@ -172,11 +172,13 @@ nav .width-limit {
     height: 56px;
     padding: 0;
     width: 100px;
+    margin-top: 0;
+    margin-right: 2px;
 }
 
 .logo img {
-    height: 40px;
-    margin-top: 6px;
+    width: 100%;
+    margin-top: 8px;
 }
 
 .navbar-nav {

@@ -45,8 +45,10 @@
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3",
+    "sloc": "^0.2.1",
     "striptags": "^3.1.1",
-    "typeorm": "^0.3.0-alpha.23"
+    "typeorm": "^0.3.0-alpha.23",
+    "walkdir": "^0.4.1"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.0.0",
@@ -68,8 +70,7 @@
     "wait-on": "^3.2.0"
   },
   "husky": {
-    "hooks": {
-    }
+    "hooks": {}
   },
   "jest": {
     "moduleFileExtensions": [

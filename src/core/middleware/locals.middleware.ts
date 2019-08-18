@@ -7,7 +7,7 @@ export class LocalsMiddleware implements NestMiddleware {
         private readonly configService: ConfigService,
     ) {}
 
-    use(request: Request, response: Response, next: Function) {
+    use(request: Request, response: Response, next: () => void) {
         const req: any = request;
         const res: any = response;
         const configService = this.configService;

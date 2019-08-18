@@ -9,6 +9,7 @@ export const parseTree = (nodes, options) => {
         return null;
     }
     options = options || { titleKey: 'title', };
+    options.titleKey = options.titleKey || 'title';
     const NO_PARENT = 0;
     let copyList = nodes.slice();
     let root = {

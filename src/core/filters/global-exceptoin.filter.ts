@@ -18,6 +18,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
+        const request = ctx.getRequest();
         const response = ctx.getResponse();
         const nestjsMessage = exception.message;
         let message;
@@ -48,6 +49,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             errorCode = ErrorCode.ERROR.CODE;
             message = ErrorCode.ERROR.MESSAGE;
             this.logger.error([exception.message, exception.stack].join('\n'), '');
+        }
+        const apiPrefix = this.configService.server.apiPrefix;
+        if (errorCode === ErrorCode.LoginTimeout.CODE && request.originalUrl.indexOf(apiPrefix) !== 0) {
+            const redirectURL = encodeURIComponent(request.originalUrl);
+            let url = '/signin.html';
+            if (redirectURL) {
+                url = `${url}?redirectURL=${redirectURL}`;
+            }
+            response.redirect(url);
+            return;
         }
         response.status(HttpStatus.OK).json({
             errorCode,

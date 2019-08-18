@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from 'app.module';
+import { AppModule } from './app.module';
 import bootstrap from './bootstrap';
 
 declare const module: any;

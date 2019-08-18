@@ -1,0 +1,65 @@
+body {
+    background-color: #f1f1f1;
+}
+
+.main {
+    min-height: 750px;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 40px;
+}
+
+.main .logo {
+    position: absolute;
+    top: 56px;
+    margin-left: 50px;
+}
+
+.main .logo img {
+    width: 160px;
+    height: auto;
+}
+
+#app {
+    padding-top: 120px;
+}
+
+.tree-box {
+    width: 1000px;
+    padding: 20px;
+    min-height: 600px;
+    background: #fff;
+    margin: 0 auto;
+}
+
+.ivu-tree ul {
+    text-align: left;
+}
+
+.code-info-box {
+    width: 1000px;
+    background: #fff;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+.code-info-title {
+    background-color: #f8f8f9;
+    color: rgb(81, 90, 110);
+    font-size: 12px;
+    text-align: center;
+    font-weight: 700;
+    height: 32px;
+    line-height: 32px;
+    border: 1px #e8eaec solid;
+    border-right: none;
+}
+
+.code-info-label {
+    font-size: 12px;
+    text-align: center;
+    height: 32px;
+    line-height: 32px;
+    border-left: 1px #e8eaec solid;
+    border-bottom: 1px #e8eaec solid;
+}
