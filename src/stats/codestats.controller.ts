@@ -20,6 +20,11 @@ const ignores = [
     'package-lock.json',
     'LICENSE',
     'README',
+    'geetest.js',
+    'highlight.min.js',
+    'jqueryx-1.11.3.min.js',
+    'qrcode.min.js',
+    'simplemde.min.js',
 ];
 
 const ignoreMap = {};

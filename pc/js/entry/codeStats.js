@@ -8,11 +8,15 @@ import {
     Tree,
     Row,
     Col,
+    RadioGroup,
+    Radio,
 } from 'iview';
 
 Vue.component('Tree', Tree);
 Vue.component('Row', Row);
 Vue.component('Col', Col);
+Vue.component('RadioGroup', RadioGroup);
+Vue.component('Radio', Radio);
 
 new Vue({
     render: h => h(App),

@@ -1,5 +1,18 @@
 <template>
     <div id="app">
+        <div class="op-box">
+            <RadioGroup v-model="fileType" @on-change="onChange">
+                <Radio label="all">
+                    <span>全部</span>
+                </Radio>
+                <Radio label="readed">
+                    <span>已读</span>
+                </Radio>
+                <Radio label="remaining">
+                    <span>未读</span>
+                </Radio>
+            </RadioGroup>
+        </div>
         <div class="code-info-box">
             <Row type="flex">
                 <Col span="6" class="code-info-title">代码量</Col>
@@ -31,6 +44,7 @@ export default {
         const readed = [
             'pc/js/entry/codeStats.js',
             'pc/js/pages/CodeStats.vue',
+            'pc/styles/codeStats.scss',
             'src/stats/codestats.controller.ts',
             'views/pages/codeStats.njk',
             '.gitignore',
@@ -40,6 +54,7 @@ export default {
             readedMap[file] = true;
         });
         return {
+            fileType: 'all',
             isLoaded: false,
             readedMap,
             files: [],
@@ -87,6 +102,7 @@ export default {
                     codeLineCount: codeLineMap[file.filename],
                     readed: !!this.readedMap[file.filename],
                     expand: true,
+                    isDirectory: file.isDirectory
                 }
             });
             this.files = files;
@@ -95,17 +111,27 @@ export default {
         });
     },
     methods: {
+        onChange() {
+            this.createTree();
+        },
         createTree() {
-            const treeNodes = parseTree(this.files, {
-                dataKeys: ['expand', 'codeLineCount', 'readed'],
+            const files = this.files.filter(file => {
+                if (this.fileType === 'all') {
+                    return true;
+                }
+                const readed = this.fileType === 'readed';
+                // 当fileType不等于all时， 会保留多余的空目录
+                return file.isDirectory || file.readed === readed;
+            });
+            console.log(files);
+            const treeNodes = parseTree(files, {
+                dataKeys: ['expand', 'codeLineCount', 'readed', 'isDirectory'],
                 withParentRef: true,
                 rootID: '',
             });
             let list = treeNodes.slice(0);
-            console.log(list);
             while (list.length) {
                 const node = list[0];
-                console.log(node);
                 if (node.children && node.children.length) {
                     // 先把目录设为已读，然后再进行判断，只要目录下的文件，有一个文件（叶子结点）未读，那么再把目录设为未读
                     node.readed = true;
@@ -120,14 +146,43 @@ export default {
                 }
                 list.splice(0, 1);
             }
-            let list2 = treeNodes.slice(0);
-            while (list2.length) {
-                const node = list2[0];
+            if (this.fileType === 'readed' || this.fileType === 'remaining') {
+                // 删除多余的空目录
+                let list2 = treeNodes.slice(0);
+                const arr = [];
+                while (list2.length) {
+                    const node = list2[0];
+                    if (this.fileType === 'readed') {
+                        node.readed = true;
+                    } else if (this.fileType === 'remaining') {
+                        node.readed = false;
+                    }
+                    if (node.children && node.children.length) {
+                        list2 = list2.concat(node.children);
+                    }
+                    arr.push(list2[0]);
+                    list2.splice(0, 1);
+                }
+                arr.reverse();
+                // 从叶子结点往根遍历
+                while (arr.length) {
+                    const node = arr[0];
+                    if (node.isDirectory && (!node.children || !node.children.length)) {
+                        // 删除空目录
+                        const index = node.parent.children.indexOf(node);
+                        node.parent.children.splice(index, 1);
+                    }
+                    arr.splice(0, 1);
+                }
+            }
+            let list3 = treeNodes.slice(0);
+            while (list3.length) {
+                const node = list3[0];
                 if (node.children && node.children.length) {
-                    list2 = list2.concat(node.children);
+                    list3 = list3.concat(node.children);
                 }
                 delete node.parent;
-                list2.splice(0, 1);
+                list3.splice(0, 1);
             }
             this.treeNodes = treeNodes;
         },
