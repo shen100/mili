@@ -49,6 +49,108 @@
     </div>
 </template>
 
+<script>
+import { ArticleCollectionStatus } from '~/js/constants/entity.js';
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
+import { trim } from '~/js/utils/utils.js';
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
+
+export default {
+    name: 'App',
+    data: function() {
+        return {
+            includedModelVisible: false,
+            deleteModelVisible: false,
+            collectionID: window.collectionID,
+            creatorID: window.creatorID,
+            collectionTitle: window.collectionTitle,
+            articleCount: window.articleCount, // 专题下已收录的文章数
+            articles: [],
+            isLoading: true,
+            isCollectionAdmin: window.isCollectionAdmin,
+            ArticleCollectionStatus: ArticleCollectionStatus,
+            keyword: '',
+            inputTitle: ''
+        };
+    },
+    mounted: function() {
+        const self = this;
+        this.$nextTick(function() {
+            const includedBtn = document.getElementById('includedBtn');
+            const postToCollection = document.getElementById('postToCollection');
+            const deleteCollectionBtn = document.getElementById('deleteCollectionBtn');
+            includedBtn && includedBtn.addEventListener('click', () => {
+                self.includedModelVisible = true;
+            });
+            postToCollection && postToCollection.addEventListener('click', () => {
+                self.includedModelVisible = true;
+            });
+            deleteCollectionBtn && deleteCollectionBtn.addEventListener('click', () => {
+                self.deleteModelVisible = true;
+            });
+        });
+        this.reqMyArticles();
+    },
+    methods: {
+        reqMyArticles() {
+            this.articles = [];
+            let keyword = this.keyword || '';
+            if (keyword) {
+                keyword = encodeURIComponent(keyword);
+            }
+            const url = `/collections/${this.collectionID}/myarticles?q=${keyword}`;
+            myHTTP.get(url).then((res) => {
+                this.articles = res.data.data;
+            });
+        },
+        onCollectArticle(article) {
+            const url = `/collections/${this.collectionID}/articles/${article.id}`;
+            myHTTP.post(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    if (this.isCollectionAdmin) {
+                        article.collectionStatus = ArticleCollectionStatus.Collected;
+                    } else {
+                        article.collectionStatus = ArticleCollectionStatus.Auditing;
+                    }
+                }
+            });
+        },
+        onRemoveArticle(article) {
+            const url = `/collections/${this.collectionID}/articles/${article.id}`;
+            myHTTP.delete(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    article.collectionStatus = ArticleCollectionStatus.NotCollect;
+                }
+            });
+        },
+        onCloseCollectionModel() {
+            this.includedModelVisible = false;
+        },
+        onCloseDeleteModel() {
+            this.deleteModelVisible = false;
+        },
+        onDeleteCollection() {
+            let inputTitle = trim(this.inputTitle);
+            if (inputTitle !== collectionTitle) {
+                this.$refs.errorTip.show('专题名称错误');
+                return;
+            }
+            const url = `/collections/${this.collectionID}`;
+            myHTTP.delete(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    location.href = `/u/${this.creatorID}.html`;
+                }
+            });
+        }
+    },
+    components: {
+        ErrorTip,
+    }
+};
+</script>
+
+
 <style>
     .included-modal-header {
         padding: 20px;
@@ -130,101 +232,3 @@
         border: 1px solid rgba(0,0,0,.1);
     }
 </style>
-
-<script>
-import { ArticleCollectionStatus } from '~/js/constants/entity.js';
-import { myHTTP } from '~/js/common/net.js';
-import { ErrorCode } from '~/js/constants/error.js';
-import { trim } from '~/js/utils/utils.js';
-import ErrorTip from '~/js/components/common/ErrorTip.vue';
-
-export default {
-    name: 'App',
-    data: function() {
-        return {
-            includedModelVisible: false,
-            deleteModelVisible: false,
-            collectionID: window.collectionID,
-            creatorID: window.creatorID,
-            collectionTitle: window.collectionTitle,
-            articleCount: window.articleCount, // 专题下已收录的文章数
-            articles: [],
-            isLoading: true,
-            isCollectionAdmin: window.isCollectionAdmin,
-            ArticleCollectionStatus: ArticleCollectionStatus,
-            keyword: '',
-            inputTitle: ''
-        };
-    },
-    mounted: function() {
-        const self = this;
-        this.$nextTick(function() {
-            $('#includedBtn').click(function() {
-                self.includedModelVisible = true;
-            });
-            $('#postToCollection').click(function() {
-                self.includedModelVisible = true;
-            });
-            $('#deleteCollectionBtn').click(function() {
-                self.deleteModelVisible = true;
-            });
-        });
-        this.reqMyArticles();
-    },
-    methods: {
-        reqMyArticles() {
-            this.articles = [];
-            let keyword = this.keyword || '';
-            if (keyword) {
-                keyword = encodeURIComponent(keyword);
-            }
-            const url = `/collections/${this.collectionID}/myarticles?q=${keyword}`;
-            myHTTP.get(url).then((res) => {
-                this.articles = res.data.data;
-            });
-        },
-        onCollectArticle(article) {
-            const url = `/collections/${this.collectionID}/articles/${article.id}`;
-            myHTTP.post(url).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    if (this.isCollectionAdmin) {
-                        article.collectionStatus = ArticleCollectionStatus.Collected;
-                    } else {
-                        article.collectionStatus = ArticleCollectionStatus.Auditing;
-                    }
-                }
-            });
-        },
-        onRemoveArticle(article) {
-            const url = `/collections/${this.collectionID}/articles/${article.id}`;
-            myHTTP.delete(url).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    article.collectionStatus = ArticleCollectionStatus.NotCollect;
-                }
-            });
-        },
-        onCloseCollectionModel() {
-            this.includedModelVisible = false;
-        },
-        onCloseDeleteModel() {
-            this.deleteModelVisible = false;
-        },
-        onDeleteCollection() {
-            let inputTitle = trim(this.inputTitle);
-            if (inputTitle !== collectionTitle) {
-                this.$refs.errorTip.show('专题名称错误');
-                return;
-            }
-            const url = `/collections/${this.collectionID}`;
-            myHTTP.delete(url).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    location.href = `/u/${this.creatorID}.html`;
-                }
-            });
-        }
-    },
-    components: {
-        ErrorTip,
-    }
-};
-</script>

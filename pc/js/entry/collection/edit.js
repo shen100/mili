@@ -1,3 +1,4 @@
+import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
 import '~/js/common/default.js';
 import Vue from 'vue';
@@ -7,7 +8,6 @@ import {
 } from 'iview';
 
 Vue.component('Upload', Upload);
-
 new Vue({
     render: h => h(App),
 }).$mount('#app');

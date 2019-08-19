@@ -14,6 +14,7 @@
                 </div>
             </template>
         </Pinterest>
+        <BoilingPointModal />
     </div>
 </template>
 
@@ -23,6 +24,7 @@ import ArticleItem from '~/js/components/article/ArticleItem.vue';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import Pinterest from '~/js/components/common/Pinterest.vue';
+import BoilingPointModal from '~/js/components/boilingpoint/BoilingPointModal.vue';
 
 export default {
     data () {
@@ -44,6 +46,7 @@ export default {
         ArticleLoading,
         ArticleItem,
         Pinterest,
+        BoilingPointModal,
     }
 }
 </script>

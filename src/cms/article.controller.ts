@@ -10,6 +10,7 @@ import { ActiveGuard } from '../core/guards/active.guard';
 import { CurUser } from '../core/decorators/user.decorator';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
+import { APIPrefix } from '../constants/constants';
 
 @Controller()
 export class ArticleController {
@@ -31,7 +32,7 @@ export class ArticleController {
             userFollowed = await this.userService.isUserFollowed(user.id, article.user.id);
         }
         res.render('pages/article/articleDetail', {
-            isAuthorSelf: user && user.id === article.user.id,
+            isAuthorSelf: !!user && user.id === article.user.id,
             userLiked,
             userFollowed,
             article,
@@ -39,7 +40,7 @@ export class ArticleController {
         });
     }
 
-    @Get('/api/v1/articles')
+    @Get(`${APIPrefix}/articles`)
     async list(@Query('c') c: number, @Query('page', ParsePagePipe) page: number) {
         const categoryID = parseInt((c as any), 10) || 0;
         const pageSize = 20;
@@ -49,7 +50,7 @@ export class ArticleController {
         return this.articleService.list(page, pageSize);
     }
 
-    @Post('/api/v1/articles')
+    @Post(`${APIPrefix}/articles`)
     @UseGuards(ActiveGuard)
     async create(@CurUser() user, @Body() createArticleDto: CreateArticleDto) {
         user.articleCount++;
@@ -65,7 +66,7 @@ export class ArticleController {
         };
     }
 
-    @Put('/api/v1/articles')
+    @Put(`${APIPrefix}/articles`)
     @UseGuards(ActiveGuard)
     async update(@CurUser() user, @Body() updateArticleDto: UpdateArticleDto) {
         await Promise.all([
@@ -76,28 +77,28 @@ export class ArticleController {
         };
     }
 
-    @Put('/api/v1/articles/:id/closecomment')
+    @Put(`${APIPrefix}/articles/:id/closecomment`)
     @UseGuards(ActiveGuard)
     async closeComment(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.articleService.closeOrOpenComment(id, user.id, false);
         return {};
     }
 
-    @Put('/api/v1/articles/:id/opencomment')
+    @Put(`${APIPrefix}/articles/:id/opencomment`)
     @UseGuards(ActiveGuard)
     async openComment(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.articleService.closeOrOpenComment(id, user.id, true);
         return {};
     }
 
-    @Post('/api/v1/articles/:id/like')
+    @Post(`${APIPrefix}/articles/:id/like`)
     @UseGuards(ActiveGuard)
     async like(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.articleService.likeOrCancelLike(id, user.id);
         return {};
     }
 
-    @Post('/api/v1/articles/:id/cancellike')
+    @Post(`${APIPrefix}/articles/:id/cancellike`)
     @UseGuards(ActiveGuard)
     async cancelLike(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.articleService.likeOrCancelLike(id, user.id);

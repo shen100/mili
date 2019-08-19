@@ -66,6 +66,6 @@ var userID = {{ user.id }};
 </script>
 {% endblock %}
 
-{% block js %}
-<script src="{{jsPath}}/entry/collection/edit.js"></script>
+{% block devjs %}
+  {{ loadjs('entry/collection/edit.js') }}
 {% endblock %}

@@ -48,6 +48,8 @@ export default {
             'src/stats/codestats.controller.ts',
             'views/pages/codeStats.njk',
             '.gitignore',
+            '.prettierrc',
+            'nest-cli.json',
         ];
         const readedMap = {};
         readed.map(file => {

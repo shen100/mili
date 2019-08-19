@@ -1,3 +1,4 @@
+import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
 import '~/styles/collection/collection.css';
 import Vue from 'vue';
@@ -20,7 +21,7 @@ new Vue({
     render: h => h(App),
 }).$mount('#app');
 
-const followedBtn = $('#followed-' + window.collectionID);
+const followedBtn = document.getElementById('followed-' + window.collectionID);
 followedBtn.click(function() {
     const url = `/collections/${window.collectionID}/follow`;
     myHTTP.delete(url).then((res) => {
@@ -33,7 +34,7 @@ followedBtn.click(function() {
     });
 });
 
-const followBtn = $('#follow-' + window.collectionID);
+const followBtn = document.getElementById('follow-' + window.collectionID);
 followBtn.click(function() {
     const url = `/collections/${window.collectionID}/follow`;
     myHTTP.post(url).then((res) => {
