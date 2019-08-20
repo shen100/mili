@@ -7,15 +7,13 @@
                 <div class="boiling-point-title">发沸点</div>
                 <button @click="onClose" type="button" class="close">×</button>
             </div>
-            <CommentRichEditor ref="richEditor"
-                emptyPlaceholder="发布动态" @success="onSuccess"
-                @error="onError" :sendDefVisible="true" />
+            <BoilingPointEditor @success="onSuccess" />
         </div>
     </div>
 </template>
 
 <script>
-import CommentRichEditor from '~/js/components/editor/CommentRichEditor.vue';
+import BoilingPointEditor from '~/js/components/editor/BoilingPointEditor.vue';
 
 export default {
     data() {
@@ -37,12 +35,9 @@ export default {
         onSuccess() {
             this.modalVisible = false;
         },
-        onError() {
-
-        }
     },
     components: {
-        CommentRichEditor,
+        BoilingPointEditor,
     }
 }
 </script>
@@ -72,6 +67,7 @@ export default {
     width: 640px;
     padding: 20px;
     padding-top: 0;
+    padding-bottom: 6px;
     margin: 0 auto;
     background: #fff;
     position: relative;
@@ -83,8 +79,8 @@ export default {
     font-size: 16px;
     color: #17181a;
     text-align: center;
-    line-height: 42px;
-    height: 42px;
+    line-height: 38px;
+    height: 38px;
     font-weight: 500;
 }
 
@@ -109,7 +105,7 @@ export default {
     border: 0;
     -webkit-appearance: none;
     position: absolute;
-    top: 8px;
+    top: 6px;
     right: 0;
 }
 </style>

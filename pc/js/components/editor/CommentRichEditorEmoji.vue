@@ -1,9 +1,34 @@
 <template>
     <EditorMenuBar :editor="editor">
         <div v-clickoutside="onClickOutside" class="helloman" slot-scope="{ commands, }">
-            <a @click="switchEmojiVisible" class="emoji">
-                <i class="iconfont ic-comment-emotions"></i>
-            </a>
+            <template v-if="false">
+                <a @click="switchEmojiVisible" class="emoji">
+                    <i class="iconfont ic-comment-emotions"></i>
+                </a>
+            </template>
+            <template>
+                <a @click="switchEmojiVisible" class="boilingpoint">
+                    <i class="iconfont ic-comment-emotions"></i>
+                    <div class="label">表情</div>
+                </a>
+                <a class="up-img" :class="{'not-allowed': !uploadAllowed}">
+                    <Uploader v-if="uploadAllowed" @uploading="onImgUploading" @success="onImgUploadSuccess" 
+                        @error="onImgUploadFail">
+                        <template>
+                            <i class="iconfont ic-picture"></i>       
+                            <div class="label">图片</div>  
+                        </template>   
+                    </Uploader>
+                    <template v-else>
+                        <i class="iconfont ic-picture not-allowed"></i>
+                        <div class="label">图片</div>  
+                    </template>
+                </a>
+                <a class="topic" style="margin-left: 20px;">
+                    <div class="label">#</div>
+                    <div class="label">话题</div>
+                </a>
+            </template>
             <div v-if="emojiVisible" class="emoji-modal arrow-top">
                 <ul id="emojiTab" class="emoji-nav-tabs modal-header">
                     <li @click="changeTab(index)" :class="{active: index === tabIndex}" 
@@ -834,10 +859,12 @@
 
 <script>
 import { EditorMenuBar } from 'tiptap';
+import Uploader from '~/js/components/common/Uploader.vue';
 
 export default {
     props: [
-        'editor'
+        'editor',
+        'uploadAllowed'
     ],
     data () {
         return {
@@ -862,14 +889,23 @@ export default {
             const imgURL = img.getAttribute('src');
             commands.image({ src: imgURL });
             this.emojiVisible = false;
-        }
+        },
+        onImgUploading() {
+        },
+        onImgUploadSuccess(imgURL) {
+            console.log(imgURL);
+            this.$emit('imgUploadSuccess', imgURL);
+        },
+        onImgUploadFail(message) {
+            this.$refs.errorTip.show(message);
+        },
     },
     components: {
         EditorMenuBar,
+        Uploader,
     },
 }
 </script>
-
 
 <style>
 .comment-editor-box .emoji-modal-wrap .emoji-modal {
@@ -970,5 +1006,69 @@ export default {
     vertical-align: middle;
     border: 0;
     user-select: none;
+}
+
+.comment-editor-box .boilingpoint {
+    margin: 15px 0 0;
+    float: left;
+    margin-top: 18px;
+    line-height: 22px;
+}
+
+.comment-editor-box .boilingpoint:hover {
+    text-decoration: none;
+}
+
+.comment-editor-box .boilingpoint i {
+    font-size: 14px;
+    color: #027fff;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.comment-editor-box .up-img {
+    margin: 15px 0 0;
+    float: left;
+    margin-top: 18px;
+    margin-left: 20px;
+    line-height: 22px;
+}
+
+.comment-editor-box .up-img:hover {
+    text-decoration: none;
+}
+
+.comment-editor-box .label {
+    font-size: 13px;
+    margin: 0 0 0 4px;
+    color: #027fff;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 22px;
+}
+
+.comment-editor-box .up-img i {
+    font-size: 16px;
+    color: #027fff;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.comment-editor-box .up-img .ic-picture:before {
+    content: "\E6B2";
+}
+
+.comment-editor-box .topic {
+    margin-top: 18px;
+    float: left;
+}
+
+.comment-editor-box .topic:hover {
+    text-decoration: none;
+}
+
+.comment-editor-box .not-allowed, .comment-editor-box .not-allowed .label {
+    color: #aeb6c0!important;
+    cursor: not-allowed;
 }
 </style>

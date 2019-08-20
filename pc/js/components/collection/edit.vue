@@ -160,9 +160,6 @@ export default {
             this.coverURL = '';
             this.$refs.errorTip.show(message);
         },
-        onUploadError(message) {
-            this.$refs.errorTip.show(message);
-        },
         onCreateCollection() {
             const name = trim(this.name);
             if (!name) {

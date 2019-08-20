@@ -1,15 +1,23 @@
 <template>
     <div v-clickoutside="onClickOutside" class="comment-editor-box">
-        <div @keydown.meta.enter="onComment" @keydown.ctrl.enter="onComment" class="comment-editor-cbox">
+        <div @keydown.meta.enter="onComment" @keydown.ctrl.enter="onComment" 
+            class="comment-editor-cbox" :class="{'comment-editor-cbox-boilingpoint': editorType === 'boilingpoint'}">
             <editor-content class="mili-editor-content" :editor="editor" />
         </div>
+        <slot name="upload-list"></slot>
         <div v-if="sendVisible" class="write-function-block">
             <div class="emoji-modal-wrap">
-                <CommentRichEditorEmoji :editor="editor" />
+                <CommentRichEditorEmoji :uploadAllowed="uploadAllowed" @imgUploadSuccess="onImgUploadSuccess" :editor="editor" />
             </div>
-            <div class="hint">Ctrl or ⌘ + Enter 发表</div>
-            <a @click="onComment" class="btn btn-send">发送</a>
-            <a @click="onCancelComment" class="cancel">取消</a>
+            <template v-if="editorType === 'comment'">
+                <div class="hint">Ctrl or ⌘ + Enter 发表</div>
+                <a @click="onComment" class="btn btn-send">发送</a>
+                <a @click="onCancelComment" class="cancel">取消</a>
+            </template>
+            <template>
+                <button class="btn btn-send-boilingpoint">发布</button>
+                <div v-if="editorType === 'boilingpoint'" class="hint-boilingpoint">Ctrl or ⌘ + Enter</div>
+            </template>
         </div>
     </div>
 </template>
@@ -34,6 +42,8 @@ import CommentRichEditorEmoji from '~/js/components/editor/CommentRichEditorEmoj
 export default {
     name: 'CommentRichEditor',
     props: [
+        'uploadAllowed', // 是否允许上传图片
+        'editorType', // comment, boilingpoint
         'commentType',
         'articleID',
         'parentID',
@@ -123,6 +133,9 @@ export default {
             }).catch((err) => {
                 this.isSaving = false;
             });
+        },
+        onImgUploadSuccess(imgURL) {
+            this.$emit('imgUploadSuccess', imgURL);
         }
     },
     mounted() {
@@ -147,6 +160,14 @@ export default {
     border: 1px solid #dcdcdc;
     border-radius: 4px;
     background-color: hsla(0, 0%, 71%, .1);
+}
+
+.comment-editor-cbox-boilingpoint {
+    background-color: #f9fafb;
+    border-bottom: 0;
+    border-radius: 2px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .comment-editor-cbox p {
@@ -211,14 +232,19 @@ export default {
     content: "\E64A";
 }
 
-.comment-editor-box .hint {
+.comment-editor-box .hint, .comment-editor-box .hint-boilingpoint {
     float: left;
     margin: 20px 0 0 20px;
     font-size: 13px;
     color: #969696;
 }
 
-.comment-editor-box .btn-send {
+.comment-editor-box .hint-boilingpoint {
+    float: right;
+    margin-right: 10px;
+}
+
+.comment-editor-box .btn-send, .comment-editor-box .btn-send-boilingpoint {
     box-sizing: border-box;
     float: right;
     width: 78px;
@@ -236,6 +262,17 @@ export default {
 
 .comment-editor-box .btn-send:hover {
     background-color: #3db922;
+}
+
+.comment-editor-box .btn-send-boilingpoint {
+    opacity: .2;
+    cursor: not-allowed;
+    padding: 0;
+    width: 72px;
+    height: 32px;
+    border-radius: 2px;
+    background-color: #027fff;
+    margin-top: 12px;
 }
 
 .comment-editor-box .cancel {
