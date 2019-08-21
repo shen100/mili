@@ -7,7 +7,6 @@ import { CategoryService } from './category.service';
 import { User } from '../entity/user.entity';
 import { Article } from '../entity/article.entity';
 import { UserModule } from '../user/user.module';
-import { AdminController } from './admin.controller';
 import { IndexController } from './index.controller';
 import { UCController } from './uc.controller';
 import { SearchController } from './search.controller';
@@ -73,7 +72,6 @@ import { OSSService } from '../common/oss.service';
         MessageController,
         SearchController,
         RecommendController,
-        AdminController,
         TagController,
     ],
     providers: [
@@ -89,6 +87,9 @@ import { OSSService } from '../common/oss.service';
         OSSService,
         SearchService,
         TagService,
+    ],
+    exports: [
+        ArticleService,
     ],
 })
 export class CMSModule {}

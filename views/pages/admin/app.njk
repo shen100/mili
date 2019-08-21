@@ -1,18 +1,12 @@
 {% extends '../../layout/admin.njk' %}
 
-{% block headjs %}
-<script src="{{jsPath}}/libs/geetest.js"></script>
-{% endblock %}
-
 {% block main %}
 <div id="app"></div>
 {% endblock %}
 
-{% block css %}
-
+{% block libjs %}
 {% endblock %}
 
-
-{% block js %}
-<script src="{{jsPath}}/entry/admin/app.js"></script>
+{% block devjs %}
+    {{ loadjs('entry/admin/app.js') }}
 {% endblock %}

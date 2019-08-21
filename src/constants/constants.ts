@@ -1,4 +1,6 @@
 export const APIPrefix: string = '/api/v1';
+export const AdminAPIPrefix: string = '/api/v1';
+export const AdminPageURL: string = '/admin';
 
 export const NO_PARENT = 0;
 

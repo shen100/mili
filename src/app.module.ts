@@ -11,6 +11,8 @@ import { LoggerModule } from './logger/logger.module';
 import { StatsModule } from './stats/stats.module';
 import * as csurf from 'csurf';
 import { LocalsMiddleware } from './core/middleware/locals.middleware';
+import { BoilingPointModule } from './boilingpoint/boilingpoint.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
     imports: [
@@ -32,7 +34,9 @@ import { LocalsMiddleware } from './core/middleware/locals.middleware';
         }),
         UserModule,
         CMSModule,
+        BoilingPointModule,
         StatsModule,
+        AdminModule,
     ],
 })
 export class AppModule implements NestModule {

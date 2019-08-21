@@ -14,7 +14,7 @@ export class UserMiddleware implements NestMiddleware {
         private readonly userService: UserService,
     ) {}
 
-    use(request: Request, response: Response, next: Function) {
+    use(request: Request, response: Response, next: any) {
         const req: any = request;
         const res: any = response;
         const tokenName: string = this.configService.server.tokenName;

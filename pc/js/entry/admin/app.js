@@ -1,3 +1,5 @@
+import 'iview/dist/styles/iview.css';
+import '~/styles/admin.scss';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from '~/js/components/admin/app.vue';
