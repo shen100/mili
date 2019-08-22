@@ -2,13 +2,30 @@ import 'iview/dist/styles/iview.css';
 import '~/styles/admin.scss';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import App from '~/js/components/admin/app.vue';
+import App from '~/js/pages/admin/layout.vue';
+
+import {
+    Icon,
+    Menu,
+    MenuGroup,
+    MenuItem,
+    Submenu,
+    Table,
+} from 'iview';
+
+Vue.component('Icon', Icon);
+Vue.component('Menu', Menu);
+Vue.component('MenuGroup', MenuGroup);
+Vue.component('MenuItem', MenuItem);
+Vue.component('Submenu', Submenu);
+Vue.component('Table', Table);
 
 Vue.use(VueRouter);
-console.log('=-=-=-');
+
 const routes = [
-    { path: '/', component: () => import('~/js/components/admin/index.vue') },
-    { path: '*', component: () => import('~/js/components/admin/404.vue') }
+    { path: '/', component: () => import('~/js/pages/admin/index.vue') },
+    { path: '/boilingpoint/topic', component: () => import('~/js/pages/admin/boilingpoint/Topic.vue') },
+    { path: '*', component: () => import('~/js/pages/admin/404.vue') }
 ];
 
 const router = new VueRouter({

@@ -23,7 +23,4 @@ export class BoilingPointService {
         @InjectRepository(BoilingPoint)
         private readonly boilingPointRepository: Repository<BoilingPoint>,
     ) {}
-
-    async detail(id: number) {
-    }
 }

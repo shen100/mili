@@ -13,7 +13,10 @@ export class BoilingPointTopic {
     updatedAt: Date;
 
     @Column('varchar', { length: 200 })
-    title: string;
+    name: string;
+
+    @Column('int')
+    order: number;
 }
 
 @Entity({name: 'boilingpoints'})

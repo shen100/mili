@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository, Not, Like, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BoilingPointTopic } from '../entity/boilingpoint.entity';
+import { CreateTopicDto } from './dto/create-topic.dto';
 
 @Injectable()
 export class TopicService {
@@ -14,6 +15,18 @@ export class TopicService {
         private readonly topicRepository: Repository<BoilingPointTopic>,
     ) {}
 
-    async detail(id: number) {
+    async create(createTopicDto: CreateTopicDto) {
+        return await this.topicRepository.create({
+            name: createTopicDto.name,
+            order: createTopicDto.order,
+        });
+    }
+
+    async list() {
+        return await this.topicRepository.find({
+            order: {
+                order: 'ASC',
+            },
+        });
     }
 }
