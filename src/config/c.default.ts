@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-const domain = 'dev.golang123.com';
+const domain = 'localhost';
 const port = 9905;
 const url = `http://${domain}:${port}`;
 const mDomain = 'mdev.golang123.com';

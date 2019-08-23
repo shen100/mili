@@ -11,13 +11,17 @@ export class TopicController {
         private readonly topicService: TopicService,
     ) {}
 
-    @Post(`${AdminAPIPrefix}/topics`)
+    @Post(`${AdminAPIPrefix}/boilingpoint/topics`)
     async create(@Body() createTopicDto: CreateTopicDto) {
         await this.topicService.create(createTopicDto);
+        return {};
     }
 
-    @Get(`${AdminAPIPrefix}/topics`)
+    @Get(`${AdminAPIPrefix}/boilingpoint/topics`)
     async list() {
         const topics = await this.topicService.list();
+        return {
+            topics,
+        };
     }
 }

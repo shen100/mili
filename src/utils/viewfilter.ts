@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 
-export const imgAbsoluteURL = (staticURL: String, imgURL: string): string => {
+export const imgAbsoluteURL = (staticURL: string, imgURL: string): string => {
     imgURL = imgURL || '';
     if (imgURL.indexOf('http') === 0) {
         return imgURL;

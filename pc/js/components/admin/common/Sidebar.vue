@@ -54,7 +54,10 @@
                 沸点管理
             </template>
             <router-link to="/boilingpoint/list">
-                <MenuItem name="/boilingpoint/list">全部沸点</MenuItem>
+                <MenuItem name="/boilingpoint/list">沸点</MenuItem>
+            </router-link>
+            <router-link to="/boilingpoint/topic">
+                <MenuItem name="/boilingpoint/topic">话题</MenuItem>
             </router-link>
         </Submenu>
         <Submenu name="user">

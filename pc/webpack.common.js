@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const stylesPath = path.join(__dirname, 'public', 'styles');
 const jsPath = path.join(__dirname, 'public', 'js');
 
-const publicPath = process.env.PUBLIC_PATH || 'http://dev.golang123.com:9906/';
+const publicPath = process.env.PUBLIC_PATH || 'http://localhost:9906/';
 
 console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 

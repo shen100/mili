@@ -16,7 +16,7 @@ export class BoilingPointTopic {
     name: string;
 
     @Column('int')
-    order: number;
+    sequence: number;
 }
 
 @Entity({name: 'boilingpoints'})

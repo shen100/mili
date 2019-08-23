@@ -1,9 +1,5 @@
-import * as _ from 'lodash';
-import * as marked from 'marked';
-import * as moment from 'moment';
-import * as striptags from 'striptags';
 import { Injectable } from '@nestjs/common';
-import { Repository, Not, Like, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BoilingPointTopic } from '../entity/boilingpoint.entity';
 import { CreateTopicDto } from './dto/create-topic.dto';
@@ -16,16 +12,19 @@ export class TopicService {
     ) {}
 
     async create(createTopicDto: CreateTopicDto) {
-        return await this.topicRepository.create({
+        const now = new Date();
+        return await this.topicRepository.insert({
             name: createTopicDto.name,
-            order: createTopicDto.order,
+            sequence: createTopicDto.sequence,
+            createdAt: now,
+            updatedAt: now,
         });
     }
 
     async list() {
         return await this.topicRepository.find({
             order: {
-                order: 'ASC',
+                sequence: 'ASC',
             },
         });
     }

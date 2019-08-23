@@ -7,6 +7,8 @@ import {
 import { UserModule } from '../user/user.module';
 import { BoilingPointController } from './boilingpoint.controller';
 import { BoilingPointService } from './boilingpoint.service';
+import { TopicController } from './topic.controller';
+import { TopicService } from './topic.service';
 
 @Module({
     imports: [
@@ -18,9 +20,11 @@ import { BoilingPointService } from './boilingpoint.service';
     ],
     controllers: [
         BoilingPointController,
+        TopicController,
     ],
     providers: [
         BoilingPointService,
+        TopicService,
     ],
 })
 export class BoilingPointModule {}

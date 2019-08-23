@@ -1,1 +1,11 @@
 @import './reset.scss';
+
+.admin-modal-footer {
+    padding-top: 10px;
+    border-top: 1px solid #e8eaec;
+    text-align: right;
+}
+
+.admin-modal-footer .ok {
+    margin-left: 10px;
+}
