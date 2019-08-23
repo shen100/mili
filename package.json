@@ -68,9 +68,6 @@
     "typescript": "3.4.3",
     "wait-on": "^3.2.0"
   },
-  "husky": {
-    "hooks": {}
-  },
   "jest": {
     "moduleFileExtensions": [
       "js",
