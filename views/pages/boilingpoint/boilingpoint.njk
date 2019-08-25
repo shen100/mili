@@ -1,0 +1,87 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="main-box">
+    <div class="dock-shadow">
+        <nav class="dock-nav">
+            <ul class="boiling-nav-list">
+                <li class="boiling-nav-item {% if topicID === 'recommended' %} active {% endif %}">
+                    <a href="/boiling/recommended">推荐 </a>
+                </li>
+                <li class="boiling-nav-item {% if topicID === 'hot' %} active {% endif %}">
+                    <a  href="/boiling/hot">热门</a>
+                </li>
+                <li class="boiling-nav-item {% if topicID === 'following' %} active {% endif %}">
+                    <a href="/boiling/following">关注</a>
+                </li>
+                {% for topic in topics %}
+                <li class="boiling-nav-item {% if topicID === topic.id %} active {% endif %}">
+                    <a href="/boiling/topic/{{topic.id}}">{{topic.name}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+    <div class="stream">
+        <div id="centerBox"></div>
+    </div>
+    <aside class="boiling-sidebar">
+        <div class="boiling-profile-box">
+            <div class="boiling-profile">
+                <a href="/user/5872f33b61ff4b005c490f1c" target="_blank">
+                    <div class="boiling-avatar" style="background-image: url({{user.avatarURL}})"></div>
+                </a>
+                <div class="boiling-user-info">
+                    <a href="/user/5872f33b61ff4b005c490f1c" target="_blank" class="boiling-username">shen100</a>
+                    <div class="boiling-position"></div>
+                </div>
+            </div>
+            <ul class="boiling-stat-list">
+                <a href="/user/5872f33b61ff4b005c490f1c/pins" target="_blank" class="boiling-item">
+                    <div class="boiling-title">沸点</div>
+                    <div class="boiling-count">5</div>
+                </a>
+                <a href="/user/5872f33b61ff4b005c490f1c/following" target="_blank" class="boiling-item">
+                    <div class="boiling-title">关注</div>
+                    <div class="boiling-count">24</div>
+                </a>
+                <a href="/user/5872f33b61ff4b005c490f1c/followers" target="_blank" class="boiling-item">
+                    <div class="boiling-title">关注者</div>
+                    <div class="boiling-count">0</div>
+                </a>
+            </ul>
+        </div>
+        <div class="related-pin-block pin-block">
+            <header>推荐沸点</header>
+            <ul class="pin-list">
+                <li class="pin-item">
+                    <a href="/pin/5d61157a6fb9a07d87242cf7" target="_blank" title="都周六这个点了😭😭" class="pin">
+                        <div class="boiling-content-box">
+                            <div class="boiling-content">都周六这个点了😭😭</div>
+                            <div class="boiling-stat1">
+                                <span >15 赞 · </span>
+                                <span >43 评论</span>
+                            </div>
+                        </div>
+                        <div class="boiling-image-box"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block pageData %}
+<script>
+    var topicID = '{{ topicID }}';
+    var uploadPolicy = {{ uploadPolicy | dump | safe }};
+</script>
+{% endblock %}
+
+{% block libjs %}
+{% endblock %}
+
+{% block devjs %}
+    {{ loadjs('entry/boilingpoint/boilingpoint.js') }}
+{% endblock %}

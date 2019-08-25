@@ -91,7 +91,6 @@ import AgreementAlert from '~/js/components/handbook/AgreementAlert.vue';
 import PriceAlert from '~/js/components/handbook/PriceAlert.vue';
 import { ArticleContentType } from '~/js/constants/article.js';
 import { trim } from '~/js/utils/utils.js';
-import { isContentEmpty } from '~/js/utils/dom.js';
 
 export default {
     props: [

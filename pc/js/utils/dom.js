@@ -111,12 +111,13 @@ export const getScrollPos = function () {
     };
 };
 
-export const isContentEmpty = function (content, isRich) {
-    if (isRich) {
+export const isContentEmpty = function (content, editorType) {
+    if (editorType === 'rich') {
         if (!content || content === '<p></p>') {
             return true;
         }
     } else {
+        // markdown
         if (!content) {
             return true;
         }

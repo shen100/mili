@@ -175,7 +175,7 @@ export default {
             const cID = this.categoryID || undefined;
             const tagID = this.tagID || undefined;
             const coverURL = this.coverURL || '';
-            if (!articleTitle && isContentEmpty(articleContent, this.isRich)) {
+            if (!articleTitle && isContentEmpty(articleContent, this.isRich ? 'rich' : 'md')) {
                 return;
             }
             if (this.lastSaveDraftTitle === articleTitle && this.lastSaveDraftContent === articleContent
@@ -236,7 +236,7 @@ export default {
                 this.$refs.errorTip.show('请输入标题');
                 return;
             }
-            if (isContentEmpty(this.articleContent, this.isRich)) {
+            if (isContentEmpty(this.articleContent, this.isRich ? 'rich' : 'md')) {
                 this.$refs.errorTip.show('请输入正文');
                 return;
             }

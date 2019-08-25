@@ -7,7 +7,7 @@ import { ConfigModule } from './config/config.module';
 import { RedisModule } from './redis/redis.module';
 import { CMSModule } from './cms/cms.module';
 import { UserMiddleware } from './core/middleware/user.middleware';
-import { LoggerModule } from './logger/logger.module';
+import { CommonModule } from './common/common.module';
 import { StatsModule } from './stats/stats.module';
 import * as csurf from 'csurf';
 import { LocalsMiddleware } from './core/middleware/locals.middleware';
@@ -16,8 +16,8 @@ import { AdminModule } from './admin/admin.module';
 
 @Module({
     imports: [
-        LoggerModule,
         ConfigModule,
+        CommonModule,
         TypeOrmModule.forRootAsync({
             useFactory: async (configService: ConfigService) => {
                 // typeorm bug, https://github.com/nestjs/nest/issues/1119

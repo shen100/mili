@@ -11,10 +11,10 @@ import { ActiveGuard } from '../core/guards/active.guard';
 import { HandBookService } from './handbook.service';
 import { OSSService } from '../common/oss.service';
 import { APIPrefix } from '../constants/constants';
-import { 
-    UpdateHandbookChapterNameDto, 
-    UpdateHandbookChapterContentDto, 
-    UpdateHandbookChapterTryReadDto 
+import {
+    UpdateHandbookChapterNameDto,
+    UpdateHandbookChapterContentDto,
+    UpdateHandbookChapterTryReadDto,
 } from './dto/update-handbook-chapter.dto';
 import { CreateHandbookChapterDto } from './dto/create-handbook-chapter.dto';
 import { UpdateHandbookIntroduceDto, CommitHandbookDto } from './dto/update-handbook.dto';

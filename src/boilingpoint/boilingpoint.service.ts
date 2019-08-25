@@ -1,21 +1,8 @@
-import * as _ from 'lodash';
-import * as marked from 'marked';
-import * as moment from 'moment';
-import * as striptags from 'striptags';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { Article, ArticleStatus, ArticleContentType } from '../entity/article.entity';
-import { ArticleConstants } from '../constants/constants';
-import { Repository, Not, Like, In } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from '../entity/category.entity';
-import { MyLoggerService } from '../logger/logger.service';
-import { ConfigService } from '../config/config.service';
-import { UserRole, User } from '../entity/user.entity';
-import { ErrorCode } from '../constants/error';
-import { MyHttpException } from '../core/exception/my-http.exception';
-import { ListResult } from '../entity/interface';
-import { Tag } from '../entity/tag.entity';
-import { BoilingPointTopic, BoilingPoint } from '../entity/boilingpoint.entity';
+import { BoilingPoint } from '../entity/boilingpoint.entity';
+import { EditBoilingPointDto } from './dto/edit-boilingpoint.dto';
 
 @Injectable()
 export class BoilingPointService {
@@ -23,4 +10,24 @@ export class BoilingPointService {
         @InjectRepository(BoilingPoint)
         private readonly boilingPointRepository: Repository<BoilingPoint>,
     ) {}
+
+    async list(topicID: number) {
+        return await this.boilingPointRepository.find({
+            where: {
+                topicID,
+            },
+        });
+    }
+
+    async create(editBoilingPointDto: EditBoilingPointDto, userID: number) {
+        const now = new Date();
+        return await this.boilingPointRepository.insert({
+            htmlContent: editBoilingPointDto.htmlContent,
+            imgs: editBoilingPointDto.imgs && editBoilingPointDto.imgs.length ? editBoilingPointDto.imgs.join(',') : '',
+            createdAt: now,
+            commentCount: 0,
+            browseCount: 0,
+            userID,
+        });
+    }
 }

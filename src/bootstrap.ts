@@ -1,7 +1,7 @@
 import { ConfigService } from './config/config.service';
 import * as helmet from 'helmet';
 import { TransformResInterceptor } from './core/interceptors/transform-res.interceptor';
-import { MyLoggerService } from './logger/logger.service';
+import { MyLoggerService } from './common/logger.service';
 import { GlobalExceptionFilter } from './core/filters/global-exceptoin.filter';
 import { ValidateDtoPipe } from './core/pipes/validate-dto.pipe';
 import * as nunjucks from 'nunjucks';

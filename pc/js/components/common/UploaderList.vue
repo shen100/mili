@@ -29,6 +29,9 @@ export default {
         addImg(imgURL) {
             this.imgs.push(imgURL);
         },
+        getImgs() {
+            return this.imgs.slice(0);
+        },
         onImgUploading() {
         },
         onImgUploadSuccess(imgURL) {
@@ -39,8 +42,8 @@ export default {
             this.$refs.errorTip.show(message);
         },
         onRemove(index) {
-            this.imgs.splice(index, 1);
-            this.$emit('remove');
+            const imgURL = this.imgs.splice(index, 1);
+            this.$emit('remove', imgURL);
         }
     },
     components: {

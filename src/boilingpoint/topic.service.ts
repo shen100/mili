@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BoilingPointTopic } from '../entity/boilingpoint.entity';
-import { CreateTopicDto } from './dto/create-topic.dto';
+import { EditTopicDto } from './dto/edit-topic.dto';
 
 @Injectable()
 export class TopicService {
@@ -11,13 +11,21 @@ export class TopicService {
         private readonly topicRepository: Repository<BoilingPointTopic>,
     ) {}
 
-    async create(createTopicDto: CreateTopicDto) {
+    async create(editTopicDto: EditTopicDto) {
         const now = new Date();
         return await this.topicRepository.insert({
-            name: createTopicDto.name,
-            sequence: createTopicDto.sequence,
+            name: editTopicDto.name,
+            sequence: editTopicDto.sequence,
             createdAt: now,
             updatedAt: now,
+        });
+    }
+
+    async basic(id: number): Promise<BoilingPointTopic> {
+        return await this.topicRepository.findOne({
+            where: {
+                id,
+            },
         });
     }
 
@@ -26,6 +34,16 @@ export class TopicService {
             order: {
                 sequence: 'ASC',
             },
+        });
+    }
+
+    async update(updateTopicDto: EditTopicDto) {
+        return await this.topicRepository.update({
+            id: updateTopicDto.id,
+        }, {
+            name: updateTopicDto.name,
+            sequence: updateTopicDto.sequence,
+            updatedAt: new Date(),
         });
     }
 }

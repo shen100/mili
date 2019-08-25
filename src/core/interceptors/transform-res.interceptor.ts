@@ -3,7 +3,7 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { Observable } from 'rxjs';
 import { map, throttleTime } from 'rxjs/operators';
 import { ConfigService } from '../../config/config.service';
-import { MyLoggerService } from '../../logger/logger.service';
+import { MyLoggerService } from '../../common/logger.service';
 import { ErrorCode } from '../../constants/error';
 
 @Injectable()

@@ -15,7 +15,7 @@
                 <a @click="onCancelComment" class="cancel">取消</a>
             </template>
             <template>
-                <button class="btn btn-send-boilingpoint">发布</button>
+                <button @click="onBoilingpointSubmit" class="btn btn-send-boilingpoint" :class="{active: !contentIsEmpty}">发布</button>
                 <div v-if="editorType === 'boilingpoint'" class="hint-boilingpoint">Ctrl or ⌘ + Enter</div>
             </template>
         </div>
@@ -42,6 +42,7 @@ import CommentRichEditorEmoji from '~/js/components/editor/CommentRichEditorEmoj
 export default {
     name: 'CommentRichEditor',
     props: [
+        'placeholder',
         'uploadAllowed', // 是否允许上传图片
         'editorType', // comment, boilingpoint
         'commentType',
@@ -69,7 +70,19 @@ export default {
             }),
             sendVisible: this.sendDefVisible,
             isSaving: false,
+            contentIsEmpty: true,
         };
+    },
+    mounted() {
+        const self = this;
+        this.editor.on('update', ({ getHTML }) => {
+            let content = trim(this.getHTML() || '');
+            if (isContentEmpty(content, 'rich')) {
+                self.contentIsEmpty = true;
+            } else {
+                self.contentIsEmpty = false;
+            }
+        })
     },
     beforeDestroy() {
         this.editor.destroy(); 
@@ -106,7 +119,7 @@ export default {
                 return;
             }
             let content = trim(this.editor.getHTML() || '');
-            if (isContentEmpty(content, true)) {
+            if (isContentEmpty(content, 'rich')) {
                 this.$emit('error', '回复内容不能为空');
                 return;
             }
@@ -136,11 +149,14 @@ export default {
         },
         onImgUploadSuccess(imgURL) {
             this.$emit('imgUploadSuccess', imgURL);
+        },
+        onBoilingpointSubmit() {
+            let content = trim(this.editor.getHTML() || '');
+            if (isContentEmpty(content, 'rich')) {
+                return;
+            }
+            this.$emit('boilingPointSubmit');
         }
-    },
-    mounted() {
-        this.$nextTick(() => {
-        });
     },
     components: {
         EditorContent,
@@ -249,6 +265,7 @@ export default {
     float: right;
     width: 78px;
     margin: 10px 0;
+    margin-bottom: 0;
     padding: 8px 18px;
     font-size: 16px;
     border: none;
@@ -258,6 +275,11 @@ export default {
     cursor: pointer;
     outline: none;
     display: block;
+}
+
+.btn-send-boilingpoint.active {
+    cursor: pointer!important;
+    opacity: 1!important;
 }
 
 .comment-editor-box .btn-send:hover {

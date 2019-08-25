@@ -10,7 +10,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../entity/category.entity';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { MyLoggerService } from '../logger/logger.service';
+import { MyLoggerService } from '../common/logger.service';
 import { ConfigService } from '../config/config.service';
 import { UserRole, User } from '../entity/user.entity';
 import { ErrorCode } from '../constants/error';

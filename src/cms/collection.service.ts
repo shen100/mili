@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Collection } from '../entity/collection.entity';
 import { Repository, Transaction, TransactionRepository } from 'typeorm';
 import { CreateCollectionDto } from './dto/create-collection.dto';
-import { MyLoggerService } from '../logger/logger.service';
+import { MyLoggerService } from '../common/logger.service';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ArticleCollectionStatus } from '../entity/collection.entity';
 import { ErrorCode } from '../constants/error';

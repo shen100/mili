@@ -33,8 +33,11 @@ export class BoilingPoint {
     @Column('int', { name: 'comment_count' })
     commentCount: number;
 
-    @Column('varchar', { length: 1000 })
+    @Column('varchar', { name: 'html_content', length: 1000 })
     htmlContent: string;
+
+    @Column('varchar', { length: 2000 })
+    imgs: string;
 
     @Column('int', { name: 'topic_id' })
     topicID: number;
