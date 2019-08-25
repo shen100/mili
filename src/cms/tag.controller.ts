@@ -13,8 +13,9 @@ import { CurUser } from '../core/decorators/user.decorator';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
-import { ListResult } from '../entity/interface';
+import { ListResult } from '../entity/listresult.entity';
 import { ArticleService } from './article.service';
+import { Tag } from '../entity/tag.entity';
 
 @Controller()
 export class TagController {
@@ -70,7 +71,7 @@ export class TagController {
         if (q) {
             q = decodeURIComponent(q);
         }
-        let listResult: ListResult;
+        let listResult: ListResult<Tag>;
         if (type === 'all') {
             listResult = await this.tagService.list(page, pageSize, order, q);
         } else {

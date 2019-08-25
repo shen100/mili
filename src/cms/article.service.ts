@@ -15,7 +15,7 @@ import { ConfigService } from '../config/config.service';
 import { UserRole, User } from '../entity/user.entity';
 import { ErrorCode } from '../constants/error';
 import { MyHttpException } from '../core/exception/my-http.exception';
-import { ListResult } from '../entity/interface';
+import { ListResult } from '../entity/listresult.entity';
 import { Tag } from '../entity/tag.entity';
 
 @Injectable()
@@ -107,7 +107,7 @@ export class ArticleService {
         });
     }
 
-    async list(page: number, pageSize: number): Promise<ListResult> {
+    async list(page: number, pageSize: number): Promise<ListResult<Article>> {
         const [list, count] = await this.articleRepository.findAndCount({
             select: {
                 id: true,
@@ -141,7 +141,7 @@ export class ArticleService {
         };
     }
 
-    async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult> {
+    async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult<Article>> {
         const [list, count] = await this.articleRepository.createQueryBuilder('a')
             .select(['a.id', 'a.name', 'a.createdAt', 'a.summary', 'a.commentCount',
                 'a.coverURL', 'a.likeCount', 'user.id', 'user.username', 'user.avatarURL'])
@@ -161,7 +161,7 @@ export class ArticleService {
         };
     }
 
-    async listInTag(tagID: number, order: string, page: number, pageSize: number): Promise<ListResult> {
+    async listInTag(tagID: number, order: string, page: number, pageSize: number): Promise<ListResult<Article>> {
         let orderStr = '';
         if (order === 'new') {
             orderStr = 'a.createdAt';

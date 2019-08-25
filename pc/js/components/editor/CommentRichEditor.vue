@@ -7,7 +7,10 @@
         <slot name="upload-list"></slot>
         <div v-if="sendVisible" class="write-function-block">
             <div class="emoji-modal-wrap">
-                <CommentRichEditorEmoji :uploadAllowed="uploadAllowed" @imgUploadSuccess="onImgUploadSuccess" :editor="editor" />
+                <CommentRichEditorEmoji :uploadAllowed="uploadAllowed" 
+                    @imgUploadSuccess="onImgUploadSuccess" 
+                    @topicClick="onTopicClick"
+                    :editor="editor" />
             </div>
             <template v-if="editorType === 'comment'">
                 <div class="hint">Ctrl or ⌘ + Enter 发表</div>
@@ -156,6 +159,9 @@ export default {
                 return;
             }
             this.$emit('boilingPointSubmit');
+        },
+        onTopicClick() {
+            this.$emit('topicClick');
         }
     },
     components: {

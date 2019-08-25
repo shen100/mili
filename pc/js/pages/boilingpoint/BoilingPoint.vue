@@ -1,12 +1,14 @@
 <template>
-    <div class="the-editor-box">
-        <BoilingPointEditor @publish="" placeholder="告诉你个小秘密，发沸点时添加话题会被更多小伙伴看见呦~"/>
-        <Pinterest url="/books" :start="1" :query="{topicID: topicID}" @load="onLoad">
+    <div>
+        <div class="the-editor-box">
+            <BoilingPointEditor @publish="onPublish" placeholder="告诉你个小秘密，发沸点时添加话题会被更多小伙伴看见呦~"/>
+        </div>
+        <Pinterest :url="url" :start="1" :query="{topicID: topicID}" @load="onLoad">
             <template v-slot:content>
                 <div>
-                    <div class="book-list">
+                    <ul class="boilingpoint-list">
                         <BoilingPointItem :key="item.id" v-for="item in boilingPoints" :data="item" />
-                    </div>
+                    </ul>
                 </div>
             </template>
         </Pinterest>
@@ -20,10 +22,15 @@ import Pinterest from '~/js/components/common/Pinterest.vue';
 
 export default {
     data () {
-        let topicID = window.topicID;
+        let topicID = parseInt(window.topicID, 10);
+        let url = '/boilingpoints';
+        if (isNaN(topicID)) {
+            url = `/${window.boilingPointType}`;
+        }
         return {
+            url,
             boilingPoints: [],
-            topicID: parseInt(topicID, 10),
+            topicID: topicID || undefined,
         };
     },
     mounted() {
@@ -32,7 +39,11 @@ export default {
     },
     methods: {
         onLoad(result) {
+            console.log('=====', result);
             this.boilingPoints = this.boilingPoints.concat(result.data.data.list);
+        },
+        onPublish() {
+
         }
     },
     components: {
@@ -52,6 +63,10 @@ export default {
 
 .the-editor-box .comment-editor-box {
     margin-top: 0;
+}
+
+.boilingpoint-list {
+    background: #f4f5f5;
 }
 </style>
 

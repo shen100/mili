@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { ArticleService } from './article.service';
-import { ListResult } from '../entity/interface';
+import { ListResult } from '../entity/listresult.entity';
 
 @Injectable()
 export class RecommendService {
@@ -28,7 +28,7 @@ export class RecommendService {
         });
     }
 
-    async recommendUsersWithRecentUpdate(page: number, pageSize: number): Promise<ListResult> {
+    async recommendUsersWithRecentUpdate(page: number, pageSize: number): Promise<ListResult<User>> {
         const [users, count] = await this.userRepository.findAndCount({
             select: {
                 id: true,

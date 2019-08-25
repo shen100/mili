@@ -1,5 +1,5 @@
-export interface ListResult {
-    list: any[];
+export class ListResult<T> {
+    list: T[];
     count: number;
     page: number;
     pageSize: number;

@@ -1,5 +1,5 @@
 import {
-    Controller, Get, Res, Param, Post, Body, UseGuards,
+    Controller, Get, Res, Param, Post, Body, UseGuards, Query,
 } from '@nestjs/common';
 import { BoilingPointService } from './boilingpoint.service';
 import { TopicService } from './topic.service';
@@ -12,6 +12,8 @@ import { APIPrefix } from '../constants/constants';
 import { CurUser } from '../core/decorators/user.decorator';
 import { ActiveGuard } from '../core/guards/active.guard';
 import { UserService } from '../user/user.service';
+import { MustIntPipe } from '../core/pipes/must-int.pipe';
+import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 
 @Controller()
 export class BoilingPointController {
@@ -22,38 +24,33 @@ export class BoilingPointController {
         private readonly ossService: OSSService,
     ) {}
 
-    @Get('/boiling/:idOrType')
-    async boilingView(@Param('idOrType') idOrType: string, @Res() res) {
-        let topicID;
-        if (idOrType === 'recommended') {
-            topicID = 'recommended';
-        } else if (idOrType === 'hot') {
-            topicID = 'hot';
-        } else if (idOrType === 'following') {
-            topicID = 'following';
-        } else if (isNaN(parseInt(topicID, 10))) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.NotFound.CODE,
-            });
-        }
+    @Get('/boiling/topic/:topicID')
+    async boilingView(@Param('topicID', MustIntPipe) topicID: number, @Res() res) {
         const [ uploadPolicy, topics ] = await Promise.all([
             this.ossService.requestPolicy(),
             this.topicService.list(),
         ]);
-        if (parseInt(topicID, 10) > 0) {
-            const curTopic: BoilingPointTopic = topics.find(t => t.id === topicID);
-            if (!curTopic) {
-                throw new MyHttpException({
-                    errorCode: ErrorCode.NotFound.CODE,
-                });
-            }
+        const curTopic: BoilingPointTopic = topics.find(t => t.id === topicID);
+        if (!curTopic) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
         }
         res.render('pages/boilingpoint/boilingpoint', {
             uploadPolicy,
             topics,
             topicID,
+            boilingPointType: '',
         });
     }
+
+    // if (idOrType === 'recommended') {
+    //     boilingPointType = 'recommended';
+    // } else if (idOrType === 'hot') {
+    //     boilingPointType = 'hot';
+    // } else if (idOrType === 'following') {
+    //     boilingPointType = 'following';
+    // } else {
 
     @Post(`${APIPrefix}/boilingpoints`)
     @UseGuards(ActiveGuard)
@@ -74,6 +71,14 @@ export class BoilingPointController {
         return {
             ...boilingPoint,
             imgs: editBoilingPointDto.imgs && editBoilingPointDto.imgs.length ? editBoilingPointDto.imgs : [],
+        };
+    }
+
+    @Get(`${APIPrefix}/boilingpoints`)
+    async list(@Query('topicID', MustIntPipe) topicID: number, @Query('page', ParsePagePipe) page: number) {
+        const boilingPoints = await this.boilingPointService.listByTopic(topicID, page);
+        return {
+            ...boilingPoints,
         };
     }
 }

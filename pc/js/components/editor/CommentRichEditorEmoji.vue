@@ -24,9 +24,10 @@
                         <div class="label">图片</div>  
                     </template>
                 </a>
-                <a class="topic" style="margin-left: 20px;">
+                <a @click="onTopicClick" class="topic" style="margin-left: 20px;">
                     <div class="label">#</div>
                     <div class="label">话题</div>
+                    <BoilingPointTopicPopup />
                 </a>
             </template>
             <div v-if="emojiVisible" class="emoji-modal arrow-top">
@@ -860,6 +861,7 @@
 <script>
 import { EditorMenuBar } from 'tiptap';
 import Uploader from '~/js/components/common/Uploader.vue';
+import BoilingPointTopicPopup from '~/js/components/boilingpoint/BoilingPointTopicPopup.vue';
 
 export default {
     props: [
@@ -899,10 +901,14 @@ export default {
         onImgUploadFail(message) {
             this.$refs.errorTip.show(message);
         },
+        onTopicClick() {
+            
+        }
     },
     components: {
         EditorMenuBar,
         Uploader,
+        BoilingPointTopicPopup,
     },
 }
 </script>

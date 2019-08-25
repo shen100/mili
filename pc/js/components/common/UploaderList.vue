@@ -56,10 +56,8 @@ export default {
 <style lang="scss">
 .uploader-list-box {
     border-radius: 0;
-    border-bottom-left-radius: 2px;
-    border-bottom-right-radius: 2px;
     background: #f9fafb;
-    border: 1px solid #dcdcdc;
+    border: 0;
     border-top: 0;
     display: flex;
     flex-direction: row;
@@ -83,6 +81,10 @@ export default {
     background-size: cover;
     flex: 0 0 auto;
     background-position: 50%;
+}
+
+.preview-image .icon:hover {
+    filter: brightness(.8);
 }
 
 .preview-image .delete {

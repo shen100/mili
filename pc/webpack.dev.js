@@ -41,10 +41,6 @@ module.exports = smp.wrap(merge(common, {
         },
     },
     plugins: [
-        // new webpack.DllReferencePlugin({
-        //     context: __dirname,
-        //     manifest: require('./public/js/dll/tiptap-manifest.json'),
-        // }),
         new webpack.HotModuleReplacementPlugin(),
         new VueLoaderPlugin(),
     ],

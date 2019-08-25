@@ -4,7 +4,7 @@ import { Repository, Like } from 'typeorm';
 import { Tag } from '../entity/tag.entity';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { OSSService } from '../common/oss.service';
-import { ListResult } from '../entity/interface';
+import { ListResult } from '../entity/listresult.entity';
 
 @Injectable()
 export class TagService {
@@ -35,7 +35,7 @@ export class TagService {
         });
     }
 
-    async list(page: number, pageSize: number, order: string, keyword: string): Promise<ListResult> {
+    async list(page: number, pageSize: number, order: string, keyword: string): Promise<ListResult<Tag>> {
         const [list, count] = await this.tagRepository.findAndCount({
             select: {
                 id: true,
@@ -57,7 +57,7 @@ export class TagService {
         };
     }
 
-    async subscribedList(userID: number, page: number, pageSize: number, order: string, keyword: string): Promise<ListResult> {
+    async subscribedList(userID: number, page: number, pageSize: number, order: string, keyword: string): Promise<ListResult<Tag>> {
         const orderField = order === 'hot' ? 'follower_count' : 'created_at';
         const likeSQL = keyword ? `AND tags.name LIKE "%${keyword}%"` : '';
         const sql1 = `SELECT tags.id as id, tags.name as name, tags.article_count as articleCount,

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book, BookCategory, BookStatus, BookChapter } from '../entity/book.entity';
-import { ListResult } from '../entity/interface';
+import { ListResult } from '../entity/listresult.entity';
 
 @Injectable()
 export class BookService {
@@ -52,7 +52,7 @@ export class BookService {
         return chapter !== null;
     }
 
-    async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult> {
+    async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult<Book>> {
         let query = await this.bookRepository.createQueryBuilder('b')
             .select(['b.id', 'b.name', 'b.coverURL', 'b.chapterCount',
                 'b.wordCount', 'b.userCount', 'b.summary',

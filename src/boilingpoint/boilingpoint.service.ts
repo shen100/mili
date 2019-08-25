@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BoilingPoint } from '../entity/boilingpoint.entity';
 import { EditBoilingPointDto } from './dto/edit-boilingpoint.dto';
+import { ListResult } from '../entity/listresult.entity';
 
 @Injectable()
 export class BoilingPointService {
@@ -11,12 +12,24 @@ export class BoilingPointService {
         private readonly boilingPointRepository: Repository<BoilingPoint>,
     ) {}
 
-    async list(topicID: number) {
-        return await this.boilingPointRepository.find({
+    async listByTopic(topicID: number, page: number): Promise<ListResult<BoilingPoint>> {
+        const pageSize = 20;
+        const [list, count] = await this.boilingPointRepository.findAndCount({
             where: {
                 topicID,
             },
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
         });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
     }
 
     async create(editBoilingPointDto: EditBoilingPointDto, userID: number) {

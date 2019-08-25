@@ -7,8 +7,15 @@
         @error="onError" @imgUploadSuccess="onImgUploadSuccess"
         @boilingPointSubmit="onBoilingPointSubmit"
         :sendDefVisible="true">
-        <UploaderList v-if="imgCount" :uploadAllowed="uploadAllowed" ref="upList" @success="onImgUploadSuccess2" @remove="onImgRemove" slot="upload-list"></UploaderList>
-        <div v-else class="no-img-box" slot="upload-list"></div>
+        <div class="custom-box" slot="upload-list">
+            <UploaderList v-if="imgCount" :uploadAllowed="uploadAllowed" ref="upList" @success="onImgUploadSuccess2" @remove="onImgRemove"></UploaderList>
+            <div class="cur-topic">
+                <span v-if="topicTitle" class="cur-topic-title">{{topicTitle}}</span>
+                <span class="word-counter">
+                    <span>1000</span>
+                </span>
+            </div>
+        </div>
     </CommentRichEditor>
 </template>
 
@@ -25,6 +32,7 @@ export default {
     data() {
         return {
             imgCount: 0,
+            topicTitle: '程序员鼓励师',
         };
     },
     computed: {
@@ -85,13 +93,51 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.no-img-box {
+.custom-box {
     border-radius: 0;
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
     background: #f9fafb;
     border: 1px solid #dcdcdc;
     border-top: 0;
+    min-height: 30px;   
+    padding-bottom: 8px;
+}
+
+.custom-box .cur-topic {
+    padding-left: 15px;
     height: 30px;
+    line-height: 30px;
+}
+
+.custom-box .cur-topic-title {
+    font-size: 13px;
+    display: inline-block;
+    line-height: 22px;
+    height: 22px;
+    padding: 0 12px;
+    border: 1px solid #007fff;
+    border-radius: 14px;
+    text-align: center;
+    color: #007fff;
+    user-select: none;
+}
+
+.custom-box .word-counter {
+    font-size: 13px;
+    user-select: none;
+    pointer-events: none;
+    float: right;
+    color: #a1a9b3;
+    padding-right: 0;
+    height: 30px;
+    position: relative;
+}
+
+.custom-box .word-counter span {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    line-height: normal;
 }
 </style>
