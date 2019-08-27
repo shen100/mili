@@ -8,6 +8,11 @@
             <Button type="primary" @click="onNewTopic">创建话题</Button>
         </div>
         <Table :columns="columns" :data="topics">
+            <template slot-scope="{ row }" slot="icon">
+                <div class="topic-item-icon-box">
+                    <div class="topic-item-icon" :style="{'background-image': `url(${row.icon})`}" />
+                </div>
+            </template>
             <template slot-scope="{ row }" slot="action">
                 <Button type="primary" size="small" @click="onEdit(row)">编辑</Button>
             </template>
@@ -21,8 +26,9 @@
                 <FormItem prop="name" label="话题名称">
                     <Input v-model="formData.name" placeholder="请输入话题名称" />
                 </FormItem>
-                <FormItem prop="name" label="话题名称">
-                    <SimpleUploader v-if="policyLoaded" :img="formData.icon"/>
+                <FormItem prop="icon" label="图标">
+                    <SimpleUploader ref="simpleUploader" v-if="uploadPolicy" :uploadPolicy="uploadPolicy" 
+                        @success="onImgUploadSuccess" @remove="onImgRemove" :img="formData.icon"/>
                 </FormItem>
                 <FormItem prop="sequence" label="排序">
                     <InputNumber :max="10" :min="1" v-model="formData.sequence"></InputNumber>                    
@@ -46,7 +52,7 @@ export default {
     data () {
         const defaultSequence = 1;
         return {
-            policyLoaded: false,
+            uploadPolicy: null,
             defaultSequence,
             topicID: undefined,
             modalVisible: false,
@@ -71,6 +77,10 @@ export default {
                 {
                     title: '名称',
                     key: 'name'
+                },
+                {
+                    title: '图标',
+                    slot: 'icon'
                 },
                 {
                     title: '排序',
@@ -101,7 +111,7 @@ export default {
             const url = `/common/osspolicy`;
             myHTTP.get(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.policyLoaded = true;
+                    this.uploadPolicy = res.data.data.uploadPolicy;
                     return;
                 }
             }).catch((err) => {
@@ -112,8 +122,11 @@ export default {
             this.topicID = row.id;
             this.formData.name = row.name;
             this.formData.sequence = row.sequence;
-            console.log('========xxxxxxxxxxxx');
+            this.formData.icon = row.icon;
             this.modalVisible = true;
+            this.$nextTick(() => {
+                this.$refs.simpleUploader.setImgURL(row.icon);
+            });
         },
         onOk() {
             this.$refs['formNode'].validate((valid) => {
@@ -125,6 +138,7 @@ export default {
                 const data = {
                     name: this.formData.name,
                     sequence: this.formData.sequence,
+                    icon: this.formData.icon,
                 };
                 if (this.topicID) {
                     reqMethod = myHTTP.put;
@@ -174,6 +188,12 @@ export default {
         onModalVisibleChange(visible) {
             this.modalVisible = visible;
             console.log(arguments);
+        },
+        onImgUploadSuccess(imgURL) {
+            this.formData.icon = imgURL;
+        },
+        onImgRemove() {
+            this.formData.icon = '';
         }
     },
     components: {
@@ -181,4 +201,22 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.topic-item-icon-box {
+    padding: 10px 0;
+}
+
+.topic-item-icon {
+    border-radius: 2px;
+    margin: 0;
+    width: 80px;
+    height: 80px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    -webkit-flex: 0 0 auto;
+    flex: 0 0 auto;
+    background-position: 50%;
+}
+</style>
 

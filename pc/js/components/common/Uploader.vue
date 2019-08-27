@@ -19,17 +19,19 @@ Vue.component('Upload', Upload);
 
 export default {
     props: [
+        'uploadPolicy'
     ],
     data () {
+        const uploadPolicy = this.uploadPolicy || window.uploadPolicy;
         return {
-            imgFormat: window.uploadPolicy.imgFormat,
-            uploadActionURL: window.uploadPolicy.uploadActionURL,
-            uploadFieldName: window.uploadPolicy.uploadFieldName,
-            uploadPrefix: window.uploadPolicy.uploadPrefix,
-            imgMaxSize: window.uploadPolicy.imgMaxSize,
-            imgMaxSizeError: window.uploadPolicy.imgMaxSizeError,
-            uploadData: window.uploadPolicy.uploadData,
-            uploadImgURL: window.uploadPolicy.uploadImgURL,
+            imgFormat: uploadPolicy.imgFormat,
+            uploadActionURL: uploadPolicy.uploadActionURL,
+            uploadFieldName: uploadPolicy.uploadFieldName,
+            uploadPrefix: uploadPolicy.uploadPrefix,
+            imgMaxSize: uploadPolicy.imgMaxSize,
+            imgMaxSizeError: uploadPolicy.imgMaxSizeError,
+            uploadData: uploadPolicy.uploadData,
+            uploadImgURL: uploadPolicy.uploadImgURL,
             lastImageURL: '', // 最后一次上传成功的图片URL
         }
     },
