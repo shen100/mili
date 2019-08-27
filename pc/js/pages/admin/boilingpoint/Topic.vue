@@ -21,6 +21,9 @@
                 <FormItem prop="name" label="话题名称">
                     <Input v-model="formData.name" placeholder="请输入话题名称" />
                 </FormItem>
+                <FormItem prop="name" label="话题名称">
+                    <SimpleUploader v-if="policyLoaded" :img="formData.icon"/>
+                </FormItem>
                 <FormItem prop="sequence" label="排序">
                     <InputNumber :max="10" :min="1" v-model="formData.sequence"></InputNumber>                    
                 </FormItem>
@@ -37,21 +40,27 @@
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
 import { formatYMDHMS } from '~/js/utils/date';
+import SimpleUploader from '~/js/components/admin/common/SimpleUploader.vue';
 
 export default {
     data () {
         const defaultSequence = 1;
         return {
+            policyLoaded: false,
             defaultSequence,
             topicID: undefined,
             modalVisible: false,
             formData: {
                 name: '',
                 sequence: defaultSequence,
+                icon: '',
             },
             rules: {
                 name: [
                     { required: true, message: '请输入话题名称', trigger: 'blur' }
+                ],
+                icon: [
+                    { required: true, message: '请上传图标' }
                 ],
             },
             columns: [
@@ -85,8 +94,20 @@ export default {
     },
     mounted() {
         this.reqList();
+        this.reqPolicy();
     },
     methods: {
+        reqPolicy() {
+            const url = `/common/osspolicy`;
+            myHTTP.get(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.policyLoaded = true;
+                    return;
+                }
+            }).catch((err) => {
+
+            });
+        },
         onEdit(row) {
             this.topicID = row.id;
             this.formData.name = row.name;
@@ -156,6 +177,7 @@ export default {
         }
     },
     components: {
+        SimpleUploader,
     }
 }
 </script>

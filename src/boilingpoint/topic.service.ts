@@ -16,6 +16,7 @@ export class TopicService {
         return await this.topicRepository.insert({
             name: editTopicDto.name,
             sequence: editTopicDto.sequence,
+            icon: editTopicDto.icon,
             createdAt: now,
             updatedAt: now,
         });
@@ -43,6 +44,7 @@ export class TopicService {
         }, {
             name: updateTopicDto.name,
             sequence: updateTopicDto.sequence,
+            icon: updateTopicDto.icon,
             updatedAt: new Date(),
         });
     }

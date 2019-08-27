@@ -231,6 +231,7 @@ export const tablesRun = async function (connection) {
           updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
           sequence int(11) unsigned NOT NULL,
           name varchar(200) NOT NULL,
+          icon varchar(500) NOT NULL,
           PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);

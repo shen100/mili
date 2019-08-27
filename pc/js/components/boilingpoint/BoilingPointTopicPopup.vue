@@ -3,7 +3,7 @@
         <div class="triangle"></div>
         <div class="top">
             <input type="text" placeholder="搜索话题" class="search_input">
-            <div class="lazy search_icon loaded immediate" :style="{'background-image': 'url(../../../images/search.svg)'}"></div>
+            <div class="lazy search_icon loaded immediate" :style="{'background-image': 'url(../../../images/boilingpoint/search.svg)'}"></div>
         </div>
         <div class="content">
             <ul class="delete-topic">

@@ -17,7 +17,7 @@ module.exports = smp.wrap(merge(common, {
         contentBase: path.join(__dirname),
         hot: true,
         overlay: true,
-        public: 'http://localhost:9906',
+        public: 'http://dev.golang123.com',
         host: '0.0.0.0',
         port: 9906,
         inline: true,

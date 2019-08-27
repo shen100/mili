@@ -1,12 +1,12 @@
 import * as path from 'path';
 
-const domain = 'localhost';
+const domain = 'dev.golang123.com';
 const port = 9905;
 const url = `http://${domain}:${port}`;
 const mDomain = 'mdev.golang123.com';
 const mURL = `http://${mDomain}:${port}`;
 
-const staticURL = 'http://localhost:9906';
+const staticURL = 'http://dev.golang123.com';
 
 export default {
     db: {

@@ -5,6 +5,7 @@ import {
     MaxLength,
     Min,
     ValidateIf,
+    IsUrl,
 } from 'class-validator';
 import { BoilingPointConstants } from '../../constants/boilingpoint';
 
@@ -26,6 +27,12 @@ export class EditTopicDto {
     })
     @IsString()
     readonly name: string;
+
+    @IsUrl({
+        protocols: ['https'],
+        require_protocol: true,
+    })
+    readonly icon: string;
 
     @Min(1)
     @IsInt({

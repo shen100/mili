@@ -37,6 +37,7 @@ import { Tag } from '../entity/tag.entity';
 import { TagService } from './tag.service';
 import { TagController } from './tag.controller';
 import { OSSService } from '../common/oss.service';
+import { CommonModule } from '../common/common.module';
 
 @Module({
     imports: [
@@ -58,6 +59,7 @@ import { OSSService } from '../common/oss.service';
             Tag,
         ]),
         UserModule,
+        CommonModule,
     ],
     controllers: [
         BookController,

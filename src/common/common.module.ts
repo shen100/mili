@@ -1,9 +1,12 @@
 import { Global, Module } from '@nestjs/common';
 import { MyLoggerService } from './logger.service';
 import { OSSService } from './oss.service';
+import { CommonController } from './common.controller';
 
-@Global()
 @Module({
+    controllers: [
+        CommonController,
+    ],
     providers: [
         MyLoggerService,
         OSSService,
