@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "alwaysStrict": true,
     "declaration": true,
-    "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
-    "sourceMap": true,
+    "incremental": true,
+    "module": "commonjs",
     "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true
+    "removeComments": true,
+    "sourceMap": true,
+    "target": "es6"
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": ["node_modules"]
 }

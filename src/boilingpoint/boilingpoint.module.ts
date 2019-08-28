@@ -10,6 +10,7 @@ import { BoilingPointService } from './boilingpoint.service';
 import { TopicController } from './topic.controller';
 import { TopicService } from './topic.service';
 import { CommonModule } from '../common/common.module';
+import { TopicAdminController } from './topic.admin.controller';
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { CommonModule } from '../common/common.module';
     controllers: [
         BoilingPointController,
         TopicController,
+        TopicAdminController,
     ],
     providers: [
         BoilingPointService,

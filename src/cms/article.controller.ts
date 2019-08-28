@@ -1,7 +1,6 @@
 import {
     Controller, Post, Body, Put, UseGuards, Get, Query, Param, Res,
 } from '@nestjs/common';
-import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
 import { RedisService } from '../redis/redis.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -11,6 +10,9 @@ import { CurUser } from '../core/decorators/user.decorator';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 import { APIPrefix } from '../constants/constants';
+import { ArticleService } from './article.service';
+import { MyHttpException } from '../core/exception/my-http.exception';
+import { ErrorCode } from '../constants/error';
 
 @Controller()
 export class ArticleController {
@@ -27,6 +29,11 @@ export class ArticleController {
             this.articleService.detail(id),
             this.articleService.recommendList(1, 20),
         ]);
+        if (!article) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
         let userFollowed = false;
         if (user) {
             userFollowed = await this.userService.isUserFollowed(user.id, article.user.id);

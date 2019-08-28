@@ -79,7 +79,9 @@ export class ArticleService {
                 .where('id = :id', { id })
                 .execute(),
         ]);
-        article.browseCount++;
+        if (article) {
+            article.browseCount++;
+        }
         return article;
     }
 

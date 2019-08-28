@@ -253,7 +253,7 @@ export class UserController {
                 message: '验证码错误',
             });
         }
-        let user: User;
+        let user: User | undefined;
         if (signinDto.verifyType === 'phone') {
             user = await this.userService.findUser({ phone: signinDto.login }, { id: true, pass: true });
         } else if (signinDto.verifyType === 'email') {

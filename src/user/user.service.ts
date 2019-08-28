@@ -41,8 +41,8 @@ export class UserService {
      * @param {number} id 用户id
      * @returns {Promise<User>} 返回用户基本信息
      */
-    async basicInfo(id: number): Promise<User> {
-        const user: User = await this.userRepository.findOne({
+    async basicInfo(id: number): Promise<User | undefined> {
+        const user: User | undefined = await this.userRepository.findOne({
             select: [
                 'id', 'createdAt', 'username', 'articleCount', 'collectCount',
                 'commentCount', 'introduce', 'role', 'avatarURL', 'sex',
@@ -52,7 +52,7 @@ export class UserService {
         return user;
     }
 
-    async detail(id: number): Promise<User> {
+    async detail(id: number): Promise<User | undefined> {
         return await this.userRepository.createQueryBuilder('user')
             .select(['user.id', 'user.createdAt', 'user.username', 'user.articleCount', 'user.collectCount',
                 'user.commentCount', 'user.introduce', 'user.role', 'user.avatarURL', 'user.sex',
@@ -84,7 +84,7 @@ export class UserService {
             .execute();
     }
 
-    async findByPhoneOrUsername(phone: string, login: string): Promise<User> {
+    async findByPhoneOrUsername(phone: string, login: string): Promise<User | undefined> {
         const users: Array<User> = await this.userRepository.createQueryBuilder()
             .select(['id', 'phone', 'login'])
             .where('phone = :phone', { phone })
@@ -94,11 +94,11 @@ export class UserService {
         if (users && users.length) {
             return users[0];
         }
-        return null;
+        return undefined;
     }
 
     async isUserNameExist(username: string) {
-        const user: User = await this.userRepository.findOne({
+        const user: User | undefined = await this.userRepository.findOne({
             select: ['id'],
             where: {
                 username,
