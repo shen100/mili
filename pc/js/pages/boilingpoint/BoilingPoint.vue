@@ -24,8 +24,8 @@ export default {
     data () {
         let topicID = parseInt(window.topicID, 10);
         let url = '/boilingpoints';
-        if (isNaN(topicID)) {
-            url = `/${window.boilingPointType}`;
+        if (window.boilingPointType) {
+            url = `/boilingpoints/${window.boilingPointType}`;
         }
         return {
             url,

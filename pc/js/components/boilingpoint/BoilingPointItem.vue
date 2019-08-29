@@ -40,6 +40,9 @@
                     </div>
                 </div>
             </div>
+            <div class="pin-content-row ">
+                <div class="content-box" v-html="data.htmlContent"></div>
+            </div>
             <div class="pin-image-row">
                 <div class="image-box-wrapper image-box">
                     <div class="image-box col-1">
@@ -49,8 +52,8 @@
                     </div>
                 </div>
             </div>
-            <div class="pin-topic-row">
-                <a href="" target="_blank" title="" class="topic-title">一图胜千言</a>
+            <div v-if="data.topic" class="pin-topic-row">
+                <a href="" target="_blank" title="" class="topic-title">{{data.topic.name}}</a>
             </div>
             <div class="pin-action-row">
                 <div class="action-box action-box">
@@ -58,8 +61,14 @@
                         <div class="action-title-box">
                             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" class="icon like-icon">
                                 <g fill="none" fill-rule="evenodd">
-                                    <path d="M0 0h20v20H0z"></path>
-                                    <path stroke="#8A93A0" stroke-linejoin="round" d="M4.58 8.25V17h-1.4C2.53 17 2 16.382 2 15.624V9.735c0-.79.552-1.485 1.18-1.485h1.4zM11.322 2c1.011.019 1.614.833 1.823 1.235.382.735.392 1.946.13 2.724-.236.704-.785 1.629-.785 1.629h4.11c.434 0 .838.206 1.107.563.273.365.363.84.24 1.272l-1.86 6.513A1.425 1.425 0 0 1 14.724 17H6.645V7.898C8.502 7.51 9.643 4.59 9.852 3.249A1.47 1.47 0 0 1 11.322 2z"></path>
+                                    <template v-if="false">
+                                        <path d="M0 0h20v20H0z"></path>
+                                        <path stroke="#8A93A0" stroke-linejoin="round" d="M4.58 8.25V17h-1.4C2.53 17 2 16.382 2 15.624V9.735c0-.79.552-1.485 1.18-1.485h1.4zM11.322 2c1.011.019 1.614.833 1.823 1.235.382.735.392 1.946.13 2.724-.236.704-.785 1.629-.785 1.629h4.11c.434 0 .838.206 1.107.563.273.365.363.84.24 1.272l-1.86 6.513A1.425 1.425 0 0 1 14.724 17H6.645V7.898C8.502 7.51 9.643 4.59 9.852 3.249A1.47 1.47 0 0 1 11.322 2z"></path>
+                                    </template>
+                                    <template v-else>
+                                        <path d="M0 0h20v20H0z"></path>
+                                        <path stroke="#37C700" stroke-linejoin="round" d="M5.344 8.833V17H4.072C3.482 17 3 16.424 3 15.716V10.22c0-.739.502-1.387 1.072-1.387h1.272zM10.6 4.166c.106-.693.692-1.179 1.335-1.166.918.018 1.465.777 1.655 1.153.346.686.356 1.816.118 2.542-.215.657-.713 1.52-.713 1.52h3.732c.395 0 .762.193 1.006.526.248.341.33.784.218 1.187l-1.69 6.08c-.153.584-.662.992-1.236.992H7.219V8.504c1.686-.361 3.191-3.086 3.381-4.338z" fill="#37C700" stroke-width=".964"></path>
+                                    </template>    
                                 </g>
                             </svg>
                             <span class="action-title">10</span>
@@ -96,6 +105,16 @@
 </template>
 
 <script>
+export default {
+    props: [
+        'data',
+    ],
+    data () {
+        return {
+
+        };
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -113,7 +132,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 24px 0 20px;
+    padding: 16px 20px 0 20px;
 }
 
 .pin-header-row .account-group {
@@ -301,6 +320,21 @@ svg:not(:root) {
     white-space: nowrap;
 }
 
+.pin-content-row {
+    margin-left: 77px;
+    margin-right: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.content-box {
+    font-size: 15px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: #17181a;
+}
+
 .pin-image-row, .pin-link-row, .pin-topic-row {
     position: relative;
     margin: 76px 48px 0 76px;
@@ -380,6 +414,15 @@ svg:not(:root) {
 .action-title-box .icon {
     width: 18px;
     height: 18px;
+    font-size: 12px;
+}
+
+.action-title-box .action-title {
+    margin-left: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #8a93a0;
+    line-height: normal;
 }
 
 .action:not(:last-child):after {

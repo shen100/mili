@@ -5,12 +5,13 @@
         :uploadAllowed="uploadAllowed"
         :emptyPlaceholder="placeholder || '发布动态'" @success="onSuccess"
         @error="onError" @imgUploadSuccess="onImgUploadSuccess"
+        @topicSelected="onTopicSelected"
         @boilingPointSubmit="onBoilingPointSubmit"
         :sendDefVisible="true">
         <div class="custom-box" slot="upload-list">
             <UploaderList v-if="imgCount" :uploadAllowed="uploadAllowed" ref="upList" @success="onImgUploadSuccess2" @remove="onImgRemove"></UploaderList>
             <div class="cur-topic">
-                <span v-if="topicTitle" class="cur-topic-title">{{topicTitle}}</span>
+                <span v-if="topic && topic.name" class="cur-topic-title">{{topic.name}}</span>
                 <span class="word-counter">
                     <span>1000</span>
                 </span>
@@ -32,7 +33,7 @@ export default {
     data() {
         return {
             imgCount: 0,
-            topicTitle: '程序员鼓励师',
+            topic: null,
         };
     },
     computed: {
@@ -65,6 +66,9 @@ export default {
         onError() {
 
         },
+        onTopicSelected(topic) {
+            this.topic = topic;
+        },
         onBoilingPointSubmit() {
             if (this.isSaving) {
                 return;
@@ -72,6 +76,7 @@ export default {
             this.isSaving = true;
             const imgs = this.imgCount ? this.$refs.upList.getImgs() : [];
             const reqData = {
+                topicID: this.topic && this.topic.id || undefined,
                 htmlContent: this.$refs.richEditor.getHTML(),
                 imgs: imgs && imgs.length ? imgs : undefined,
             };

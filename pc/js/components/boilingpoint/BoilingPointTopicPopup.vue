@@ -1,5 +1,5 @@
 <template>
-    <div class="topic_panel">
+    <div @click="onClick" class="topic_panel">
         <div class="triangle"></div>
         <div class="top">
             <input @keyup="onSearch" type="text" placeholder="搜索话题" class="search_input">
@@ -7,7 +7,7 @@
         </div>
         <div class="content">
             <ul v-if="curTopics.length" class="delete-topic">
-                <li>
+                <li @click="onClickTopic(null)">
                     <div class="box">
                         <div class="lazy icon loaded immediate" :style="{'background-image': 'url(../../../images/boilingpoint/notopic.svg)'}"></div>
                     </div>
@@ -15,7 +15,7 @@
                 </li>
             </ul>
             <ul v-if="curTopics.length" class="topic-list">
-                <li :key="topic.id" v-for="topic in curTopics">
+                <li @click="onClickTopic(topic)" :key="topic.id" v-for="topic in curTopics">
                     <div class="topic-item">
                         <div class="lazy icon loaded immediate" :style="{'background-image': `url(${topic.icon})`}"></div>
                         <div class="topic-content">
@@ -64,6 +64,9 @@ export default {
         });
     },
     methods: {
+        onClick(event) {
+            event.stopPropagation();
+        },
         onSearch(event) {
             console.log(event.target.value);
             if (this.timeoutId) {
@@ -86,6 +89,10 @@ export default {
             });
             this.curTopics = topics;
             this.isEmpty = topics.length ? false : true;
+        },
+        onClickTopic(topic) {
+            this.$emit('topicSelected', topic);
+            this.$emit('close');
         }
     }
 }
@@ -99,7 +106,7 @@ export default {
     position: absolute;
     top: 34px;
     bottom: 0;
-    left: 0;
+    left: -158px;
     width: 316px;
     height: 417px;
     border-radius: 2px;

@@ -44,13 +44,23 @@ export class BoilingPointController {
         });
     }
 
-    // if (idOrType === 'recommended') {
-    //     boilingPointType = 'recommended';
-    // } else if (idOrType === 'hot') {
-    //     boilingPointType = 'hot';
-    // } else if (idOrType === 'following') {
-    //     boilingPointType = 'following';
-    // } else {
+    @Get('/boiling/:type')
+    async boilingTypeView(@Param('type') type: string, @Res() res) {
+        if (['recommend', 'hot', 'followed'].indexOf(type) < 0) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        const [ uploadPolicy, topics ] = await Promise.all([
+            this.ossService.requestPolicy(),
+            this.topicService.list(),
+        ]);
+        res.render('pages/boilingpoint/boilingpoint', {
+            uploadPolicy,
+            topics,
+            boilingPointType: type,
+        });
+    }
 
     @Post(`${APIPrefix}/boilingpoints`)
     @UseGuards(ActiveGuard)
@@ -76,7 +86,43 @@ export class BoilingPointController {
 
     @Get(`${APIPrefix}/boilingpoints`)
     async list(@Query('topicID', MustIntPipe) topicID: number, @Query('page', ParsePagePipe) page: number) {
-        const boilingPoints = await this.boilingPointService.listByTopic(topicID, page);
+        const [topic, boilingPoints] = await Promise.all([
+            this.topicService.basic(topicID),
+            this.boilingPointService.listByTopic(topicID, page),
+        ]);
+        if (!topic) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        boilingPoints.list.map(boilingPoint => {
+            boilingPoint.topic = topic;
+        });
+        return {
+            topic,
+            ...boilingPoints,
+        };
+    }
+
+    @Get(`${APIPrefix}/boilingpoints/recommend`)
+    async recommend(@Query('page', ParsePagePipe) page: number) {
+        const boilingPoints = await this.boilingPointService.recommend(page);
+        return {
+            ...boilingPoints,
+        };
+    }
+
+    @Get(`${APIPrefix}/boilingpoints/followed`)
+    async followed(@Query('page', ParsePagePipe) page: number) {
+        const boilingPoints = await this.boilingPointService.followed(page);
+        return {
+            ...boilingPoints,
+        };
+    }
+
+    @Get(`${APIPrefix}/boilingpoints/hot`)
+    async hot(@Query('page', ParsePagePipe) page: number) {
+        const boilingPoints = await this.boilingPointService.hot(page);
         return {
             ...boilingPoints,
         };

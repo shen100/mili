@@ -5,14 +5,14 @@
     <div class="dock-shadow">
         <nav class="dock-nav">
             <ul class="boiling-nav-list">
-                <li class="boiling-nav-item {% if topicID === 'recommended' %} active {% endif %}">
-                    <a href="/boiling/recommended">推荐 </a>
+                <li class="boiling-nav-item {% if boilingPointType === 'recommend' %} active {% endif %}">
+                    <a href="/boiling/recommend">推荐 </a>
                 </li>
-                <li class="boiling-nav-item {% if topicID === 'hot' %} active {% endif %}">
+                <li class="boiling-nav-item {% if boilingPointType === 'hot' %} active {% endif %}">
                     <a  href="/boiling/hot">热门</a>
                 </li>
-                <li class="boiling-nav-item {% if topicID === 'following' %} active {% endif %}">
-                    <a href="/boiling/following">关注</a>
+                <li class="boiling-nav-item {% if boilingPointType === 'followed' %} active {% endif %}">
+                    <a href="/boiling/followed">关注</a>
                 </li>
                 {% for topic in topics %}
                 <li class="boiling-nav-item {% if topicID === topic.id %} active {% endif %}">

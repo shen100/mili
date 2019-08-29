@@ -32,6 +32,57 @@ export class BoilingPointService {
         };
     }
 
+    async recommend(page: number): Promise<ListResult<BoilingPoint>> {
+        const pageSize = 20;
+        const [list, count] = await this.boilingPointRepository.findAndCount({
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    async followed(page: number): Promise<ListResult<BoilingPoint>> {
+        const pageSize = 20;
+        const [list, count] = await this.boilingPointRepository.findAndCount({
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    async hot(page: number): Promise<ListResult<BoilingPoint>> {
+        const pageSize = 20;
+        const [list, count] = await this.boilingPointRepository.findAndCount({
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
     async create(editBoilingPointDto: EditBoilingPointDto, userID: number) {
         const now = new Date();
         return await this.boilingPointRepository.insert({
@@ -41,6 +92,7 @@ export class BoilingPointService {
             commentCount: 0,
             browseCount: 0,
             userID,
+            topicID: editBoilingPointDto.topicID,
         });
     }
 }

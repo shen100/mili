@@ -24,10 +24,10 @@
                         <div class="label">图片</div>  
                     </template>
                 </a>
-                <a @click="onTopicClick" class="topic" style="margin-left: 20px;">
+                <a @click="onTopicClick" v-clickoutside="onCloseTopicPopup"
+                    class="topic" style="margin-left: 20px;">
                     <div class="label">#</div>
-                    <div class="label">话题</div>
-                    <BoilingPointTopicPopup />
+                    <div class="label" style="position: relative;">话题<BoilingPointTopicPopup @topicSelected="onTopicSelected" @close="onCloseTopicPopup" v-if="topicPopupVisible" /></div>
                 </a>
             </template>
             <div v-if="emojiVisible" class="emoji-modal arrow-top">
@@ -874,6 +874,7 @@ export default {
             tabIndex: 0,
             tabs: [0, 1, 2, 3],
             emojiVisible: false,
+            topicPopupVisible: false, // 是否显示沸点的话题搜索框
         };
     },
     methods: {
@@ -902,7 +903,14 @@ export default {
             this.$refs.errorTip.show(message);
         },
         onTopicClick() {
-            
+            this.topicPopupVisible = !this.topicPopupVisible;
+        },
+        onCloseTopicPopup() {
+            this.topicPopupVisible = false;
+        },
+        onTopicSelected(topic) {
+            console.log('topicSelected????', topic);
+            this.$emit('topicSelected', topic);
         }
     },
     components: {

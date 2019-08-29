@@ -10,6 +10,7 @@
                 <CommentRichEditorEmoji :uploadAllowed="uploadAllowed" 
                     @imgUploadSuccess="onImgUploadSuccess" 
                     @topicClick="onTopicClick"
+                    @topicSelected="onTopicSelected"
                     :editor="editor" />
             </div>
             <template v-if="editorType === 'comment'">
@@ -162,6 +163,9 @@ export default {
         },
         onTopicClick() {
             this.$emit('topicClick');
+        },
+        onTopicSelected(topic) {
+            this.$emit('topicSelected', topic);
         }
     },
     components: {
