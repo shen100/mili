@@ -98,6 +98,12 @@ export class User {
     @Column('tinyint')
     sex: UserSex;
 
+    @Column('varchar', { name: 'job', length: 100 })
+    job: string;
+
+    @Column('varchar', { name: 'company', length: 100 })
+    company: string;
+
     @Column('varchar', { length: 200 })
     introduce: string; // 个人介绍
 

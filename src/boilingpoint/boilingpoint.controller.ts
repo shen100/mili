@@ -14,6 +14,8 @@ import { ActiveGuard } from '../core/guards/active.guard';
 import { UserService } from '../user/user.service';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
+import { recentTime } from '../utils/viewfilter';
+import { In } from 'typeorm';
 
 @Controller()
 export class BoilingPointController {
@@ -76,7 +78,7 @@ export class BoilingPointController {
         boilingPoint.userID = user.id;
         boilingPoint.topicID = editBoilingPointDto.topicID;
         if (boilingPoint.topicID) {
-            boilingPoint.topic = await this.topicService.basic(boilingPoint.topicID)
+            boilingPoint.topic = await this.topicService.basic(boilingPoint.topicID);
         }
         return {
             ...boilingPoint,
@@ -95,12 +97,36 @@ export class BoilingPointController {
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
-        boilingPoints.list.map(boilingPoint => {
+        const userIDMap = {};
+        const userIDs: number[] = [];
+        const list = boilingPoints.list.map(boilingPoint => {
             boilingPoint.topic = topic;
+            if (!userIDMap[boilingPoint.userID]) {
+                userIDs.push(boilingPoint.userID);
+                userIDMap[boilingPoint.userID] = true;
+            }
+            return {
+                ...boilingPoint,
+                createdAtLabel: recentTime(boilingPoint.createdAt, 'YYYY.MM.DD HH:mm'),
+            };
         });
+        const users = await this.userService.findUsers({
+            id: In(userIDs),
+        }, {
+            id: true,
+            username: true,
+            avatarURL: true,
+            job: true,
+            company: true,
+        });
+
+        const userMap = {};
+        users.map(user => userMap[user.id] = user);
+        list.map(bp => bp.user = userMap[bp.userID]);
         return {
             topic,
             ...boilingPoints,
+            list,
         };
     }
 

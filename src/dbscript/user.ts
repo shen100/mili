@@ -14,6 +14,8 @@ export const userRun = async function (connection, config) {
         await connection.manager.query(`alter table users add column word_count int`);
         await connection.manager.query(`alter table users add column follower_count int`);
         await connection.manager.query(`alter table users add column like_count int`);
+        await connection.manager.query(`alter table users add column job varchar(100)`);
+        await connection.manager.query(`alter table users add column company varchar(100)`);
 
         await connection.manager.query(`alter table users add column github_id int`);
         await connection.manager.query(`alter table users add column github_avatar_url varchar(500)`);

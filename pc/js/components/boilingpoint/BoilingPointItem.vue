@@ -4,19 +4,21 @@
             <div class="pin-header-row">
                 <div class="account-group">
                     <div class="user-popover-box">
-                        <a href="" target="_blank" class="user-link">
-                            <div class="lazy avatar avatar loaded" style="background-image: url();"></div>
+                        <a :href="`/users/${data.user.id}`" target="_blank" class="user-link">
+                            <div class="lazy avatar avatar loaded" :style="{'background-image': `url(${data.user.avatarURL})`}"></div>
                         </a>
                     </div>
                     <div  class="pin-header-content">
                         <div class="user-popover-box">
-                            <a href="/user/5b613134e51d451986517cc3" target="_blank" class="username">番茄炒蛋少放糖</a>
+                            <a :href="`/users/${data.user.id}`" target="_blank" class="username">{{data.user.username}}</a>
                         </div>
                         <div class="meta-box">
-                            <div class="position ellipsis">前端开发</div>
-                            <div class="dot">·</div>
-                            <a data-v-3416aa34="" href="" target="_blank" class="time-box">
-                                <time class="time">3小时前</time>
+                            <template v-if="data.user.job || data.user.company">
+                                <div class="position ellipsis">{{data.user.job}}{{data.user.company ? ' @ ' + data.user.company : ''}}</div>
+                                <div class="dot">·</div>
+                            </template>
+                            <a href="" target="_blank" class="time-box">
+                                <time class="time">{{data.createdAtLabel}}</time>
                             </a>
                         </div>
                     </div>
@@ -31,9 +33,9 @@
                                 <path d="M218.251769 432.282401c120.691803 0 119.469975 187.388854-1.465374 187.388854C96.094592 619.671255 97.071849 432.282401 218.251769 432.282401z" p-id="1951" fill="#b8c1cc"></path>
                             </svg>
                         </div>
-                        <div class="dropdown" style="display: none;">
+                        <div class="dropdown1">
                             <div class="dropdown-caret"></div>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu1">
                                 <li data-v-3deae11c="">举报</li>
                             </ul>
                         </div>
@@ -61,7 +63,7 @@
                         <div class="action-title-box">
                             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" class="icon like-icon">
                                 <g fill="none" fill-rule="evenodd">
-                                    <template v-if="false">
+                                    <template v-if="!data.liked">
                                         <path d="M0 0h20v20H0z"></path>
                                         <path stroke="#8A93A0" stroke-linejoin="round" d="M4.58 8.25V17h-1.4C2.53 17 2 16.382 2 15.624V9.735c0-.79.552-1.485 1.18-1.485h1.4zM11.322 2c1.011.019 1.614.833 1.823 1.235.382.735.392 1.946.13 2.724-.236.704-.785 1.629-.785 1.629h4.11c.434 0 .838.206 1.107.563.273.365.363.84.24 1.272l-1.86 6.513A1.425 1.425 0 0 1 14.724 17H6.645V7.898C8.502 7.51 9.643 4.59 9.852 3.249A1.47 1.47 0 0 1 11.322 2z"></path>
                                     </template>
@@ -71,7 +73,7 @@
                                     </template>    
                                 </g>
                             </svg>
-                            <span class="action-title">10</span>
+                            <span class="action-title" :style="{color: data.liked ? '#37c700' : '#8a93a0'}">{{data.likeCount ? data.likeCount : '赞'}}</span>
                         </div>
                     </div>
                     <div class="comment-action action">
@@ -82,7 +84,7 @@
                                     <path stroke="#8A93A0" stroke-linejoin="round" d="M10 17c-4.142 0-7.5-2.91-7.5-6.5S5.858 4 10 4c4.142 0 7.5 2.91 7.5 6.5 0 1.416-.522 2.726-1.41 3.794-.129.156.41 3.206.41 3.206l-3.265-1.134c-.998.369-2.077.634-3.235.634z"></path>
                                 </g>
                             </svg>
-                            <span class="action-title">44</span>
+                            <span class="action-title">{{data.commentCount}}</span>
                         </div>
                     </div>
                     <div class="share-action action">
@@ -205,6 +207,10 @@ export default {
     color: #2e3135;
 }
 
+.pin-header-row .username:hover {
+    text-decoration: none;
+}
+
 .pin-header-row .meta-box {
     display: flex;
     align-items: center;
@@ -232,8 +238,8 @@ export default {
     color: #8a9aa9;
 }
 
-.pin-header-row .meta-box .time-box {
-    color: #8a9aa9;
+.pin-header-row .meta-box .time-box:hover {
+    text-decoration: none;
 }
 
 .account-group, .header-action {
@@ -268,10 +274,11 @@ svg:not(:root) {
     overflow: hidden;
 }
 
-.dropdown {
+.dropdown1 {
     position: absolute;
     margin-top: 6px;
     z-index: 1;
+    left: -30px;
 }
 
 .dropdown-caret, .dropdown-caret:after {
@@ -284,14 +291,8 @@ svg:not(:root) {
     border-bottom-color: #ebebeb;
 }
 
-.dropdown-caret, .dropdown-caret:after {
-    position: absolute;
-    top: -11px;
-    left: 0;
-    width: 0;
-    height: 0;
-    border: 6px solid transparent;
-    border-bottom-color: #ebebeb;
+.dropdown-caret {
+    left: 36px;
 }
 
 .dropdown-caret:after {
@@ -301,7 +302,7 @@ svg:not(:root) {
     border-bottom-color: #fff;
 }
 
-.dropdown-menu {
+.dropdown-menu1 {
     display: block;
     padding: 6px 0;
     border-radius: 3px;
@@ -310,14 +311,20 @@ svg:not(:root) {
     box-shadow: 0 3px 12px 0 rgba(0, 0, 0, .06);
 }
 
-.dropdown-menu li {
-    padding: 6px 28px;
+.dropdown-menu1 li {
+    padding: 6px 0;
     display: block;
     font-size: 13px;
     color: #84878b;
+    width: 82px;
     text-align: center;
     cursor: pointer;
     white-space: nowrap;
+}
+
+.dropdown-menu1 li:hover {
+    color: #64686e;
+    background-color: #f8f8f8;
 }
 
 .pin-content-row {
@@ -386,12 +393,20 @@ svg:not(:root) {
     user-select: none;
 }
 
+.pin-topic-row .topic-title:hover {
+    text-decoration: none;
+}
+
 .action-box {
     display: flex;
     position: relative;
     margin-top: 16px;
     height: 34px;
     border-top: 1px solid #ebebeb;
+}
+
+.like-action, .comment-action, .share-action {
+    cursor: default!important;
 }
 
 .action {
@@ -409,6 +424,7 @@ svg:not(:root) {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .action-title-box .icon {
@@ -422,7 +438,10 @@ svg:not(:root) {
     font-size: 13px;
     font-weight: 500;
     color: #8a93a0;
-    line-height: normal;
+    line-height: 18px;
+    height: 18px;
+    border: 1px solid transparent;
+    box-sizing: border-box;
 }
 
 .action:not(:last-child):after {
@@ -434,5 +453,20 @@ svg:not(:root) {
     width: 1px;
     height: 24px;
     background-color: #ebebeb;
+}
+
+.follow-button:hover {
+    opacity: .8;
+}
+
+.more-button:hover path {
+    fill: #9da7b3;
+}
+
+.dropdown-caret:after {
+    content: "";
+    top: -5px;
+    left: -6px;
+    border-bottom-color: #fff;
 }
 </style>

@@ -245,6 +245,7 @@ export const tablesRun = async function (connection) {
           topic_id int(11) unsigned,
           browse_count int(11) unsigned NOT NULL DEFAULT 0,
           comment_count int(11) unsigned NOT NULL DEFAULT 0,
+          like_count int(11) unsigned NOT NULL DEFAULT 0,
           PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);

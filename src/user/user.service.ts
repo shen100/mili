@@ -363,6 +363,14 @@ export class UserService {
         return user;
     }
 
+    async findUsers(where, select): Promise<User[]> {
+        const users = await this.userRepository.find({
+            select,
+            where,
+        });
+        return users;
+    }
+
     async fuzzyQueryByUsername(username: string) {
         let user: User;
         let users: Array<User>;

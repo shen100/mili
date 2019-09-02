@@ -67,6 +67,7 @@ export default {
 
 .boilingpoint-list {
     background: #f4f5f5;
+    margin-top: 8px;
 }
 </style>
 

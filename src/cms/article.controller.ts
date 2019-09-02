@@ -13,6 +13,7 @@ import { APIPrefix } from '../constants/constants';
 import { ArticleService } from './article.service';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
+import { recentTime } from '../utils/viewfilter';
 
 @Controller()
 export class ArticleController {
@@ -54,7 +55,17 @@ export class ArticleController {
         if (categoryID) {
             return this.articleService.listInCategory(categoryID, page, pageSize);
         }
-        return this.articleService.list(page, pageSize);
+        const listResult = await this.articleService.list(page, pageSize);
+        const list = listResult.list.map(article => {
+            return {
+                ...article,
+                createdAtLabel: recentTime(article.createdAt, 'YYYY.MM.DD HH:mm'),
+            };
+        });
+        return {
+            ...listResult,
+            list,
+        };
     }
 
     @Post(`${APIPrefix}/articles`)
