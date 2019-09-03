@@ -239,7 +239,8 @@ export const tablesRun = async function (connection) {
         sql = `CREATE TABLE boilingpoints (
           id int(11) unsigned NOT NULL AUTO_INCREMENT,
           created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          html_content varchar(1000) NOT NULL,
+          html_content varchar(2000) NOT NULL,
+          summary varchar(100) NOT NULL,
           imgs varchar(2000),
           user_id int(11) unsigned NOT NULL,
           topic_id int(11) unsigned,
@@ -249,6 +250,14 @@ export const tablesRun = async function (connection) {
           PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);
+
+        await connection.manager.query(`CREATE TABLE user_like_boilingpoints (
+          id int(11) unsigned NOT NULL AUTO_INCREMENT,
+          user_id int(11) unsigned NOT NULL,
+          boilingpoint_id int(11) unsigned NOT NULL,
+          created_at datetime NOT NULL,
+          PRIMARY KEY (id)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         // tslint:disable-next-line:no-console
         console.log('done');

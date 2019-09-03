@@ -1,5 +1,5 @@
 import {
-    Controller, Get, Res, Param, Post, Body, UseGuards, Query,
+    Controller, Get, Res, Param, Post, Body, UseGuards, Query, Delete,
 } from '@nestjs/common';
 import { BoilingPointService } from './boilingpoint.service';
 import { TopicService } from './topic.service';
@@ -28,9 +28,10 @@ export class BoilingPointController {
 
     @Get('/boiling/topic/:topicID')
     async boilingView(@Param('topicID', MustIntPipe) topicID: number, @Res() res) {
-        const [ uploadPolicy, topics ] = await Promise.all([
+        const [ uploadPolicy, topics, globalRecommends ] = await Promise.all([
             this.ossService.requestPolicy(),
             this.topicService.list(),
+            this.boilingPointService.globalRecommends(),
         ]);
         const curTopic: BoilingPointTopic = topics.find(t => t.id === topicID);
         if (!curTopic) {
@@ -43,6 +44,7 @@ export class BoilingPointController {
             topics,
             topicID,
             boilingPointType: '',
+            globalRecommends,
         });
     }
 
@@ -53,14 +55,16 @@ export class BoilingPointController {
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
-        const [ uploadPolicy, topics ] = await Promise.all([
+        const [ uploadPolicy, topics, globalRecommends ] = await Promise.all([
             this.ossService.requestPolicy(),
             this.topicService.list(),
+            this.boilingPointService.globalRecommends(),
         ]);
         res.render('pages/boilingpoint/boilingpoint', {
             uploadPolicy,
             topics,
             boilingPointType: type,
+            globalRecommends,
         });
     }
 
@@ -87,7 +91,7 @@ export class BoilingPointController {
     }
 
     @Get(`${APIPrefix}/boilingpoints`)
-    async list(@Query('topicID', MustIntPipe) topicID: number, @Query('page', ParsePagePipe) page: number) {
+    async list(@CurUser() user, @Query('topicID', MustIntPipe) topicID: number, @Query('page', ParsePagePipe) page: number) {
         const [topic, boilingPoints] = await Promise.all([
             this.topicService.basic(topicID),
             this.boilingPointService.listByTopic(topicID, page),
@@ -99,7 +103,9 @@ export class BoilingPointController {
         }
         const userIDMap = {};
         const userIDs: number[] = [];
+        const boilingpointIDs: number[] = [];
         const list = boilingPoints.list.map(boilingPoint => {
+            boilingpointIDs.push(boilingPoint.id);
             boilingPoint.topic = topic;
             if (!userIDMap[boilingPoint.userID]) {
                 userIDs.push(boilingPoint.userID);
@@ -107,22 +113,31 @@ export class BoilingPointController {
             }
             return {
                 ...boilingPoint,
+                userLiked: false,
                 createdAtLabel: recentTime(boilingPoint.createdAt, 'YYYY.MM.DD HH:mm'),
             };
         });
-        const users = await this.userService.findUsers({
-            id: In(userIDs),
-        }, {
-            id: true,
-            username: true,
-            avatarURL: true,
-            job: true,
-            company: true,
-        });
+        const [users, likes] = await Promise.all([
+            this.userService.findUsers({
+                id: In(userIDs),
+            }, {
+                id: true,
+                username: true,
+                avatarURL: true,
+                job: true,
+                company: true,
+            }),
+            this.boilingPointService.userLikes(boilingpointIDs, user && user.id)
+        ]);
 
         const userMap = {};
-        users.map(user => userMap[user.id] = user);
-        list.map(bp => bp.user = userMap[bp.userID]);
+        users.map(u => userMap[u.id] = u);
+        const likesMap = {};
+        likes.map(boilingPointID => likesMap[boilingPointID] = true);
+        list.map(bp => {
+            bp.user = userMap[bp.userID];
+            bp.userLiked = !!likesMap[bp.id];
+        });
         return {
             topic,
             ...boilingPoints,
@@ -152,5 +167,19 @@ export class BoilingPointController {
         return {
             ...boilingPoints,
         };
+    }
+
+    @Post(`${APIPrefix}/boilingpoints/:boilingpointID/like`)
+    @UseGuards(ActiveGuard)
+    async like(@CurUser() user, @Param('boilingpointID', MustIntPipe) boilingpointID: number) {
+        await this.boilingPointService.like(boilingpointID, user.id);
+        return {};
+    }
+
+    @Delete(`${APIPrefix}/boilingpoints/:boilingpointID/like`)
+    @UseGuards(ActiveGuard)
+    async deleteLike(@CurUser() user, @Param('boilingpointID', MustIntPipe) boilingpointID: number) {
+        await this.boilingPointService.deleteLike(boilingpointID, user.id);
+        return {};
     }
 }

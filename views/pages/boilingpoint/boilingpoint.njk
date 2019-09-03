@@ -54,18 +54,20 @@
         <div class="related-pin-block pin-block">
             <header>推荐沸点</header>
             <ul class="pin-list">
+                {% for bp in globalRecommends %}
                 <li class="pin-item">
-                    <a href="/pin/5d61157a6fb9a07d87242cf7" target="_blank" title="都周六这个点了😭😭" class="pin">
+                    <a href="/pin/5d61157a6fb9a07d87242cf7" target="_blank" title="{{bp.summary}}" class="pin">
                         <div class="boiling-content-box">
-                            <div class="boiling-content">都周六这个点了😭😭</div>
+                            <div class="boiling-content">{{bp.summary}}</div>
                             <div class="boiling-stat1">
-                                <span >15 赞 · </span>
-                                <span >43 评论</span>
+                                <span >{{bp.likeCount}} 赞 · </span>
+                                <span >{{bp.commentCount}} 评论</span>
                             </div>
                         </div>
                         <div class="boiling-image-box"></div>
                     </a>
                 </li>
+                {% endfor %}
             </ul>
         </div>
     </aside>

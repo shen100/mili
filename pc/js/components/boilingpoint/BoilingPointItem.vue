@@ -25,20 +25,24 @@
                 </div>
                 <div class="header-action">
                     <button class="subscribe-btn follow-button">关注</button>
-                    <div class="pin-header-more header-menu">
-                        <div class="more-button">
+                    <div v-clickoutside="clickoutsideReport" class="pin-header-more header-menu">
+                        <div @click="onReport" class="more-button">
                             <svg t="1529034629100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1948" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" class="icon">
                                 <path d="M804.606221 432.282401c120.691803 0 119.469975 187.388854-1.465374 187.388854C682.449044 619.671255 683.426301 432.282401 804.606221 432.282401z" p-id="1949" fill="#b8c1cc"></path>
                                 <path d="M511.428995 432.282401c120.691803 0 119.469975 187.388854-1.465374 187.388854C389.271818 619.671255 390.249075 432.282401 511.428995 432.282401z" p-id="1950" fill="#b8c1cc"></path>
                                 <path d="M218.251769 432.282401c120.691803 0 119.469975 187.388854-1.465374 187.388854C96.094592 619.671255 97.071849 432.282401 218.251769 432.282401z" p-id="1951" fill="#b8c1cc"></path>
                             </svg>
                         </div>
-                        <div class="dropdown1">
-                            <div class="dropdown-caret"></div>
-                            <ul class="dropdown-menu1">
-                                <li data-v-3deae11c="">举报</li>
-                            </ul>
-                        </div>
+                        <transition name="custom-classes-transition"
+                                enter-active-class="animated fadeIn faster"
+                                leave-active-class="animated fadeOut faster">
+                            <div v-if="reportVisible" class="dropdown1">
+                                <div class="dropdown-caret"></div>
+                                <ul class="dropdown-menu1">
+                                    <li data-v-3deae11c="">举报</li>
+                                </ul>
+                            </div>
+                        </transition>
                     </div>
                 </div>
             </div>
@@ -60,10 +64,10 @@
             <div class="pin-action-row">
                 <div class="action-box action-box">
                     <div class="like-action action">
-                        <div class="action-title-box">
+                        <div @click="onLikeOrNot(data)" class="action-title-box">
                             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" class="icon like-icon">
                                 <g fill="none" fill-rule="evenodd">
-                                    <template v-if="!data.liked">
+                                    <template v-if="!data.userLiked">
                                         <path d="M0 0h20v20H0z"></path>
                                         <path stroke="#8A93A0" stroke-linejoin="round" d="M4.58 8.25V17h-1.4C2.53 17 2 16.382 2 15.624V9.735c0-.79.552-1.485 1.18-1.485h1.4zM11.322 2c1.011.019 1.614.833 1.823 1.235.382.735.392 1.946.13 2.724-.236.704-.785 1.629-.785 1.629h4.11c.434 0 .838.206 1.107.563.273.365.363.84.24 1.272l-1.86 6.513A1.425 1.425 0 0 1 14.724 17H6.645V7.898C8.502 7.51 9.643 4.59 9.852 3.249A1.47 1.47 0 0 1 11.322 2z"></path>
                                     </template>
@@ -73,7 +77,7 @@
                                     </template>    
                                 </g>
                             </svg>
-                            <span class="action-title" :style="{color: data.liked ? '#37c700' : '#8a93a0'}">{{data.likeCount ? data.likeCount : '赞'}}</span>
+                            <span class="action-title" :style="{color: data.userLiked ? '#37c700' : '#8a93a0'}">{{data.likeCount ? data.likeCount : '赞'}}</span>
                         </div>
                     </div>
                     <div class="comment-action action">
@@ -107,14 +111,43 @@
 </template>
 
 <script>
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
+
 export default {
     props: [
         'data',
     ],
     data () {
         return {
-
+            reportVisible: false,
         };
+    },
+    methods: {
+        onReport() {
+            this.reportVisible = !this.reportVisible;
+        },
+        clickoutsideReport() {
+            this.reportVisible = false;
+        },
+        onLikeOrNot(boilingPoint) {
+            let url = `/boilingpoints/${boilingPoint.id}/like`;
+            if (!boilingPoint.userLiked) {
+                myHTTP.post(url).then((res) => {
+                    if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                        boilingPoint.userLiked = true;
+                        boilingPoint.likeCount++;
+                    }
+                });
+            } else {
+                myHTTP.delete(url).then((res) => {
+                    if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                        boilingPoint.userLiked = false;
+                        boilingPoint.likeCount--;
+                    }
+                });
+            }
+        },
     }
 }
 </script>

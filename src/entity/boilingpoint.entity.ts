@@ -39,8 +39,11 @@ export class BoilingPoint {
     @Column('int', { name: 'like_count' })
     likeCount: number;
 
-    @Column('varchar', { name: 'html_content', length: 1000 })
+    @Column('varchar', { name: 'html_content', length: 2000 })
     htmlContent: string;
+
+    @Column('varchar', { name: 'summary', length: 100 })
+    summary: string;
 
     @Column('varchar', { length: 2000 })
     imgs: string;
