@@ -344,7 +344,8 @@ export class UserService {
             user = await this.userRepository.findOne({
                 select: [
                     'id', 'status', 'createdAt', 'username', 'articleCount', 'collectCount',
-                    'commentCount', 'introduce', 'role', 'avatarURL', 'sex',
+                    'commentCount', 'followCount', 'followerCount', 'boilingPointCount',
+                    'introduce', 'role', 'avatarURL', 'sex',
                 ] as any,
                 where: {
                     id,

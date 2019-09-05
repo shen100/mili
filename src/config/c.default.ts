@@ -76,6 +76,7 @@ export default {
         expiration: 6, // 上传凭证过期时间, 单位小时
         imgMaxSize: 3, // 设置上传图片的大小限制, 单位M
         imgMaxSizeError: '图片大小要小于%sM', // 图片大小超过限制时的提示
+        callbackSecretToken: '123456789', // 用来验证是否是阿里云发过来的回调
     },
     aliyunSMS: {
         accessKeyID: '',

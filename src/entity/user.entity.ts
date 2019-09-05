@@ -80,6 +80,12 @@ export class User {
     @Column('int', { name: 'word_count', default: 0 })
     wordCount: number; // 写了多少字
 
+    @Column('int', { name: 'boilingpoint_count', default: 0 })
+    boilingPointCount: number; // 沸点数量
+
+    @Column('int', { name: 'follow_count', default: 0 })
+    followCount: number; // 关注了多少人
+
     @Column('int', { name: 'follower_count', default: 0 })
     followerCount: number; // 被多少人关注
 

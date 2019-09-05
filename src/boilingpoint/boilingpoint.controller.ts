@@ -146,10 +146,46 @@ export class BoilingPointController {
     }
 
     @Get(`${APIPrefix}/boilingpoints/recommend`)
-    async recommend(@Query('page', ParsePagePipe) page: number) {
+    async recommend(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
         const boilingPoints = await this.boilingPointService.recommend(page);
+        const boilingpointIDs: number[] = [];
+        const userIDMap = {};
+        const userIDs: number[] = [];
+        const list = boilingPoints.list.map(boilingPoint => {
+            boilingpointIDs.push(boilingPoint.id);
+            if (!userIDMap[boilingPoint.userID]) {
+                userIDs.push(boilingPoint.userID);
+                userIDMap[boilingPoint.userID] = true;
+            }
+            return {
+                ...boilingPoint,
+                userLiked: false,
+                createdAtLabel: recentTime(boilingPoint.createdAt, 'YYYY.MM.DD HH:mm'),
+            };
+        });
+        const [users, likes] = await Promise.all([
+            this.userService.findUsers({
+                id: In(userIDs),
+            }, {
+                id: true,
+                username: true,
+                avatarURL: true,
+                job: true,
+                company: true,
+            }),
+            this.boilingPointService.userLikes(boilingpointIDs, user && user.id)
+        ]);
+        const userMap = {};
+        users.map(u => userMap[u.id] = u);
+        const likesMap = {};
+        likes.map(boilingPointID => likesMap[boilingPointID] = true);
+        list.map(bp => {
+            bp.user = userMap[bp.userID];
+            bp.userLiked = !!likesMap[bp.id];
+        });
         return {
             ...boilingPoints,
+            list,
         };
     }
 

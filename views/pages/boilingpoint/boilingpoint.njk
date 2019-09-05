@@ -39,15 +39,15 @@
             <ul class="boiling-stat-list">
                 <a href="/user/5872f33b61ff4b005c490f1c/pins" target="_blank" class="boiling-item">
                     <div class="boiling-title">沸点</div>
-                    <div class="boiling-count">5</div>
+                    <div class="boiling-count">{{user.boilingPointCount | defaultValue(0)}}</div>
                 </a>
                 <a href="/user/5872f33b61ff4b005c490f1c/following" target="_blank" class="boiling-item">
                     <div class="boiling-title">关注</div>
-                    <div class="boiling-count">24</div>
+                    <div class="boiling-count">{{user.followCount | defaultValue(0)}}</div>
                 </a>
                 <a href="/user/5872f33b61ff4b005c490f1c/followers" target="_blank" class="boiling-item">
                     <div class="boiling-title">关注者</div>
-                    <div class="boiling-count">0</div>
+                    <div class="boiling-count">{{user.followerCount | defaultValue(0)}}</div>
                 </a>
             </ul>
         </div>
@@ -58,13 +58,15 @@
                 <li class="pin-item">
                     <a href="/pin/5d61157a6fb9a07d87242cf7" target="_blank" title="{{bp.summary}}" class="pin">
                         <div class="boiling-content-box">
-                            <div class="boiling-content">{{bp.summary}}</div>
+                            <div class="boiling-content" style="-webkit-box-orient: vertical;{% if not bp.img %}max-width: 215px;{% endif %}">{{bp.summary}}</div>
                             <div class="boiling-stat1">
                                 <span >{{bp.likeCount}} 赞 · </span>
                                 <span >{{bp.commentCount}} 评论</span>
                             </div>
                         </div>
-                        <div class="boiling-image-box"></div>
+                        {% if bp.img %}
+                        <div class="boiling-image-box" style="background-image: url({{bp.img}});"></div>
+                        {% endif %}
                     </a>
                 </li>
                 {% endfor %}

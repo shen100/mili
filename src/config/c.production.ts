@@ -54,6 +54,7 @@ export default {
         uploadActionURL: 'https://golang123-img.oss-cn-hangzhou.aliyuncs.com',
         uploadPrefix: 'upload/img', // 上传路径加个前缀
         expiration: 6, // 单位小时
+        callbackSecretToken: 'c6e42824eb44b6971017f3e',
     },
     aliyunSMS: {
         accessKeyID: 'LTAI2f2ODs208e6X',

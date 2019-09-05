@@ -245,11 +245,11 @@ ul.pin-list {
     max-height: 41px;
     color: #2e3135;
     font-size: 13px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     overflow: hidden;
     -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
 }
 
 .boiling-stat1 {

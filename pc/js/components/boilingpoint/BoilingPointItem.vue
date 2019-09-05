@@ -52,7 +52,7 @@
             <div class="pin-image-row">
                 <div class="image-box-wrapper image-box">
                     <div class="image-box col-1">
-                        <div class="image" style="background-image: url();">
+                        <div :key="i" v-for="(img, i) in imgArr" class="image" :style="{'background-image': `url(${img})`}">
                             <div class="ratio-holder"></div>
                         </div>
                     </div>
@@ -120,6 +120,7 @@ export default {
     ],
     data () {
         return {
+            imgArr: this.data.imgs ? this.data.imgs.split(',') : [],
             reportVisible: false,
         };
     },

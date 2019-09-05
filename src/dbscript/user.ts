@@ -12,6 +12,9 @@ export const userRun = async function (connection, config) {
         await connection.manager.query(`alter table users change name username varchar(100)`);
 
         await connection.manager.query(`alter table users add column word_count int`);
+
+        await connection.manager.query(`alter table users add column follow_count int`);
+        await connection.manager.query(`alter table users add column boilingpoint_count int`);
         await connection.manager.query(`alter table users add column follower_count int`);
         await connection.manager.query(`alter table users add column like_count int`);
         await connection.manager.query(`alter table users add column job varchar(100)`);

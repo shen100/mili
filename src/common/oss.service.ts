@@ -37,6 +37,19 @@ export class OSSService {
 
         const base64Policy = base64Encode(JSON.stringify(policy));
         const signature = hmacSHA1(aliyun.accessKeySecret, base64Policy);
+        const callbackObj = {
+            callbackUrl: 'https://hi-theshen102.localtunnel.me/api/v1/common/osscallback',
+            callbackBody: '{' + [
+                '\"mimeType\":${mimeType}',
+                '\"size\":${size}',
+                '\"filename\":${object}',
+                '\"width\":${imageInfo.width}',
+                '\"height\":${imageInfo.height}',
+                '\"format\":${imageInfo.format}',
+                '\"callback-token\":${x:callback-token}',
+            ].join(',') + '}',
+			callbackBodyType: 'application/json',
+        };
         return {
             uploadActionURL: aliyun.uploadActionURL,
             uploadFieldName: aliyun.uploadFieldName,
@@ -50,6 +63,8 @@ export class OSSService {
                 Signature: signature,
                 key: '', // 上传文件的object名称
                 success_action_status: 201,
+                // callback: base64Encode(JSON.stringify(callbackObj)),
+                // 'x:callback-token': this.configService.aliyunOSS.callbackSecretToken,
             },
             uploadImgURL: staticConfig.uploadImgURL,
         };
