@@ -1,10 +1,13 @@
 import {
-    Controller, Get, UseGuards, Post, Body, Req,
+    Controller, Get, UseGuards, Post, Body, Req, Query,
 } from '@nestjs/common';
 import { OSSService } from './oss.service';
 import { APIPrefix } from '../constants/constants';
 import { ActiveGuard } from '../core/guards/active.guard';
 import { ConfigService } from '../config/config.service';
+import { MyHttpException } from '../core/exception/my-http.exception';
+import { ErrorCode } from '../constants/error';
+import { Image } from '../entity/image.entity';
 
 @Controller()
 export class CommonController {
@@ -13,7 +16,7 @@ export class CommonController {
         private readonly ossService: OSSService,
     ) {}
 
-    @Get(`${APIPrefix}/common/osspolicy`)
+    @Get(`${APIPrefix}/common/oss/policy`)
     @UseGuards(ActiveGuard)
     async ossPolicy() {
         const uploadPolicy = await this.ossService.requestPolicy();
@@ -22,7 +25,7 @@ export class CommonController {
         };
     }
 
-    @Post(`${APIPrefix}/common/osscallback`)
+    @Post(`${APIPrefix}/common/oss/callback`)
     async ossCallback(@Body() body, @Req() req) {
         if (body['callback-token'] !== this.configService.aliyunOSS.callbackSecretToken) {
             return {
@@ -33,5 +36,29 @@ export class CommonController {
         return {
             Status: 'OK',
         };
+    }
+
+    @Post(`${APIPrefix}/common/oss/createimg`)
+    async createimg(@Body('path') path: string) {
+        if (this.configService.env !== this.configService.DEVELOPMENT) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        if (!path) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        const imgData = await this.ossService.getImageInfo(path);
+        if (!imgData) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        const img: Image = await this.ossService.createImage({
+            ...imgData,
+        });
+        return img;
     }
 }

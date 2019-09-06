@@ -64,7 +64,7 @@
 
 <script>
 import { myHTTP } from '~/js/common/net.js';
-import { trim, ossResponseParse } from '~/js/utils/utils.js';
+import { trim } from '~/js/utils/utils.js';
 import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import uuid from 'uuid/v4';

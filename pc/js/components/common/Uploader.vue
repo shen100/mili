@@ -14,6 +14,8 @@ import uuid from 'uuid/v4';
 import Vue from 'vue';
 import { Upload } from 'iview';
 import { ossResponseParse } from '~/js/utils/utils.js';
+import { ErrorCode } from '~/js/constants/error.js';
+import { myHTTP } from '~/js/common/net.js';
 
 Vue.component('Upload', Upload);
 
@@ -52,12 +54,23 @@ export default {
             return true;
         },
         onUploadCallback (res, file) {
-            let imgURL = ossResponseParse(res, this.uploadImgURL);
-            this.lastImageURL = '';
-            if (imgURL) {
-                this.lastImageURL = imgURL;
-                this.$emit('success', imgURL);
-                return;
+            if (process.env.NODE_ENV === 'development') {
+                // 本地开发时，图片上传成功后，没有走阿里oss服务器回调，这时，再发个请求给应用服务器
+                let imgData = ossResponseParse(res, this.uploadImgURL);
+                if (imgData.url) {
+                    const url = `/common/oss/createimg`;
+                    myHTTP.post(url, { path: imgData.path }).then((res) => {
+                        if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                            this.lastImageURL = imgData.url;
+                            this.$emit('success', imgData.url);
+                        }
+                    }).catch((err) => {
+
+                    });
+                    return;
+                }
+            } else {
+                
             }
             this.$emit('error', '上传凭证过期，请刷新浏览器重试');
         },

@@ -38,6 +38,7 @@ import { TagService } from './tag.service';
 import { TagController } from './tag.controller';
 import { OSSService } from '../common/oss.service';
 import { CommonModule } from '../common/common.module';
+import { Image } from '../entity/image.entity';
 
 @Module({
     imports: [
@@ -57,6 +58,7 @@ import { CommonModule } from '../common/common.module';
             BookChapter,
             BookCategory,
             Tag,
+            Image,
         ]),
         UserModule,
         CommonModule,

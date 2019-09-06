@@ -108,7 +108,7 @@ export default {
     },
     methods: {
         reqPolicy() {
-            const url = `/common/osspolicy`;
+            const url = `/common/oss/policy`;
             myHTTP.get(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.uploadPolicy = res.data.data.uploadPolicy;

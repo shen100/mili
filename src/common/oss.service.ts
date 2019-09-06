@@ -3,6 +3,7 @@ import {
 } from '@nestjs/common';
 import * as stream from 'stream';
 import * as uuid from 'uuid';
+import * as mime from 'mime';
 import axios from 'axios';
 import * as moment from 'moment';
 import * as util from 'util';
@@ -10,6 +11,10 @@ import * as OSS from 'ali-oss';
 import { base64Encode, hmacSHA1 } from '../utils/security';
 import { ConfigService } from '../config/config.service';
 import { extName, urlBaseName } from '../utils/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Image } from '../entity/image.entity';
+import { Article } from '../entity/article.entity';
 
 const PassThrough = stream.PassThrough;
 
@@ -17,7 +22,20 @@ const PassThrough = stream.PassThrough;
 export class OSSService {
     constructor(
         private readonly configService: ConfigService,
+
+        @InjectRepository(Image)
+        private readonly imageRepository: Repository<Image>,
     ) {}
+
+    private createOSSClient() {
+        const client = new OSS({
+            region: this.configService.aliyunOSS.region,
+            accessKeyId: this.configService.aliyunOSS.accessKeyID,
+            accessKeySecret: this.configService.aliyunOSS.accessKeySecret,
+            bucket: this.configService.aliyunOSS.bucket,
+        });
+        return client;
+    }
 
     async requestPolicy() {
         const now = moment();
@@ -38,7 +56,7 @@ export class OSSService {
         const base64Policy = base64Encode(JSON.stringify(policy));
         const signature = hmacSHA1(aliyun.accessKeySecret, base64Policy);
         const callbackObj = {
-            callbackUrl: 'https://hi-theshen102.localtunnel.me/api/v1/common/osscallback',
+            callbackUrl: 'https://hi-theshen102.localtunnel.me/api/v1/common/oss/callback',
             callbackBody: '{' + [
                 '\"mimeType\":${mimeType}',
                 '\"size\":${size}',
@@ -50,6 +68,7 @@ export class OSSService {
             ].join(',') + '}',
 			callbackBodyType: 'application/json',
         };
+        const isDev = this.configService.env === this.configService.DEVELOPMENT;
         return {
             uploadActionURL: aliyun.uploadActionURL,
             uploadFieldName: aliyun.uploadFieldName,
@@ -58,13 +77,13 @@ export class OSSService {
             imgMaxSize: imgMaxSizeM,
             imgMaxSizeError: util.format(staticConfig.imgMaxSizeError, staticConfig.imgMaxSize),
             uploadData: {
-                OSSAccessKeyId: aliyun.accessKeyID,
-                policy: base64Policy,
-                Signature: signature,
-                key: '', // 上传文件的object名称
-                success_action_status: 201,
-                // callback: base64Encode(JSON.stringify(callbackObj)),
-                // 'x:callback-token': this.configService.aliyunOSS.callbackSecretToken,
+                'OSSAccessKeyId': aliyun.accessKeyID,
+                'policy': base64Policy,
+                'Signature': signature,
+                'key': '', // 上传文件的object名称
+                'success_action_status': 201,
+                'callback': !isDev ? base64Encode(JSON.stringify(callbackObj)) : undefined,
+                'x:callback-token': !isDev ? this.configService.aliyunOSS.callbackSecretToken : undefined,
             },
             uploadImgURL: staticConfig.uploadImgURL,
         };
@@ -91,5 +110,39 @@ export class OSSService {
             name = '/' + name;
         }
         return this.configService.static.uploadImgURL + name;
+    }
+
+    async getImageInfo(path: string) {
+        if (path.charAt(0) !== '/') {
+            path = '/' + path;
+        }
+        const client = this.createOSSClient();
+        let result;
+        try {
+            result = await client.get(path, {process: 'image/info'});
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
+        const imgData = JSON.parse(result.content.toString());
+        return {
+            mime: mime.getType(imgData.Format.value),
+            size: parseInt(imgData.FileSize.value, 10),
+            url: path,
+            width: parseInt(imgData.ImageWidth.value, 10),
+            height: parseInt(imgData.ImageHeight.value, 10),
+            format: imgData.Format.value,
+        };
+    }
+
+    async createImage(imgData) {
+        const img: Image = new Image();
+        img.format = imgData.format;
+        img.mime = imgData.mime;
+        img.width = imgData.width;
+        img.height = imgData.height;
+        img.size = imgData.size;
+        img.url = imgData.url;
+        return await this.imageRepository.save(img);
     }
 }

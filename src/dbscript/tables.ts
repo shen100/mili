@@ -2,6 +2,9 @@ import { createConnection, In } from 'typeorm';
 
 export const tablesRun = async function (connection) {
     try {
+        await connection.manager.query(`alter table images add column size int(11)`);
+        await connection.manager.query(`alter table images add column format varchar(50)`);
+
         await connection.manager.query(`alter table books add column summary varchar(500)`);
         await connection.manager.query(`alter table books add column word_count int default 0`);
         await connection.manager.query(`alter table books add column user_count int default 0`);

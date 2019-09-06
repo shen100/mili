@@ -38,6 +38,7 @@
     "helmet": "^3.18.0",
     "jsonwebtoken": "^8.5.1",
     "marked": "^0.6.2",
+    "mime": "^2.4.4",
     "moment": "^2.24.0",
     "mysql": "^2.17.1",
     "nunjucks": "^3.2.0",

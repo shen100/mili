@@ -17,7 +17,6 @@ import { AdminModule } from './admin/admin.module';
 @Module({
     imports: [
         ConfigModule,
-        CommonModule,
         TypeOrmModule.forRootAsync({
             useFactory: async (configService: ConfigService) => {
                 // typeorm bug, https://github.com/nestjs/nest/issues/1119
@@ -32,6 +31,7 @@ import { AdminModule } from './admin/admin.module';
             },
             inject: [ ConfigService ],
         }),
+        CommonModule,
         UserModule,
         CMSModule,
         BoilingPointModule,

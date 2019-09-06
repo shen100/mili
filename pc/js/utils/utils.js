@@ -19,10 +19,13 @@ export const ossResponseParse = (res, uploadImgURL) => {
         const PostResponse = PostResponseArr[0];
         const KeyArr = PostResponse.getElementsByTagName('Key');
         if (KeyArr && KeyArr[0]) {
-            return uploadImgURL + '/' + KeyArr[0].innerHTML;
+            return {
+                path: KeyArr[0].innerHTML,
+                url: uploadImgURL + '/' + KeyArr[0].innerHTML
+            };
         }
     }
-    return '';
+    return {};
 };
 
 export const countToK = (count) => {
