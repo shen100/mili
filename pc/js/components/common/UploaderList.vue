@@ -1,8 +1,8 @@
 <template>
     <div class="uploader-list-box">
         <ErrorTip ref="errorTip" />
-        <div :key="i" :id="img" v-for="(img, i) in imgs" class="preview-image preview-image">
-            <div class="lazy icon loaded immediate" :style="{'background-image': `url(${img})`}"></div>
+        <div :key="i" :id="imgData.id" v-for="(imgData, i) in imgDataArr" class="preview-image preview-image">
+            <div class="lazy icon loaded immediate" :style="{'background-image': `url(${imgData.url})`}"></div>
             <span @click="onRemove(i)" class="delete"></span>
         </div>
         <Uploader v-if="uploadAllowed" @uploading="onImgUploading" @success="onImgUploadSuccess" 
@@ -22,28 +22,28 @@ export default {
     ],
     data () {
         return {
-            imgs: []
+            imgDataArr: [],
         }
     },
     methods: {
-        addImg(imgURL) {
-            this.imgs.push(imgURL);
+        addImg(imgData) {
+            this.imgDataArr.push(imgData);
         },
-        getImgs() {
-            return this.imgs.slice(0);
+        getAllImgData() {
+            return this.imgDataArr.slice(0);
         },
         onImgUploading() {
         },
-        onImgUploadSuccess(imgURL) {
-            this.imgs.push(imgURL);
+        onImgUploadSuccess(imgURL, imgData) {
+            this.imgDataArr.push(imgData);
             this.$emit('success');
         },
         onImgUploadFail(message) {
             this.$refs.errorTip.show(message);
         },
         onRemove(index) {
-            const imgURL = this.imgs.splice(index, 1);
-            this.$emit('remove', imgURL);
+            const imgData = this.imgDataArr.splice(index, 1);
+            this.$emit('remove', imgData);
         }
     },
     components: {

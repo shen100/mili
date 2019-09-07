@@ -62,7 +62,7 @@ export default {
                     myHTTP.post(url, { path: imgData.path }).then((res) => {
                         if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                             this.lastImageURL = imgData.url;
-                            this.$emit('success', imgData.url);
+                            this.$emit('success', imgData.url, res.data.data);
                         }
                     }).catch((err) => {
 
@@ -70,7 +70,7 @@ export default {
                     return;
                 }
             } else {
-                
+
             }
             this.$emit('error', '上传凭证过期，请刷新浏览器重试');
         },

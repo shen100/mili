@@ -42,16 +42,17 @@ export default {
         }
     },
     methods: {
-        onImgUploadSuccess(imgURL) {
+        onImgUploadSuccess(imgURL, imgData) {
+            console.log('---------------', imgURL, imgData);
             if (this.imgCount) {
                 this.imgCount++;
-                this.$refs.upList.addImg(imgURL);
+                this.$refs.upList.addImg(imgData);
                 return;
             }
             this.imgCount++;
             // 没有图片时，UploaderList不在dom中，这时上传第一张图片后，设个延时, 再访问this.$refs.upList
             this.$nextTick(() => {
-                this.$refs.upList.addImg(imgURL);  
+                this.$refs.upList.addImg(imgData);
             });
         },
         onImgUploadSuccess2(imgURL) {
@@ -74,11 +75,12 @@ export default {
                 return;
             }
             this.isSaving = true;
-            const imgs = this.imgCount ? this.$refs.upList.getImgs() : [];
+            const imgDataArr = this.imgCount ? this.$refs.upList.getAllImgData() : [];
+            const imgIDs = imgDataArr.map(imgData => imgData.id);
             const reqData = {
                 topicID: this.topic && this.topic.id || undefined,
                 htmlContent: this.$refs.richEditor.getHTML(),
-                imgs: imgs && imgs.length ? imgs : undefined,
+                imgs: imgIDs.length ? imgIDs : undefined,
             };
             myHTTP.post('/boilingpoints', reqData).then((res) => {
                 this.isSaving = false;

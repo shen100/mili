@@ -41,12 +41,9 @@ export class EditBoilingPointDto {
         message: '最多只能上传 $constraint1 个图片',
     })
     @IsArray({
-        message: '无效的图片',
+        message: '无效的图片id',
     })
-    @IsUrl({
-        protocols: ['https'],
-        require_protocol: true,
-    }, {
+    @IsInt({
         each: true,
     })
     readonly imgs: string[];

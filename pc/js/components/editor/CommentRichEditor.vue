@@ -151,8 +151,8 @@ export default {
                 this.isSaving = false;
             });
         },
-        onImgUploadSuccess(imgURL) {
-            this.$emit('imgUploadSuccess', imgURL);
+        onImgUploadSuccess(imgURL, imgData) {
+            this.$emit('imgUploadSuccess', imgURL, imgData);
         },
         onBoilingpointSubmit() {
             let content = trim(this.editor.getHTML() || '');

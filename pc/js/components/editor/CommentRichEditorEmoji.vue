@@ -895,9 +895,9 @@ export default {
         },
         onImgUploading() {
         },
-        onImgUploadSuccess(imgURL) {
+        onImgUploadSuccess(imgURL, imgData) {
             console.log(imgURL);
-            this.$emit('imgUploadSuccess', imgURL);
+            this.$emit('imgUploadSuccess', imgURL, imgData);
         },
         onImgUploadFail(message) {
             this.$refs.errorTip.show(message);
