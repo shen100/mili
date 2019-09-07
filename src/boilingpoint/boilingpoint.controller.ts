@@ -16,6 +16,9 @@ import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 import { recentTime } from '../utils/viewfilter';
 import { In } from 'typeorm';
+import { Image } from '../entity/image.entity';
+import { User } from '../entity/user.entity';
+import { ConfigService } from '../config/config.service';
 
 @Controller()
 export class BoilingPointController {
@@ -24,6 +27,7 @@ export class BoilingPointController {
         private readonly topicService: TopicService,
         private readonly userService: UserService,
         private readonly ossService: OSSService,
+        private readonly configService: ConfigService,
     ) {}
 
     @Get('/boiling/topic/:topicID')
@@ -127,7 +131,7 @@ export class BoilingPointController {
                 job: true,
                 company: true,
             }),
-            this.boilingPointService.userLikes(boilingpointIDs, user && user.id)
+            this.boilingPointService.userLikes(boilingpointIDs, user && user.id),
         ]);
 
         const userMap = {};
@@ -151,19 +155,27 @@ export class BoilingPointController {
         const boilingpointIDs: number[] = [];
         const userIDMap = {};
         const userIDs: number[] = [];
+        const imgIDArr: number[] = [];
         const list = boilingPoints.list.map(boilingPoint => {
             boilingpointIDs.push(boilingPoint.id);
+            if (boilingPoint.imgs) {
+                const ids = boilingPoint.imgs.split(',');
+                imgIDArr.push(...ids.map(idStr => parseInt(idStr, 10)));
+            }
             if (!userIDMap[boilingPoint.userID]) {
                 userIDs.push(boilingPoint.userID);
                 userIDMap[boilingPoint.userID] = true;
             }
             return {
                 ...boilingPoint,
+                imgs: boilingPoint.imgs ? boilingPoint.imgs.split(',') : [],
                 userLiked: false,
                 createdAtLabel: recentTime(boilingPoint.createdAt, 'YYYY.MM.DD HH:mm'),
             };
         });
-        const [users, likes] = await Promise.all([
+        let users: User[], likes: number[], images: Image[];
+        const userMap = {}, likeMap = {}, imageMap = {};
+        [users, likes, images] = await Promise.all([
             this.userService.findUsers({
                 id: In(userIDs),
             }, {
@@ -173,15 +185,21 @@ export class BoilingPointController {
                 job: true,
                 company: true,
             }),
-            this.boilingPointService.userLikes(boilingpointIDs, user && user.id)
+            this.boilingPointService.userLikes(boilingpointIDs, user && user.id),
+            imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
         ]);
-        const userMap = {};
         users.map(u => userMap[u.id] = u);
-        const likesMap = {};
-        likes.map(boilingPointID => likesMap[boilingPointID] = true);
+        likes.map(boilingPointID => likeMap[boilingPointID] = true);
+        images.map(img => imageMap[img.id] = img);
         list.map(bp => {
             bp.user = userMap[bp.userID];
-            bp.userLiked = !!likesMap[bp.id];
+            bp.userLiked = !!likeMap[bp.id];
+            bp.imgs = bp.imgs.map(imgID => {
+                return {
+                    ...imageMap[imgID],
+                    url: this.configService.static.uploadImgURL + imageMap[imgID].url,
+                };
+            });
         });
         return {
             ...boilingPoints,

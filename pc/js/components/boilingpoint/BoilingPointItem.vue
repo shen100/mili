@@ -39,7 +39,7 @@
                             <div v-if="reportVisible" class="dropdown1">
                                 <div class="dropdown-caret"></div>
                                 <ul class="dropdown-menu1">
-                                    <li data-v-3deae11c="">举报</li>
+                                    <li>举报</li>
                                 </ul>
                             </div>
                         </transition>
@@ -51,9 +51,51 @@
             </div>
             <div class="pin-image-row">
                 <div class="image-box-wrapper image-box">
-                    <div class="image-box col-1">
-                        <div :key="i" v-for="(img, i) in imgArr" class="image" :style="{'background-image': `url(${img})`}">
+                    <div v-show="gridVisible" class="image-box">
+                        <div @click="onClickImgGrid(i)" :key="i" v-for="(imgData, i) in imgArr" class="image" :class="{'no-right-margin': (i + 1) % 3 === 0}"
+                            :style="{'background-image': `url(${imgData.url})`, width: imgData.imgWidth + 'px', height: imgData.imgHeight + 'px'}">
                             <div class="ratio-holder"></div>
+                        </div>
+                    </div>
+                    <div v-if="middleImgCreated" :style="{width: '100%', display: middleImgVisible ? 'block' : 'none'}">
+                        <div class="action-bar">
+                            <div @click="onExitMiddleImage" class="action-item">
+                                <span class="icon">
+                                    <img src="../../../images/boilingpoint/pinch.svg" />
+                                </span>
+                                <span class="action-name">收起</span>
+                            </div>
+                            <div class="action-item">
+                                <span class="icon">
+                                    <img src="../../../images/boilingpoint/expand.svg" />
+                                </span>
+                                <span class="action-name">查看大图</span>
+                            </div>
+                            <div @click="changeMiddleImgTransform(-1)" class="action-item">
+                                <span class="icon">
+                                    <img src="../../../images/boilingpoint/leftrotate.svg" />
+                                </span>
+                                <span class="action-name">向左旋转</span>
+                            </div>
+                            <div @click="changeMiddleImgTransform(1)" class="action-item">
+                                <span class="icon">
+                                    <img src="../../../images/boilingpoint/rightrotate.svg" />  
+                                </span>
+                                <span class="action-name">向右旋转</span>
+                            </div>
+                        </div>
+                        <div v-if="curMiddleImg" class="carousel-body" :style="{height: curMiddleImg.style.displayHeight}">
+                            <img :key="i" v-for="(middleImg, i) in middleImgArr" :src="middleImg.url" 
+                                class="carousel-image animated myfadeIn fast" :class="{'hide-middle-img': i !== curImgIndex}"
+                                :style="middleImg.style"/>
+                            <div v-show="curImgIndex !== 0" @click="prevMiddleImg" class="toggle-area prev"></div>
+                            <div @click="onExitMiddleImage" class="toggle-area zoomout"></div>
+                            <div v-show="curImgIndex !== middleImgArr.length - 1" @click="nextMiddleImg" class="toggle-area next"></div>
+                        </div>
+                        <div class="nav-list">
+                            <div @click="changeMiddleImg(i)" :key="imgData.id" v-for="(imgData, i) in imgArr" class="nav-item">
+                                <div class="thumb" :class="{active: i === curImgIndex}" :style="{'background-image': `url(${imgData.url})`}"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -114,17 +156,154 @@
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 
+const maxMiddleImgWidth = 446;
+const gridWidth = 336;// 9宫格总宽度
+const gridGap = 6;// 格子之间的间距
+// 有9个格子时，每个格子的宽高，这时格子的宽高比为1:1
+const grid =  (gridWidth - 2 * gridGap) / 3;
+// 只有一张图片，且图片宽高比为1:1时，这时图片的宽高
+const ratio1x1Value = 180 * (gridWidth / 250);
+
 export default {
     props: [
         'data',
     ],
     data () {
+        const imgs = this.data.imgs;
+        if (imgs.length === 1) {
+            const ratio = imgs[0].width / imgs[0].height;
+            if (ratio < 1 / 3) {
+                imgs[0].imgWidth = ratio1x1Value / 3;
+                imgs[0].imgHeight = ratio1x1Value;
+            } else if (ratio >= 1 / 3 && ratio < 1) {
+                imgs[0].imgWidth = ratio1x1Value / ratio;
+                imgs[0].imgHeight = ratio1x1Value;
+            } else if (ratio >= 1 && ratio < 3) {
+                imgs[0].imgWidth = ratio1x1Value;
+                imgs[0].imgHeight = ratio1x1Value / ratio;
+            } else {
+                imgs[0].imgWidth = gridWidth;
+                imgs[0].imgHeight = grid;
+            }
+        } else if (imgs.length >= 2) {
+            imgs.map(img => {
+                img.imgWidth = grid;
+                img.imgHeight = grid;   
+            });
+        }
+        let middleImgArr = (imgs || []).map(imgData => {
+            return {
+                ...imgData,
+                rotate: 0,
+                style: {},
+            };
+        });
+        console.log(middleImgArr);
+        middleImgArr = middleImgArr.map(img => this.updateMiddleImgStyle(img, { isSwap: false }));
+        console.log(middleImgArr);
         return {
-            imgArr: this.data.imgs ? this.data.imgs.split(',') : [],
+            gridWidth,
+            curImgIndex: 0,
+            imgArr: imgs || [],
+            middleImgArr,
             reportVisible: false,
+            gridVisible: true, // 是否显示九宫格
+            middleImgVisible: false, // 是否显示轮播图
+            middleImgCreated: false,
         };
     },
+    computed: {
+        curMiddleImg() {
+            return this.middleImgArr[this.curImgIndex];
+        }
+    },
     methods: {
+        updateMiddleImgStyle(imgData, options) {
+            options = options || {};
+            options.isSwap = options.isSwap || false;
+            options.transform = options.transform || 'rotate(0deg) translate(0px, 0px)';
+            let originalWidth, originalHeight, imgWidthKey, imgHeightKey;
+            const imgSize = {};
+            if (options.isSwap) {
+                originalWidth = imgData.height;
+                originalHeight = imgData.width;
+                imgWidthKey = 'imgHeight';
+                imgHeightKey = 'imgWidth';
+            } else {
+                originalWidth = imgData.width;
+                originalHeight = imgData.height;
+                imgWidthKey = 'imgWidth';
+                imgHeightKey = 'imgHeight';
+            }
+            if (originalWidth > maxMiddleImgWidth) {
+                imgSize[imgWidthKey] = maxMiddleImgWidth;
+                imgSize[imgHeightKey] = originalHeight / (originalWidth / imgSize[imgWidthKey]);
+            } else {
+                imgSize[imgWidthKey] = originalWidth;
+                imgSize[imgHeightKey] = originalHeight;
+            }
+
+            if (imgSize[imgHeightKey] > 1000) {
+                imgSize[imgHeightKey] = 1000;
+                imgSize[imgWidthKey] = originalWidth / (originalHeight / imgSize[imgHeightKey]);
+            }
+            imgData.style = {
+                width: imgSize.imgWidth + 'px', 
+                height: imgSize.imgHeight + 'px',
+                displayHeight: imgSize[imgHeightKey] + 'px',
+                left: (maxMiddleImgWidth - imgSize[imgWidthKey]) / 2 + 'px',
+                transform: options.transform
+            };
+            return imgData;
+        },
+        // 点击了九宫格中的一张图片
+        onClickImgGrid(index) {
+            this.curImgIndex = index;
+            this.gridVisible = false;
+            this.middleImgVisible = true;
+            this.middleImgCreated = true;
+        },
+        onExitMiddleImage() {
+            this.gridVisible = true;
+            this.middleImgVisible = false;
+        },
+        prevMiddleImg() {
+            this.curImgIndex--;
+        },
+        changeMiddleImg(index) {
+            this.curImgIndex = index;
+        },
+        nextMiddleImg() {
+            this.curImgIndex++;
+        },
+        changeMiddleImgTransform(rotate) {
+            const middleImg = this.curMiddleImg;
+            const transformMap = {
+                '0': 'rotate(0deg) translate(0px, 0px)',
+                '1': 'rotate(90deg) translate(0px, -100%)',
+                '2': 'rotate(180deg) translate(-100%, -100%)',
+                '3': 'rotate(270deg) translate(-100%, 0px)'
+            };
+            middleImg.rotate += rotate;
+            if (middleImg.rotate < 0) {
+                middleImg.rotate = 3;
+            }
+            if (middleImg.rotate > 3) {
+                middleImg.rotate = 0;
+            }
+            if (middleImg.rotate === 0 || middleImg.rotate === 2) {
+                this.updateMiddleImgStyle(middleImg, {
+                    isSwap: false,
+                    transform: transformMap[middleImg.rotate],
+                });
+            } else {
+                this.updateMiddleImgStyle(middleImg, {
+                    isSwap: true,
+                    transform: transformMap[middleImg.rotate],   
+                });
+            }
+            console.log(middleImg);
+        },
         onReport() {
             this.reportVisible = !this.reportVisible;
         },
@@ -154,6 +333,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@-webkit-keyframes myfadeIn {
+    from {
+        opacity: 0.5;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes myfadeIn {
+    from {
+        opacity: 0.5;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.myfadeIn {
+    -webkit-animation-name: myfadeIn;
+    animation-name: myfadeIn;
+}
+
 .boilingpoint-item {
     margin-bottom: 8px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
@@ -379,15 +583,10 @@ svg:not(:root) {
 .pin-image-row, .pin-link-row, .pin-topic-row {
     position: relative;
     margin: 76px 48px 0 76px;
+    margin-top: 10px;
 }
 
 .image-box {
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 100%;
-}
-
-.image-box[data-v-206355b1] {
     display: flex;
     flex-wrap: wrap;
     max-width: 100%;
@@ -404,8 +603,14 @@ svg:not(:root) {
     cursor: zoom-in;
 }
 
-.image-box.col-1 .image {
+.image-box .image {
     width: 200px;
+    margin-bottom: 6px;
+    margin-right: 6px;
+}
+
+.no-right-margin {
+    margin-right: 0!important;
 }
 
 .image .ratio-holder {
@@ -502,5 +707,132 @@ svg:not(:root) {
     top: -5px;
     left: -6px;
     border-bottom-color: #fff;
+}
+
+.pin-carousel {
+    width: 100%;
+}
+
+.action-bar {
+    height: 32px;
+    user-select: none;
+    background-color: #f4f5f7;
+}
+
+.action-item {
+    padding: 0 12px;
+    display: inline-block;
+    font-size: 13px;
+    color: #76797e;
+    cursor: pointer;
+    line-height: 32px;
+}
+
+.action-item .icon {
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.action-item .action-name, .action-item .icon {
+    display: inline-block;
+}
+
+.action-item .action-name, .action-item .icon svg path {
+    transition: .2s;
+}
+
+.carousel-body {
+    position: relative;
+    text-align: center;
+    background-color: #f4f5f7;
+    overflow: hidden;
+    transition: height .2s;
+}
+
+.carousel-body .carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    transform-origin: top left;
+}
+
+.carousel-body .toggle-area {
+    position: absolute;
+    top: 0;
+    width: 30%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hide-middle-img {
+    display: none!important;
+}
+
+.carousel-body .toggle-area.zoomout {
+    width: 100%;
+    cursor: zoom-out;
+    z-index: 0;
+}
+
+.carousel-body .toggle-area.prev {
+    left: 0;
+    cursor: url(../../../images/cursor-left.png), auto;
+}
+
+.carousel-body .toggle-area.next {
+    right: 0;
+    cursor: url(../../../images/cursor-right.png), auto;
+}
+
+.nav-list {
+    margin-top: 8px;
+    font-size: 0;
+}
+
+.nav-item {
+    display: inline-block;
+    width: 10.22222%;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    margin-right: 8px;
+}
+
+.nav-item .thumb {
+    position: relative;
+    background-size: cover;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    overflow: hidden;
+    opacity: .6;
+    transition: .2s;
+}
+
+.nav-item .thumb.active, .nav-item .thumb:hover {
+    border-color: #027fff;
+    opacity: 1;
+}
+
+.nav-item .thumb:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    transition: .2s;
+    content: "";
+    display: block;
+}
+
+.nav-item .thumb:after {
+    padding-top: 100%;
+    content: "";
+    display: block;
 }
 </style>

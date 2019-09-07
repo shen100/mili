@@ -58,8 +58,9 @@ export class CommonController {
         }
         const img: Image = await this.ossService.createImage({
             ...imgData,
-            url: this.configService.static.uploadImgURL + imgData.url,
+            url: imgData.url,
         });
+        img.url = this.configService.static.uploadImgURL + imgData.url;
         return img;
     }
 }

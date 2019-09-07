@@ -12,9 +12,8 @@ import { base64Encode, hmacSHA1 } from '../utils/security';
 import { ConfigService } from '../config/config.service';
 import { extName, urlBaseName } from '../utils/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Image } from '../entity/image.entity';
-import { Article } from '../entity/article.entity';
 
 const PassThrough = stream.PassThrough;
 
@@ -144,5 +143,13 @@ export class OSSService {
         img.size = imgData.size;
         img.url = imgData.url;
         return await this.imageRepository.save(img);
+    }
+
+    async findImages(ids: number[]): Promise<Image[]> {
+        return await this.imageRepository.find({
+            where: {
+                id: In(ids),
+            },
+        });
     }
 }
