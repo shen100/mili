@@ -7,11 +7,29 @@
             <template v-slot:content>
                 <div>
                     <ul class="boilingpoint-list">
-                        <BoilingPointItem :key="item.id" v-for="item in boilingPoints" :data="item" />
+                        <BoilingPointItem @bigImageChange="onBrowseBigImg" :key="item.id" v-for="item in boilingPoints" :data="item" />
                     </ul>
                 </div>
             </template>
         </Pinterest>
+        <template v-if="bigImgURL">
+            <div class="big-img-box">
+                <img class="big-img" :src="bigImgURL" :style="bigImgStyle" />
+            </div>
+            <div @click="onClose" class="bp-control close">
+                <img src="../../../images/boilingpoint/close.svg" />
+            </div>
+            <div v-if="curBigImgIndex > 0" @click="onPrev" class="bp-control-prev"></div>
+            <div v-if="curBigImgIndex < this.bigImgs.length - 1" @click="onNext" class="bp-control-next"></div>
+            <div @mouseenter="onEnterCouter" @mouseleave="onLeaveCouter" class="counter-bar-wrapper">
+                <div class="counter-bar" :style="{transform: isLeaveCouter ? 'translateY(100%)' : 'translateY(0)'}">
+                    <div class="counter-hinter">
+                        <span class="current-index">{{curBigImgIndex + 1}}</span>
+                        <span >/ {{bigImgs.length}}</span>
+                    </div>
+                </div>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -19,6 +37,9 @@
 import BoilingPointEditor from '~/js/components/editor/BoilingPointEditor.vue';
 import BoilingPointItem from '~/js/components/boilingpoint/BoilingPointItem.vue';
 import Pinterest from '~/js/components/common/Pinterest.vue';
+import {
+    getWindowSize,
+} from '~/js/utils/dom.js';
 
 export default {
     data () {
@@ -31,19 +52,98 @@ export default {
             url,
             boilingPoints: [],
             topicID: topicID || undefined,
+            bigImgStyle: {},
+            bigImgURL: '',
+            curBigImgIndex: -1,
+            bigImgs: [
+            ],
+            isLeaveCouter: true,
         };
     },
     mounted() {
         this.$nextTick(() => {
+            window.addEventListener('resize', this.onResize.bind(this));
         });
     },
     methods: {
+        onResize() {
+            if (this.bigImgs.length && this.bigImgs[this.curBigImgIndex]) {
+                this.changeBigImgStyle(this.bigImgs[this.curBigImgIndex]);
+            }
+        },
         onLoad(result) {
             console.log('=====', result);
             this.boilingPoints = this.boilingPoints.concat(result.data.data.list);
         },
         onPublish() {
 
+        },
+        onBrowseBigImg(imgs, index) {
+            this.curBigImgIndex = index;
+            this.bigImgs = imgs.map(img => {
+                return {
+                    ...img,
+                };
+            });
+            this.bigImgURL = this.bigImgs[index].url;
+            this.changeBigImgStyle(this.bigImgs[index]);
+        },
+        changeBigImgStyle(curImg) {
+            console.log('?????---->', curImg);
+            const winSize = getWindowSize();
+            let bigImgWidth;
+            let bigImgHeight;
+            if (curImg.width > winSize.width) {
+                console.log(curImg.width, winSize.width);
+                bigImgWidth = winSize.width;
+                bigImgHeight = curImg.height / (curImg.width / bigImgWidth);
+            } else {
+                console.log('==================2');
+                bigImgWidth = curImg.width;
+                bigImgHeight = curImg.height;
+            }
+            if (bigImgHeight > winSize.height) {
+                bigImgHeight = winSize.height;
+                bigImgWidth = curImg.width / (curImg.height / bigImgHeight);
+            }
+
+            this.bigImgStyle = {
+                width: bigImgWidth + 'px',
+                height: bigImgHeight + 'px',
+                left: (winSize.width - bigImgWidth) / 2 + 'px',
+                top: (winSize.height - bigImgHeight) / 2 + 'px',
+            };
+
+            console.log('!!!!!!!!!!!!!!!!!', {
+                width: bigImgWidth + 'px',
+                height: bigImgHeight + 'px',
+                left: (winSize.width - bigImgWidth) / 2 + 'px',
+                top: (winSize.height - bigImgHeight) / 2 + 'px',
+            })
+        },
+        onEnterCouter() {
+            console.log('??????????????');
+            this.isLeaveCouter = false;
+        },
+        onLeaveCouter() {
+            this.isLeaveCouter = true;
+        },
+        onClose() {
+            this.bigImgURL = '';
+            this.curBigImgIndex = -1;
+            this.bigImgs = [];
+            this.bigImgStyle = {};
+        },
+        onPrev() {
+            this.curBigImgIndex--;    
+            this.bigImgURL = this.bigImgs[this.curBigImgIndex].url;
+            this.changeBigImgStyle(this.bigImgs[this.curBigImgIndex]);
+        },
+        onNext() {
+            this.curBigImgIndex++;    
+            this.bigImgURL = this.bigImgs[this.curBigImgIndex].url;
+            console.log(this.bigImgURL, this.curBigImgIndex);
+            this.changeBigImgStyle(this.bigImgs[this.curBigImgIndex]);
         }
     },
     components: {
@@ -68,6 +168,112 @@ export default {
 .boilingpoint-list {
     background: #f4f5f5;
     margin-top: 8px;
+}
+
+.big-img-box {
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #222;
+    width: 100%;
+    height: 100%;
+    z-index: 1001;
+}
+
+.big-img-box .big-img {
+    position: absolute;
+}
+
+.bp-control {
+    position: absolute;
+    cursor: pointer;
+    z-index: 1003;
+}
+
+.bp-control.close {
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: hsla(0, 0%, 41.2%, .2);
+    transition: .2s;
+    position: fixed;
+}
+
+.bp-control.close img {
+    position: absolute;
+    top: 35%;
+    left: 35%;
+    width: 30%;
+    height: 30%;
+}
+
+
+.bp-control.close.close:hover {
+    transform: rotate(-90deg);
+    background-color: hsla(0, 0%, 58.8%, .5);
+}
+
+.counter-bar-wrapper {
+    position: fixed;
+    cursor: pointer;
+    z-index: 1003;
+    left: 0;
+    bottom: 0;
+}
+
+.counter-bar-wrapper {
+    bottom: 0;
+    width: 100%;
+    height: 66px;
+    line-height: 66px;
+    text-align: center;
+    cursor: default;
+}
+
+.counter-bar-wrapper .counter-bar {
+    background-color: rgba(0, 0, 0, .6);
+    transform: translateY(100%);
+    transition: .3s;
+}
+
+.counter-bar-wrapper .counter-hinter {
+    font-size: 24px;
+    font-weight: 600;
+    color: hsla(0, 0%, 100%, .6);
+}
+
+.counter-bar-wrapper .counter-hinter .current-index {
+    margin-right: 8px;
+    font-size: 36px;
+    color: #fff;
+}
+
+.counter-bar-wrapper .counter-hinter {
+    font-size: 24px;
+    font-weight: 600;
+    color: hsla(0, 0%, 100%, .6);
+}
+
+.bp-control-prev {
+    width: 40%;
+    height: 100%;
+    position: fixed;
+    z-index: 1003;
+    left: 0;
+    top: 60px;
+    cursor: url(../../../images/boilingpoint/left.big.png), auto;
+}
+
+.bp-control-next {
+    width: 40%;
+    height: 100%;
+    position: fixed;
+    z-index: 1003;
+    right: 0;
+    top: 60px;
+    cursor: url(../../../images/boilingpoint/right.big.png), auto;
 }
 </style>
 

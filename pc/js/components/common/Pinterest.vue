@@ -82,6 +82,20 @@ export default {
     },
     watch: {
         query (newQuery, oldQuery) {
+            let queryChanged = false;
+            for (let key in newQuery) {
+                if (newQuery[key] !== oldQuery[key]) {
+                    queryChanged = true;
+                }
+            }
+            for (let key in oldQuery) {
+                if (newQuery[key] !== oldQuery[key]) {
+                    queryChanged = true;
+                }
+            }
+            if (!queryChanged) {
+                return;
+            }
             this.isLoading = false;
             this.isComplete = false;
             this.page = this.start || 1;

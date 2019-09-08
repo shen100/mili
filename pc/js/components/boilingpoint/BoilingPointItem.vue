@@ -52,7 +52,7 @@
             <div class="pin-image-row">
                 <div class="image-box-wrapper image-box">
                     <div v-show="gridVisible" class="image-box">
-                        <div @click="onClickImgGrid(i)" :key="i" v-for="(imgData, i) in imgArr" class="image" :class="{'no-right-margin': (i + 1) % 3 === 0}"
+                        <div @click="onClickImgGrid(i)" :key="imgData.id" v-for="(imgData, i) in imgArr" class="image" :class="{'no-right-margin': (i + 1) % 3 === 0}"
                             :style="{'background-image': `url(${imgData.url})`, width: imgData.imgWidth + 'px', height: imgData.imgHeight + 'px'}">
                             <div class="ratio-holder"></div>
                         </div>
@@ -65,7 +65,7 @@
                                 </span>
                                 <span class="action-name">收起</span>
                             </div>
-                            <div class="action-item">
+                            <div @click="onBrowseBigImage" class="action-item">
                                 <span class="icon">
                                     <img src="../../../images/boilingpoint/expand.svg" />
                                 </span>
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div v-if="curMiddleImg" class="carousel-body" :style="{height: curMiddleImg.style.displayHeight}">
-                            <img :key="i" v-for="(middleImg, i) in middleImgArr" :src="middleImg.url" 
+                            <img :key="middleImg.id" v-for="(middleImg, i) in middleImgArr" :src="middleImg.url" 
                                 class="carousel-image animated myfadeIn fast" :class="{'hide-middle-img': i !== curImgIndex}"
                                 :style="middleImg.style"/>
                             <div v-show="curImgIndex !== 0" @click="prevMiddleImg" class="toggle-area prev"></div>
@@ -201,11 +201,17 @@ export default {
         console.log(middleImgArr);
         middleImgArr = middleImgArr.map(img => this.updateMiddleImgStyle(img, { isSwap: false }));
         console.log(middleImgArr);
+        let bigImgArr = (imgs || []).map(imgData => {
+            return {
+                ...imgData,
+            };
+        });
         return {
             gridWidth,
             curImgIndex: 0,
             imgArr: imgs || [],
             middleImgArr,
+            bigImgArr,
             reportVisible: false,
             gridVisible: true, // 是否显示九宫格
             middleImgVisible: false, // 是否显示轮播图
@@ -328,6 +334,9 @@ export default {
                 });
             }
         },
+        onBrowseBigImage() {
+            this.$emit('bigImageChange', this.bigImgArr, this.curImgIndex);
+        }
     }
 }
 </script>
