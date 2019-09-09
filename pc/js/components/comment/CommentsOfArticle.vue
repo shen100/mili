@@ -47,10 +47,10 @@
                             <div class="author">
                                 <div class="v-tooltip-container" :style="{'z-index': comment.id === mouseenterCommentID ? '999' : '0'}" 
                                     @mouseenter="onMouseEnterUser(comment.id)"
-                                    @mouseleave="onMouseLeaveUser()">
+                                    @mouseleave="onMouseLeaveUser">
                                     <div class="v-tooltip-content">
                                         <a :href="`/users/${comment.user.id}.html`" target="_blank" class="avatar"><img :src="comment.user.avatarURL"></a>
-                                        <UserBusinessCard v-if="comment.id === mouseenterCommentID"
+                                        <UserBusinessCard v-if="true || comment.id === mouseenterCommentID"
                                             :userID="comment.user.id" :followerID="userID" :onChange="onFollowChange"/>
                                     </div>
                                 </div>

@@ -1,5 +1,5 @@
 <template>
-    <div ref="box" class="v-tooltip-avatar v-tooltip-wrap v-tooltip-wrap-bottom"
+    <div ref="box" class="v-tooltip-avatar v-tooltip-wrap user-card-tooltip"
         :class="{'user-card-hidden': !isShowed}" :style="{top: top}">
         <div class="v-tooltip">
             <div v-if="user" class="tips-card">
@@ -10,20 +10,11 @@
                         <div class="name">
                             <a target="_blank" :href="`/users/${userID}.html`" class="nickname">{{user.username}}</a>
                         </div>
-                        <div class="intro">{{user.introduce}}</div>
-                        <div class="list">
-                            <a :key="article.id" v-for="article in articles" target="_blank" :href="`/p/${article.id}.html`" class="item">
-                                <i class="iconfont ic-article-s"></i> {{article.summary}}
-                            </a>
-                        </div>
+                        <div class="intro">{{user.introduce || '暂无简介'}}</div>
                     </div>
                 </div>
                 <div class="card-footer">
                     <div class="profile">
-                        <div>
-                            <span class="count">{{user.articleCount}}</span>
-                            <span class="type">文章</span>
-                        </div>
                         <div>
                             <span class="count">{{user.followCount || 0}}</span>
                             <span class="type">关注</span>
@@ -35,13 +26,8 @@
                     </div>
                     <div class="social">
                         <template v-if="!isSelf">
-                            <a target="_blank" href="/notifications#/chats/new?mail_to=15050995"
-                                class="message">发简信</a>
-                            <button @click="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
-                                class="off user-follow-button" :class="isFollowed ? followedClass : unfollowedClass">
-                                <i class="iconfont" :class="followedIClass"></i>
-                                <span>{{followText}}</span>
-                            </button>
+                            <button @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
+                                class="follow-button follow-btn" :class="{'followed': isFollowed}">{{followText}}</button>
                         </template>
                     </div>
                 </div>
@@ -144,21 +130,6 @@ export default {
         }
     },
     computed: {
-        followedIClass() {
-            if (this.isFollowed && this.isMouseEnter) {
-                return {
-                    'ic-unfollow': true
-                };
-            }
-            if (this.isFollowed) {
-                return {
-                    'ic-followed': true
-                };
-            }
-            return {
-                'ic-follow': true
-            };
-        },
         followText() {
             if (this.isFollowed && this.isMouseEnter) {
                 return '取消关注';
@@ -202,7 +173,7 @@ export default {
             reqMethod(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isFollowed = !this.isFollowed;
-                    this.onChange(this.userID, this.isFollowed);
+                    this.onChange && this.onChange(this.userID, this.isFollowed);
                 }
             });
         }
@@ -219,27 +190,28 @@ export default {
     position: absolute;
 }
 
-.v-tooltip-container .v-tooltip-wrap.v-tooltip-wrap-bottom {
+.user-card-tooltip {
     top: 100%;
     left: 50%;
     -webkit-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
     transform: translateX(-50%);
     padding-top: 10px;
+    z-index: 1;
 }
 
 .tips-card-loading, .tips-card {
-    width: 460px;
+    width: 268px;
     position: relative;
     left: 0;
     top: 0;
-    border-radius: 6px;
+    border-radius: 2px;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     background-color: #fff;
-    -webkit-box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
-    border: 1px solid #d9d9d9;
+    -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+    border: 1px solid #eaeaea;
 }
 
 .tips-card {
@@ -247,12 +219,12 @@ export default {
 }
 
 .tips-card .card-content {
-    padding: 20px 20px 0 20px;
+    padding: 15px 15px 0 15px;
 }
 
 .tips-card .card-content .summary {
-    padding: 8px 0 20px 90px;
-    min-height: 92px;
+    padding: 0 0 0 75px;
+    min-height: 80px;
     position: relative;
 }
 
@@ -271,8 +243,8 @@ export default {
     position: absolute;
     left: 0;
     top: 0;
-    width: 72px;
-    height: 72px;
+    width: 60px;
+    height: 60px;
     cursor: pointer;
     border-radius: 50%;
     background-color: #EAEAEA;
@@ -311,7 +283,7 @@ export default {
 
 .tips-card .card-content .summary .name .nickname {
     color: #333333;
-    font-size: 19px;
+    font-size: 16px;
     font-weight: bold;
     overflow: hidden;
     -o-text-overflow: ellipsis;
@@ -327,10 +299,10 @@ export default {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    margin-bottom: 12px;
+    margin-bottom: 0;
     font-size: 14px;
     line-height: 1.5;
-    color: #333333;
+    color: #90969b;
 }
 
 .tips-card .card-content .summary .intro.block {
@@ -358,8 +330,10 @@ export default {
 }
 
 .tips-card .card-footer {
-    border-top: 1px solid #F0F0F0;
-    padding: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 0;
+    padding-bottom: 15px;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -382,7 +356,7 @@ export default {
 }
 
 .tips-card .card-footer .profile {
-    width: 198px;
+    width: 148px;
     overflow: hidden;
     _zoom: 1;
     float: left;
@@ -391,7 +365,7 @@ export default {
 .tips-card .card-footer .profile div {
     float: left;
     width: 60px;
-    height: 44px;
+    height: 48px;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -414,12 +388,12 @@ export default {
 .tips-card .card-footer .profile div span {
     display: block;
     width: 100%;
-    text-align: center;
 }
 
 .tips-card .card-footer .profile div .count {
-    font-size: 18px;
-    color: #333333;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 4px;
 }
 
 .tips-card .card-footer .profile div .loadingcount {
@@ -431,7 +405,7 @@ export default {
 
 .tips-card .card-footer .profile div .type {
     font-size: 13px;
-    color: #999999;
+    color: #90969b;
 }
 
 .tips-card .card-footer .profile div .loadingtype {
@@ -616,5 +590,28 @@ export default {
     -o-transform: rotate(180deg);
     -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
+}
+
+.follow-btn {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
+    width: 74px;
+    height: 30px;
+    font-size: 13px;
+    color: #37c701;
+    background-color: #fff;
+    border: 1px solid rgba(55, 199, 1, .6);
+    border-radius: 2px;
+}
+
+.follow-button.followed {
+    color: #fff;
+    border-color: #6cbd45;
+    background-color: #6cbd45;
+}
+
+.follow-btn:hover {
+    opacity: .8;
 }
 </style>

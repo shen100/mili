@@ -3,10 +3,11 @@
         <div class="boilingpoint-item-pin">
             <div class="pin-header-row">
                 <div class="account-group">
-                    <div class="user-popover-box">
+                    <div class="user-popover-box" @mouseenter="onMouseEnterUser" @mouseleave="onMouseLeaveUser">
                         <a :href="`/users/${data.user.id}`" target="_blank" class="user-link">
                             <div class="lazy avatar avatar loaded" :style="{'background-image': `url(${data.user.avatarURL})`}"></div>
                         </a>
+                        <UserBusinessCard v-if="true || userCardVisible" :userID="data.user.id" :followerID="userID" />
                     </div>
                     <div  class="pin-header-content">
                         <div class="user-popover-box">
@@ -24,7 +25,7 @@
                     </div>
                 </div>
                 <div class="header-action">
-                    <button class="subscribe-btn follow-button">关注</button>
+                    <button v-if="userID !== data.user.id" class="subscribe-btn follow-button">关注</button>
                     <div v-clickoutside="clickoutsideReport" class="pin-header-more header-menu">
                         <div @click="onReport" class="more-button">
                             <svg t="1529034629100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1948" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" class="icon">
@@ -155,6 +156,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
 
 const maxMiddleImgWidth = 446;
 const gridWidth = 336;// 9宫格总宽度
@@ -167,6 +169,7 @@ const ratio1x1Value = 180 * (gridWidth / 250);
 export default {
     props: [
         'data',
+        'userID',
     ],
     data () {
         const imgs = this.data.imgs;
@@ -216,6 +219,7 @@ export default {
             gridVisible: true, // 是否显示九宫格
             middleImgVisible: false, // 是否显示轮播图
             middleImgCreated: false,
+            userCardVisible: false,
         };
     },
     computed: {
@@ -224,6 +228,12 @@ export default {
         }
     },
     methods: {
+        onMouseEnterUser() {
+            this.userCardVisible = true;
+        },
+        onMouseLeaveUser() {
+            this.userCardVisible = false;
+        },
         updateMiddleImgStyle(imgData, options) {
             options = options || {};
             options.isSwap = options.isSwap || false;
@@ -337,6 +347,9 @@ export default {
         onBrowseBigImage() {
             this.$emit('bigImageChange', this.bigImgArr, this.curImgIndex);
         }
+    },
+    components: {
+        UserBusinessCard,
     }
 }
 </script>
@@ -392,10 +405,6 @@ export default {
     display: flex;
 }
 
-.user-popover-box {
-    display: inline;
-}
-
 .pin-header-row .user-link {
     font-size: 0;
 }
@@ -446,6 +455,7 @@ export default {
 
 .user-popover-box {
     display: inline;
+    position: relative;
 }
 
 .pin-header-row .username {

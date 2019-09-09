@@ -7,7 +7,9 @@
             <template v-slot:content>
                 <div>
                     <ul class="boilingpoint-list">
-                        <BoilingPointItem @bigImageChange="onBrowseBigImg" :key="item.id" v-for="item in boilingPoints" :data="item" />
+                        <BoilingPointItem @bigImageChange="onBrowseBigImg" 
+                            :key="item.id" v-for="item in boilingPoints" 
+                            :userID="userID" :data="item" />
                     </ul>
                 </div>
             </template>
@@ -49,6 +51,7 @@ export default {
             url = `/boilingpoints/${window.boilingPointType}`;
         }
         return {
+            userID: window.userID || undefined,
             url,
             boilingPoints: [],
             topicID: topicID || undefined,

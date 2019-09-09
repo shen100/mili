@@ -267,3 +267,18 @@ ul.pin-list {
     background-size: cover;
     background-repeat: no-repeat;
 }
+
+.guide-link {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background-color: #fff;
+    color: #2e3135;
+    font-size: 14px;
+    margin-bottom: 8px;
+    border-radius: 2px;
+}
+
+.guide-link .icon {
+    margin-right: 10px;
+}
