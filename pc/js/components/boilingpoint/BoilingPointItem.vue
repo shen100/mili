@@ -3,15 +3,18 @@
         <div class="boilingpoint-item-pin">
             <div class="pin-header-row">
                 <div class="account-group">
-                    <div class="user-popover-box" @mouseenter="onMouseEnterUser" @mouseleave="onMouseLeaveUser">
+                    <div class="user-popover-box" @mouseenter="onMouseEnterUser1" @mouseleave="onMouseLeaveUser1">
                         <a :href="`/users/${data.user.id}`" target="_blank" class="user-link">
                             <div class="lazy avatar avatar loaded" :style="{'background-image': `url(${data.user.avatarURL})`}"></div>
                         </a>
-                        <UserBusinessCard v-if="true || userCardVisible" :userID="data.user.id" :followerID="userID" />
+                        <UserBusinessCard ref="userCard1" v-if="userCardVisible1" :userID="data.user.id" 
+                            :followerID="userID" @followChange="onFollowChange" />
                     </div>
                     <div  class="pin-header-content">
-                        <div class="user-popover-box">
+                        <div class="user-popover-box" @mouseenter="onMouseEnterUser2" @mouseleave="onMouseLeaveUser2">
                             <a :href="`/users/${data.user.id}`" target="_blank" class="username">{{data.user.username}}</a>
+                            <UserBusinessCard ref="userCard2" v-if="userCardVisible2" :userID="data.user.id" 
+                                :followerID="userID" @followChange="onFollowChange" />
                         </div>
                         <div class="meta-box">
                             <template v-if="data.user.job || data.user.company">
@@ -25,14 +28,12 @@
                     </div>
                 </div>
                 <div class="header-action">
-                    <button v-if="userID !== data.user.id" class="subscribe-btn follow-button">关注</button>
+                    <button v-if="userID !== data.user.id" class="subscribe-btn follow-button"
+                        @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
+                        :class="{'followed': isFollowed}">{{followText}}</button>
                     <div v-clickoutside="clickoutsideReport" class="pin-header-more header-menu">
                         <div @click="onReport" class="more-button">
-                            <svg t="1529034629100" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1948" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" class="icon">
-                                <path d="M804.606221 432.282401c120.691803 0 119.469975 187.388854-1.465374 187.388854C682.449044 619.671255 683.426301 432.282401 804.606221 432.282401z" p-id="1949" fill="#b8c1cc"></path>
-                                <path d="M511.428995 432.282401c120.691803 0 119.469975 187.388854-1.465374 187.388854C389.271818 619.671255 390.249075 432.282401 511.428995 432.282401z" p-id="1950" fill="#b8c1cc"></path>
-                                <path d="M218.251769 432.282401c120.691803 0 119.469975 187.388854-1.465374 187.388854C96.094592 619.671255 97.071849 432.282401 218.251769 432.282401z" p-id="1951" fill="#b8c1cc"></path>
-                            </svg>
+                            <More />
                         </div>
                         <transition name="custom-classes-transition"
                                 enter-active-class="animated fadeIn faster"
@@ -157,6 +158,7 @@
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
+import More from '~/js/components/common/More.vue';
 
 const maxMiddleImgWidth = 446;
 const gridWidth = 336;// 9宫格总宽度
@@ -169,7 +171,7 @@ const ratio1x1Value = 180 * (gridWidth / 250);
 export default {
     props: [
         'data',
-        'userID',
+        'userID', // 当前登录用户的id
     ],
     data () {
         const imgs = this.data.imgs;
@@ -219,20 +221,38 @@ export default {
             gridVisible: true, // 是否显示九宫格
             middleImgVisible: false, // 是否显示轮播图
             middleImgCreated: false,
-            userCardVisible: false,
+            userCardVisible1: false,
+            userCardVisible2: false,
+            isMouseEnter: false,
+            isFollowed: this.data.user.isFollowed,
         };
     },
     computed: {
         curMiddleImg() {
             return this.middleImgArr[this.curImgIndex];
+        },
+        followText() {
+            if (this.isFollowed && this.isMouseEnter) {
+                return '取消关注';
+            }
+            if (this.isFollowed) {
+                return '已关注';
+            }
+            return '关注';
         }
     },
     methods: {
-        onMouseEnterUser() {
-            this.userCardVisible = true;
+        onMouseEnterUser1() {
+            this.userCardVisible1 = true;
         },
-        onMouseLeaveUser() {
-            this.userCardVisible = false;
+        onMouseLeaveUser1() {
+            this.userCardVisible1 = false;
+        },
+        onMouseEnterUser2() {
+            this.userCardVisible2 = true;
+        },
+        onMouseLeaveUser2() {
+            this.userCardVisible2 = false;
         },
         updateMiddleImgStyle(imgData, options) {
             options = options || {};
@@ -346,10 +366,42 @@ export default {
         },
         onBrowseBigImage() {
             this.$emit('bigImageChange', this.bigImgArr, this.curImgIndex);
+        },
+        onMouseenter() {
+            this.isMouseEnter = true;
+        },
+        onMouseleave() {
+            this.isMouseEnter = false;
+        },
+        onFollow () {
+            const url = `/users/follow/${this.data.user.id}`;
+            let reqMethod;
+            if (this.isFollowed) {
+                reqMethod = myHTTP.delete;
+            } else {
+                reqMethod = myHTTP.post;
+            }
+            reqMethod(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.isFollowed = !this.isFollowed;
+                    this.$emit('followChange', this.data.user.id, this.isFollowed);
+                }
+            });
+        },
+        onFollowChange(userID, isFollowed) {
+            this.$emit('followChange', userID, isFollowed);
+        },
+        changeUserFollow(userID, isFollowed) {
+            if (userID === this.data.user.id) {
+                this.isFollowed = isFollowed;
+            }
+            this.$refs['userCard1'].changeUserFollow(userID, isFollowed);
+            this.$refs['userCard2'].changeUserFollow(userID, isFollowed);
         }
     },
     components: {
         UserBusinessCard,
+        More,
     }
 }
 </script>
@@ -853,5 +905,17 @@ svg:not(:root) {
     padding-top: 100%;
     content: "";
     display: block;
+}
+
+.follow-button {
+    width: 74px;
+    height: 30px;
+    border-radius: 2px;
+}
+
+.follow-button.followed {
+    color: #fff;
+    border-color: #6cbd45;
+    background-color: #6cbd45;
 }
 </style>

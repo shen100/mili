@@ -460,7 +460,9 @@ export class UserService {
         return false;
     }
 
-    // 在一组用户（users）中， 用户 followerID 关注了哪些人
+    /**
+     * 在一组用户中， 用户关注了哪些人
+     */
     async usersFilterByFollowerID(users: number[], followerID: number) {
         if (!users || users.length <= 0) {
             return [];

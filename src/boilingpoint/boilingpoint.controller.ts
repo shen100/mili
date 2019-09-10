@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import {
     Controller, Get, Res, Param, Post, Body, UseGuards, Query, Delete,
 } from '@nestjs/common';
@@ -188,7 +189,16 @@ export class BoilingPointController {
             this.boilingPointService.userLikes(boilingpointIDs, user && user.id),
             imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
         ]);
-        users.map(u => userMap[u.id] = u);
+        const uniqueUserIDs: number[] = [];
+        users.map(u => {
+            userMap[u.id] = u;
+            uniqueUserIDs.push(u.id);
+        });
+
+        const follows = await this.userService.usersFilterByFollowerID(uniqueUserIDs, user.id);
+        const followIDMap = {};
+        follows.forEach(followData => followIDMap[followData.userID] = true);
+        _.forIn(userMap, (value, userID) => value.isFollowed = !!followIDMap[userID]);
         likes.map(boilingPointID => likeMap[boilingPointID] = true);
         images.map(img => imageMap[img.id] = img);
         list.map(bp => {

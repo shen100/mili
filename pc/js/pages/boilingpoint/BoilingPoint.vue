@@ -9,7 +9,8 @@
                     <ul class="boilingpoint-list">
                         <BoilingPointItem @bigImageChange="onBrowseBigImg" 
                             :key="item.id" v-for="item in boilingPoints" 
-                            :userID="userID" :data="item" />
+                            :userID="userID" :data="item" @followChange="onFollowChange"
+                            :ref="`boilingPointItem-${item.id}`" />
                     </ul>
                 </div>
             </template>
@@ -147,6 +148,15 @@ export default {
             this.bigImgURL = this.bigImgs[this.curBigImgIndex].url;
             console.log(this.bigImgURL, this.curBigImgIndex);
             this.changeBigImgStyle(this.bigImgs[this.curBigImgIndex]);
+        },
+        onFollowChange(userID, isFollowed) {
+            this.boilingPoints.map(bp => {
+                let bpVue = this.$refs[`boilingPointItem-${bp.id}`];
+                if (bpVue.length && bpVue.slice) {
+                    bpVue = bpVue[0];
+                }
+                bpVue.changeUserFollow(userID, isFollowed); 
+            });
         }
     },
     components: {

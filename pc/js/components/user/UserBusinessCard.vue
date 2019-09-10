@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="tips-card">
+            <!-- <div v-else class="tips-card">
                 <div class="card-content">
                     <div class="summary">
                         <a class="avatar" style="cursor: default;"></a>
@@ -63,7 +63,7 @@
                         <button class="loading-bigbtn"></button>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="arrow arrow-type-bottom" :class="{'arrow-rotation': isArrowRotation}">
             <i><em></em></i>
@@ -80,7 +80,7 @@ export default {
     props: [
         'userID',
         'followerID',
-        'onChange',
+        'followChange',
         'delay',
     ],
     data () {
@@ -122,7 +122,7 @@ export default {
                 }
             });
             this.adjustCoordinate();
-        }, this.delay || 1000);
+        }, this.delay || 100);
     },
     beforeDestroy() {
         if (this.timeoutID) {
@@ -173,9 +173,15 @@ export default {
             reqMethod(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isFollowed = !this.isFollowed;
-                    this.onChange && this.onChange(this.userID, this.isFollowed);
+                    this.$emit('followChange', this.userID, this.isFollowed);
                 }
             });
+        },
+        changeUserFollow(userID, isFollowed) {
+            console.log('lalalalala', userID, this.userID, isFollowed);
+            if (userID === this.userID) {
+                this.isFollowed = isFollowed;
+            }
         }
     }
 }
