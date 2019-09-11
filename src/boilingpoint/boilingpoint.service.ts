@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as striptags from 'striptags';
-import { BoilingPoint } from '../entity/boilingpoint.entity';
+import { BoilingPoint, BoilingPointReport } from '../entity/boilingpoint.entity';
 import { EditBoilingPointDto } from './dto/edit-boilingpoint.dto';
 import { ListResult } from '../entity/listresult.entity';
 import { MyHttpException } from '../core/exception/my-http.exception';
@@ -15,7 +15,17 @@ export class BoilingPointService {
     constructor(
         @InjectRepository(BoilingPoint)
         private readonly boilingPointRepository: Repository<BoilingPoint>,
+
+        @InjectRepository(BoilingPointReport)
+        private readonly boilingPointReportRepository: Repository<BoilingPointReport>,
     ) {}
+
+    async findOne(options): Promise<BoilingPoint> {
+        return await this.boilingPointRepository.findOne({
+            where: options.where,
+            select: options.select,
+        });
+    }
 
     async listByTopic(topicID: number, page: number): Promise<ListResult<BoilingPoint>> {
         const pageSize = 20;
@@ -176,5 +186,14 @@ export class BoilingPointService {
         });
 
         return result;
+    }
+
+    async report(boilingPointID: number, reporter: number, reason: number) {
+        this.boilingPointReportRepository.insert({
+            boilingPointID,
+            reporter,
+            reason,
+            createdAt: new Date(),
+        });
     }
 }

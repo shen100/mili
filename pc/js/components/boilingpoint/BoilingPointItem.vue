@@ -41,7 +41,7 @@
                             <div v-if="reportVisible" class="dropdown1">
                                 <div class="dropdown-caret"></div>
                                 <ul class="dropdown-menu1">
-                                    <li>举报</li>
+                                    <li @click="onShowReportAlert">举报</li>
                                 </ul>
                             </div>
                         </transition>
@@ -397,6 +397,9 @@ export default {
             }
             this.$refs['userCard1'].changeUserFollow(userID, isFollowed);
             this.$refs['userCard2'].changeUserFollow(userID, isFollowed);
+        },
+        onShowReportAlert() {
+            this.$emit('report');  
         }
     },
     components: {

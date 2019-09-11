@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import {
     BoilingPoint,
     BoilingPointTopic,
+    BoilingPointReport,
 } from '../entity/boilingpoint.entity';
 import { UserModule } from '../user/user.module';
 import { BoilingPointController } from './boilingpoint.controller';
@@ -17,6 +18,7 @@ import { TopicAdminController } from './topic.admin.controller';
         TypeOrmModule.forFeature([
             BoilingPoint,
             BoilingPointTopic,
+            BoilingPointReport,
         ]),
         UserModule,
         CommonModule,

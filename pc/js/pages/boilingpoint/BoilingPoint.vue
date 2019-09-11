@@ -10,7 +10,8 @@
                         <BoilingPointItem @bigImageChange="onBrowseBigImg" 
                             :key="item.id" v-for="item in boilingPoints" 
                             :userID="userID" :data="item" @followChange="onFollowChange"
-                            :ref="`boilingPointItem-${item.id}`" />
+                            :ref="`boilingPointItem-${item.id}`"
+                            @report="onReport(item.id)" />
                     </ul>
                 </div>
             </template>
@@ -33,6 +34,7 @@
                 </div>
             </div>
         </template>
+        <ReportAlert ref="reportAlert" />
     </div>
 </template>
 
@@ -40,6 +42,7 @@
 import BoilingPointEditor from '~/js/components/editor/BoilingPointEditor.vue';
 import BoilingPointItem from '~/js/components/boilingpoint/BoilingPointItem.vue';
 import Pinterest from '~/js/components/common/Pinterest.vue';
+import ReportAlert from '~/js/components/boilingpoint/ReportAlert.vue';
 import {
     getWindowSize,
 } from '~/js/utils/dom.js';
@@ -157,12 +160,16 @@ export default {
                 }
                 bpVue.changeUserFollow(userID, isFollowed); 
             });
+        },
+        onReport(reportID) {
+            this.$refs.reportAlert.show(reportID);
         }
     },
     components: {
         BoilingPointEditor,
         Pinterest,
         BoilingPointItem,
+        ReportAlert,
     },
 }
 </script>

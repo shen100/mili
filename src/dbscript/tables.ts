@@ -260,7 +260,16 @@ export const tablesRun = async function (connection) {
           boilingpoint_id int(11) unsigned NOT NULL,
           created_at datetime NOT NULL,
           PRIMARY KEY (id)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+
+        await connection.manager.query(`CREATE TABLE boilingpoint_reports (
+          id int(11) unsigned NOT NULL AUTO_INCREMENT,
+          boilingpoint_id int(11) unsigned NOT NULL,
+          reason tinyint NOT NULL,
+          created_at datetime NOT NULL,
+          reporter int(11) unsigned NOT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         // tslint:disable-next-line:no-console
         console.log('done');

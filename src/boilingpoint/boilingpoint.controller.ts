@@ -5,7 +5,7 @@ import {
 import { BoilingPointService } from './boilingpoint.service';
 import { TopicService } from './topic.service';
 import { OSSService } from '../common/oss.service';
-import { BoilingPointTopic, BoilingPoint } from '../entity/boilingpoint.entity';
+import { BoilingPointTopic, BoilingPoint, ReportReasons } from '../entity/boilingpoint.entity';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { EditBoilingPointDto } from './dto/edit-boilingpoint.dto';
@@ -240,10 +240,32 @@ export class BoilingPointController {
         return {};
     }
 
-    @Delete(`${APIPrefix}/boilingpoints/:boilingpointID/like`)
+    @Delete(`${APIPrefix}/boilingpoints/:id/like`)
     @UseGuards(ActiveGuard)
-    async deleteLike(@CurUser() user, @Param('boilingpointID', MustIntPipe) boilingpointID: number) {
-        await this.boilingPointService.deleteLike(boilingpointID, user.id);
+    async deleteLike(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        await this.boilingPointService.deleteLike(id, user.id);
+        return {};
+    }
+
+    @Post(`${APIPrefix}/boilingpoints/:id/report`)
+    @UseGuards(ActiveGuard)
+    async report(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body('reason') reason: number) {
+        if (ReportReasons.indexOf(reason) < 0) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '参数错误',
+            });
+        }
+        const boilingPoint = await this.boilingPointService.findOne({
+            where: { id },
+            select: [ 'id' ],
+        });
+        if (!boilingPoint) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        await this.boilingPointService.report(boilingPoint.id, user.id, reason);
         return {};
     }
 }
