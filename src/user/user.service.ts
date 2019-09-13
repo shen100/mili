@@ -364,6 +364,14 @@ export class UserService {
         return user;
     }
 
+    async findOne(options): Promise<User> {
+        const user = await this.userRepository.findOne({
+            select: options.select,
+            where: options.where,
+        });
+        return user;
+    }
+
     async findUsers(where, select): Promise<User[]> {
         const users = await this.userRepository.find({
             select,

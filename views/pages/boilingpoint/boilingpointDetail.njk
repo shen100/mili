@@ -1,0 +1,47 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div class="main-box">
+    <div class="stream">
+        <div id="centerBox"></div>
+    </div>
+    <aside class="boiling-sidebar">
+        <div class="related-pin-block pin-block">
+            <header>推荐沸点</header>
+            <ul class="pin-list">
+                {% for bp in recommends %}
+                <li class="pin-item">
+                    <a href="/boiling/{{bp.id}}" target="_blank" title="{{bp.summary}}" class="pin">
+                        <div class="boiling-content-box">
+                            <div class="boiling-content" style="-webkit-box-orient: vertical;{% if not bp.img %}max-width: 215px;{% endif %}">{{bp.summary}}</div>
+                            <div class="boiling-stat1">
+                                <span >{{bp.likeCount}} 赞 · </span>
+                                <span >{{bp.commentCount}} 评论</span>
+                            </div>
+                        </div>
+                        {% if bp.img %}
+                        <div class="boiling-image-box" style="background-image: url({{bp.img}});"></div>
+                        {% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block pageData %}
+<script>
+    // 当前登录用户
+    var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
+    var boilingPoint = {{ boilingPoint | dump | safe }};
+</script>
+{% endblock %}
+
+{% block libjs %}
+{% endblock %}
+
+{% block devjs %}
+    {{ loadjs('entry/boilingpoint/boilingpoint.js') }}
+{% endblock %}

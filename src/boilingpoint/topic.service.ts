@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BoilingPointTopic } from '../entity/boilingpoint.entity';
 import { EditTopicDto } from './dto/edit-topic.dto';
@@ -35,6 +35,12 @@ export class TopicService {
             order: {
                 sequence: 'ASC',
             },
+        });
+    }
+
+    async listInIDs(ids: number[]): Promise<BoilingPointTopic[]> {
+        return await this.topicRepository.find({
+            where: { id: In(ids) },
         });
     }
 

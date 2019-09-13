@@ -74,6 +74,16 @@ export class BoilingPointService {
         });
     }
 
+    async recommendsInTopic(): Promise<BoilingPoint[]> {
+        return await this.boilingPointRepository.find({
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: 0,
+            take: 3,
+        });
+    }
+
     async followed(page: number): Promise<ListResult<BoilingPoint>> {
         const pageSize = 20;
         const [list, count] = await this.boilingPointRepository.findAndCount({

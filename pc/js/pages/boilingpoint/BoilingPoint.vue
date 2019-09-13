@@ -1,21 +1,32 @@
 <template>
     <div>
-        <div class="the-editor-box">
-            <BoilingPointEditor @publish="onPublish" placeholder="告诉你个小秘密，发沸点时添加话题会被更多小伙伴看见呦~"/>
+        <template v-if="isBoilingPointList">
+            <div class="the-editor-box">
+                <BoilingPointEditor @publish="onPublish" placeholder="告诉你个小秘密，发沸点时添加话题会被更多小伙伴看见呦~"/>
+            </div>
+            <Pinterest :url="url" :start="1" :query="{topicID: topicID}" @load="onLoad">
+                <template v-slot:content>
+                    <div>
+                        <ul class="boilingpoint-list">
+                            <BoilingPointItem @bigImageChange="onBrowseBigImg" 
+                                :key="item.id" v-for="item in boilingPoints" 
+                                :userID="userID" :data="item" @followChange="onFollowChange"
+                                :ref="`boilingPointItem-${item.id}`"
+                                @report="onReport(item.id)" />
+                        </ul>
+                    </div>
+                </template>
+            </Pinterest>
+        </template>
+        <div v-else>
+            <ul class="boilingpoint-list" style="margin-top: 0;">
+                <BoilingPointItem @bigImageChange="onBrowseBigImg" 
+                    :key="item.id" v-for="item in boilingPoints" 
+                    :userID="userID" :data="item" @followChange="onFollowChange"
+                    :ref="`boilingPointItem-${item.id}`"
+                    @report="onReport(item.id)" />
+            </ul>
         </div>
-        <Pinterest :url="url" :start="1" :query="{topicID: topicID}" @load="onLoad">
-            <template v-slot:content>
-                <div>
-                    <ul class="boilingpoint-list">
-                        <BoilingPointItem @bigImageChange="onBrowseBigImg" 
-                            :key="item.id" v-for="item in boilingPoints" 
-                            :userID="userID" :data="item" @followChange="onFollowChange"
-                            :ref="`boilingPointItem-${item.id}`"
-                            @report="onReport(item.id)" />
-                    </ul>
-                </div>
-            </template>
-        </Pinterest>
         <template v-if="bigImgURL">
             <div class="big-img-box">
                 <img class="big-img" :src="bigImgURL" :style="bigImgStyle" />
@@ -56,8 +67,11 @@ export default {
         }
         return {
             userID: window.userID || undefined,
+            // window.boilingPoint不为空的话，那就是具体的沸点页面，否则是沸点列表
+            isBoilingPointList: window.boilingPoint ? false : true,
+            boilingPoint: window.boilingPoint,
             url,
-            boilingPoints: [],
+            boilingPoints: window.boilingPoint ? [ window.boilingPoint ] : [],
             topicID: topicID || undefined,
             bigImgStyle: {},
             bigImgURL: '',

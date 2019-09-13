@@ -5,7 +5,7 @@ import {
 import { BoilingPointService } from './boilingpoint.service';
 import { TopicService } from './topic.service';
 import { OSSService } from '../common/oss.service';
-import { BoilingPointTopic, BoilingPoint, ReportReasons } from '../entity/boilingpoint.entity';
+import { BoilingPointTopic, BoilingPoint, ReportReasons, BoilingPointReport } from '../entity/boilingpoint.entity';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { EditBoilingPointDto } from './dto/edit-boilingpoint.dto';
@@ -31,7 +31,7 @@ export class BoilingPointController {
         private readonly configService: ConfigService,
     ) {}
 
-    @Get('/boiling/topic/:topicID')
+    @Get('/boilings/topic/:topicID')
     async boilingView(@Param('topicID', MustIntPipe) topicID: number, @Res() res) {
         const [ uploadPolicy, topics, globalRecommends ] = await Promise.all([
             this.ossService.requestPolicy(),
@@ -53,7 +53,59 @@ export class BoilingPointController {
         });
     }
 
-    @Get('/boiling/:type')
+    @Get('/boiling/:id')
+    async detailView(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
+        const boilingPoint = await this.boilingPointService.findOne({
+            where: { id },
+        });
+        const imgIDArr: number[] = [];
+        if (boilingPoint.imgs) {
+            const ids = boilingPoint.imgs.split(',');
+            imgIDArr.push(...ids.map(idStr => parseInt(idStr, 10)));
+        }
+        const boilingPointData = {
+            ...boilingPoint,
+            imgs: [],
+            userLiked: false,
+            isFollowed: false,
+            createdAtLabel: recentTime(boilingPoint.createdAt, 'YYYY.MM.DD HH:mm'),
+        };
+        let author: User, likes: number[], images: Image[], recommends: BoilingPoint[];
+        [author, likes, images, recommends] = await Promise.all([
+            this.userService.findOne({
+                where: { id: boilingPoint.userID },
+                select: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                    job: true,
+                    company: true,
+                },
+            }),
+            this.boilingPointService.userLikes([ boilingPoint.id ], user && user.id),
+            imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
+            this.boilingPointService.recommendsInTopic(),
+        ]);
+
+        const follows = await this.userService.usersFilterByFollowerID([boilingPoint.userID] , user.id);
+        boilingPointData.user = author;
+        boilingPointData.userLiked = !!(likes && likes.length);
+        boilingPointData.isFollowed = !!(follows && follows.length);
+        if (images && images.length) {
+            boilingPointData.imgs = [
+                {
+                    ...images[0],
+                    url: this.configService.static.uploadImgURL + images[0].url,
+                },
+            ];
+        }
+        res.render('pages/boilingpoint/boilingpointDetail', {
+            boilingPoint: boilingPointData,
+            recommends,
+        });
+    }
+
+    @Get('/boilings/:type')
     async boilingTypeView(@Param('type') type: string, @Res() res) {
         if (['recommend', 'hot', 'followed'].indexOf(type) < 0) {
             throw new MyHttpException({
@@ -154,6 +206,8 @@ export class BoilingPointController {
     async recommend(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
         const boilingPoints = await this.boilingPointService.recommend(page);
         const boilingpointIDs: number[] = [];
+        const topicIDMap = {};
+        const topicIDs: number[] = [];
         const userIDMap = {};
         const userIDs: number[] = [];
         const imgIDArr: number[] = [];
@@ -167,6 +221,10 @@ export class BoilingPointController {
                 userIDs.push(boilingPoint.userID);
                 userIDMap[boilingPoint.userID] = true;
             }
+            if (!topicIDMap[boilingPoint.topicID]) {
+                topicIDMap[boilingPoint.topicID] = true;
+                topicIDs.push(boilingPoint.topicID);
+            }
             return {
                 ...boilingPoint,
                 imgs: boilingPoint.imgs ? boilingPoint.imgs.split(',') : [],
@@ -174,9 +232,10 @@ export class BoilingPointController {
                 createdAtLabel: recentTime(boilingPoint.createdAt, 'YYYY.MM.DD HH:mm'),
             };
         });
-        let users: User[], likes: number[], images: Image[];
-        const userMap = {}, likeMap = {}, imageMap = {};
-        [users, likes, images] = await Promise.all([
+        let topics: BoilingPointTopic[], users: User[], likes: number[], images: Image[];
+        const topicMap = {}, userMap = {}, likeMap = {}, imageMap = {};
+        [topics, users, likes, images] = await Promise.all([
+            this.topicService.listInIDs(topicIDs),
             this.userService.findUsers({
                 id: In(userIDs),
             }, {
@@ -189,12 +248,15 @@ export class BoilingPointController {
             this.boilingPointService.userLikes(boilingpointIDs, user && user.id),
             imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
         ]);
+        topics.map(t => {
+            topicMap[t.id] = t;
+        });
+
         const uniqueUserIDs: number[] = [];
         users.map(u => {
             userMap[u.id] = u;
             uniqueUserIDs.push(u.id);
         });
-
         const follows = await this.userService.usersFilterByFollowerID(uniqueUserIDs, user.id);
         const followIDMap = {};
         follows.forEach(followData => followIDMap[followData.userID] = true);
@@ -202,7 +264,9 @@ export class BoilingPointController {
         likes.map(boilingPointID => likeMap[boilingPointID] = true);
         images.map(img => imageMap[img.id] = img);
         list.map(bp => {
+            bp.topic = topicMap[bp.topicID];
             bp.user = userMap[bp.userID];
+
             bp.userLiked = !!likeMap[bp.id];
             bp.imgs = bp.imgs.map(imgID => {
                 return {

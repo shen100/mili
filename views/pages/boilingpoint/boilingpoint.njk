@@ -6,17 +6,17 @@
         <nav class="dock-nav">
             <ul class="boiling-nav-list">
                 <li class="boiling-nav-item {% if boilingPointType === 'recommend' %} active {% endif %}">
-                    <a href="/boiling/recommend">推荐 </a>
+                    <a href="/boilings/recommend">推荐 </a>
                 </li>
                 <li class="boiling-nav-item {% if boilingPointType === 'hot' %} active {% endif %}">
-                    <a  href="/boiling/hot">热门</a>
+                    <a  href="/boilings/hot">热门</a>
                 </li>
                 <li class="boiling-nav-item {% if boilingPointType === 'followed' %} active {% endif %}">
-                    <a href="/boiling/followed">关注</a>
+                    <a href="/boilings/followed">关注</a>
                 </li>
                 {% for topic in topics %}
                 <li class="boiling-nav-item {% if topicID === topic.id %} active {% endif %}">
-                    <a href="/boiling/topic/{{topic.id}}">{{topic.name}}</a>
+                    <a href="/boilings/topic/{{topic.id}}">{{topic.name}}</a>
                 </li>
                 {% endfor %}
             </ul>

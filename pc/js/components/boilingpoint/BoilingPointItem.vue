@@ -21,7 +21,7 @@
                                 <div class="position ellipsis">{{data.user.job}}{{data.user.company ? ' @ ' + data.user.company : ''}}</div>
                                 <div class="dot">·</div>
                             </template>
-                            <a href="" target="_blank" class="time-box">
+                            <a :href="`/boiling/${data.id}`" target="_blank" class="time-box">
                                 <time class="time">{{data.createdAtLabel}}</time>
                             </a>
                         </div>
@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div v-if="data.topic" class="pin-topic-row">
-                <a href="" target="_blank" title="" class="topic-title">{{data.topic.name}}</a>
+                <a :href="`/boilings/topic/${data.topicID}`" target="_blank" title="" class="topic-title">{{data.topic.name}}</a>
             </div>
             <div class="pin-action-row">
                 <div class="action-box action-box">
