@@ -1035,7 +1035,7 @@ export default {
 
 .comment-editor-box .boilingpoint i {
     font-size: 14px;
-    color: #027fff;
+    color: #ea6f5a;
     display: inline-block;
     vertical-align: top;
 }
@@ -1055,7 +1055,7 @@ export default {
 .comment-editor-box .label {
     font-size: 13px;
     margin: 0 0 0 4px;
-    color: #027fff;
+    color: #ea6f5a;
     display: inline-block;
     vertical-align: top;
     line-height: 22px;
@@ -1063,7 +1063,7 @@ export default {
 
 .comment-editor-box .up-img i {
     font-size: 16px;
-    color: #027fff;
+    color: #ea6f5a;
     display: inline-block;
     vertical-align: top;
 }

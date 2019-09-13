@@ -700,9 +700,9 @@ svg:not(:root) {
     display: inline-block;
     line-height: 22px;
     padding: 0 12px;
-    border: 1px solid #007fff;
+    border: 1px solid #ea6f5a;
     border-radius: 14px;
-    color: #007fff;
+    color: #ea6f5a;
     user-select: none;
 }
 

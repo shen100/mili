@@ -1,3 +1,4 @@
+import * as util from 'util';
 import * as _ from 'lodash';
 import {
     Controller, Get, Res, Param, Post, Body, UseGuards, Query, Delete,
@@ -20,6 +21,7 @@ import { In } from 'typeorm';
 import { Image } from '../entity/image.entity';
 import { User } from '../entity/user.entity';
 import { ConfigService } from '../config/config.service';
+import { RedisService } from '../redis/redis.service';
 
 @Controller()
 export class BoilingPointController {
@@ -29,6 +31,7 @@ export class BoilingPointController {
         private readonly userService: UserService,
         private readonly ossService: OSSService,
         private readonly configService: ConfigService,
+        private readonly redisService: RedisService,
     ) {}
 
     @Get('/boilings/topic/:topicID')
@@ -82,12 +85,12 @@ export class BoilingPointController {
                     company: true,
                 },
             }),
-            this.boilingPointService.userLikes([ boilingPoint.id ], user && user.id),
+            user ? this.boilingPointService.userLikes([ boilingPoint.id ], user.id) : Promise.resolve([]),
             imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
             this.boilingPointService.recommendsInTopic(),
         ]);
 
-        const follows = await this.userService.usersFilterByFollowerID([boilingPoint.userID] , user.id);
+        const follows = await (user ? this.userService.usersFilterByFollowerID([boilingPoint.userID] , user.id) : Promise.resolve([]));
         boilingPointData.user = author;
         boilingPointData.userLiked = !!(likes && likes.length);
         boilingPointData.isFollowed = !!(follows && follows.length);
@@ -117,21 +120,47 @@ export class BoilingPointController {
             this.topicService.list(),
             this.boilingPointService.globalRecommends(),
         ]);
+        const imgIDArr: number[] = [];
+        const imageMap = {};
+        globalRecommends.map(r => {
+            if (r.imgs) {
+                const ids = r.imgs.split(',');
+                imgIDArr.push(...ids.map(idStr => parseInt(idStr, 10)));
+            }
+        });
+        const images: Image[] = await (imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]));
+        images.map(img => imageMap[img.id] = img);
+        const theGlobalRecommends = globalRecommends.map(bp => {
+            let imgs: any[] = [];
+            if (bp.imgs) {
+                const ids = bp.imgs.split(',');
+                imgs = ids.map(imgID => {
+                    return {
+                        ...imageMap[imgID],
+                        url: this.configService.static.uploadImgURL + imageMap[imgID].url,
+                    };
+                });
+            }
+            return {
+                ...bp,
+                imgs,
+            };
+        });
         res.render('pages/boilingpoint/boilingpoint', {
             uploadPolicy,
             topics,
             boilingPointType: type,
-            globalRecommends,
+            globalRecommends: theGlobalRecommends,
         });
     }
 
     @Post(`${APIPrefix}/boilingpoints`)
     @UseGuards(ActiveGuard)
     async create(@CurUser() user, @Body() editBoilingPointDto: EditBoilingPointDto) {
-        const result = await this.boilingPointService.create(editBoilingPointDto, user.id);
+        const insertId = await this.boilingPointService.create(editBoilingPointDto, user.id);
         const now = new Date();
         const boilingPoint = new BoilingPoint();
-        boilingPoint.id = result.raw.insertId;
+        boilingPoint.id = insertId;
         boilingPoint.htmlContent = editBoilingPointDto.htmlContent;
         boilingPoint.createdAt = now;
         boilingPoint.browseCount = 0;
@@ -141,6 +170,7 @@ export class BoilingPointController {
         if (boilingPoint.topicID) {
             boilingPoint.topic = await this.topicService.basic(boilingPoint.topicID);
         }
+        await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id));
         return {
             ...boilingPoint,
             imgs: editBoilingPointDto.imgs && editBoilingPointDto.imgs.length ? editBoilingPointDto.imgs : [],
@@ -245,7 +275,7 @@ export class BoilingPointController {
                 job: true,
                 company: true,
             }),
-            this.boilingPointService.userLikes(boilingpointIDs, user && user.id),
+            user ? this.boilingPointService.userLikes(boilingpointIDs, user.id) : Promise.resolve([]),
             imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
         ]);
         topics.map(t => {
@@ -257,7 +287,7 @@ export class BoilingPointController {
             userMap[u.id] = u;
             uniqueUserIDs.push(u.id);
         });
-        const follows = await this.userService.usersFilterByFollowerID(uniqueUserIDs, user.id);
+        const follows = await (user ? this.userService.usersFilterByFollowerID(uniqueUserIDs, user.id) : Promise.resolve([]));
         const followIDMap = {};
         follows.forEach(followData => followIDMap[followData.userID] = true);
         _.forIn(userMap, (value, userID) => value.isFollowed = !!followIDMap[userID]);

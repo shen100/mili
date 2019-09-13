@@ -6,10 +6,10 @@
         <nav class="dock-nav">
             <ul class="boiling-nav-list">
                 <li class="boiling-nav-item {% if boilingPointType === 'recommend' %} active {% endif %}">
-                    <a href="/boilings/recommend">推荐 </a>
+                    <a href="/boilings/recommend">推荐</a>
                 </li>
                 <li class="boiling-nav-item {% if boilingPointType === 'hot' %} active {% endif %}">
-                    <a  href="/boilings/hot">热门</a>
+                    <a href="/boilings/hot">热门</a>
                 </li>
                 <li class="boiling-nav-item {% if boilingPointType === 'followed' %} active {% endif %}">
                     <a href="/boilings/followed">关注</a>
@@ -26,46 +26,48 @@
         <div id="centerBox"></div>
     </div>
     <aside class="boiling-sidebar">
+        {% if user %}
         <div class="boiling-profile-box">
             <div class="boiling-profile">
-                <a href="/user/5872f33b61ff4b005c490f1c" target="_blank">
+                <a href="/users/{{user.id}}" target="_blank">
                     <div class="boiling-avatar" style="background-image: url({{user.avatarURL}})"></div>
                 </a>
                 <div class="boiling-user-info">
-                    <a href="/user/5872f33b61ff4b005c490f1c" target="_blank" class="boiling-username">shen100</a>
+                    <a href="/users/{{user.id}}" target="_blank" class="boiling-username">{{user.username}}</a>
                     <div class="boiling-position"></div>
                 </div>
             </div>
             <ul class="boiling-stat-list">
-                <a href="/user/5872f33b61ff4b005c490f1c/pins" target="_blank" class="boiling-item">
+                <a href="/users/{{user.id}}/boiling" target="_blank" class="boiling-item">
                     <div class="boiling-title">沸点</div>
                     <div class="boiling-count">{{user.boilingPointCount | defaultValue(0)}}</div>
                 </a>
-                <a href="/user/5872f33b61ff4b005c490f1c/following" target="_blank" class="boiling-item">
+                <a href="/users/{{user.id}}/follow" target="_blank" class="boiling-item">
                     <div class="boiling-title">关注</div>
                     <div class="boiling-count">{{user.followCount | defaultValue(0)}}</div>
                 </a>
-                <a href="/user/5872f33b61ff4b005c490f1c/followers" target="_blank" class="boiling-item">
-                    <div class="boiling-title">关注者</div>
+                <a href="/users/{{user.id}}/follower" target="_blank" class="boiling-item">
+                    <div class="boiling-title">粉丝</div>
                     <div class="boiling-count">{{user.followerCount | defaultValue(0)}}</div>
                 </a>
             </ul>
         </div>
+        {% endif %}
         <div class="related-pin-block pin-block">
             <header>推荐沸点</header>
             <ul class="pin-list">
                 {% for bp in globalRecommends %}
                 <li class="pin-item">
-                    <a href="/pin/5d61157a6fb9a07d87242cf7" target="_blank" title="{{bp.summary}}" class="pin">
+                    <a href="/boiling/{{bp.id}}" target="_blank" title="{{bp.summary}}" class="pin">
                         <div class="boiling-content-box">
-                            <div class="boiling-content" style="-webkit-box-orient: vertical;{% if not bp.img %}max-width: 215px;{% endif %}">{{bp.summary}}</div>
-                            <div class="boiling-stat1">
-                                <span >{{bp.likeCount}} 赞 · </span>
-                                <span >{{bp.commentCount}} 评论</span>
+                            <div class="boiling-content" style="-webkit-box-orient: vertical;{% if not bp.imgs.length %}max-width: 215px;{% endif %}">{{bp.summary}}</div>
+                            <div class="boiling-stat1" {% if not bp.imgs.length %}style="margin-top: 4px;"{% endif %}>
+                                <span>{{bp.likeCount}} 赞 · </span>
+                                <span>{{bp.commentCount}} 评论</span>
                             </div>
                         </div>
-                        {% if bp.img %}
-                        <div class="boiling-image-box" style="background-image: url({{bp.img}});"></div>
+                        {% if bp.imgs.length %}
+                        <div class="boiling-image-box" style="background-image: url({{bp.imgs[0].url}});"></div>
                         {% endif %}
                     </a>
                 </li>
@@ -73,7 +75,7 @@
             </ul>
         </div>
         <a class="guide-link shadow" href="" target="_blank">
-            <img src="https://b-gold-cdn.xitu.io/v3/static/img/guide-icon.6c1b9a0.svg" class="icon">
+            <img src="{{imgPath}}/boilingpoint/guideicon.svg" class="icon">
             <span class="title">如何玩转沸点</span>
         </a>
     </aside>
@@ -82,10 +84,13 @@
 
 {% block pageData %}
 <script>
+    // 当页面是推荐、热门、关注时，topicID为''
     var topicID = '{{ topicID }}';
-    // 当前登录用户
+    // 当前登录用户, 如果没有登录的话, userID为undefined
     var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
+    // boilingPointType的值为 recommend、hot、followed 其中之一
     var boilingPointType = '{{ boilingPointType }}';
+    // 阿里云oss的 policy
     var uploadPolicy = {{ uploadPolicy | dump | safe }};
 </script>
 {% endblock %}

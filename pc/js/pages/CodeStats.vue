@@ -42,6 +42,7 @@ export default {
     name: 'App',
     data: function() {
         const readed = [
+            'pc/js/components/boilingpoint/ReportAlert.vue',
             'pc/js/entry/codeStats.js',
             'pc/js/pages/CodeStats.vue',
             'pc/styles/codeStats.scss',

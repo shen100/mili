@@ -121,16 +121,23 @@ export class BoilingPointService {
     async create(editBoilingPointDto: EditBoilingPointDto, userID: number) {
         const now = new Date();
         const summary = striptags(editBoilingPointDto.htmlContent).substr(0, BoilingPointConstants.SUMMARY_LENGTH);
-        return await this.boilingPointRepository.insert({
-            htmlContent: editBoilingPointDto.htmlContent,
-            summary,
-            imgs: editBoilingPointDto.imgs && editBoilingPointDto.imgs.length ? editBoilingPointDto.imgs.join(',') : '',
-            createdAt: now,
-            commentCount: 0,
-            browseCount: 0,
-            userID,
-            topicID: editBoilingPointDto.topicID,
+
+        let insertResult;
+
+        await this.boilingPointRepository.manager.connection.transaction(async manager => {
+            insertResult = await manager.getRepository(BoilingPoint).insert({
+                htmlContent: editBoilingPointDto.htmlContent,
+                summary,
+                imgs: editBoilingPointDto.imgs && editBoilingPointDto.imgs.length ? editBoilingPointDto.imgs.join(',') : '',
+                createdAt: now,
+                commentCount: 0,
+                browseCount: 0,
+                userID,
+                topicID: editBoilingPointDto.topicID,
+            });
+            await manager.query(`UPDATE users SET boilingpoint_count = boilingpoint_count + 1 WHERE id = ${userID}`);
         });
+        return insertResult.raw.insertId;
     }
 
     // 用户点过赞的沸点

@@ -42,6 +42,7 @@ export default {
     },
     methods: {
         show(boilingPointID) {
+            this.reason = 1;
             this.boilingPointID = boilingPointID;
             this.modalVisible = true;
         },
@@ -115,5 +116,3 @@ export default {
     z-index: 1;
 }
 </style>
-
-

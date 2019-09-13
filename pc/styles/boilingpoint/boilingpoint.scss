@@ -66,7 +66,7 @@ body {
 }
 
 .boiling-nav-list .boiling-nav-item.active {
-    background-color: #007fff;
+    background-color: #ea6f5a;
     color: #fff;
 }
 
@@ -79,7 +79,7 @@ body {
 }
 
 .boiling-nav-list .boiling-nav-item:not(.active):hover>a {
-    color: #007fff;
+    color: #ea6f5a;
 }
 
 .main-box .stream {
@@ -242,9 +242,9 @@ ul.pin-list {
 
 .boiling-content {
     max-width: 132px;
-    max-height: 41px;
+    line-height: 20px;
     color: #2e3135;
-    font-size: 13px;
+    font-size: 14px;
     text-overflow: ellipsis;
     overflow: hidden;
     -webkit-line-clamp: 2;

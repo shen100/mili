@@ -20,6 +20,7 @@ const ignores = [
     'package-lock.json',
     'LICENSE',
     'README',
+    'dist',
     'geetest.js',
     'highlight.min.js',
     'jqueryx-1.11.3.min.js',
