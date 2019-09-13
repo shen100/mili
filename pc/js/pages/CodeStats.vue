@@ -47,6 +47,7 @@ export default {
             'pc/js/pages/CodeStats.vue',
             'pc/styles/codeStats.scss',
             'src/stats/codestats.controller.ts',
+            'views/pages/boilingpoint/boilingpoint.njk',
             'views/pages/codeStats.njk',
             '.gitignore',
             '.prettierrc',
