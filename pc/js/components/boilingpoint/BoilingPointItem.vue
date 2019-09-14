@@ -144,7 +144,7 @@
                         </div>
                     </div>
                     <div class="share-action action">
-                        <div class="action-title-box">
+                        <div @click="changeShareVisible" v-clickoutside="clickoutsideShare" class="action-title-box">
                             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" class="icon share-icon">
                                 <g fill="none" fill-rule="evenodd">
                                     <path d="M0 0h20v20H0z"></path>
@@ -154,6 +154,7 @@
                                 </g>
                             </svg>
                             <span class="action-title">分享</span>
+                            <Share v-if="shareVisible" :boilingPointItemID="data.id" :summary="data.summary" :imgs="imgArr" @copyLink="onCopyLink" />
                         </div>
                     </div>
                 </div>
@@ -167,6 +168,7 @@ import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
 import More from '~/js/components/common/More.vue';
+import Share from '~/js/components/boilingpoint/Share.vue';
 
 const maxMiddleImgWidth = 446;
 const gridTotalWidth = 336;// 9宫格总宽度
@@ -236,6 +238,7 @@ export default {
             pinchIconOver: false,
             leftRotateIconOver: false,
             rightRotateIconOver: false,
+            shareVisible: false,
         };
     },
     computed: {
@@ -253,6 +256,15 @@ export default {
         }
     },
     methods: {
+        onCopyLink() {
+            this.$emit('copyLink');
+        },
+        changeShareVisible() {
+            this.shareVisible = !this.shareVisible;
+        },
+        clickoutsideShare() {
+            this.shareVisible = false;
+        },
         onMouseEnterUser1() {
             this.userCardVisible1 = true;
         },
@@ -416,6 +428,7 @@ export default {
     components: {
         UserBusinessCard,
         More,
+        Share,
     }
 }
 </script>

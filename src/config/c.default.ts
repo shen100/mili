@@ -2,9 +2,9 @@ import * as path from 'path';
 
 const domain = 'dev.golang123.com';
 const port = 9905;
-const url = `http://${domain}:${port}`;
+const url = `http://${domain}`;
 const mDomain = 'mdev.golang123.com';
-const mURL = `http://${mDomain}:${port}`;
+const mURL = `http://${mDomain}`;
 
 const staticURL = 'http://dev.golang123.com';
 

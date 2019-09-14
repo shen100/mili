@@ -1,5 +1,6 @@
 <template>
     <div>
+        <SuccessTip ref="successTip" :width="200" />
         <!-- 沸点列表页面 -->
         <template v-if="isBoilingPointList">
             <div class="the-editor-box">
@@ -10,7 +11,7 @@
                     <div>
                         <ul class="boilingpoint-list">
                             <BoilingPointItem @bigImageChange="onBrowseBigImg" 
-                                :key="item.id" v-for="item in boilingPoints" 
+                                :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
                                 :userID="userID" :data="item" @followChange="onFollowChange"
                                 :ref="`boilingPointItem-${item.id}`"
                                 @report="onReport(item.id)" />
@@ -22,8 +23,8 @@
         <!-- 沸点详情页面 -->
         <div v-else>
             <ul class="boilingpoint-list" style="margin-top: 0;">
-                <BoilingPointItem @bigImageChange="onBrowseBigImg" 
-                    :key="item.id" v-for="item in boilingPoints" 
+                <BoilingPointItem @bigImageChange="onBrowseBigImg"
+                    :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
                     :userID="userID" :data="item" @followChange="onFollowChange"
                     :ref="`boilingPointItem-${item.id}`"
                     @report="onReport(item.id)" />
@@ -52,6 +53,7 @@
 </template>
 
 <script>
+import SuccessTip from '~/js/components/common/SuccessTip.vue';
 import BoilingPointEditor from '~/js/components/editor/BoilingPointEditor.vue';
 import BoilingPointItem from '~/js/components/boilingpoint/BoilingPointItem.vue';
 import Pinterest from '~/js/components/common/Pinterest.vue';
@@ -91,6 +93,9 @@ export default {
         });
     },
     methods: {
+        onCopyLink() {
+            this.$refs.successTip.show('链接复制成功');
+        },
         onResize() {
             if (this.bigImgs.length && this.bigImgs[this.curBigImgIndex]) {
                 this.changeBigImgStyle(this.bigImgs[this.curBigImgIndex]);
@@ -171,6 +176,7 @@ export default {
         }
     },
     components: {
+        SuccessTip,
         BoilingPointEditor,
         Pinterest,
         BoilingPointItem,
