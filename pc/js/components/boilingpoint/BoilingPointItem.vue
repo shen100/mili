@@ -5,12 +5,12 @@
                 <div class="account-group">
                     <div class="user-popover-box" @mouseenter="onMouseEnterUser1" @mouseleave="onMouseLeaveUser1">
                         <a :href="`/users/${data.user.id}`" target="_blank" class="user-link">
-                            <div class="lazy avatar avatar loaded" :style="{'background-image': `url(${data.user.avatarURL})`}"></div>
+                            <div class="lazy avatar loaded" :style="{'background-image': `url(${data.user.avatarURL})`}"></div>
                         </a>
                         <UserBusinessCard ref="userCard1" v-if="userCardVisible1" :userID="data.user.id" 
                             :followerID="userID" @followChange="onFollowChange" />
                     </div>
-                    <div  class="pin-header-content">
+                    <div class="pin-header-content">
                         <div class="user-popover-box" @mouseenter="onMouseEnterUser2" @mouseleave="onMouseLeaveUser2">
                             <a :href="`/users/${data.user.id}`" target="_blank" class="username">{{data.user.username}}</a>
                             <UserBusinessCard ref="userCard2" v-if="userCardVisible2" :userID="data.user.id" 
@@ -18,7 +18,7 @@
                         </div>
                         <div class="meta-box">
                             <template v-if="data.user.job || data.user.company">
-                                <div class="position ellipsis">{{data.user.job}}{{data.user.company ? ' @ ' + data.user.company : ''}}</div>
+                                <div class="position ellipsis">{{data.user.job}}{{data.user.job && data.user.company ? ' @ ' : ''}}{{data.user.company}}</div>
                                 <div class="dot">·</div>
                             </template>
                             <a :href="`/boiling/${data.id}`" target="_blank" class="time-box">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            <div class="pin-content-row ">
+            <div class="pin-content-row">
                 <div class="content-box" v-html="data.htmlContent"></div>
             </div>
             <div class="pin-image-row">
@@ -90,9 +90,9 @@
                             <img :key="middleImg.id" v-for="(middleImg, i) in middleImgArr" :src="middleImg.url" 
                                 class="carousel-image animated myfadeIn fast" :class="{'hide-middle-img': i !== curImgIndex}"
                                 :style="middleImg.style"/>
-                            <div v-show="curImgIndex !== 0" @click="prevMiddleImg" class="toggle-area prev"></div>
+                            <div v-show="curImgIndex > 0" @click="prevMiddleImg" class="toggle-area prev"></div>
                             <div @click="onExitMiddleImage" class="toggle-area zoomout"></div>
-                            <div v-show="curImgIndex !== middleImgArr.length - 1" @click="nextMiddleImg" class="toggle-area next"></div>
+                            <div v-show="curImgIndex < middleImgArr.length - 1" @click="nextMiddleImg" class="toggle-area next"></div>
                         </div>
                         <div class="nav-list">
                             <div @click="changeMiddleImg(i)" :key="imgData.id" v-for="(imgData, i) in imgArr" class="nav-item">
@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div v-if="data.topic" class="pin-topic-row">
-                <a :href="`/boilings/topic/${data.topicID}`" target="_blank" title="" class="topic-title">{{data.topic.name}}</a>
+                <a :href="`/boilings/topic/${data.topicID}`" target="_blank" :title="data.topic.name" class="topic-title">{{data.topic.name}}</a>
             </div>
             <div class="pin-action-row">
                 <div class="action-box action-box">
@@ -161,70 +161,69 @@ import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
 import More from '~/js/components/common/More.vue';
 
 const maxMiddleImgWidth = 446;
-const gridWidth = 336;// 9宫格总宽度
+const gridTotalWidth = 336;// 9宫格总宽度
 const gridGap = 6;// 格子之间的间距
 // 有9个格子时，每个格子的宽高，这时格子的宽高比为1:1
-const grid =  (gridWidth - 2 * gridGap) / 3;
+const gridWidth =  (gridTotalWidth - 2 * gridGap) / 3;
 // 只有一张图片，且图片宽高比为1:1时，这时图片的宽高
-const ratio1x1Value = 180 * (gridWidth / 250);
+const ratio1x1Value = 180 * (gridTotalWidth / 250);
 
 export default {
     props: [
-        'data',
+        'data', // 沸点数据
         'userID', // 当前登录用户的id
     ],
     data () {
         const imgs = this.data.imgs;
+        // imgWidth, imgHeight 是显示小缩略图时的宽高
         if (imgs.length === 1) {
-            const ratio = imgs[0].width / imgs[0].height;
+            const smallImg = imgs[0];
+            const ratio = smallImg.width / smallImg.height;
             if (ratio < 1 / 3) {
-                imgs[0].imgWidth = ratio1x1Value / 3;
-                imgs[0].imgHeight = ratio1x1Value;
+                smallImg.imgWidth = ratio1x1Value / 3;
+                smallImg.imgHeight = ratio1x1Value;
             } else if (ratio >= 1 / 3 && ratio < 1) {
-                imgs[0].imgWidth = ratio1x1Value / ratio;
-                imgs[0].imgHeight = ratio1x1Value;
+                smallImg.imgWidth = ratio1x1Value / ratio;
+                smallImg.imgHeight = ratio1x1Value;
             } else if (ratio >= 1 && ratio < 3) {
-                imgs[0].imgWidth = ratio1x1Value;
-                imgs[0].imgHeight = ratio1x1Value / ratio;
+                smallImg.imgWidth = ratio1x1Value;
+                smallImg.imgHeight = ratio1x1Value / ratio;
             } else {
-                imgs[0].imgWidth = gridWidth;
-                imgs[0].imgHeight = grid;
+                smallImg.imgWidth = gridTotalWidth;
+                smallImg.imgHeight = gridWidth;
             }
         } else if (imgs.length >= 2) {
             imgs.map(img => {
-                img.imgWidth = grid;
-                img.imgHeight = grid;   
+                img.imgWidth = gridWidth;
+                img.imgHeight = gridWidth;
             });
         }
-        let middleImgArr = (imgs || []).map(imgData => {
+        let middleImgArr = (this.data.middleImgs || []).map(imgData => {
             return {
                 ...imgData,
-                rotate: 0,
+                middleImgRotate: 0,
                 style: {},
             };
         });
-        console.log(middleImgArr);
         middleImgArr = middleImgArr.map(img => this.updateMiddleImgStyle(img, { isSwap: false }));
-        console.log(middleImgArr);
-        let bigImgArr = (imgs || []).map(imgData => {
+        let bigImgArr = (this.data.bigImgs || []).map(imgData => {
             return {
                 ...imgData,
             };
         });
         return {
-            gridWidth,
             curImgIndex: 0,
             imgArr: imgs || [],
             middleImgArr,
             bigImgArr,
-            reportVisible: false,
+            reportVisible: false, // 是否显示举报
             gridVisible: true, // 是否显示九宫格
-            middleImgVisible: false, // 是否显示轮播图
-            middleImgCreated: false,
-            userCardVisible1: false,
-            userCardVisible2: false,
-            isMouseEnter: false,
-            isFollowed: this.data.user.isFollowed,
+            middleImgVisible: false, // 是否显示中图
+            middleImgCreated: false, // 中图组件是否已创建，用来避免每次切换中图图片时，都再次加载中图图片
+            userCardVisible1: false, // 用户面板
+            userCardVisible2: false, // 用户面板
+            isMouseEnter: false, // 鼠标滑过关注按钮（more旁边的关注按钮）
+            isFollowed: this.data.user.isFollowed, // 是否已关注沸点作者
         };
     },
     computed: {
@@ -256,6 +255,7 @@ export default {
         },
         updateMiddleImgStyle(imgData, options) {
             options = options || {};
+            // isSwap 是否交换宽高，图片旋转时可能要交换宽高
             options.isSwap = options.isSwap || false;
             options.transform = options.transform || 'rotate(0deg) translate(0px, 0px)';
             let originalWidth, originalHeight, imgWidthKey, imgHeightKey;
@@ -286,7 +286,7 @@ export default {
             imgData.style = {
                 width: imgSize.imgWidth + 'px', 
                 height: imgSize.imgHeight + 'px',
-                displayHeight: imgSize[imgHeightKey] + 'px',
+                displayHeight: imgSize[imgHeightKey] + 'px', // 中图父容器的实际高度
                 left: (maxMiddleImgWidth - imgSize[imgWidthKey]) / 2 + 'px',
                 transform: options.transform
             };
@@ -312,7 +312,7 @@ export default {
         nextMiddleImg() {
             this.curImgIndex++;
         },
-        changeMiddleImgTransform(rotate) {
+        changeMiddleImgTransform(middleImgRotate) {
             const middleImg = this.curMiddleImg;
             const transformMap = {
                 '0': 'rotate(0deg) translate(0px, 0px)',
@@ -320,25 +320,24 @@ export default {
                 '2': 'rotate(180deg) translate(-100%, -100%)',
                 '3': 'rotate(270deg) translate(-100%, 0px)'
             };
-            middleImg.rotate += rotate;
-            if (middleImg.rotate < 0) {
-                middleImg.rotate = 3;
+            middleImg.middleImgRotate += middleImgRotate;
+            if (middleImg.middleImgRotate < 0) {
+                middleImg.middleImgRotate = 3;
             }
-            if (middleImg.rotate > 3) {
-                middleImg.rotate = 0;
+            if (middleImg.middleImgRotate > 3) {
+                middleImg.middleImgRotate = 0;
             }
-            if (middleImg.rotate === 0 || middleImg.rotate === 2) {
+            if (middleImg.middleImgRotate === 0 || middleImg.middleImgRotate === 2) {
                 this.updateMiddleImgStyle(middleImg, {
                     isSwap: false,
-                    transform: transformMap[middleImg.rotate],
+                    transform: transformMap[middleImg.middleImgRotate],
                 });
             } else {
                 this.updateMiddleImgStyle(middleImg, {
                     isSwap: true,
-                    transform: transformMap[middleImg.rotate],   
+                    transform: transformMap[middleImg.middleImgRotate],   
                 });
             }
-            console.log(middleImg);
         },
         onReport() {
             this.reportVisible = !this.reportVisible;
@@ -394,9 +393,9 @@ export default {
         changeUserFollow(userID, isFollowed) {
             if (userID === this.data.user.id) {
                 this.isFollowed = isFollowed;
+                this.$refs['userCard1'].changeUserFollow(userID, isFollowed);
+                this.$refs['userCard2'].changeUserFollow(userID, isFollowed);
             }
-            this.$refs['userCard1'].changeUserFollow(userID, isFollowed);
-            this.$refs['userCard2'].changeUserFollow(userID, isFollowed);
         },
         onShowReportAlert() {
             this.$emit('report');  
@@ -442,7 +441,7 @@ export default {
 
 .boilingpoint-item-pin {
     background-color: #fff;
-    border-radius: .2rem;
+    border-radius: 2px;
 }
 
 .pin-header-row {
@@ -887,7 +886,7 @@ svg:not(:root) {
 }
 
 .nav-item .thumb.active, .nav-item .thumb:hover {
-    border-color: #027fff;
+    border-color: #ea6f5a;
     opacity: 1;
 }
 
@@ -920,5 +919,13 @@ svg:not(:root) {
     color: #fff;
     border-color: #6cbd45;
     background-color: #6cbd45;
+}
+
+.action-item:not(.not-allow):hover {
+    color: #ea6f5a;
+}
+
+.action-item:not(.not-allow):hover .icon svg path {
+    fill: #ea6f5a;
 }
 </style>

@@ -1,3 +1,6 @@
+/**
+ * 沸点列表，沸点详情页面都用的这个js
+ */
 import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
 import '~/styles/boilingpoint/boilingpoint.scss';

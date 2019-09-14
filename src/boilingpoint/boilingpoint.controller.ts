@@ -258,6 +258,8 @@ export class BoilingPointController {
             return {
                 ...boilingPoint,
                 imgs: boilingPoint.imgs ? boilingPoint.imgs.split(',') : [],
+                middleImgs: [],
+                bigImgs: [],
                 userLiked: false,
                 createdAtLabel: recentTime(boilingPoint.createdAt, 'YYYY.MM.DD HH:mm'),
             };
@@ -290,13 +292,14 @@ export class BoilingPointController {
         const follows = await (user ? this.userService.usersFilterByFollowerID(uniqueUserIDs, user.id) : Promise.resolve([]));
         const followIDMap = {};
         follows.forEach(followData => followIDMap[followData.userID] = true);
-        _.forIn(userMap, (value, userID) => value.isFollowed = !!followIDMap[userID]);
         likes.map(boilingPointID => likeMap[boilingPointID] = true);
         images.map(img => imageMap[img.id] = img);
         list.map(bp => {
             bp.topic = topicMap[bp.topicID];
-            bp.user = userMap[bp.userID];
-
+            bp.user = {
+                ...userMap[bp.userID],
+                isFollowed: !!followIDMap[bp.userID],
+            };
             bp.userLiked = !!likeMap[bp.id];
             bp.imgs = bp.imgs.map(imgID => {
                 return {
@@ -304,6 +307,8 @@ export class BoilingPointController {
                     url: this.configService.static.uploadImgURL + imageMap[imgID].url,
                 };
             });
+            bp.middleImgs = bp.imgs;
+            bp.bigImgs = bp.imgs;
         });
         return {
             ...boilingPoints,

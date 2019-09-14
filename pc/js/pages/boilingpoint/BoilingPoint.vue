@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- 沸点列表页面 -->
         <template v-if="isBoilingPointList">
             <div class="the-editor-box">
                 <BoilingPointEditor @publish="onPublish" placeholder="告诉你个小秘密，发沸点时添加话题会被更多小伙伴看见呦~"/>
@@ -18,6 +19,7 @@
                 </template>
             </Pinterest>
         </template>
+        <!-- 沸点详情页面 -->
         <div v-else>
             <ul class="boilingpoint-list" style="margin-top: 0;">
                 <BoilingPointItem @bigImageChange="onBrowseBigImg" 
@@ -40,7 +42,7 @@
                 <div class="counter-bar" :style="{transform: isLeaveCouter ? 'translateY(100%)' : 'translateY(0)'}">
                     <div class="counter-hinter">
                         <span class="current-index">{{curBigImgIndex + 1}}</span>
-                        <span >/ {{bigImgs.length}}</span>
+                        <span>/ {{bigImgs.length}}</span>
                     </div>
                 </div>
             </div>
@@ -63,22 +65,24 @@ export default {
         let topicID = parseInt(window.topicID, 10);
         let url = '/boilingpoints';
         if (window.boilingPointType) {
+            // boilingPointType 不为空的话，那么是推荐、热门或关注
+            // 如果是具体的沸点页面，这个url就没用到
             url = `/boilingpoints/${window.boilingPointType}`;
         }
         return {
-            userID: window.userID || undefined,
+            userID: window.userID || undefined, // 当前登录用户的id
             // window.boilingPoint不为空的话，那就是具体的沸点页面，否则是沸点列表
             isBoilingPointList: window.boilingPoint ? false : true,
             boilingPoint: window.boilingPoint,
             url,
             boilingPoints: window.boilingPoint ? [ window.boilingPoint ] : [],
-            topicID: topicID || undefined,
+            topicID: topicID || undefined, // 如果是推荐、热门、关注或具体的沸点页面，就没有topicID
             bigImgStyle: {},
             bigImgURL: '',
             curBigImgIndex: -1,
             bigImgs: [
             ],
-            isLeaveCouter: true,
+            isLeaveCouter: true, // 鼠标移出大图页码组件
         };
     },
     mounted() {
@@ -93,7 +97,6 @@ export default {
             }
         },
         onLoad(result) {
-            console.log('=====', result);
             this.boilingPoints = this.boilingPoints.concat(result.data.data.list);
         },
         onPublish() {
@@ -110,16 +113,13 @@ export default {
             this.changeBigImgStyle(this.bigImgs[index]);
         },
         changeBigImgStyle(curImg) {
-            console.log('?????---->', curImg);
             const winSize = getWindowSize();
             let bigImgWidth;
             let bigImgHeight;
             if (curImg.width > winSize.width) {
-                console.log(curImg.width, winSize.width);
                 bigImgWidth = winSize.width;
                 bigImgHeight = curImg.height / (curImg.width / bigImgWidth);
             } else {
-                console.log('==================2');
                 bigImgWidth = curImg.width;
                 bigImgHeight = curImg.height;
             }
@@ -134,16 +134,8 @@ export default {
                 left: (winSize.width - bigImgWidth) / 2 + 'px',
                 top: (winSize.height - bigImgHeight) / 2 + 'px',
             };
-
-            console.log('!!!!!!!!!!!!!!!!!', {
-                width: bigImgWidth + 'px',
-                height: bigImgHeight + 'px',
-                left: (winSize.width - bigImgWidth) / 2 + 'px',
-                top: (winSize.height - bigImgHeight) / 2 + 'px',
-            })
         },
         onEnterCouter() {
-            console.log('??????????????');
             this.isLeaveCouter = false;
         },
         onLeaveCouter() {
@@ -163,7 +155,6 @@ export default {
         onNext() {
             this.curBigImgIndex++;    
             this.bigImgURL = this.bigImgs[this.curBigImgIndex].url;
-            console.log(this.bigImgURL, this.curBigImgIndex);
             this.changeBigImgStyle(this.bigImgs[this.curBigImgIndex]);
         },
         onFollowChange(userID, isFollowed) {
@@ -172,11 +163,11 @@ export default {
                 if (bpVue.length && bpVue.slice) {
                     bpVue = bpVue[0];
                 }
-                bpVue.changeUserFollow(userID, isFollowed); 
+                bpVue.changeUserFollow(userID, isFollowed);
             });
         },
-        onReport(reportID) {
-            this.$refs.reportAlert.show(reportID);
+        onReport(boilingPointID) {
+            this.$refs.reportAlert.show(boilingPointID);
         }
     },
     components: {
@@ -211,7 +202,7 @@ export default {
     background: #222;
     width: 100%;
     height: 100%;
-    z-index: 1001;
+    z-index: 1041;
 }
 
 .big-img-box .big-img {
@@ -221,7 +212,7 @@ export default {
 .bp-control {
     position: absolute;
     cursor: pointer;
-    z-index: 1003;
+    z-index: 1043;
 }
 
 .bp-control.close {
@@ -243,7 +234,6 @@ export default {
     height: 30%;
 }
 
-
 .bp-control.close.close:hover {
     transform: rotate(-90deg);
     background-color: hsla(0, 0%, 58.8%, .5);
@@ -252,7 +242,7 @@ export default {
 .counter-bar-wrapper {
     position: fixed;
     cursor: pointer;
-    z-index: 1003;
+    z-index: 1043;
     left: 0;
     bottom: 0;
 }
@@ -294,7 +284,7 @@ export default {
     width: 40%;
     height: 100%;
     position: fixed;
-    z-index: 1003;
+    z-index: 1043;
     left: 0;
     top: 60px;
     cursor: url(../../../images/boilingpoint/left.big.png), auto;
@@ -304,10 +294,9 @@ export default {
     width: 40%;
     height: 100%;
     position: fixed;
-    z-index: 1003;
+    z-index: 1043;
     right: 0;
     top: 60px;
     cursor: url(../../../images/boilingpoint/right.big.png), auto;
 }
 </style>
-

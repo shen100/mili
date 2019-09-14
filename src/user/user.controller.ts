@@ -292,6 +292,10 @@ export class UserController {
             });
         }
         await this.userService.followOrCancelFollow(user.id, userID);
+        await Promise.all([
+            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
+            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, userID)),
+        ]);
         return {};
     }
 
@@ -305,6 +309,10 @@ export class UserController {
             });
         }
         await this.userService.followOrCancelFollow(user.id, userID);
+        await Promise.all([
+            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
+            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, userID)),
+        ]);
         return {};
     }
 }

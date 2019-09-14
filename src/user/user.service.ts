@@ -438,22 +438,26 @@ export class UserService {
     async followOrCancelFollow(followerID: number, userID: number) {
         const sql = `DELETE FROM user_follower
                 WHERE follower_id = ${followerID} AND user_id = ${userID}`;
-        const sql2 = `UPDATE users SET follower_count = follower_count - 1 WHERE id = ${userID}`;
+        const subFollowCountSQL = `UPDATE users SET follow_count = follow_count - 1 WHERE id = ${followerID}`;
+        const subFollowerCountSQL = `UPDATE users SET follower_count = follower_count - 1 WHERE id = ${userID}`;
 
-        const sql3 = `INSERT INTO user_follower (follower_id, user_id, created_at)
+        const sql2 = `INSERT INTO user_follower (follower_id, user_id, created_at)
                 VALUES (${followerID}, ${userID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}")`;
-        const sql4 = `UPDATE users SET follower_count = follower_count + 1 WHERE id = ${userID}`;
+        const addFollowCountSQL = `UPDATE users SET follow_count = follow_count + 1 WHERE id = ${followerID}`;
+        const addFollowerCountSQL = `UPDATE users SET follower_count = follower_count + 1 WHERE id = ${userID}`;
 
         const userFollowed = await this.isUserFollowed(followerID, userID);
 
         await this.userRepository.manager.connection.transaction(async manager => {
             if (userFollowed) {
                 await manager.query(sql);
-                await manager.query(sql2);
+                await manager.query(subFollowerCountSQL);
+                await manager.query(subFollowCountSQL);
                 return;
             }
-            await manager.query(sql3);
-            await manager.query(sql4);
+            await manager.query(sql2);
+            await manager.query(addFollowerCountSQL);
+            await manager.query(addFollowCountSQL);
         });
     }
 
