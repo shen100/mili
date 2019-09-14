@@ -61,27 +61,35 @@
                     </div>
                     <div v-if="middleImgCreated" :style="{width: '100%', display: middleImgVisible ? 'block' : 'none'}">
                         <div class="action-bar">
-                            <div @click="onExitMiddleImage" class="action-item">
+                            <div @click="onExitMiddleImage" class="action-item"
+                                @mouseenter="() => pinchIconOver = true" @mouseleave="() => pinchIconOver = false">
                                 <span class="icon">
-                                    <img src="../../../images/boilingpoint/pinch.svg" />
+                                    <img v-if="pinchIconOver" src="../../../images/boilingpoint/pinchover.svg" />
+                                    <img v-else src="../../../images/boilingpoint/pinch.svg" />
                                 </span>
                                 <span class="action-name">收起</span>
                             </div>
-                            <div @click="onBrowseBigImage" class="action-item">
+                            <div @click="onBrowseBigImage" class="action-item"
+                                @mouseenter="() => expendIconOver = true" @mouseleave="() => expendIconOver = false">
                                 <span class="icon">
-                                    <img src="../../../images/boilingpoint/expand.svg" />
+                                    <img v-if="expendIconOver" src="../../../images/boilingpoint/expandover.svg" />
+                                    <img v-else src="../../../images/boilingpoint/expand.svg" />
                                 </span>
                                 <span class="action-name">查看大图</span>
                             </div>
-                            <div @click="changeMiddleImgTransform(-1)" class="action-item">
+                            <div @click="changeMiddleImgTransform(-1)" class="action-item" 
+                                @mouseenter="() => leftRotateIconOver = true" @mouseleave="() => leftRotateIconOver = false">
                                 <span class="icon">
-                                    <img src="../../../images/boilingpoint/leftrotate.svg" />
+                                    <img v-if="leftRotateIconOver" src="../../../images/boilingpoint/leftrotateover.svg" />
+                                    <img v-else src="../../../images/boilingpoint/leftrotate.svg" />
                                 </span>
                                 <span class="action-name">向左旋转</span>
                             </div>
-                            <div @click="changeMiddleImgTransform(1)" class="action-item">
+                            <div @click="changeMiddleImgTransform(1)" class="action-item" 
+                                @mouseenter="() => rightRotateIconOver = true" @mouseleave="() => rightRotateIconOver = false">
                                 <span class="icon">
-                                    <img src="../../../images/boilingpoint/rightrotate.svg" />  
+                                    <img v-if="rightRotateIconOver" src="../../../images/boilingpoint/rightrotateover.svg" />  
+                                    <img v-else src="../../../images/boilingpoint/rightrotate.svg" />  
                                 </span>
                                 <span class="action-name">向右旋转</span>
                             </div>
@@ -224,6 +232,10 @@ export default {
             userCardVisible2: false, // 用户面板
             isMouseEnter: false, // 鼠标滑过关注按钮（more旁边的关注按钮）
             isFollowed: this.data.user.isFollowed, // 是否已关注沸点作者
+            expendIconOver: false,
+            pinchIconOver: false,
+            leftRotateIconOver: false,
+            rightRotateIconOver: false,
         };
     },
     computed: {
@@ -923,9 +935,5 @@ svg:not(:root) {
 
 .action-item:not(.not-allow):hover {
     color: #ea6f5a;
-}
-
-.action-item:not(.not-allow):hover .icon svg path {
-    fill: #ea6f5a;
 }
 </style>
