@@ -1,8 +1,10 @@
 <template>
     <div v-clickoutside="onClickOutside" class="comment-editor-box">
         <div @keydown.meta.enter="onComment" @keydown.ctrl.enter="onComment" 
-            class="comment-editor-cbox" :class="{'comment-editor-cbox-boilingpoint': editorType === 'boilingpoint'}">
+            class="comment-editor-cbox"
+            :class="{'comment-editor-cbox-boilingpoint': editorType === 'boilingpoint', 'comment-editor-focus': isFocus}">
             <editor-content class="mili-editor-content" :editor="editor" />
+            <div @click="onFocusAreaClick" class="editor-focus-area"></div>
         </div>
         <slot name="upload-list"></slot>
         <div v-if="sendVisible" class="write-function-block">
@@ -46,7 +48,6 @@ import CommentRichEditorEmoji from '~/js/components/editor/CommentRichEditorEmoj
 export default {
     name: 'CommentRichEditor',
     props: [
-        'placeholder',
         'uploadAllowed', // 是否允许上传图片
         'editorType', // comment, boilingpoint
         'commentType',
@@ -71,10 +72,13 @@ export default {
                 ],
                 content: '',
                 onFocus: this.onEditorFocus,
+                onBlur: this.onEditorBlur,
+                onUpdate: this.onContentUpdate
             }),
             sendVisible: this.sendDefVisible,
             isSaving: false,
             contentIsEmpty: true,
+            isFocus: false,
         };
     },
     mounted() {
@@ -92,10 +96,22 @@ export default {
         this.editor.destroy(); 
     },
     methods: {
+        onContentUpdate() {
+            this.$emit('update');
+        },
         getHTML() {
             return this.editor.getHTML();
         },
+        setHTML(html) {
+            this.editor.setContent(html);
+        },
+        onFocusAreaClick() {
+            this.$nextTick(() => {
+                this.editor.view.dom.focus();
+            });
+        },
         focus() {
+            this.isFocus = true;
             this.editor.focus();
             setTimeout(() => {
                 // 下面这行代码不能去掉，onClickOutside 也会调用,
@@ -105,6 +121,12 @@ export default {
         },
         onEditorFocus() {
             this.sendVisible = true;
+            this.isFocus = true;
+            this.$emit('focus');
+        },
+        onEditorBlur() {
+            this.isFocus = false;
+            this.$emit('blur');
         },
         onClickOutside() {
             if (!this.sendDefVisible) {
@@ -159,7 +181,7 @@ export default {
             if (isContentEmpty(content, 'rich')) {
                 return;
             }
-            this.$emit('boilingPointSubmit');
+            this.$emit('success');
         },
         onTopicClick() {
             this.$emit('topicClick');
@@ -194,6 +216,14 @@ export default {
     border-radius: 2px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+}
+
+.editor-focus-area {
+    height: 30px;
+}
+
+.comment-editor-focus {
+    border-color: #ea6f5a;
 }
 
 .comment-editor-cbox p {

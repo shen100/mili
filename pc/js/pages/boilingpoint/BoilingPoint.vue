@@ -1,12 +1,13 @@
 <template>
     <div>
         <SuccessTip ref="successTip" :width="200" />
+        <ErrorTip ref="errorTip" />
         <!-- 沸点列表页面 -->
         <template v-if="isBoilingPointList">
             <div class="the-editor-box">
-                <BoilingPointEditor @publish="onPublish" placeholder="告诉你个小秘密，发沸点时添加话题会被更多小伙伴看见呦~"/>
+                <BoilingPointEditor @success="onSuccess" @error="onError" placeholder="告诉你个小秘密，发沸点时添加话题会被更多小伙伴看见呦~"/>
             </div>
-            <Pinterest :url="url" :start="1" :query="{topicID: topicID}" @load="onLoad">
+            <Pinterest ref="pinterest" :url="url" :start="1" :query="{topicID: topicID}" @load="onLoad">
                 <template v-slot:content>
                     <div>
                         <ul class="boilingpoint-list">
@@ -54,6 +55,7 @@
 
 <script>
 import SuccessTip from '~/js/components/common/SuccessTip.vue';
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import BoilingPointEditor from '~/js/components/editor/BoilingPointEditor.vue';
 import BoilingPointItem from '~/js/components/boilingpoint/BoilingPointItem.vue';
 import Pinterest from '~/js/components/common/Pinterest.vue';
@@ -103,9 +105,6 @@ export default {
         },
         onLoad(result) {
             this.boilingPoints = this.boilingPoints.concat(result.data.data.list);
-        },
-        onPublish() {
-
         },
         onBrowseBigImg(imgs, index) {
             this.curBigImgIndex = index;
@@ -173,10 +172,19 @@ export default {
         },
         onReport(boilingPointID) {
             this.$refs.reportAlert.show(boilingPointID);
+        },
+        onSuccess() {
+            this.$refs.successTip.show('沸点发布成功');
+            this.boilingPoints = [];
+            this.$refs.pinterest.refresh();
+        },
+        onError(message) {
+            this.$refs.errorTip.show(message);
         }
     },
     components: {
         SuccessTip,
+        ErrorTip,
         BoilingPointEditor,
         Pinterest,
         BoilingPointItem,

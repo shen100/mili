@@ -37,7 +37,13 @@ export default {
         this.load();
     },
     methods: {
-        load () {
+        refresh() {
+            this.isLoading = false;
+            this.isComplete = false;
+            this.page = this.start || 1;
+            this.load();
+        },
+        load() {
             if (this.isLoading || this.isComplete) {
                 return;
             }
@@ -70,7 +76,7 @@ export default {
                     this.isLoading = false;
                 });
         },
-        onScroll () {
+        onScroll() {
             const winSize = getWindowSize();
             const docSize = getDocumentSize();
             var height = docSize.height - winSize.height;
@@ -81,7 +87,7 @@ export default {
         },
     },
     watch: {
-        query (newQuery, oldQuery) {
+        query(newQuery, oldQuery) {
             let queryChanged = false;
             for (let key in newQuery) {
                 if (newQuery[key] !== oldQuery[key]) {
@@ -96,10 +102,7 @@ export default {
             if (!queryChanged) {
                 return;
             }
-            this.isLoading = false;
-            this.isComplete = false;
-            this.page = this.start || 1;
-            this.load();
+            this.refresh();
         }
     },
     destroyed () {

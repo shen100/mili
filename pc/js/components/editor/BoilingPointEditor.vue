@@ -1,19 +1,18 @@
 <template>
     <CommentRichEditor ref="richEditor"
-        placeholder="placeholder"
         editorType="boilingpoint"
         :uploadAllowed="uploadAllowed"
-        :emptyPlaceholder="placeholder || '发布动态'" @success="onSuccess"
+        :emptyPlaceholder="placeholder || '发布沸点'" @success="onSuccess"
         @error="onError" @imgUploadSuccess="onImgUploadSuccess"
         @topicSelected="onTopicSelected"
-        @boilingPointSubmit="onBoilingPointSubmit"
+        @focus="onFocus" @blur="onBlur" @update="onUpdate"
         :sendDefVisible="true">
-        <div class="custom-box" slot="upload-list">
+        <div class="custom-box" :class="{'custom-box-focus': isFocus}" slot="upload-list">
             <UploaderList v-if="imgCount" :uploadAllowed="uploadAllowed" ref="upList" @success="onImgUploadSuccess2" @remove="onImgRemove"></UploaderList>
             <div class="cur-topic">
                 <span v-if="topic && topic.name" class="cur-topic-title">{{topic.name}}</span>
                 <span class="word-counter">
-                    <span>1000</span>
+                    <span>{{remainingWords}}</span>
                 </span>
             </div>
         </div>
@@ -21,10 +20,12 @@
 </template>
 
 <script>
+import striptags from 'striptags';
 import CommentRichEditor from '~/js/components/editor/CommentRichEditor.vue';
 import UploaderList from '~/js/components/common/UploaderList.vue';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import { trim } from '~/js/utils/utils.js';
 
 export default {
     props: [
@@ -34,43 +35,56 @@ export default {
         return {
             imgCount: 0,
             topic: null,
+            isFocus: false,
+            maxWords: 1000,
+            remainingWords: 1000,
         };
     },
     computed: {
         uploadAllowed() {
+            // 九宫格，最多只能上传9张图片
             return this.imgCount < 9;
         }
     },
     methods: {
+        // CommentRichEditor 中上传的图片
         onImgUploadSuccess(imgURL, imgData) {
-            console.log('---------------', imgURL, imgData);
             if (this.imgCount) {
                 this.imgCount++;
                 this.$refs.upList.addImg(imgData);
                 return;
             }
             this.imgCount++;
-            // 没有图片时，UploaderList不在dom中，这时上传第一张图片后，设个延时, 再访问this.$refs.upList
+            // 一张图片没上传时，UploaderList不在dom中，这时上传第一张图片后，设个延时, 再访问this.$refs.upList
             this.$nextTick(() => {
                 this.$refs.upList.addImg(imgData);
             });
         },
+        // UploaderList 组件中上传的图片
         onImgUploadSuccess2(imgURL) {
             this.imgCount++;
         },
         onImgRemove() {
             this.imgCount--;
         },
-        onSuccess() {
-            this.$emit('success');
-        },
-        onError() {
-
-        },
         onTopicSelected(topic) {
             this.topic = topic;
         },
-        onBoilingPointSubmit() {
+        onFocus() {
+            this.isFocus = true;
+        },
+        onBlur() {
+            this.isFocus = false;
+        },
+        onUpdate() {
+            const txt = trim(striptags(this.$refs.richEditor.getHTML())) || '';
+            this.remainingWords = this.maxWords - txt.length;
+        },
+        onError(message) {
+            this.$emit('error', message);
+        },
+        // 沸点发布
+        onSuccess() {
             if (this.isSaving) {
                 return;
             }
@@ -85,7 +99,8 @@ export default {
             myHTTP.post('/boilingpoints', reqData).then((res) => {
                 this.isSaving = false;
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.$emit('publish', res.data.data);
+                    this.$emit('success', res.data.data);
+                    this.$refs.richEditor.setHTML('<p></p>');
                 }
             }).catch((err) => {
                 this.isSaving = false;    
@@ -111,6 +126,10 @@ export default {
     padding-bottom: 8px;
 }
 
+.custom-box-focus {
+    border-color: #ea6f5a;
+}
+
 .custom-box .cur-topic {
     padding-left: 15px;
     height: 30px;
@@ -123,10 +142,10 @@ export default {
     line-height: 22px;
     height: 22px;
     padding: 0 12px;
-    border: 1px solid #007fff;
+    border: 1px solid #ea6f5a;
     border-radius: 14px;
     text-align: center;
-    color: #007fff;
+    color: #ea6f5a;
     user-select: none;
 }
 
