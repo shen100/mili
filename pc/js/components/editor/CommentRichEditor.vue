@@ -42,7 +42,6 @@ import {
     Image,
     Placeholder,
 } from 'tiptap-extensions';
-import MyHardBreak from '~/js/components/editor/MyHardBreak.js';
 import CommentRichEditorEmoji from '~/js/components/editor/CommentRichEditorEmoji.vue';
 
 export default {
@@ -62,7 +61,6 @@ export default {
         return {
             editor: new Editor({
                 extensions: [
-                    new MyHardBreak(),
                     new Image(),
                     new Placeholder({
                         emptyClass: 'is-empty',
@@ -73,7 +71,7 @@ export default {
                 content: '',
                 onFocus: this.onEditorFocus,
                 onBlur: this.onEditorBlur,
-                // onUpdate: this.onContentUpdate
+                onUpdate: this.onContentUpdate
             }),
             sendVisible: this.sendDefVisible,
             isSaving: false,
@@ -82,21 +80,18 @@ export default {
         };
     },
     mounted() {
-        const self = this;
-        this.editor.on('update', ({ getHTML }) => {
-            let content = trim(this.getHTML() || '');
-            if (isContentEmpty(content, 'rich')) {
-                self.contentIsEmpty = true;
-            } else {
-                self.contentIsEmpty = false;
-            }
-        })
     },
     beforeDestroy() {
         this.editor.destroy(); 
     },
     methods: {
         onContentUpdate() {
+            let content = trim(this.editor.getHTML() || '');
+            if (isContentEmpty(content, 'rich')) {
+                this.contentIsEmpty = true;
+            } else {
+                this.contentIsEmpty = false;
+            }
             this.$emit('update');
         },
         getHTML() {

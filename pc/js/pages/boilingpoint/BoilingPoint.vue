@@ -13,7 +13,7 @@
                         <ul class="boilingpoint-list">
                             <BoilingPointItem @bigImageChange="onBrowseBigImg" 
                                 :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
-                                :userID="userID" :data="item" @followChange="onFollowChange"
+                                :userID="userID" :boilingData="item" @followChange="onFollowChange"
                                 :ref="`boilingPointItem-${item.id}`"
                                 @report="onReport(item.id)" />
                         </ul>
@@ -26,7 +26,7 @@
             <ul class="boilingpoint-list" style="margin-top: 0;">
                 <BoilingPointItem @bigImageChange="onBrowseBigImg"
                     :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
-                    :userID="userID" :data="item" @followChange="onFollowChange"
+                    :userID="userID" :boilingData="item" @followChange="onFollowChange"
                     :ref="`boilingPointItem-${item.id}`"
                     @report="onReport(item.id)" />
             </ul>

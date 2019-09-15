@@ -4,31 +4,31 @@
             <div class="pin-header-row">
                 <div class="account-group">
                     <div class="user-popover-box" @mouseenter="onMouseEnterUser1" @mouseleave="onMouseLeaveUser1">
-                        <a :href="`/users/${data.user.id}`" target="_blank" class="user-link">
-                            <div class="lazy avatar loaded" :style="{'background-image': `url(${data.user.avatarURL})`}"></div>
+                        <a :href="`/users/${boilingData.user.id}`" target="_blank" class="user-link">
+                            <div class="lazy avatar loaded" :style="{'background-image': `url(${boilingData.user.avatarURL})`}"></div>
                         </a>
-                        <UserBusinessCard ref="userCard1" v-if="userCardVisible1" :userID="data.user.id" 
+                        <UserBusinessCard ref="userCard1" v-if="userCardVisible1" :userID="boilingData.user.id" 
                             :followerID="userID" @followChange="onFollowChange" />
                     </div>
                     <div class="pin-header-content">
                         <div class="user-popover-box" @mouseenter="onMouseEnterUser2" @mouseleave="onMouseLeaveUser2">
-                            <a :href="`/users/${data.user.id}`" target="_blank" class="username">{{data.user.username}}</a>
-                            <UserBusinessCard ref="userCard2" v-if="userCardVisible2" :userID="data.user.id" 
+                            <a :href="`/users/${boilingData.user.id}`" target="_blank" class="username">{{boilingData.user.username}}</a>
+                            <UserBusinessCard ref="userCard2" v-if="userCardVisible2" :userID="boilingData.user.id" 
                                 :followerID="userID" @followChange="onFollowChange" />
                         </div>
                         <div class="meta-box">
-                            <template v-if="data.user.job || data.user.company">
-                                <div class="position ellipsis">{{data.user.job}}{{data.user.job && data.user.company ? ' @ ' : ''}}{{data.user.company}}</div>
+                            <template v-if="boilingData.user.job || boilingData.user.company">
+                                <div class="position ellipsis">{{boilingData.user.job}}{{boilingData.user.job && boilingData.user.company ? ' @ ' : ''}}{{boilingData.user.company}}</div>
                                 <div class="dot">·</div>
                             </template>
-                            <a :href="`/boiling/${data.id}`" target="_blank" class="time-box">
-                                <time class="time">{{data.createdAtLabel}}</time>
+                            <a :href="`/boiling/${boilingData.id}`" target="_blank" class="time-box">
+                                <time class="time">{{boilingData.createdAtLabel}}</time>
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="header-action">
-                    <button v-if="userID !== data.user.id" class="subscribe-btn follow-button"
+                    <button v-if="userID !== boilingData.user.id" class="subscribe-btn follow-button"
                         @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
                         :class="{'followed': isFollowed}">{{followText}}</button>
                     <div v-clickoutside="clickoutsideReport" class="pin-header-more header-menu">
@@ -49,7 +49,11 @@
                 </div>
             </div>
             <div class="pin-content-row">
-                <div class="content-box" v-html="data.htmlContent"></div>
+                <div v-if="isContentExpand || !partialContent" class="content-box" v-html="boilingData.htmlContent"></div>
+                <div v-else class="content-box" v-html="partialContent"></div>
+                <div v-if="partialContent" class="content-limit-box">
+                    <div @click="changeContentExpand" class="content-limit-btn">{{!isContentExpand ? '展开' : '收起'}}</div>
+                </div>
             </div>
             <div class="pin-image-row">
                 <div class="image-box-wrapper image-box">
@@ -110,16 +114,16 @@
                     </div>
                 </div>
             </div>
-            <div v-if="data.topic" class="pin-topic-row">
-                <a :href="`/boilings/topic/${data.topicID}`" target="_blank" :title="data.topic.name" class="topic-title">{{data.topic.name}}</a>
+            <div v-if="boilingData.topic" class="pin-topic-row">
+                <a :href="`/boilings/topic/${boilingData.topicID}`" target="_blank" :title="boilingData.topic.name" class="topic-title">{{boilingData.topic.name}}</a>
             </div>
             <div class="pin-action-row">
                 <div class="action-box action-box">
                     <div class="like-action action">
-                        <div @click="onLikeOrNot(data)" class="action-title-box">
+                        <div @click="onLikeOrNot(boilingData)" class="action-title-box">
                             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" class="icon like-icon">
                                 <g fill="none" fill-rule="evenodd">
-                                    <template v-if="!data.userLiked">
+                                    <template v-if="!boilingData.userLiked">
                                         <path d="M0 0h20v20H0z"></path>
                                         <path stroke="#8A93A0" stroke-linejoin="round" d="M4.58 8.25V17h-1.4C2.53 17 2 16.382 2 15.624V9.735c0-.79.552-1.485 1.18-1.485h1.4zM11.322 2c1.011.019 1.614.833 1.823 1.235.382.735.392 1.946.13 2.724-.236.704-.785 1.629-.785 1.629h4.11c.434 0 .838.206 1.107.563.273.365.363.84.24 1.272l-1.86 6.513A1.425 1.425 0 0 1 14.724 17H6.645V7.898C8.502 7.51 9.643 4.59 9.852 3.249A1.47 1.47 0 0 1 11.322 2z"></path>
                                     </template>
@@ -129,7 +133,7 @@
                                     </template>    
                                 </g>
                             </svg>
-                            <span class="action-title" :style="{color: data.userLiked ? '#37c700' : '#8a93a0'}">{{data.likeCount ? data.likeCount : '赞'}}</span>
+                            <span class="action-title" :style="{color: boilingData.userLiked ? '#37c700' : '#8a93a0'}">{{boilingData.likeCount ? boilingData.likeCount : '赞'}}</span>
                         </div>
                     </div>
                     <div class="comment-action action">
@@ -140,7 +144,7 @@
                                     <path stroke="#8A93A0" stroke-linejoin="round" d="M10 17c-4.142 0-7.5-2.91-7.5-6.5S5.858 4 10 4c4.142 0 7.5 2.91 7.5 6.5 0 1.416-.522 2.726-1.41 3.794-.129.156.41 3.206.41 3.206l-3.265-1.134c-.998.369-2.077.634-3.235.634z"></path>
                                 </g>
                             </svg>
-                            <span class="action-title">{{data.commentCount}}</span>
+                            <span class="action-title">{{boilingData.commentCount}}</span>
                         </div>
                     </div>
                     <div class="share-action action">
@@ -154,7 +158,7 @@
                                 </g>
                             </svg>
                             <span class="action-title">分享</span>
-                            <Share v-if="shareVisible" :boilingPointItemID="data.id" :summary="data.summary" :imgs="imgArr" @copyLink="onCopyLink" />
+                            <Share v-if="shareVisible" :boilingPointItemID="boilingData.id" :summary="boilingData.summary" :imgs="imgArr" @copyLink="onCopyLink" />
                         </div>
                     </div>
                 </div>
@@ -164,6 +168,7 @@
 </template>
 
 <script>
+import striptags from 'striptags';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
@@ -180,11 +185,11 @@ const ratio1x1Value = 180 * (gridTotalWidth / 250);
 
 export default {
     props: [
-        'data', // 沸点数据
+        'boilingData', // 沸点数据
         'userID', // 当前登录用户的id
     ],
     data () {
-        const imgs = this.data.imgs;
+        const imgs = this.boilingData.imgs;
         // imgWidth, imgHeight 是显示小缩略图时的宽高
         if (imgs.length === 1) {
             const smallImg = imgs[0];
@@ -208,7 +213,7 @@ export default {
                 img.imgHeight = gridWidth;
             });
         }
-        let middleImgArr = (this.data.middleImgs || []).map(imgData => {
+        let middleImgArr = (this.boilingData.middleImgs || []).map(imgData => {
             return {
                 ...imgData,
                 middleImgRotate: 0,
@@ -216,12 +221,14 @@ export default {
             };
         });
         middleImgArr = middleImgArr.map(img => this.updateMiddleImgStyle(img, { isSwap: false }));
-        let bigImgArr = (this.data.bigImgs || []).map(imgData => {
+        let bigImgArr = (this.boilingData.bigImgs || []).map(imgData => {
             return {
                 ...imgData,
             };
         });
         return {
+            isContentExpand: false,
+            partialContent: this.getPartialContent(this.boilingData.htmlContent),
             curImgIndex: 0,
             imgArr: imgs || [],
             middleImgArr,
@@ -233,7 +240,7 @@ export default {
             userCardVisible1: false, // 用户面板
             userCardVisible2: false, // 用户面板
             isMouseEnter: false, // 鼠标滑过关注按钮（more旁边的关注按钮）
-            isFollowed: this.data.user.isFollowed, // 是否已关注沸点作者
+            isFollowed: this.boilingData.user.isFollowed, // 是否已关注沸点作者
             expendIconOver: false,
             pinchIconOver: false,
             leftRotateIconOver: false,
@@ -256,6 +263,50 @@ export default {
         }
     },
     methods: {
+        changeContentExpand() {
+            this.isContentExpand = !this.isContentExpand;
+        },
+        getPartialContent(htmlContent) {
+            let htmlDOM = (new DOMParser()).parseFromString(htmlContent, 'text/html');
+            let pArr = htmlDOM.getElementsByTagName('p') || [];
+            if (!pArr.length) {
+                return '';
+            }
+            let maxWordCount = 218; // 收起时，最多显示的字数
+            const maxLineCount = 8; // 收起时，最多显示的行数
+            let htmlStr = '';
+            for (let i = 0; i < pArr.length; i++) {
+                if (i > 0) {
+                    // 每循环一次，得到一个p标签, p标签的innerHTML只包含文本或img标签
+                    // 循环完后，htmlStr是去掉了p标签后的文本和img标签，加 \n 相当于p标签的换行
+                    htmlStr += '\n';
+                    maxWordCount++;
+                }
+                htmlStr += pArr[i].innerHTML;
+                if (i >= maxLineCount - 1) {
+                    break;
+                }
+            }
+            let finalLength = maxWordCount;
+            let imgCharCount = 0;
+            const reg = /<img\s+[^>]+\/?>/gi;
+            let execResult = reg.exec(htmlStr);
+            while (execResult) {
+                if (execResult.index - imgCharCount >= maxWordCount) {
+                    break;
+                }
+                imgCharCount += execResult[0].length;
+                finalLength = execResult.index + imgCharCount;
+                execResult = reg.exec(htmlStr);
+            }
+            if (htmlStr.length > finalLength) {
+                return htmlStr.substr(0, finalLength) + '...';
+            }
+            if (pArr.length > maxLineCount) {
+                return htmlStr;
+            }
+            return '';
+        },
         onCopyLink() {
             this.$emit('copyLink');
         },
@@ -397,7 +448,7 @@ export default {
             this.isMouseEnter = false;
         },
         onFollow () {
-            const url = `/users/follow/${this.data.user.id}`;
+            const url = `/users/follow/${this.boilingData.user.id}`;
             let reqMethod;
             if (this.isFollowed) {
                 reqMethod = myHTTP.delete;
@@ -407,7 +458,7 @@ export default {
             reqMethod(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isFollowed = !this.isFollowed;
-                    this.$emit('followChange', this.data.user.id, this.isFollowed);
+                    this.$emit('followChange', this.boilingData.user.id, this.isFollowed);
                 }
             });
         },
@@ -415,7 +466,7 @@ export default {
             this.$emit('followChange', userID, isFollowed);
         },
         changeUserFollow(userID, isFollowed) {
-            if (userID === this.data.user.id) {
+            if (userID === this.boilingData.user.id) {
                 this.isFollowed = isFollowed;
                 this.$refs['userCard1'].changeUserFollow(userID, isFollowed);
                 this.$refs['userCard2'].changeUserFollow(userID, isFollowed);
@@ -672,6 +723,7 @@ svg:not(:root) {
 }
 
 .content-box {
+    max-width: 446px;
     font-size: 15px;
     line-height: 1.6;
     white-space: pre-wrap;
@@ -948,5 +1000,13 @@ svg:not(:root) {
 
 .action-item:not(.not-allow):hover {
     color: #ea6f5a;
+}
+
+.content-limit-btn {
+    display: inline-block;
+    margin-top: 5px;
+    color: #ea6f5a;
+    cursor: pointer;
+    user-select: none;
 }
 </style>
