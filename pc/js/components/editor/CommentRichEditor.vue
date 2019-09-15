@@ -1,6 +1,6 @@
 <template>
     <div v-clickoutside="onClickOutside" class="comment-editor-box">
-        <div @keydown.meta.enter="onComment" @keydown.ctrl.enter="onComment" 
+        <div @keyup.meta.enter="onEnterSubmit" @keyup.ctrl.enter="onEnterSubmit" 
             class="comment-editor-cbox"
             :class="{'comment-editor-cbox-boilingpoint': editorType === 'boilingpoint', 'comment-editor-focus': isFocus}">
             <editor-content class="mili-editor-content" :editor="editor" />
@@ -17,11 +17,11 @@
             </div>
             <template v-if="editorType === 'comment'">
                 <div class="hint">Ctrl or ⌘ + Enter 发表</div>
-                <a @click="onComment" class="btn btn-send">发送</a>
+                <a @click="onEnterSubmit" class="btn btn-send">发送</a>
                 <a @click="onCancelComment" class="cancel">取消</a>
             </template>
             <template>
-                <button @click="onBoilingpointSubmit" class="btn btn-send-boilingpoint" :class="{active: !contentIsEmpty}">发布</button>
+                <button @click="onEnterSubmit" class="btn btn-send-boilingpoint" :class="{active: !contentIsEmpty}">发布</button>
                 <div v-if="editorType === 'boilingpoint'" class="hint-boilingpoint">Ctrl or ⌘ + Enter</div>
             </template>
         </div>
@@ -73,7 +73,7 @@ export default {
                 content: '',
                 onFocus: this.onEditorFocus,
                 onBlur: this.onEditorBlur,
-                onUpdate: this.onContentUpdate
+                // onUpdate: this.onContentUpdate
             }),
             sendVisible: this.sendDefVisible,
             isSaving: false,
@@ -104,6 +104,12 @@ export default {
         },
         setHTML(html) {
             this.editor.setContent(html);
+            let content = html;
+            if (isContentEmpty(content, 'rich')) {
+                this.contentIsEmpty = true;
+            } else {
+                this.contentIsEmpty = false;
+            }
         },
         onFocusAreaClick() {
             this.$nextTick(() => {
@@ -138,6 +144,13 @@ export default {
                 this.sendVisible = false;
             }
             this.$emit('cancel');
+        },
+        onEnterSubmit() {
+            if (this.editorType === 'comment') {
+                this.onComment();
+            } else {
+                this.onBoilingpointSubmit();
+            }
         },
         onComment() {
             this.editor.blur();
@@ -227,7 +240,7 @@ export default {
 }
 
 .comment-editor-cbox p {
-    line-height: 32px!important;
+    line-height: 24px!important;
     margin-top: 0!important;
     margin-bottom: 0!important;
 }

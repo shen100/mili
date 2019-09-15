@@ -26,6 +26,9 @@ export default {
         }
     },
     methods: {
+        clear() {
+            this.imgDataArr = [];
+        },
         addImg(imgData) {
             this.imgDataArr.push(imgData);
         },
@@ -93,7 +96,7 @@ export default {
     height: 20px;
     position: absolute;
     top: 4px;
-    right: 4px;
+    right: 12px;
     border-radius: 50%;
     border: 1px solid #c5c5c5;
     background: rgba(0, 0, 0, .4);

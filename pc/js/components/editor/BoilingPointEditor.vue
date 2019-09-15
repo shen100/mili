@@ -100,11 +100,18 @@ export default {
                 this.isSaving = false;
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.$emit('success', res.data.data);
-                    this.$refs.richEditor.setHTML('<p></p>');
+                    this.clear();
                 }
             }).catch((err) => {
                 this.isSaving = false;    
             });
+        },
+        clear() {
+            this.imgCount = 0;
+            this.topic = null;
+            this.remainingWords = this.maxWords;
+            this.$refs.upList && this.$refs.upList.clear();
+            this.$refs.richEditor.setHTML('<p></p>');
         }
     },
     components: {
