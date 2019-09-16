@@ -1,6 +1,7 @@
 <template>
     <CommentRichEditor ref="richEditor"
         editorType="boilingpoint"
+        :maxWords="maxWords"
         :uploadAllowed="uploadAllowed"
         :emptyPlaceholder="placeholder || '发布沸点'" @success="onSuccess"
         @error="onError" @imgUploadSuccess="onImgUploadSuccess"
@@ -12,7 +13,7 @@
             <div class="cur-topic">
                 <span v-if="topic && topic.name" class="cur-topic-title">{{topic.name}}</span>
                 <span class="word-counter">
-                    <span>{{remainingWords}}</span>
+                    <span :style="{color: remainingWords < 0 ? '#ee0909' : '#a1a9b3'}">{{remainingWords}}</span>
                 </span>
             </div>
         </div>
@@ -20,7 +21,6 @@
 </template>
 
 <script>
-import striptags from 'striptags';
 import CommentRichEditor from '~/js/components/editor/CommentRichEditor.vue';
 import UploaderList from '~/js/components/common/UploaderList.vue';
 import { myHTTP } from '~/js/common/net.js';
@@ -76,9 +76,8 @@ export default {
         onBlur() {
             this.isFocus = false;
         },
-        onUpdate() {
-            const txt = trim(striptags(this.$refs.richEditor.getHTML())) || '';
-            this.remainingWords = this.maxWords - txt.length;
+        onUpdate(data) {
+            this.remainingWords = data.remainingWords;
         },
         onError(message) {
             this.$emit('error', message);

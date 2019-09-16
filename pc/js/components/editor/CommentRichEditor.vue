@@ -21,7 +21,7 @@
                 <a @click="onCancelComment" class="cancel">取消</a>
             </template>
             <template>
-                <button @click="onEnterSubmit" class="btn btn-send-boilingpoint" :class="{active: !contentIsEmpty}">发布</button>
+                <button @click="onEnterSubmit" class="btn btn-send-boilingpoint" :class="{active: boilingpointSubmitEnable}">发布</button>
                 <div v-if="editorType === 'boilingpoint'" class="hint-boilingpoint">Ctrl or ⌘ + Enter</div>
             </template>
         </div>
@@ -33,6 +33,7 @@
 // https://github.com/scrumpy/tiptap
 // https://tiptap.scrumpy.io/
 
+import striptags from 'striptags';
 import { Editor, EditorContent } from 'tiptap';
 import { myHTTP } from '~/js/common/net.js';
 import { trim } from '~/js/utils/utils.js';
@@ -56,6 +57,7 @@ export default {
         'sendDefVisible', // 初始化编辑器时，是否默认显示发送按钮
         'content',
         'emptyPlaceholder',
+        'maxWords',
     ],
     data () {
         return {
@@ -77,7 +79,14 @@ export default {
             isSaving: false,
             contentIsEmpty: true,
             isFocus: false,
+            maxWordCount: this.maxWords || 1000,
+            remainingWords: this.maxWords || 1000,
         };
+    },
+    computed: {
+        boilingpointSubmitEnable() {
+            return !this.contentIsEmpty && this.remainingWords >= 0;
+        }
     },
     mounted() {
     },
@@ -86,13 +95,20 @@ export default {
     },
     methods: {
         onContentUpdate() {
+            console.log('????? onContentUpdate');
             let content = trim(this.editor.getHTML() || '');
+            const txt = trim(striptags(content)) || '';
+            this.remainingWords = this.maxWordCount - txt.length;
+
             if (isContentEmpty(content, 'rich')) {
                 this.contentIsEmpty = true;
             } else {
                 this.contentIsEmpty = false;
             }
-            this.$emit('update');
+            this.$emit('update', {
+                remainingWords: this.remainingWords,
+                content,
+            });
         },
         getHTML() {
             return this.editor.getHTML();
@@ -100,11 +116,17 @@ export default {
         setHTML(html) {
             this.editor.setContent(html);
             let content = html;
+            const txt = trim(striptags(content)) || '';
+            this.remainingWords = this.maxWordCount - txt.length;
+
             if (isContentEmpty(content, 'rich')) {
                 this.contentIsEmpty = true;
             } else {
                 this.contentIsEmpty = false;
             }
+            setTimeout(() => {
+                console.log('this.remainingWords,', this.remainingWords,);
+            }, 1000);
         },
         onFocusAreaClick() {
             this.$nextTick(() => {
@@ -185,8 +207,7 @@ export default {
             this.$emit('imgUploadSuccess', imgURL, imgData);
         },
         onBoilingpointSubmit() {
-            let content = trim(this.editor.getHTML() || '');
-            if (isContentEmpty(content, 'rich')) {
+            if (!this.boilingpointSubmitEnable) {
                 return;
             }
             this.$emit('success');
