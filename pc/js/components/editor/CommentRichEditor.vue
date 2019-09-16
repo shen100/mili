@@ -249,6 +249,7 @@ export default {
 
 .editor-focus-area {
     height: 30px;
+    cursor: text;
 }
 
 .comment-editor-focus {
