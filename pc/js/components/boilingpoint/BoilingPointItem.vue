@@ -270,6 +270,7 @@ export default {
             let htmlDOM = (new DOMParser()).parseFromString(htmlContent, 'text/html');
             let pArr = htmlDOM.getElementsByTagName('p') || [];
             if (!pArr.length) {
+                // 返回空字符串时，就显示完整沸点内容，否则，显示部分沸点内容
                 return '';
             }
             let maxWordCount = 218; // 收起时，最多显示的字数
@@ -277,35 +278,50 @@ export default {
             let htmlStr = '';
             for (let i = 0; i < pArr.length; i++) {
                 if (i > 0) {
-                    // 每循环一次，得到一个p标签, p标签的innerHTML只包含文本或img标签
-                    // 循环完后，htmlStr是去掉了p标签后的文本和img标签，加 \n 相当于p标签的换行
+                    // 每循环一次，得到p标签的innerHTML, innerHTML只包含文本或img标签
+                    // 加 \n 相当于p标签的换行
                     htmlStr += '\n';
-                    maxWordCount++;
+                    maxWordCount++; // 注意：\n 只是一个字符，而不是两个字符
                 }
                 htmlStr += pArr[i].innerHTML;
                 if (i >= maxLineCount - 1) {
                     break;
                 }
             }
-            let finalLength = maxWordCount;
-            let imgCharCount = 0;
+            let isPartialContent = false;
+            if (pArr.length > maxLineCount) {
+                isPartialContent = true;
+            }
+
             const reg = /<img\s+[^>]+\/?>/gi;
+            const txtArr = htmlStr.split(reg);
+            const imgArr = [];
+            let curLength = 0;
+            let finalStr = '';
             let execResult = reg.exec(htmlStr);
             while (execResult) {
-                if (execResult.index - imgCharCount >= maxWordCount) {
-                    break;
-                }
-                imgCharCount += execResult[0].length;
-                finalLength = execResult.index + imgCharCount;
+                imgArr.push(execResult[0]);
                 execResult = reg.exec(htmlStr);
             }
-            if (htmlStr.length > finalLength) {
-                return htmlStr.substr(0, finalLength) + '...';
+            for (let i = 0; i < txtArr.length; i++) {
+                let str = '';
+                if (curLength + txtArr[i].length <= maxWordCount) {
+                    str = txtArr[i];
+                    curLength += str.length;
+                    if (imgArr[i]) {
+                        str += imgArr[i];
+                    }
+                    finalStr += str;
+                } else {
+                    str = txtArr[i].substr(0, maxWordCount - curLength);
+                    finalStr += str;
+                    curLength = maxWordCount;
+                    isPartialContent = true;
+                    break;
+                }
             }
-            if (pArr.length > maxLineCount) {
-                return htmlStr;
-            }
-            return '';
+            // 返回空字符串时，就显示完整沸点内容，否则，显示部分沸点内容
+            return isPartialContent ? finalStr + '...' : '';
         },
         onCopyLink() {
             this.$emit('copyLink');
