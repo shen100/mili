@@ -4,13 +4,13 @@
         <ErrorTip ref="errorTip" />
         <!-- 沸点列表页面 -->
         <template v-if="isBoilingPointList">
-            <div class="the-editor-box">
+            <div v-if="hasEditor" class="the-editor-box">
                 <BoilingPointEditor @success="onSuccess" @error="onError" placeholder="告诉你个小秘密，发沸点时添加话题会被更多小伙伴看见呦~"/>
             </div>
             <Pinterest ref="pinterest" :url="url" :start="1" :query="{topicID: topicID}" @load="onLoad">
                 <template v-slot:content>
                     <div>
-                        <ul class="boilingpoint-list">
+                        <ul class="boilingpoint-list" :style="{'margin-top': hasEditor ? '8px' : '0'}">
                             <BoilingPointItem @bigImageChange="onBrowseBigImg" 
                                 :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
                                 :userID="userID" :boilingData="item" @followChange="onFollowChange"
@@ -65,22 +65,26 @@ import {
 } from '~/js/utils/dom.js';
 
 export default {
+    props: [
+        'editorEnable'
+    ],
     data () {
         let topicID = parseInt(window.topicID, 10);
         let url = '/boilingpoints';
-        if (window.boilingPointType) {
-            // boilingPointType 不为空的话，那么是推荐、热门或关注
-            // 如果是具体的沸点页面，这个url就没用到
+        if (['recommend', 'hot', 'followed'].indexOf(window.boilingPointType) >= 0) {
             url = `/boilingpoints/${window.boilingPointType}`;
+        } else if (window.boilingPointType === 'user') {
+            url = `/boilingpoints/user/${window.authorID}`;
         }
         return {
+            hasEditor: this.editorEnable || typeof this.editorEnable === 'undefined' ? true : false,
             userID: window.userID || undefined, // 当前登录用户的id
             // window.boilingPoint不为空的话，那就是具体的沸点页面，否则是沸点列表
-            isBoilingPointList: window.boilingPoint ? false : true,
+            isBoilingPointList: window.boilingPoint ? false : true, // 具体的沸点页面，才有window.boilingPoint
             boilingPoint: window.boilingPoint,
             url,
             boilingPoints: window.boilingPoint ? [ window.boilingPoint ] : [],
-            topicID: topicID || undefined, // 如果是推荐、热门、关注或具体的沸点页面，就没有topicID
+            topicID: topicID || undefined, // 如果是推荐、热门、关注、具体的沸点页面、或个人中心的沸点页，就没有topicID
             bigImgStyle: {},
             bigImgURL: '',
             curBigImgIndex: -1,

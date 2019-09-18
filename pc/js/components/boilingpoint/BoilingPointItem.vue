@@ -57,7 +57,7 @@
             </div>
             <div class="pin-image-row">
                 <div class="image-box-wrapper image-box">
-                    <div v-show="gridVisible" class="image-box">
+                    <div v-show="gridVisible" class="image-box" :style="{width: gridTotalWidth + 'px'}">
                         <div @click="onClickImgGrid(i)" :key="imgData.id" v-for="(imgData, i) in imgArr" class="image" :class="{'no-right-margin': (i + 1) % 3 === 0}"
                             :style="{'background-image': `url(${imgData.url})`, width: imgData.imgWidth + 'px', height: imgData.imgHeight + 'px'}">
                             <div class="ratio-holder"></div>
@@ -227,6 +227,7 @@ export default {
             };
         });
         return {
+            gridTotalWidth,
             isContentExpand: false,
             partialContent: this.getPartialContent(this.boilingData.htmlContent),
             curImgIndex: 0,
@@ -739,7 +740,7 @@ svg:not(:root) {
 }
 
 .content-box {
-    max-width: 446px;
+    padding-right: 24px;
     font-size: 15px;
     line-height: 1.6;
     white-space: pre-wrap;

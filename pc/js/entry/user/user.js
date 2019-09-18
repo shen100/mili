@@ -3,8 +3,40 @@ import '~/styles/main.scss';
 import '~/styles/user/user.scss';
 import '~/js/common/default.js';
 import Vue from 'vue';
-import UserCenter from '~/js/pages/user/UserCenter.vue';
+import VueRouter from 'vue-router';
+import Layout from '~/js/pages/user/Layout.vue';
 
-new Vue({
-    render: h => h(UserCenter),
+Vue.use(VueRouter);
+
+import {
+    Modal,
+    Radio,
+    RadioGroup,
+} from 'iview';
+
+Vue.component('Modal', Modal);
+Vue.component('Radio', Radio);
+Vue.component('RadioGroup', RadioGroup);
+
+const routes = [
+    { path: '/users/:id/articles', component: () => import('~/js/pages/user/ArticleView.vue') },
+    { path: '/users/:id/articles', component: () => import('~/js/pages/user/ArticleView.vue') },
+    { path: '/users/:id/boilings', component: () => import('~/js/pages/user/BoilingPointView.vue') },
+];
+
+const router = new VueRouter({
+    routes,
+    mode: 'history',
+    scrollBehavior (to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition;
+        } else {
+            return { x: 0, y: 0 };
+        }
+    }
+});
+
+const app = new Vue({
+    router,
+    render: h => h(Layout),
 }).$mount('#mainBox');

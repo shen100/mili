@@ -23,8 +23,13 @@ export class UCController {
         private readonly collectionService: CollectionService,
     ) {}
 
-    @Get('/users/:id')
-    async article(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
+    @Get('/users/:id/:page')
+    async userCenter(@Param('id', MustIntPipe) id: number, @Param('page') page: string, @CurUser() user, @Res() res) {
+        if (['articles', 'boilings'].indexOf(page) < 0) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
         const pageSize: number = 2;
         const [author, articles] = await bluebird.all([
             this.userService.detail(id),

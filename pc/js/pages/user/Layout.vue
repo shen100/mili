@@ -37,14 +37,14 @@
                 <div class="detail-list">
                     <div class="list-header">
                         <div class="header-content">
-                            <a href="/user/5872f33b61ff4b005c490f1c/activities" class="nav-item">
+                            <router-link :to="`/users/${userID}/articles`" class="nav-item">
                                 <div class="item-title">文章</div>
                                 <div class="item-count">1</div>
-                            </a>
-                            <a href="/user/5872f33b61ff4b005c490f1c/activities" class="nav-item">
+                            </router-link>
+                            <router-link :to="`/users/${userID}/boilings`" class="nav-item">
                                 <div class="item-title">沸点</div>
                                 <div class="item-count">1</div>
-                            </a>
+                            </router-link>
                             <div @click="onLikeClick" class="nav-item not-in-scroll-mode" :class="{open: likeClicked}">
                                 <div class="item-title">赞</div>
                                 <div class="item-count">1</div>
@@ -57,6 +57,9 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="list-body">
+                        <router-view></router-view>
                     </div>
                 </div>
             </div>
@@ -131,6 +134,7 @@ export default {
     data () {
         return {
             likeClicked: false,
+            userID: window.userID || undefined,
         };
     },
     mounted() {
