@@ -13,7 +13,7 @@
     // 当前登录用户, 如果没有登录的话, userID为undefined
     var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
     // 作者
-    var authorID = 1;
+    var author = {{ author | dump | safe }};
     var boilingPointType = 'user';
 </script>
 {% endblock %}

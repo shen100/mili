@@ -6,6 +6,12 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Layout from '~/js/pages/user/Layout.vue';
 
+import {
+    registerDirective,
+} from '~/js/utils/vue.js';
+
+registerDirective(Vue);
+
 Vue.use(VueRouter);
 
 import {
@@ -22,6 +28,10 @@ const routes = [
     { path: '/users/:id/articles', component: () => import('~/js/pages/user/ArticleView.vue') },
     { path: '/users/:id/articles', component: () => import('~/js/pages/user/ArticleView.vue') },
     { path: '/users/:id/boilings', component: () => import('~/js/pages/user/BoilingPointView.vue') },
+    { path: '/users/:id/like/articles', component: () => import('~/js/pages/user/LikeArticleView.vue') },
+    { path: '/users/:id/like/boilings', component: () => import('~/js/pages/user/LikeBoilingPointView.vue') },
+    { path: '/users/:id/follows', component: () => import('~/js/pages/user/FollowView.vue') },
+    { path: '/users/:id/followers', component: () => import('~/js/pages/user/FollowerView.vue') },
 ];
 
 const router = new VueRouter({

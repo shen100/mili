@@ -15,6 +15,7 @@ import { RedisService } from '../redis/redis.service';
 import { Settings } from '../entity/settings.entity';
 import { ArticleContentType } from '../entity/article.entity';
 import * as moment from 'moment';
+import { ListResult } from '../entity/listresult.entity';
 
 @Injectable()
 export class UserService {
@@ -433,6 +434,63 @@ export class UserService {
             select: ['id'],
         });
         return user !== null;
+    }
+
+    // 用户关注了哪些人
+    async userFollows(userID: number, page: number, pageSize): Promise<ListResult<User>> {
+        const sql = `SELECT user_id FROM user_follower WHERE follower_id = ?`;
+        let userIDs = await this.userRepository.manager.query(sql, [userID]) || [];
+        if (!userIDs.length) {
+            return {
+                list: [],
+                count: 0,
+                page,
+                pageSize,
+            };
+        }
+        userIDs = userIDs.map(data => data.user_id);
+        const count: number = userIDs.length;
+        userIDs = userIDs.slice((page - 1) * pageSize, pageSize);
+        const users = await this.userRepository.find({
+            select: ['id', 'avatarURL', 'username', 'job', 'company'],
+            where: {
+                id: In(userIDs),
+            },
+        });
+        return {
+            list: users,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    // 用户有哪些粉丝
+    async userFollowers(userID: number, page: number, pageSize): Promise<ListResult<User>> {
+        const sql = `SELECT follower_id FROM user_follower WHERE user_id = ?`;
+        let userIDs = await this.userRepository.manager.query(sql, [userID]);
+        if (!userIDs.length) {
+            return {
+                list: [],
+                count: 0,
+                page,
+                pageSize,
+            };
+        }
+        const count: number = userIDs.length;
+        userIDs = userIDs.slice((page - 1) * pageSize, pageSize);
+        const users = await this.userRepository.find({
+            select: ['id', 'avatarURL', 'username', 'job', 'company'],
+            where: {
+                id: In(userIDs),
+            },
+        });
+        return {
+            list: users,
+            count,
+            page,
+            pageSize,
+        };
     }
 
     async followOrCancelFollow(followerID: number, userID: number) {

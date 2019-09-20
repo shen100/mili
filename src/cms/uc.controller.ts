@@ -23,17 +23,54 @@ export class UCController {
         private readonly collectionService: CollectionService,
     ) {}
 
-    @Get('/users/:id/:page')
-    async userCenter(@Param('id', MustIntPipe) id: number, @Param('page') page: string, @CurUser() user, @Res() res) {
-        if (['articles', 'boilings'].indexOf(page) < 0) {
+    @Get('/users/:authorID/:page')
+    async userCenter(@Param('authorID', MustIntPipe) authorID: number, @Param('page') page: string, @CurUser() user, @Res() res) {
+        if (['articles', 'boilings', 'follows', 'followers'].indexOf(page) < 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
         const pageSize: number = 2;
         const [author, articles] = await bluebird.all([
-            this.userService.detail(id),
-            this.articleService.userArticlesSortByCreatedAt(id, 1, pageSize),
+            this.userService.detail(authorID),
+            this.articleService.userArticlesSortByCreatedAt(authorID, 1, pageSize),
+        ]);
+        if (!author) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        const createCollections: Collection[] = [];
+        const manageCollections: Collection[] = [];
+        author.collections.forEach(c => {
+            if (c.creatorID === author.id) {
+                createCollections.push(c);
+            } else {
+                manageCollections.push(c);
+            }
+        });
+        res.render('pages/user/user', {
+            followed: false,
+            user,
+            author,
+            salutation: user && user.id === author.id ? '我' : '他',
+            articles,
+            createCollections,
+            manageCollections,
+        });
+    }
+
+    @Get('/users/:authorID/like/:type')
+    async userCenterLike(@Param('authorID', MustIntPipe) authorID: number, @Param('type') type: string, @CurUser() user, @Res() res) {
+        if (['articles', 'boilings'].indexOf(type) < 0) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        const pageSize: number = 2;
+        const [author, articles] = await bluebird.all([
+            this.userService.detail(authorID),
+            this.articleService.userArticlesSortByCreatedAt(authorID, 1, pageSize),
         ]);
         if (!author) {
             throw new MyHttpException({

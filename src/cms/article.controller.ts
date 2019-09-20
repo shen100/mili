@@ -68,13 +68,29 @@ export class ArticleController {
         };
     }
 
-    @Get(`${APIPrefix}/articles/user/:authorID`)
+    @Get(`${APIPrefix}/articles/users/:authorID`)
     async myArticles(@Query('c') c: number, @Query('page', ParsePagePipe) page: number) {
         const categoryID = parseInt((c as any), 10) || 0;
         const pageSize = 20;
         if (categoryID) {
             return this.articleService.listInCategory(categoryID, page, pageSize);
         }
+        const listResult = await this.articleService.list(page, pageSize);
+        const list = listResult.list.map(article => {
+            return {
+                ...article,
+                createdAtLabel: recentTime(article.createdAt, 'YYYY.MM.DD HH:mm'),
+            };
+        });
+        return {
+            ...listResult,
+            list,
+        };
+    }
+
+    @Get(`${APIPrefix}/articles/users/:authorID/like`)
+    async userLikeArticles(@Query('c') c: number, @Query('page', ParsePagePipe) page: number) {
+        const pageSize = 20;
         const listResult = await this.articleService.list(page, pageSize);
         const list = listResult.list.map(article => {
             return {

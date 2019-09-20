@@ -37,25 +37,28 @@
                 <div class="detail-list">
                     <div class="list-header">
                         <div class="header-content">
-                            <router-link :to="`/users/${userID}/articles`" class="nav-item">
+                            <router-link :to="`/users/${author.id}/articles`" class="nav-item">
                                 <div class="item-title">文章</div>
                                 <div class="item-count">1</div>
                             </router-link>
-                            <router-link :to="`/users/${userID}/boilings`" class="nav-item">
+                            <router-link :to="`/users/${author.id}/boilings`" class="nav-item">
                                 <div class="item-title">沸点</div>
                                 <div class="item-count">1</div>
                             </router-link>
-                            <div @click="onLikeClick" class="nav-item not-in-scroll-mode" :class="{open: likeClicked}">
+                            <div @click="onLikeClick" v-clickoutside="onClickOutSide" class="nav-item not-in-scroll-mode" :class="{open: likeClicked}">
                                 <div class="item-title">赞</div>
                                 <div class="item-count">1</div>
                                 <div class="item-count">
                                     <i class="fa fa-caret-down"></i>
                                 </div>
                                 <div v-if="likeClicked" class="more-panel">
-                                    <a href="/user/5872f33b61ff4b005c490f1c/likes" class="more-item">文章 0</a>
-                                    <a href="/user/5872f33b61ff4b005c490f1c/praise" class="more-item">沸点 1</a>
+                                    <router-link :to="`/users/${author.id}/like/articles`" class="more-item">文章 0</router-link>
+                                    <router-link :to="`/users/${author.id}/like/boilings`" class="more-item">沸点 1</router-link>
                                 </div>
                             </div>
+                            <router-link :to="`/users/${author.id}/follow`" class="nav-item">
+                                <div class="item-title">关注</div>
+                            </router-link>
                         </div>
                     </div>
                     <div class="list-body">
@@ -134,16 +137,23 @@ export default {
     data () {
         return {
             likeClicked: false,
+            author: window.author,
             userID: window.userID || undefined,
         };
     },
     mounted() {
         this.$nextTick(() => {
+            // this.$router.afterEach((to, from) => {
+            //     this.likeClicked = false;   
+            // });
         });
     },
     methods: {
         onLikeClick() {
-            this.likeClicked = true;
+            this.likeClicked = !this.likeClicked;
+        },
+        onClickOutSide() {
+            this.likeClicked = false;  
         }
     },
     components: {
@@ -152,7 +162,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .list-block {
     margin-top: 12px;
 }
@@ -251,6 +261,63 @@ export default {
 
 .list-header .nav-item .more-panel .more-item:hover {
     background-color: #fcfcfc;
+    text-decoration: none;
+}
+
+.post-list-box, .sub-header {
+    background-color: #fff;
+}
+
+.list-body .sub-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0 28px;
+    height: 50px;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(230, 230, 231, .5);
+}
+
+.list-body .sub-header .sub-header-title {
+    margin-right: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #000;
+}
+
+.list-body .sub-header .sub-type-box {
+    margin-left: auto;
+}
+
+.list-body .sub-header .sub-type-box .sub-type {
+    position: relative;
+    padding: 12px 0;
+    font-size: 14px;
+    color: #72777b;
+}
+
+.list-body .sub-header .sub-type-box .sub-type:not(:last-child) {
+    margin-right: 24px;
+}
+
+.list-body .sub-header .sub-type-box .sub-type:not(:last-child):after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -14px;
+    margin-top: -7px;
+    width: 1px;
+    height: 14px;
+    background-color: #b2bac2;
+    opacity: .5;
+}
+
+.list-body .sub-header .sub-type-box .sub-type.active {
+    color: #000;
+}
+
+.list-body .sub-header .sub-type-box .sub-type:hover {
+    opacity: .8;
     text-decoration: none;
 }
 </style>

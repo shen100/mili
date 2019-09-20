@@ -1,13 +1,13 @@
 <template>
     <div class="post-list-box">
         <div class="sub-header">
-            <div class="sub-header-title">专栏</div>
+            <div class="sub-header-title">赞</div>
             <div class="sub-type-box">
-                <router-link :to="`/users/${author.id}/articles?sort=popular`" class="sub-type">热门</router-link>
-                <router-link :to="`/users/${author.id}/articles?sort=newest`" class="sub-type active">最新</router-link>
+                <router-link :to="`/users/${author.id}/like/articles`" class="sub-type">文章</router-link>
+                <router-link :to="`/users/${author.id}/like/boilings`" class="sub-type">沸点</router-link>
             </div>
         </div>
-        <Pinterest :url="`/articles/users/${author.id}`" :start="1" @load="onLoad">
+        <Pinterest :url="`/articles/users/${author.id}/like`" :start="1" @load="onLoad">
             <template v-slot:loading>
                 <div style="padding: 20px; padding-top: 10px;">
                     <ArticleLoading />

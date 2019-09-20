@@ -18,7 +18,7 @@
                         </div>
                         <div class="meta-box">
                             <template v-if="boilingData.user.job || boilingData.user.company">
-                                <div class="position ellipsis">{{boilingData.user.job}}{{boilingData.user.job && boilingData.user.company ? ' @ ' : ''}}{{boilingData.user.company}}</div>
+                                <div class="position ellipsis">{{boilingData.user | jobCompany}}</div>
                                 <div class="dot">·</div>
                             </template>
                             <a :href="`/boiling/${boilingData.id}`" target="_blank" class="time-box">
@@ -170,6 +170,7 @@
 <script>
 import striptags from 'striptags';
 import { myHTTP } from '~/js/common/net.js';
+import { jobCompany } from '~/js/common/filters.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
 import More from '~/js/components/common/More.vue';
@@ -492,6 +493,9 @@ export default {
         onShowReportAlert() {
             this.$emit('report');  
         }
+    },
+    filters: {
+        jobCompany,
     },
     components: {
         UserBusinessCard,

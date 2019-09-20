@@ -26,6 +26,7 @@ import { User } from '../entity/user.entity';
 import { SigninDto } from './dto/signin.dto';
 import { ActiveGuard } from '../core/guards/active.guard';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
+import { APIPrefix } from '../constants/constants';
 
 @Controller()
 export class UserController {
@@ -280,6 +281,18 @@ export class UserController {
         username = decodeURIComponent(username);
         const users: Array<User> = await this.userService.fuzzyQueryByUsername(username);
         return users;
+    }
+
+    // 用户关注了哪些人
+    @Get(`${APIPrefix}/users/:id/follows`)
+    async userFollows(@Param('id', MustIntPipe) id: number) {
+        return await this.userService.userFollows(id, 1, 20);;
+    }
+
+    // 用户有哪些粉丝
+    @Get(`${APIPrefix}/users/:id/followers`)
+    async userFollowers(@Param('id', MustIntPipe) id: number) {
+        return await this.userService.userFollowers(id, 1, 20);
     }
 
     @Post('/api/v1/users/follow/:userID')
