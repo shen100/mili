@@ -80,6 +80,30 @@ export class TagService {
         };
     }
 
+    /**
+     * 用户关注了哪些标签
+     */
+    async userFollowTags(userID: number, page: number, pageSize: number): Promise<ListResult<Tag>> {
+        const sql1 = `SELECT tags.id as id, tags.name as name, tags.article_count as articleCount,
+                tags.follower_count as followerCount, tags.icon_url as iconURL
+            FROM tags, user_subscribed_tag
+            WHERE user_subscribed_tag.user_id = ? AND tags.id = user_subscribed_tag.tag_id
+            ORDER BY created_at DESC
+            LIMIT ?, ?`;
+        const sql2 = `SELECT COUNT(*) as count FROM user_subscribed_tag
+            WHERE user_subscribed_tag.user_id = ?`;
+        const [list, count] = await Promise.all([
+            this.tagRepository.manager.query(sql1, [userID, (page - 1) * pageSize, pageSize]),
+            this.tagRepository.manager.query(sql2, [userID]),
+        ]);
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
     async isExists(id: number): Promise<boolean> {
         const tag = await this.tagRepository.findOne({
             select: ['id'],

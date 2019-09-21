@@ -2,7 +2,7 @@
     <div class="item">
         <div class="tag">
             <div class="info-box">
-                <a href="/tag/%" target="_blank">
+                <a :href="`/tags/${tag.id}`" target="_blank">
                     <div class="lazy thumb loaded" :style="{'background-image': `url(${iconURL})`}"></div>
                     <div class="title">{{name}}</div>
                 </a>

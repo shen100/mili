@@ -29,7 +29,7 @@ export class TagController {
         res.render('pages/tag/tag');
     }
 
-    @Get('/tags/:id.html')
+    @Get('/tags/:id')
     async tagDetailView(@Res() res, @CurUser() user, @Param('id', MustIntPipe) id: number) {
         const [tag, isFollowed] = await Promise.all([
             this.tagService.detail(id),
@@ -61,6 +61,27 @@ export class TagController {
         }
         const listResult = await this.tagService.list(1, 20, 'hot', q);
         return listResult.list;
+    }
+
+    /**
+     * 关注的标签
+     */
+    @Get(`${APIPrefix}/tags/users/:userID/follow`)
+    async userFollowTags(@CurUser() user, @Param('userID', MustIntPipe) userID: number, @Query('page', ParsePagePipe) page: number) {
+        const pageSize = 20;
+        // 用户A访问用户B的个人中心，查出用户A关注了哪些标签
+        const listResult: ListResult<Tag> = await this.tagService.userFollowTags(userID, page, pageSize);
+        const tags = listResult.list.map(tag => tag.id);
+        // 再查出这些标签中，有哪些是用户B也关注了的
+        const followedTags = await this.tagService.tagsFilterByFollowerID(tags, user.id);
+        const tagMap = {};
+        followedTags.forEach(followedTag => {
+            tagMap[followedTag.tagID] = true;
+        });
+        listResult.list.forEach((tag: any) => {
+            tag.isFollowed = !!tagMap[tag.id];
+        });
+        return listResult;
     }
 
     @Get(`${APIPrefix}/tags`)

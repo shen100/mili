@@ -3,9 +3,9 @@
         <div class="sub-header">
             <div class="sub-header-title">专栏</div>
             <div class="sub-type-box">
-                <router-link :to="`/users/${author.id}/follows`" class="sub-type">关注了</router-link>
-                <router-link :to="`/users/${author.id}/followers`" class="sub-type active">粉丝</router-link>
-                <router-link :to="`/users/${author.id}/followtags`" class="sub-type active">关注标签</router-link>
+                <router-link :to="`/users/${author.id}/follows`" class="sub-type active">关注了</router-link>
+                <router-link :to="`/users/${author.id}/followers`" class="sub-type">粉丝</router-link>
+                <router-link :to="`/users/${author.id}/followtags`" class="sub-type">关注标签</router-link>
             </div>
         </div>
         <Pinterest :url="`/users/${author.id}/follows`" :start="1" @load="onLoad">
@@ -26,7 +26,7 @@
                             </a>
                             <div class="detail">{{user | jobCompany}}</div>
                         </div>
-                        <button class="follow-btn active">已关注</button>
+                        <FollowBtn :userID="user.id" :followed="true"></FollowBtn>
                     </a>
                 </div>
             </template>
@@ -39,6 +39,7 @@ import { jobCompany } from '~/js/common/filters.js';
 import ArticleLoading from '~/js/components/article/ArticleLoading.vue';
 import ArticleItem from '~/js/components/article/ArticleItem.vue';
 import Pinterest from '~/js/components/common/Pinterest.vue';
+import FollowBtn from '~/js/components/user/FollowBtn.vue';
 
 export default {
     data () {
@@ -63,6 +64,7 @@ export default {
         ArticleLoading,
         ArticleItem,
         Pinterest,
+        FollowBtn,
     }
 }
 </script>
@@ -73,6 +75,10 @@ export default {
     align-items: center;
     padding: 6px 28px;
     min-height: 84px;
+}
+
+.link:not(:last-child) {
+    border-bottom: 1px solid rgba(230, 230, 231, .5);
 }
 
 .avatar[data-v-7a297ff6] {
@@ -128,27 +134,6 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.follow-btn.active {
-    color: #fff;
-    background-color: #92c452;
-}
-
-.follow-btn {
-    flex: 0 0 auto;
-    margin: 0 0 0 12px;
-    padding: 0;
-    width: 90px;
-    height: 30px;
-    font-size: 12px;
-    color: #92c452;
-    background-color: #fff;
-    border: 1px solid #92c452;
-    border-radius: 2px;
-    outline: none;
-    transition: background-color .3s, color .3s;
-    cursor: pointer;
 }
 
 .the-rank {

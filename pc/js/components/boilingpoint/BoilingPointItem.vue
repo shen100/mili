@@ -28,9 +28,9 @@
                     </div>
                 </div>
                 <div class="header-action">
-                    <button v-if="userID !== boilingData.user.id" class="subscribe-btn follow-button"
-                        @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
-                        :class="{'followed': isFollowed}">{{followText}}</button>
+                    <FollowBtn ref="userFollowBtn" v-if="userID !== boilingData.user.id" @followChange="onFollowChange"
+                        :userID="boilingData.user.id" :followed="isFollowed" 
+                        :style="isFollowed ? followedStyle : notFollowedStyle" />
                     <div v-clickoutside="clickoutsideReport" class="pin-header-more header-menu">
                         <div @click="onReport" class="more-button">
                             <More />
@@ -175,6 +175,7 @@ import { ErrorCode } from '~/js/constants/error.js';
 import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
 import More from '~/js/components/common/More.vue';
 import Share from '~/js/components/boilingpoint/Share.vue';
+import FollowBtn from '~/js/components/user/FollowBtn.vue';
 
 const maxMiddleImgWidth = 446;
 const gridTotalWidth = 336;// 9宫格总宽度
@@ -241,13 +242,25 @@ export default {
             middleImgCreated: false, // 中图组件是否已创建，用来避免每次切换中图图片时，都再次加载中图图片
             userCardVisible1: false, // 用户面板
             userCardVisible2: false, // 用户面板
-            isMouseEnter: false, // 鼠标滑过关注按钮（more旁边的关注按钮）
             isFollowed: this.boilingData.user.isFollowed, // 是否已关注沸点作者
             expendIconOver: false,
             pinchIconOver: false,
             leftRotateIconOver: false,
             rightRotateIconOver: false,
             shareVisible: false,
+            followedStyle: {
+                'background-color': '#6cbd45', 
+                'border-color': '#6cbd45', 
+                width: '70px', 
+                height: '26px'
+            },
+            notFollowedStyle: {
+                'background-color': '#fff', 
+                'border-color': '#6cbd45', 
+                color: '#6cbd45', 
+                width: '70px', 
+                height: '26px'
+            },
         };
     },
     computed: {
@@ -459,35 +472,15 @@ export default {
         onBrowseBigImage() {
             this.$emit('bigImageChange', this.bigImgArr, this.curImgIndex);
         },
-        onMouseenter() {
-            this.isMouseEnter = true;
-        },
-        onMouseleave() {
-            this.isMouseEnter = false;
-        },
-        onFollow () {
-            const url = `/users/follow/${this.boilingData.user.id}`;
-            let reqMethod;
-            if (this.isFollowed) {
-                reqMethod = myHTTP.delete;
-            } else {
-                reqMethod = myHTTP.post;
-            }
-            reqMethod(url).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.isFollowed = !this.isFollowed;
-                    this.$emit('followChange', this.boilingData.user.id, this.isFollowed);
-                }
-            });
-        },
         onFollowChange(userID, isFollowed) {
             this.$emit('followChange', userID, isFollowed);
         },
         changeUserFollow(userID, isFollowed) {
             if (userID === this.boilingData.user.id) {
                 this.isFollowed = isFollowed;
-                this.$refs['userCard1'].changeUserFollow(userID, isFollowed);
-                this.$refs['userCard2'].changeUserFollow(userID, isFollowed);
+                this.$refs['userCard1'] && this.$refs['userCard1'].changeUserFollow(userID, isFollowed);
+                this.$refs['userCard2'] && this.$refs['userCard2'].changeUserFollow(userID, isFollowed);
+                this.$refs['userFollowBtn'].changeFollow(userID, isFollowed);
             }
         },
         onShowReportAlert() {
@@ -501,6 +494,7 @@ export default {
         UserBusinessCard,
         More,
         Share,
+        FollowBtn,
     }
 }
 </script>
@@ -652,18 +646,6 @@ export default {
 
 .account-group, .header-action {
     display: flex;
-}
-
-.subscribe-btn {
-    border: 1px solid #37c700;
-    background-color: #fff;
-    margin: 0 0 0 auto;
-    padding: 0;
-    width: 55px;
-    height: 26px;
-    font-size: 13px;
-    border-color: #6cbd45;
-    color: #6cbd45;
 }
 
 .pin-header-more {
@@ -865,10 +847,6 @@ svg:not(:root) {
     background-color: #ebebeb;
 }
 
-.follow-button:hover {
-    opacity: .8;
-}
-
 .more-button:hover path {
     fill: #9da7b3;
 }
@@ -1005,18 +983,6 @@ svg:not(:root) {
     padding-top: 100%;
     content: "";
     display: block;
-}
-
-.follow-button {
-    width: 74px;
-    height: 30px;
-    border-radius: 2px;
-}
-
-.follow-button.followed {
-    color: #fff;
-    border-color: #6cbd45;
-    background-color: #6cbd45;
 }
 
 .action-item:not(.not-allow):hover {

@@ -56,7 +56,7 @@ export class UserService {
     async detail(id: number): Promise<User | undefined> {
         return await this.userRepository.createQueryBuilder('user')
             .select(['user.id', 'user.createdAt', 'user.username', 'user.articleCount', 'user.collectCount',
-                'user.commentCount', 'user.introduce', 'user.role', 'user.avatarURL', 'user.sex',
+                'user.commentCount', 'user.job', 'user.company', 'user.introduce', 'user.role', 'user.avatarURL', 'user.sex',
                 'c.id', 'c.name', 'c.coverURL', 'c.creatorID',
             ])
             .leftJoin('user.collections', 'c')
@@ -477,6 +477,7 @@ export class UserService {
                 pageSize,
             };
         }
+        userIDs = userIDs.map(data => data.follower_id);
         const count: number = userIDs.length;
         userIDs = userIDs.slice((page - 1) * pageSize, pageSize);
         const users = await this.userRepository.find({

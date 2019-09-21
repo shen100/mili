@@ -131,6 +131,11 @@ body {
     border-top: 1px solid rgba(230, 230, 231, .5);
 }
 
+.more-block .more-item:hover {
+    opacity: .8;
+    text-decoration: none;
+}
+
 .more-block .more-item .item-title {
     margin-right: auto;
 }

@@ -2,10 +2,10 @@
     <div class="main-box">
         <div class="major-box">
             <div class="user-info-block">
-                <div class="user-info-block-avatar"></div>
+                <div class="user-info-block-avatar" :style="{'background-image': `url(${author.avatarURL})`}"></div>
                 <div class="info-box">
                     <div class="top">
-                        <h1 class="username">全栈者<a href="/" target="_blank" class="rank">
+                        <h1 class="username">{{author.username}}<a href="/" target="_blank" class="rank">
                             <img src="https://b-gold-cdn.xitu.io/v3/static/img/lv-3.e108c68.svg"></a>
                         </h1>
                     </div>
@@ -17,16 +17,16 @@
                             </g>
                         </svg>
                         <span class="content">
-                            <span>全干工程师</span>
-                            <span class="split"></span>
-                            <span>阿里巴巴</span>
+                            <span>{{author.job}}</span>
+                            <span v-if="author.job && author.company" class="split"></span>
+                            <span>{{author.company}}</span>
                         </span>
                     </div>
                     <div class="intro">
                         <svg width="21" height="18" viewBox="0 0 21 18" class="intro-icon">
                             <path fill="#72777B" fill-rule="evenodd" d="M4 4h13a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm9 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3 3a3 3 0 0 0-6 0h6zM5 7v1h4V7H5zm0 2.5v1h4v-1H5zM5 12v1h4v-1H5z"></path>
                         </svg>
-                        <span class="content">欢迎关注微信公众号:全栈者</span>
+                        <span class="content">{{author.introduce}}</span>
                     </div>
                 </div>
                 <div class="action-box">
@@ -56,8 +56,11 @@
                                     <router-link :to="`/users/${author.id}/like/boilings`" class="more-item">沸点 1</router-link>
                                 </div>
                             </div>
-                            <router-link :to="`/users/${author.id}/follow`" class="nav-item">
+                            <router-link :to="`/users/${author.id}/follows`" class="nav-item">
                                 <div class="item-title">关注</div>
+                            </router-link>
+                            <router-link :to="`/users/${author.id}/handbooks`" class="nav-item">
+                                <div class="item-title">小册</div>
                             </router-link>
                         </div>
                     </div>
@@ -102,24 +105,24 @@
                     </div>
                 </div>
                 <div class="follow-block">
-                    <a href="/user/5b5734a5f265da0f6013148c/following" class="follow-item">
+                    <router-link :to="`/users/${author.id}/follows`" class="follow-item">
                         <div class="item-title">关注</div>
                         <div class="item-count">45</div>
-                    </a>
-                    <a href="/user/5b5734a5f265da0f6013148c/followers" class="follow-item">
+                    </router-link>
+                    <router-link :to="`/users/${author.id}/followers`" class="follow-item">
                         <div class="item-title">粉丝</div>
                         <div class="item-count">1,088</div>
-                    </a>
+                    </router-link>
                 </div>
                 <div class="more-block">
-                    <a href="/user/5b5734a5f265da0f6013148c/collections" class="more-item">
+                    <router-link :to="`/users/${author.id}/followtags`" class="more-item">
                         <div class="item-title">收藏集</div>
                         <div class="item-count">0</div>
-                    </a>
-                    <a href="/user/5b5734a5f265da0f6013148c/tags" class="more-item">
+                    </router-link>
+                    <router-link :to="`/users/${author.id}/followtags`" class="more-item">
                         <div class="item-title">关注标签</div>
                         <div class="item-count">18</div>
-                    </a>
+                    </router-link>
                     <div class="more-item">
                         <div class="item-title">加入于</div>
                         <div class="item-count">

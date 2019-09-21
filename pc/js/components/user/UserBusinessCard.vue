@@ -25,10 +25,9 @@
                         </div>
                     </div>
                     <div class="social">
-                        <template v-if="!isSelf">
-                            <button @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
-                                class="follow-button follow-btn" :class="{'followed': isFollowed}">{{followText}}</button>
-                        </template>
+                        <FollowBtn ref="userFollowBtn" v-if="userID !== followerID" @followChange="onFollowChange"
+                            :userID="userID" :followed="isFollowed" 
+                            :style="isFollowed ? followedStyle : notFollowedStyle" />
                     </div>
                 </div>
             </div>
@@ -75,19 +74,18 @@
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import { isInViewport, getBoundingClientRect } from '~/js/utils/dom.js';
+import FollowBtn from '~/js/components/user/FollowBtn.vue';
 
 export default {
     props: [
         'userID',
         'followerID',
-        'followChange',
         'delay',
     ],
     data () {
         return {
             isShowed: false,
             top: '100%',
-            isSelf: this.userID && this.userID === this.followerID,
             isArrowRotation: false,
             user: null,
             articles: [
@@ -97,16 +95,23 @@ export default {
                 }
             ],
             isFollowed: false,
-            isMouseEnter: false,
-            unfollowedClass: {
-                'btn-success': true,
-                follow: true,
+            timeoutID: 0,
+            followedStyle: {
+                'background-color': '#64cd3d', 
+                'border-color': '#64cd3d', 
+                color: '#fff',
+                width: '78px', 
+                height: '30px',
+                'font-size': '13px'
             },
-            followedClass: {
-                'btn-default': true,
-                following: true,
+            notFollowedStyle: {
+                'background-color': '#fff', 
+                'border-color': '#6cbd45', 
+                color: '#6cbd45', 
+                width: '78px', 
+                height: '30px',
+                'font-size': '13px'
             },
-            timeoutID: 0
         };
     },
     mounted() {
@@ -129,17 +134,6 @@ export default {
             clearTimeout(this.timeoutID);
         }
     },
-    computed: {
-        followText() {
-            if (this.isFollowed && this.isMouseEnter) {
-                return '取消关注';
-            }
-            if (this.isFollowed) {
-                return '已关注';
-            }
-            return '关注';
-        }
-    },
     methods: {
         adjustCoordinate() {
             this.top = '100%';
@@ -156,33 +150,17 @@ export default {
                 }
             });
         },
-        onMouseenter() {
-            this.isMouseEnter = true;
-        },
-        onMouseleave() {
-            this.isMouseEnter = false;
-        },
-        onFollow () {
-            const url = `/users/follow/${this.userID}`;
-            let reqMethod;
-            if (this.isFollowed) {
-                reqMethod = myHTTP.delete;
-            } else {
-                reqMethod = myHTTP.post;
-            }
-            reqMethod(url).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.isFollowed = !this.isFollowed;
-                    this.$emit('followChange', this.userID, this.isFollowed);
-                }
-            });
+        onFollowChange(userID, isFollowed) {
+            this.$emit('followChange', userID, isFollowed);
         },
         changeUserFollow(userID, isFollowed) {
-            console.log('lalalalala', userID, this.userID, isFollowed);
             if (userID === this.userID) {
                 this.isFollowed = isFollowed;
             }
         }
+    },
+    components: {
+        FollowBtn,
     }
 }
 </script>
@@ -598,26 +576,10 @@ export default {
     transform: rotate(180deg);
 }
 
-.follow-btn {
-    flex: 0 0 auto;
-    margin: 0;
-    padding: 0;
-    width: 74px;
-    height: 30px;
-    font-size: 13px;
-    color: #37c701;
-    background-color: #fff;
-    border: 1px solid rgba(55, 199, 1, .6);
-    border-radius: 2px;
-}
-
 .follow-button.followed {
     color: #fff;
     border-color: #6cbd45;
     background-color: #6cbd45;
 }
 
-.follow-btn:hover {
-    opacity: .8;
-}
 </style>

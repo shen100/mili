@@ -23,9 +23,9 @@ export class UCController {
         private readonly collectionService: CollectionService,
     ) {}
 
-    @Get('/users/:authorID/:page')
+    @Get('/users/:authorID/:page?')
     async userCenter(@Param('authorID', MustIntPipe) authorID: number, @Param('page') page: string, @CurUser() user, @Res() res) {
-        if (['articles', 'boilings', 'follows', 'followers'].indexOf(page) < 0) {
+        if (page && ['articles', 'boilings', 'follows', 'followers', 'followtags', 'handbooks'].indexOf(page) < 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });

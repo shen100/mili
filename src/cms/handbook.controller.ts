@@ -113,6 +113,24 @@ export class HandBookController {
         });
     }
 
+    /**
+     * 用户已购买的小册
+     */
+    @Get(`${APIPrefix}/handbooks/users/:userID/buy`)
+    async userBuyHandBooks(@CurUser() user) {
+        return {
+            list: [
+                {},
+                {},
+                {},
+                {},
+            ],
+            count: 4,
+            page: 1,
+            pageSize: 20,
+        };
+    }
+
     @Put(`${APIPrefix}/handbooks/:id/introduce`)
     @UseGuards(ActiveGuard)
     async updateHandbookIntroduce(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateDto: UpdateHandbookIntroduceDto) {

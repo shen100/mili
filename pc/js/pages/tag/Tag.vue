@@ -169,7 +169,7 @@ export default {
 }
 
 .tag-nav .nav-list .nav-item:hover .text-muted1 {
-    color: #007fff;
+    color: #ea6f5a;
 }
 
 .text-muted1 {
@@ -194,15 +194,15 @@ export default {
 }
 
 .tag-nav .nav-list .nav-item.active, .tag-nav .nav-list .nav-item:hover {
-    color: #007fff;
+    color: #ea6f5a;
 }
 
 .tag-nav .nav-list .nav-item.active, .tag-nav .nav-list .nav-item:hover {
-    border-bottom-color: #007fff;
+    border-bottom-color: #ea6f5a;
 }
 
 .tag-nav .nav-list .nav-item.active a {
-    color: #007fff;
+    color: #ea6f5a;
 }
 
 .tag-box {
@@ -249,7 +249,7 @@ export default {
 }
 
 .list-header .nav-list .nav-item.active a, .list-header .nav-list .nav-item a:hover {
-    color: #007fff;
+    color: #ea6f5a;
     text-decoration: none;
 }
 
