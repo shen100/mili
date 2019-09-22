@@ -291,11 +291,23 @@ export class UserController {
 
     // 用户有哪些粉丝
     @Get(`${APIPrefix}/users/:id/followers`)
-    async userFollowers(@Param('id', MustIntPipe) id: number) {
-        return await this.userService.userFollowers(id, 1, 20);
+    async userFollowers(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        const listResult = await this.userService.userFollowers(id, 1, 20);
+        if (user) {
+            const users = listResult.list.map(u => u.id);
+            const followedUsers = await this.userService.usersFilterByFollowerID(users, user.id);
+            const userFollowedMap = {};
+            followedUsers.forEach(followedUser => {
+                userFollowedMap[followedUser.userID] = true;
+            });
+            listResult.list.forEach((userData: any) => {
+                userData.isFollowed = !!userFollowedMap[userData.id];
+            });
+        }
+        return listResult;
     }
 
-    @Post('/api/v1/users/follow/:userID')
+    @Post(`${APIPrefix}/users/:userID/follow`)
     @UseGuards(ActiveGuard)
     async follow(@CurUser() user, @Param('userID', MustIntPipe) userID: number) {
         const isUserExist: boolean = await this.userService.isExist(userID);
@@ -312,7 +324,7 @@ export class UserController {
         return {};
     }
 
-    @Delete('/api/v1/users/follow/:userID')
+    @Delete(`${APIPrefix}/users/:userID/follow`)
     @UseGuards(ActiveGuard)
     async cancelFollow(@CurUser() user, @Param('userID', MustIntPipe) userID: number) {
         const isUserExist: boolean = await this.userService.isExist(userID);

@@ -26,6 +26,7 @@ export default {
     },
     methods: {
         onFollowChange(tagID, isFollowed) {
+            this.isFollowed = isFollowed;
             this.$emit('followChange', tagID, isFollowed);
         },
         changeTagFollow(tagID, isFollowed) {
@@ -57,6 +58,10 @@ export default {
     align-items: center;
     padding: 6px 28px;
     min-height: 84px;
+}
+
+.tag-item .tag-link:hover {
+    text-decoration: none;
 }
 
 .tag-item .tag-thumb {

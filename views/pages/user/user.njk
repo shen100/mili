@@ -10,10 +10,12 @@
 
 {% block pageData %}
 <script>
+    var userLevelChapterURL = '{{ userLevelChapterURL }}';
     // 当前登录用户, 如果没有登录的话, userID为undefined
     var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
     // 作者
     var author = {{ author | dump | safe }};
+    var followed = {{ followed }};
     var boilingPointType = 'user';
 </script>
 {% endblock %}

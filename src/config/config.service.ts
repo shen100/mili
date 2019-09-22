@@ -53,6 +53,7 @@ class StaticConfig extends BaseConfig {
     readonly imgFormat: string;
     readonly imgMaxSize: number; // 设置上传图片的大小限制, 单位M
     readonly imgMaxSizeError: number; // 图片大小超过限制时的提示
+    readonly userLevelChapterURL: string; // 用户等级在《如何使用米粒社区》中的章节url
 
     constructor(cfg) {
         super(cfg);

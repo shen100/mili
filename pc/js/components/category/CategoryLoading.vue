@@ -47,15 +47,6 @@
     background-color: #eaeaea;
 }
 
-.category-placeholder .text {
-    width: 100%;
-    height: 16px;
-    margin: 0 0 10px;
-    background-color: #eaeaea;
-    -webkit-animation: loading 1s ease-in-out infinite;
-    animation: loading 1s ease-in-out infinite;
-}
-
 .category-placeholder .animation-delay {
     -webkit-animation: loading 1s ease-in-out -.5s infinite!important;
     animation: loading 1s ease-in-out -.5s infinite!important;

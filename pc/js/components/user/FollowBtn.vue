@@ -47,10 +47,10 @@ export default {
             let id;
             if (this.userID) {
                 id = this.userID;
-                url = `/users/follow/${id}`;
+                url = `/users/${id}/follow`;
             } else if (this.tagID) {
                 id = this.tagID;
-                url = `/tags/follow/${id}`;    
+                url = `/tags/${id}/follow`;    
             }
             let reqMethod;
             if (this.isFollowed) {

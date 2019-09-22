@@ -42,6 +42,7 @@ export default {
     name: 'App',
     data: function() {
         const readed = [
+            'pc/js/common/filters.js',
             'pc/js/components/boilingpoint/BoilingPointItem.vue',
             'pc/js/components/boilingpoint/ReportAlert.vue',
             'pc/js/components/boilingpoint/Share.vue',
@@ -51,6 +52,9 @@ export default {
             'pc/js/entry/codeStats.js',
             'pc/js/pages/boilingpoint/BoilingPoint.vue',
             'pc/js/pages/CodeStats.vue',
+            '/pc/js/pages/user/FollowTagView.vue',
+            '/pc/js/pages/user/FollowView.vue',
+            '/pc/js/pages/user/FollowerView.vue',
             'pc/styles/codeStats.scss',
             'src/stats/codestats.controller.ts',
             'views/pages/boilingpoint/boilingpoint.njk',

@@ -30,10 +30,12 @@ export class UCController {
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
+        const followerID = user && user.id || undefined;
         const pageSize: number = 2;
-        const [author, articles] = await bluebird.all([
+        const [author, articles, followed] = await bluebird.all([
             this.userService.detail(authorID),
             this.articleService.userArticlesSortByCreatedAt(authorID, 1, pageSize),
+            followerID ? this.userService.isUserFollowed(followerID, authorID) : Promise.resolve(false),
         ]);
         if (!author) {
             throw new MyHttpException({
@@ -50,7 +52,8 @@ export class UCController {
             }
         });
         res.render('pages/user/user', {
-            followed: false,
+            userLevelChapterURL: this.configService.static.userLevelChapterURL,
+            followed,
             user,
             author,
             salutation: user && user.id === author.id ? '我' : '他',

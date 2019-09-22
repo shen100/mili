@@ -31,6 +31,7 @@ export default {
         fontPath: `${staticURL}/fonts`,
         // img.golang123.com 用来存放用户上传的图片
         uploadImgURL: 'https://img.golang123.com',
+        userLevelChapterURL: '/books/37/chapters/872', // 用户等级在《如何使用米粒社区》中的章节url
     },
     server: {
         companyName: '北京xxxxxxx有限公司',

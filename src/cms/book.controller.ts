@@ -46,7 +46,7 @@ export class BookController {
         });
     }
 
-    @Get('/books/:id.html')
+    @Get('/books/:id')
     async bookView(@Param('id', MustIntPipe) id: number, @Res() res) {
         const [book, chapters] = await Promise.all([
             this.bookService.detail(id),
@@ -64,7 +64,7 @@ export class BookController {
         });
     }
 
-    @Get('/books/:bookID/chapters/:chapterID.html')
+    @Get('/books/:bookID/chapters/:chapterID')
     async chapterView(@Param('bookID', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
         const [chapters, chapter] = await Promise.all([
             this.bookService.chapters(bookID),

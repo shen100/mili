@@ -30,22 +30,24 @@
                     </div>
                 </div>
                 <div class="action-box">
-                    <button class="follow-btn btn">关注</button>
+                    <FollowBtn ref="followBtn" @followChange="onFollowChange" :userID="author.id" 
+                        :followed="isFollowed" :style="isFollowed ? followedStyle : notFollowedStyle"></FollowBtn>
                 </div>
             </div>
             <div class="list-block">
                 <div class="detail-list">
                     <div class="list-header">
                         <div class="header-content">
-                            <router-link :to="`/users/${author.id}/articles`" class="nav-item">
+                            <router-link :to="`/users/${author.id}/articles`" class="nav-item" active-class="active">
                                 <div class="item-title">文章</div>
                                 <div class="item-count">1</div>
                             </router-link>
-                            <router-link :to="`/users/${author.id}/boilings`" class="nav-item">
+                            <router-link :to="`/users/${author.id}/boilings`" class="nav-item" active-class="active">
                                 <div class="item-title">沸点</div>
                                 <div class="item-count">1</div>
                             </router-link>
-                            <div @click="onLikeClick" v-clickoutside="onClickOutSide" class="nav-item not-in-scroll-mode" :class="{open: likeClicked}">
+                            <div @click="onLikeClick" v-clickoutside="onClickOutSide" class="nav-item not-in-scroll-mode" 
+                                :class="{open: likeClicked, active: isLikePage}">
                                 <div class="item-title">赞</div>
                                 <div class="item-count">1</div>
                                 <div class="item-count">
@@ -56,10 +58,10 @@
                                     <router-link :to="`/users/${author.id}/like/boilings`" class="more-item">沸点 1</router-link>
                                 </div>
                             </div>
-                            <router-link :to="`/users/${author.id}/follows`" class="nav-item">
+                            <router-link :to="`/users/${author.id}/follows`" class="nav-item" :class="{active: isFollowPage}">
                                 <div class="item-title">关注</div>
                             </router-link>
-                            <router-link :to="`/users/${author.id}/handbooks`" class="nav-item">
+                            <router-link :to="`/users/${author.id}/handbooks`" class="nav-item" active-class="active">
                                 <div class="item-title">小册</div>
                             </router-link>
                         </div>
@@ -136,19 +138,55 @@
 </template>
 
 <script>
+import FollowBtn from '~/js/components/user/FollowBtn.vue';
+
 export default {
     data () {
         return {
             likeClicked: false,
             author: window.author,
             userID: window.userID || undefined,
+            isFollowed: window.followed,
+            followedStyle: {
+                'background-color': '#6cbd45', 
+                'border-color': '#6cbd45', 
+                width: '108px', 
+                height: '34px',
+                'border-radius': '4px',
+                'font-size': '16px',
+                'font-weight': 500
+            },
+            notFollowedStyle: {
+                'background-color': '#fff', 
+                'border-color': '#6cbd45', 
+                color: '#6cbd45', 
+                width: '108px', 
+                height: '34px',
+                'border-radius': '4px',
+                'font-size': '16px',
+                'font-weight': 500
+            },
+            isLikePage: false,
+            isFollowPage: false,
         };
     },
     mounted() {
         this.$nextTick(() => {
-            // this.$router.afterEach((to, from) => {
-            //     this.likeClicked = false;   
-            // });
+            this.$router.afterEach((to, from) => {
+                this.isLikePage = false;
+                this.isFollowPage = false;
+                if (to.path.match(/\/users\/[0-9]+\/like\/articles/)) {
+                    this.isLikePage = true;
+                } else if (to.path.match(/\/users\/[0-9]+\/like\/boilings/)) {
+                    this.isLikePage = true;
+                } else if (to.path.match(/\/users\/[0-9]+\/follows/)) {
+                    this.isFollowPage = true;
+                } else if (to.path.match(/\/users\/[0-9]+\/followers/)) {
+                    this.isFollowPage = true;
+                } else if (to.path.match(/\/users\/[0-9]+\/followtags/)) {
+                    this.isFollowPage = true;
+                }
+            });
         });
     },
     methods: {
@@ -157,10 +195,20 @@ export default {
         },
         onClickOutSide() {
             this.likeClicked = false;  
-        }
+        },
+        onFollowChange(userID, isFollowed) {
+            this.isFollowed = isFollowed;
+            this.$emit('followChange', userID, isFollowed);
+        },
+        changeTagFollow(userID, isFollowed) {
+            if (userID === this.author.id) {
+                this.isFollowed = isFollowed;
+                this.$refs['followBtn'].changeFollow(userID, isFollowed);
+            }
+        },
     },
     components: {
-
+        FollowBtn,
     }
 }
 </script>
@@ -322,6 +370,32 @@ export default {
 .list-body .sub-header .sub-type-box .sub-type:hover {
     opacity: .8;
     text-decoration: none;
+}
+
+.list-header .nav-item.active .item-count, .list-header .nav-item.active .item-title {
+    color: #ea6f5a;
+}
+
+.list-header .nav-item.active {
+    box-shadow: inset 0 -2px 0 #ea6f5a;
+}
+
+.list-body .empty-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #b2bac2;
+    cursor: default;
+    user-select: none;
+    background-color: #fff;
+}
+
+.list-body .empty-box .empty-text {
+    margin-top: 14px;
 }
 </style>
 

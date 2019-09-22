@@ -1,7 +1,7 @@
 <template>
     <div class="post-list-box">
         <div class="sub-header">
-            <div class="sub-header-title">专栏</div>
+            <div class="sub-header-title">关注</div>
             <div class="sub-type-box">
                 <router-link :to="`/users/${author.id}/follows`" class="sub-type active">关注了</router-link>
                 <router-link :to="`/users/${author.id}/followers`" class="sub-type">粉丝</router-link>
@@ -10,8 +10,16 @@
         </div>
         <Pinterest :url="`/users/${author.id}/follows`" :start="1" @load="onLoad">
             <template v-slot:loading>
-                <div style="padding: 20px; padding-top: 10px;">
-                    <ArticleLoading />
+                <div class="user-load-placeholder">
+                    <div class="user-load-content">
+                        <div class="user-load-name user-load-delay"></div>
+                        <div class="user-load-job-box">
+                            <div class="user-load-job"></div>
+                            <div class="user-load-at">@</div>
+                            <div class="user-load-company"></div>
+                        </div>
+                    </div>
+                    <div class="user-load-follower-btn"></div>
                 </div>
             </template>
             <template v-slot:content>
@@ -19,9 +27,9 @@
                     <a :key="user.id" :href="`/users/${user.id}`" v-for="user in users" target="_blank" class="link user-follow-item">
                         <div class="lazy avatar avatar loaded" :style="{'background-image': `url(${user.avatarURL})`}"></div>
                         <div class="info-box">
-                            <a :href="`/user/${user.id}`" target="_blank" class="username">{{user.username}}
-                                <a href="/book/5c" target="_blank" class="the-rank">
-                                    <img src="https://b-gold-cdn.xitu.io/v3/static/img/lv-6.74bd93a.svg">
+                            <a :href="`/users/${user.id}`" target="_blank" class="username">{{user.username}}
+                                <a :href="userLevelChapterURL" target="_blank" class="the-rank">
+                                    <img :src="user.level | levelImgURL">
                                 </a>
                             </a>
                             <div class="detail">{{user | jobCompany}}</div>
@@ -31,13 +39,15 @@
                 </div>
             </template>
         </Pinterest>
+        <div v-if="isEmpty" class="empty-box">
+            <img src="../../../images/user/emptybox.svg" />
+            <div class="empty-text">这里什么都没有</div>
+        </div>
     </div>
 </template>
 
 <script>
-import { jobCompany } from '~/js/common/filters.js';
-import ArticleLoading from '~/js/components/article/ArticleLoading.vue';
-import ArticleItem from '~/js/components/article/ArticleItem.vue';
+import { jobCompany, levelImgURL } from '~/js/common/filters.js';
 import Pinterest from '~/js/components/common/Pinterest.vue';
 import FollowBtn from '~/js/components/user/FollowBtn.vue';
 
@@ -46,6 +56,8 @@ export default {
         return {
             author: window.author,
             users: [],
+            userLevelChapterURL: window.userLevelChapterURL,
+            isEmpty: false,
         };
     },
     mounted() {
@@ -55,14 +67,16 @@ export default {
     methods: {
         onLoad(result) {
             this.users = this.users.concat(result.data.data.list);
+            if (!result.data.data.count) {
+                this.isEmpty = true;
+            }
         }
     },
     filters: {
         jobCompany,
+        levelImgURL,
     },
     components: {
-        ArticleLoading,
-        ArticleItem,
         Pinterest,
         FollowBtn,
     }
@@ -148,5 +162,58 @@ export default {
 .user-follow-item .username:hover {
     background-color: hsla(0, 0%, 87.1%, .1);
     text-decoration: none;
+}
+
+.user-load-placeholder {
+    position: relative;
+    padding: 20px 28px;
+    margin-bottom: 50px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.user-load-content {
+    width: 50%;
+    padding-top: 0;
+    float: left;
+}
+
+.user-load-name {
+    height: 16px;
+    margin: 0 0 7px;
+    background-color: #eaeaea;
+    -webkit-animation: loading 1s ease-in-out infinite;
+    animation: loading 1s ease-in-out infinite;
+}
+
+.user-load-job-box {
+    display: flex;
+}
+
+.user-load-job {
+    width: 50px;
+    height: 16px;
+    background-color: #eaeaea;  
+}
+
+.user-load-at {
+    margin-left: 5px;
+    margin-right: 5px;
+    color: #eaeaea;
+    line-height: 16px;
+}
+
+.user-load-company {
+    width: 50px;
+    height: 16px;
+    background-color: #eaeaea;  
+}
+
+.user-load-follower-btn {
+    width: 74px;
+    height: 30px;
+    margin-top: 5px;
+    float: right;
+    background-color: #eaeaea;
 }
 </style>

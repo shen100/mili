@@ -98,7 +98,7 @@ export class TagService {
         ]);
         return {
             list,
-            count,
+            count: count && count.length && parseInt(count[0].count, 10) || 0,
             page,
             pageSize,
         };

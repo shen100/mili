@@ -11,3 +11,10 @@ export const jobCompany = (user) => {
     }
     return str;
 }
+
+export const levelImgURL = (level) => {
+    const imgURL = {
+        '1': 'lv1.svg',
+    }[level] || 'lv1.svg';
+    return globalConfig.imgPath + '/user/level/' + imgURL;
+};

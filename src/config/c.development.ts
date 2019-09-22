@@ -23,6 +23,7 @@ export default {
     },
     static: {
         uploadImgURL: 'https://golang123-img.oss-cn-hangzhou.aliyuncs.com',
+        userLevelChapterURL: '/books/37/chapters/873', // 用户等级在《如何使用米粒社区》中的章节url
     },
     server: {
         companyName: '北京xxxxxxx有限公司',
