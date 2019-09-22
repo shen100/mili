@@ -25,5 +25,12 @@ import {
 registerDirective(Vue);
 
 new Vue({
-    render: h => h(BoilingPoint),
+    render: h => h(BoilingPoint, {
+        props: {
+            url: `/boilingpoints/${window.boilingPointType}`,
+            topicID: window.topicID,
+            userID: window.userID,
+            boilingPoint: window.boilingPoint,
+        }   
+    }),
 }).$mount('#centerBox');

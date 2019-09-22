@@ -3,11 +3,11 @@
         <div class="sub-header">
             <div class="sub-header-title">专栏</div>
             <div class="sub-type-box">
-                <router-link :to="`/users/${author.id}/articles?sort=popular`" class="sub-type">热门</router-link>
-                <router-link :to="`/users/${author.id}/articles?sort=newest`" class="sub-type active">最新</router-link>
+                <a @click.prevent.stop="changeRoute(`/users/${author.id}/articles?sort=popular`, 'popular')" class="sub-type" :class="{active: sort === 'popular'}">热门</a>
+                <a @click.prevent.stop="changeRoute(`/users/${author.id}/articles?sort=newest`, 'newest')" class="sub-type" :class="{active: sort === 'newest'}">最新</a>
             </div>
         </div>
-        <Pinterest :url="`/articles/users/${author.id}`" :start="1" @load="onLoad">
+        <Pinterest ref="articlePinterest" :url="`/articles/users/${author.id}`" :query="{sort: sort}" @load="onLoad">
             <template v-slot:loading>
                 <div style="padding: 20px; padding-top: 10px;">
                     <ArticleLoading />
@@ -21,6 +21,10 @@
                 </div>
             </template>
         </Pinterest>
+        <div v-if="isEmpty" class="empty-box">
+            <img src="../../../images/user/emptybox.svg" />
+            <div class="empty-text">这里什么都没有</div>
+        </div>
     </div>
 </template>
 
@@ -34,15 +38,33 @@ export default {
         return {
             author: window.author,
             articles: [],
+            sort: 'newest',
+            isEmpty: false,
         };
     },
     mounted() {
-        this.$nextTick(() => {
-        });
+        console.log('=========================');
+        if (this.$route.query.sort === 'newest') {
+            this.sort = 'newest';
+        } else if (this.$route.query.sort === 'popular') {
+            this.sort = 'popular';
+        } else {
+            this.sort = 'newest';
+        }
+        console.log(this.sort);
     },
     methods: {
         onLoad(result) {
             this.articles = this.articles.concat(result.data.data.list);
+            if (!result.data.data.count) {
+                this.isEmpty = true;
+            }
+        },
+        changeRoute(location, sort) {
+            this.$router.push(location);
+            this.sort = sort;
+            this.articles = [];
+            this.$refs.articlePinterest.refresh({ sort });
         }
     },
     components: {
@@ -52,3 +74,9 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.article-list {
+    width: 100%;
+}
+</style>

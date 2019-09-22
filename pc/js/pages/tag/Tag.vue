@@ -28,7 +28,7 @@
             </nav>
         </header>
         <div class="tag-box" :style="{'padding-top': query.type === 'all' ? '0' : '20px'}">
-            <Pinterest url="/tags" :query="query" @load="onLoad">
+            <Pinterest ref="tagPinterest" url="/tags" :query="query" @load="onLoad">
                 <template v-slot:content>
                     <div>
                         <TagInfo @on-cancel="onFollowCancel(tag.id)" :key="tag.id" :tag="tag" v-for="tag in tags" />
@@ -83,6 +83,7 @@ export default {
                 ...this.query,
                 type,
             };
+            this.$refs.tagPinterest.refresh(this.query);
         },
         onSortNavClick(order) {
             if (order === this.query.order) {
@@ -94,6 +95,7 @@ export default {
                 ...this.query,
                 order,
             };
+            this.$refs.tagPinterest.refresh(this.query);
         },
         onSearch(event) {
             this.isLoading = true;
@@ -102,6 +104,7 @@ export default {
                 ...this.query,
                 q: event.target.value,
             };
+            this.$refs.tagPinterest.refresh(this.query);
         },
         onFollowCancel(tagID) {
             if (this.query.type === 'all') {

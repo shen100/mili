@@ -70,7 +70,7 @@ export default {
 <style scoped>
 .tag-load-placeholder {
     position: relative;
-    padding: 20px 28px;
+    padding: 20px;
     margin-bottom: 50px;
     overflow: hidden;
     background: #fff;

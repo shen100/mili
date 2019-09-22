@@ -29,6 +29,7 @@ export default {
             isComplete: false,
             theOnScroll: null,
             page: this.start || 1,
+            queryData: this.query ? { ...this.query } : null,
         };
     },
     mounted () {
@@ -37,10 +38,11 @@ export default {
         this.load();
     },
     methods: {
-        refresh() {
+        refresh(query) {
             this.isLoading = false;
             this.isComplete = false;
             this.page = this.start || 1;
+            this.queryData = query ? { ...query } : this.queryData;
             this.load();
         },
         load() {
@@ -49,10 +51,10 @@ export default {
             }
             this.isLoading = true;
             let url = this.url + '?page=' + this.page;
-            if (this.query) {
-                for (let key in this.query) {
-                    if (typeof this.query[key] !== 'undefined') {
-                        url += ('&' + key + '=' + this.query[key]);
+            if (this.queryData) {
+                for (let key in this.queryData) {
+                    if (typeof this.queryData[key] !== 'undefined') {
+                        url += ('&' + key + '=' + this.queryData[key]);
                     }
                 }
             }
@@ -85,25 +87,6 @@ export default {
                 this.load();
             }
         },
-    },
-    watch: {
-        query(newQuery, oldQuery) {
-            let queryChanged = false;
-            for (let key in newQuery) {
-                if (newQuery[key] !== oldQuery[key]) {
-                    queryChanged = true;
-                }
-            }
-            for (let key in oldQuery) {
-                if (newQuery[key] !== oldQuery[key]) {
-                    queryChanged = true;
-                }
-            }
-            if (!queryChanged) {
-                return;
-            }
-            this.refresh();
-        }
     },
     destroyed () {
         window.removeEventListener('scroll', this.theOnScroll);

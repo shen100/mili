@@ -7,7 +7,12 @@
                 <router-link :to="`/users/${author.id}/like/boilings`" class="sub-type active">沸点</router-link>
             </div>
         </div>
-        <BoilingPoint :editorEnable="false" />
+        <BoilingPoint :editorEnable="false" :url="`/boilingpoints/user/${author.id}/like`" 
+            :loadingStyle="loadingStyle" :userID="userID" @empty="onEmpty" />
+        <div v-if="isEmpty" class="empty-box">
+            <img src="../../../images/user/emptybox.svg" />
+            <div class="empty-text">这里什么都没有</div>
+        </div>
     </div>
 </template>
 
@@ -18,9 +23,17 @@ export default {
     data() {
         return {
             author: window.author,
+            userID: window.userID,
+            isEmpty: false,
+            loadingStyle: {
+                animationWidth: '460px'
+            }
         };
     },
     methods: {
+        onEmpty() {
+            this.isEmpty = true;  
+        },
     },
     components: {
         BoilingPoint,

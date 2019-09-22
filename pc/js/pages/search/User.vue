@@ -1,6 +1,6 @@
 <template>
     <div class="search-view" style="background: #fff;">
-        <Pinterest url="/search" :query="{ q: keyword, type: 'user' }" @load="onLoad">
+        <Pinterest ref="userPinterest" url="/search" :query="{ q: keyword, type: 'user' }" @load="onLoad">
             <template v-slot:loading>
                 <UserLoading />
             </template>

@@ -323,7 +323,7 @@ export default {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    padding: 0 28px;
+    padding: 0 20px;
     height: 50px;
     white-space: nowrap;
     border-bottom: 1px solid rgba(230, 230, 231, .5);

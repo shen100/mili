@@ -1,5 +1,6 @@
 <template>
     <div class="handbooks">
+        <!--
         <Pinterest :url="`/handbooks/users/${author.id}/buy`" @load="onLoad">
             <template v-slot:content>
                 <div>
@@ -8,7 +9,11 @@
                     </ul>
                 </div>
             </template>
-        </Pinterest>
+        </Pinterest> -->
+        <div v-if="isEmpty" class="empty-box">
+            <img src="../../../images/user/emptybox.svg" />
+            <div class="empty-text">这里什么都没有</div>
+        </div>
     </div>
 </template>
 
@@ -22,6 +27,7 @@ export default {
         return {
             author: window.author,
             handbooks: [],
+            isEmpty: true,
         };
     },
     mounted() {

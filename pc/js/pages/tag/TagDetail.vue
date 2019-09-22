@@ -16,7 +16,7 @@
             </ul>
         </header>
         <div>
-            <Pinterest :url="url" :query="query" @load="onLoad">
+            <Pinterest ref="articlePinterest" :url="url" :query="query" @load="onLoad">
                 <template v-slot:loading>
                     <div style="padding: 20px; padding-top: 10px;">
                         <ArticleLoading />
@@ -78,6 +78,7 @@ export default {
                 ...this.query,
                 order,
             };
+            this.$refs.articlePinterest.refresh(this.query);
         },
         onMouseenter() {
             this.isMouseEnter = true;

@@ -36,6 +36,8 @@
     // 当前登录用户
     var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
     var boilingPoint = {{ boilingPoint | dump | safe }};
+    // 阿里云oss的 policy
+    var uploadPolicy = {{ uploadPolicy | dump | safe }};
 </script>
 {% endblock %}
 

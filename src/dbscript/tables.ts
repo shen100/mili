@@ -121,7 +121,7 @@ export const tablesRun = async function (connection) {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`;
         await connection.manager.query(sql);
 
-        await connection.manager.query(`CREATE TABLE userlikearticles (
+        await connection.manager.query(`CREATE TABLE user_like_articles (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             user_id int(11) unsigned NOT NULL,
             article_id int(11) unsigned NOT NULL,

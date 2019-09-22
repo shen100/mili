@@ -8,7 +8,7 @@
                 <router-link :to="`/users/${author.id}/followtags`" class="sub-type">关注标签</router-link>
             </div>
         </div>
-        <Pinterest :url="`/users/${author.id}/follows`" :start="1" @load="onLoad">
+        <Pinterest :url="`/users/${author.id}/follows`" @load="onLoad">
             <template v-slot:loading>
                 <div class="user-load-placeholder">
                     <div class="user-load-content">
@@ -87,7 +87,7 @@ export default {
 .link {
     display: flex;
     align-items: center;
-    padding: 6px 28px;
+    padding: 6px 20px;
     min-height: 84px;
 }
 
@@ -166,7 +166,7 @@ export default {
 
 .user-load-placeholder {
     position: relative;
-    padding: 20px 28px;
+    padding: 20px;
     margin-bottom: 50px;
     overflow: hidden;
     background: #fff;

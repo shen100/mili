@@ -22,6 +22,7 @@ import { Image } from '../entity/image.entity';
 import { User } from '../entity/user.entity';
 import { ConfigService } from '../config/config.service';
 import { RedisService } from '../redis/redis.service';
+import { ListResult } from '../entity/listresult.entity';
 
 @Controller()
 export class BoilingPointController {
@@ -85,12 +86,16 @@ export class BoilingPointController {
                     company: true,
                 },
             }),
-            user ? this.boilingPointService.userLikes([ boilingPoint.id ], user.id) : Promise.resolve([]),
+            user ? this.boilingPointService.userLikeBoilingPointIDs([ boilingPoint.id ], user.id) : Promise.resolve([]),
             imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
             this.boilingPointService.recommendsInTopic(),
         ]);
 
-        const follows = await (user ? this.userService.usersFilterByFollowerID([boilingPoint.userID] , user.id) : Promise.resolve([]));
+        const [follows, uploadPolicy] = await Promise.all([
+            (user ? this.userService.usersFilterByFollowerID([boilingPoint.userID] , user.id) : Promise.resolve([])),
+            this.ossService.requestPolicy(),
+        ]);
+
         boilingPointData.user = author;
         boilingPointData.userLiked = !!(likes && likes.length);
         boilingPointData.isFollowed = !!(follows && follows.length);
@@ -105,6 +110,7 @@ export class BoilingPointController {
         res.render('pages/boilingpoint/boilingpointDetail', {
             boilingPoint: boilingPointData,
             recommends,
+            uploadPolicy,
         });
     }
 
@@ -149,6 +155,7 @@ export class BoilingPointController {
         res.render('pages/boilingpoint/boilingpoint', {
             uploadPolicy,
             topics,
+            topicID: undefined,
             boilingPointType: type,
             globalRecommends: theGlobalRecommends,
         });
@@ -177,7 +184,7 @@ export class BoilingPointController {
         };
     }
 
-    @Get(`${APIPrefix}/boilingpoints`)
+    @Get(`${APIPrefix}/boilingpoints/topic`)
     async list(@CurUser() user, @Query('topicID', MustIntPipe) topicID: number, @Query('page', ParsePagePipe) page: number) {
         const [topic, boilingPoints] = await Promise.all([
             this.topicService.basic(topicID),
@@ -214,7 +221,7 @@ export class BoilingPointController {
                 job: true,
                 company: true,
             }),
-            this.boilingPointService.userLikes(boilingpointIDs, user && user.id),
+            this.boilingPointService.userLikeBoilingPointIDs(boilingpointIDs, user && user.id),
         ]);
 
         const userMap = {};
@@ -277,7 +284,7 @@ export class BoilingPointController {
                 job: true,
                 company: true,
             }),
-            user ? this.boilingPointService.userLikes(boilingpointIDs, user.id) : Promise.resolve([]),
+            user ? this.boilingPointService.userLikeBoilingPointIDs(boilingpointIDs, user.id) : Promise.resolve([]),
             imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
         ]);
         topics.map(t => {
@@ -318,7 +325,8 @@ export class BoilingPointController {
 
     @Get(`${APIPrefix}/boilingpoints/user/:userID`)
     async userBoilingPoints(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
-        const boilingPoints = await this.boilingPointService.recommend(page);
+        const pageSize = 20;
+        const boilingPoints = await this.boilingPointService.userLikeBoilingPoints(user.id, page, pageSize);
         const boilingpointIDs: number[] = [];
         const topicIDMap = {};
         const topicIDs: number[] = [];
@@ -361,7 +369,7 @@ export class BoilingPointController {
                 job: true,
                 company: true,
             }),
-            user ? this.boilingPointService.userLikes(boilingpointIDs, user.id) : Promise.resolve([]),
+            user ? this.boilingPointService.userLikeBoilingPointIDs(boilingpointIDs, user.id) : Promise.resolve([]),
             imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
         ]);
         topics.map(t => {
@@ -396,6 +404,30 @@ export class BoilingPointController {
         });
         return {
             ...boilingPoints,
+            list,
+        };
+    }
+
+    /**
+     * 用户点过赞的沸点
+     */
+    @Get(`${APIPrefix}/boilingpoints/user/:authorID/like`)
+    async userLikeBoilingPoints(@CurUser() user, @Param('authorID', MustIntPipe) authorID: number, @Query('page', ParsePagePipe) page: number) {
+        const userID = user ? user.id : undefined;
+        const pageSize: number = 20;
+        const [author, listResult] = await Promise.all([
+            this.userService.findOne({
+                where: { id: authorID },
+                select: ['id', 'username', 'avatarURL'],
+            }),
+            this.boilingPointService.userLikeBoilingPoints(authorID, page, pageSize),
+        ]);
+        listResult.list.map((boilingPoint: BoilingPoint) => {
+            boilingPoint.user = author;
+        });
+        const list = await this.boilingPointService.fillBoilingPointsRelativeData(listResult.list, userID);
+        return {
+            ...listResult,
             list,
         };
     }

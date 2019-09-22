@@ -143,6 +143,28 @@ export class ArticleService {
         };
     }
 
+    /**
+     * 用户点过赞的文章
+     */
+    async userLikeArticles(userID: number, page: number, pageSize: number): Promise<ListResult<Article>> {
+        const sql = `SELECT articles.id as id, articles.name as name, articles.created_at as createdAt, articles.summary as summary,
+                articles.comment_count as commentCount, articles.like_count as likeCount, articles.cover_url as coverURL
+            FROM user_like_articles, articles
+            WHERE user_like_articles.user_id = ? AND articles.id = user_like_articles.article_id 
+            ORDER BY user_like_articles.created_at DESC LIMIT ?, ?`;
+        const sql2 = `SELECT COUNT(*) as count FROM user_like_articles WHERE user_id = ?`;
+        const [articles, countResult] = await Promise.all([
+            this.articleRepository.manager.query(sql, [userID, (page - 1) * pageSize, pageSize]),
+            this.articleRepository.manager.query(sql2, [userID]),
+        ]);
+        return {
+            count: parseInt(countResult[0].count, 10),
+            list: articles,
+            page,
+            pageSize,
+        };
+    }
+
     async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult<Article>> {
         const [list, count] = await this.articleRepository.createQueryBuilder('a')
             .select(['a.id', 'a.name', 'a.createdAt', 'a.summary', 'a.commentCount',
@@ -214,7 +236,43 @@ export class ArticleService {
         });
     }
 
-    async userArticles(userID: number, page: number, pageSize: number, order) {
+    /**
+     * 用户的文章
+     */
+    async userArticles(userID: number, page: number, pageSize: number): Promise<ListResult<Article>> {
+        const [list, count] = await this.articleRepository.findAndCount({
+            select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                summary: true,
+                commentCount: true,
+                likeCount: true,
+                coverURL: true,
+                user: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
+            },
+            relations: ['user'],
+            where: {
+                userID,
+                deletedAt: null,
+                status: Not(ArticleStatus.VerifyFail),
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    async oldUserArticles(userID: number, page: number, pageSize: number, order) {
         return await this.articleRepository.find({
             select: {
                 id: true,
@@ -252,32 +310,32 @@ export class ArticleService {
     }
 
     async userArticlesSortByCreatedAt(userID: number, page: number, pageSize: number): Promise<Article[]> {
-        return await this.userArticles(userID, page, pageSize, {
+        return await this.oldUserArticles(userID, page, pageSize, {
             createdAt: 'DESC',
         });
     }
 
     async userArticlesSortByHot(userID: number, page: number, pageSize: number): Promise<Article[]> {
-        return await this.userArticles(userID, page, pageSize, {
+        return await this.oldUserArticles(userID, page, pageSize, {
             hot: 'DESC',
         });
     }
 
     async userArticlesSortByCommentCount(userID: number, page: number, pageSize: number): Promise<Article[]> {
-        return await this.userArticles(userID, page, pageSize, {
+        return await this.oldUserArticles(userID, page, pageSize, {
             commentCount: 'DESC',
         });
     }
 
     async collectionArticlesSortByCommentCount(collectionID: number, page: number, pageSize: number): Promise<Article[]> {
-        return await this.userArticles(collectionID, page, pageSize, {
+        return await this.oldUserArticles(collectionID, page, pageSize, {
             commentCount: 'DESC',
         });
     }
 
     // 单个用户最近发表的N篇文章
     async userRecentArticles(userID: number, limit: number): Promise<Article[]> {
-        return await this.userArticles(userID, 1, 3, {
+        return await this.oldUserArticles(userID, 1, 3, {
             createdAt: 'DESC',
         });
     }
@@ -511,11 +569,11 @@ export class ArticleService {
     }
 
     async likeOrCancelLike(articleID: number, userID: number) {
-        const sql = `DELETE FROM userlikearticles
+        const sql = `DELETE FROM user_like_articles
                 WHERE article_id = ${articleID} AND user_id = ${userID}`;
         const sql2 = `UPDATE articles SET like_count = like_count - 1 WHERE id = ${articleID}`;
 
-        const sql3 = `INSERT INTO userlikearticles (user_id, article_id, created_at)
+        const sql3 = `INSERT INTO user_like_articles (user_id, article_id, created_at)
                 VALUES (${userID}, ${articleID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}")`;
         const sql4 = `UPDATE articles SET like_count = like_count + 1 WHERE id = ${articleID}`;
 
@@ -533,7 +591,7 @@ export class ArticleService {
     }
 
     async isUserLiked(articleID: number, userID: number): Promise<boolean> {
-        const sql = `SELECT article_id, user_id FROM userlikearticles
+        const sql = `SELECT article_id, user_id FROM user_like_articles
             WHERE article_id = ${articleID} AND user_id = ${userID}`;
         let result = await this.articleRepository.manager.query(sql);
         result = result || [];

@@ -56,7 +56,7 @@ export default {
 .tag-item .tag-link {
     display: flex;
     align-items: center;
-    padding: 6px 28px;
+    padding: 6px 20px;
     min-height: 84px;
 }
 
