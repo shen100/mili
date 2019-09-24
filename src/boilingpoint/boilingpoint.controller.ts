@@ -70,6 +70,8 @@ export class BoilingPointController {
         const boilingPointData = {
             ...boilingPoint,
             imgs: [],
+            middleImgs: [],
+            bigImgs: [],
             userLiked: false,
             isFollowed: false,
             createdAtLabel: recentTime(boilingPoint.createdAt, 'YYYY.MM.DD HH:mm'),
@@ -100,12 +102,14 @@ export class BoilingPointController {
         boilingPointData.userLiked = !!(likes && likes.length);
         boilingPointData.isFollowed = !!(follows && follows.length);
         if (images && images.length) {
-            boilingPointData.imgs = [
-                {
-                    ...images[0],
-                    url: this.configService.static.uploadImgURL + images[0].url,
-                },
-            ];
+            boilingPointData.imgs = images.map(imgItem => {
+                return {
+                    ...imgItem,
+                    url: this.configService.static.uploadImgURL + imgItem.url,
+                };
+            });
+            boilingPointData.middleImgs = boilingPointData.imgs;
+            boilingPointData.bigImgs = boilingPointData.imgs;
         }
         res.render('pages/boilingpoint/boilingpointDetail', {
             boilingPoint: boilingPointData,
@@ -323,87 +327,25 @@ export class BoilingPointController {
         };
     }
 
-    @Get(`${APIPrefix}/boilingpoints/user/:userID`)
-    async userBoilingPoints(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
+    /**
+     * 用户创建的沸点
+     */
+    @Get(`${APIPrefix}/boilingpoints/user/:authorID`)
+    async userBoilingPoints(@CurUser() user, @Param('authorID', MustIntPipe) authorID: number, @Query('page', ParsePagePipe) page: number) {
         const pageSize = 20;
-        const boilingPoints = await this.boilingPointService.userLikeBoilingPoints(user.id, page, pageSize);
-        const boilingpointIDs: number[] = [];
-        const topicIDMap = {};
-        const topicIDs: number[] = [];
-        const userIDMap = {};
-        const userIDs: number[] = [];
-        const imgIDArr: number[] = [];
-        const list = boilingPoints.list.map(boilingPoint => {
-            boilingpointIDs.push(boilingPoint.id);
-            if (boilingPoint.imgs) {
-                const ids = boilingPoint.imgs.split(',');
-                imgIDArr.push(...ids.map(idStr => parseInt(idStr, 10)));
-            }
-            if (!userIDMap[boilingPoint.userID]) {
-                userIDs.push(boilingPoint.userID);
-                userIDMap[boilingPoint.userID] = true;
-            }
-            if (!topicIDMap[boilingPoint.topicID]) {
-                topicIDMap[boilingPoint.topicID] = true;
-                topicIDs.push(boilingPoint.topicID);
-            }
-            return {
-                ...boilingPoint,
-                imgs: boilingPoint.imgs ? boilingPoint.imgs.split(',') : [],
-                middleImgs: [],
-                bigImgs: [],
-                userLiked: false,
-                createdAtLabel: recentTime(boilingPoint.createdAt, 'YYYY.MM.DD HH:mm'),
-            };
-        });
-        let topics: BoilingPointTopic[], users: User[], likes: number[], images: Image[];
-        const topicMap = {}, userMap = {}, likeMap = {}, imageMap = {};
-        [topics, users, likes, images] = await Promise.all([
-            this.topicService.listInIDs(topicIDs),
-            this.userService.findUsers({
-                id: In(userIDs),
-            }, {
-                id: true,
-                username: true,
-                avatarURL: true,
-                job: true,
-                company: true,
+        const [author, listResult] = await Promise.all([
+            this.userService.findOne({
+                where: { id: authorID },
+                select: ['id', 'username', 'avatarURL'],
             }),
-            user ? this.boilingPointService.userLikeBoilingPointIDs(boilingpointIDs, user.id) : Promise.resolve([]),
-            imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
+            this.boilingPointService.userBoilingPoints(user.id, page, pageSize),
         ]);
-        topics.map(t => {
-            topicMap[t.id] = t;
+        listResult.list.map((boilingPoint: BoilingPoint) => {
+            boilingPoint.user = author;
         });
-
-        const uniqueUserIDs: number[] = [];
-        users.map(u => {
-            userMap[u.id] = u;
-            uniqueUserIDs.push(u.id);
-        });
-        const follows = await (user ? this.userService.usersFilterByFollowerID(uniqueUserIDs, user.id) : Promise.resolve([]));
-        const followIDMap = {};
-        follows.forEach(followData => followIDMap[followData.userID] = true);
-        likes.map(boilingPointID => likeMap[boilingPointID] = true);
-        images.map(img => imageMap[img.id] = img);
-        list.map(bp => {
-            bp.topic = topicMap[bp.topicID];
-            bp.user = {
-                ...userMap[bp.userID],
-                isFollowed: !!followIDMap[bp.userID],
-            };
-            bp.userLiked = !!likeMap[bp.id];
-            bp.imgs = bp.imgs.map(imgID => {
-                return {
-                    ...imageMap[imgID],
-                    url: this.configService.static.uploadImgURL + imageMap[imgID].url,
-                };
-            });
-            bp.middleImgs = bp.imgs;
-            bp.bigImgs = bp.imgs;
-        });
+        const list = await this.boilingPointService.fillBoilingPointsRelativeData(listResult.list, authorID);
         return {
-            ...boilingPoints,
+            ...listResult,
             list,
         };
     }

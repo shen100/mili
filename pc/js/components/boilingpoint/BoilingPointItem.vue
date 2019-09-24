@@ -177,7 +177,7 @@ import More from '~/js/components/common/More.vue';
 import Share from '~/js/components/boilingpoint/Share.vue';
 import FollowBtn from '~/js/components/user/FollowBtn.vue';
 
-const maxMiddleImgWidth = 446;
+const defMaxMiddleImgWidth = 446;
 const gridTotalWidth = 336;// 9宫格总宽度
 const gridGap = 6;// 格子之间的间距
 // 有9个格子时，每个格子的宽高，这时格子的宽高比为1:1
@@ -189,6 +189,7 @@ export default {
     props: [
         'boilingData', // 沸点数据
         'userID', // 当前登录用户的id
+        'maxMiddleImgWidth'
     ],
     data () {
         const imgs = this.boilingData.imgs;
@@ -222,13 +223,18 @@ export default {
                 style: {},
             };
         });
-        middleImgArr = middleImgArr.map(img => this.updateMiddleImgStyle(img, { isSwap: false }));
+        middleImgArr = middleImgArr.map(img => this.updateMiddleImgStyle(img, { 
+            isSwap: false, 
+            // 此时，还不能访问this.data，主动传 this.maxMiddleImgWidth，因为props此时能访问
+            maxMiddleImageWidth: this.maxMiddleImgWidth || defMaxMiddleImgWidth
+        }));
         let bigImgArr = (this.boilingData.bigImgs || []).map(imgData => {
             return {
                 ...imgData,
             };
         });
         return {
+            maxMiddleImageWidth: this.maxMiddleImgWidth || defMaxMiddleImgWidth,
             gridTotalWidth,
             isContentExpand: false,
             partialContent: this.getPartialContent(this.boilingData.htmlContent),
@@ -364,6 +370,7 @@ export default {
             // isSwap 是否交换宽高，图片旋转时可能要交换宽高
             options.isSwap = options.isSwap || false;
             options.transform = options.transform || 'rotate(0deg) translate(0px, 0px)';
+            const maxMiddleImageWidth = options.maxMiddleImageWidth || this.maxMiddleImageWidth;
             let originalWidth, originalHeight, imgWidthKey, imgHeightKey;
             const imgSize = {};
             if (options.isSwap) {
@@ -377,8 +384,8 @@ export default {
                 imgWidthKey = 'imgWidth';
                 imgHeightKey = 'imgHeight';
             }
-            if (originalWidth > maxMiddleImgWidth) {
-                imgSize[imgWidthKey] = maxMiddleImgWidth;
+            if (originalWidth > maxMiddleImageWidth) {
+                imgSize[imgWidthKey] = maxMiddleImageWidth;
                 imgSize[imgHeightKey] = originalHeight / (originalWidth / imgSize[imgWidthKey]);
             } else {
                 imgSize[imgWidthKey] = originalWidth;
@@ -393,7 +400,7 @@ export default {
                 width: imgSize.imgWidth + 'px', 
                 height: imgSize.imgHeight + 'px',
                 displayHeight: imgSize[imgHeightKey] + 'px', // 中图父容器的实际高度
-                left: (maxMiddleImgWidth - imgSize[imgWidthKey]) / 2 + 'px',
+                left: (maxMiddleImageWidth - imgSize[imgWidthKey]) / 2 + 'px',
                 transform: options.transform
             };
             return imgData;

@@ -39,6 +39,29 @@ export class BoilingPointService {
         });
     }
 
+    async detail(id: number): Promise<BoilingPoint> {
+        return await this.boilingPointRepository.findOne({
+            select: {
+                id: true,
+                createdAt: true,
+                htmlContent: true,
+                imgs: true,
+                userID: true,
+                topicID: true,
+                browseCount: true,
+                commentCount: true,
+                likeCount: true,
+                summary: true,
+                topic: {
+                    id: true,
+                    name: true,
+                },
+            },
+            where: { id },
+            relations: ['topic'],
+        });
+    }
+
     async listByTopic(topicID: number, page: number): Promise<ListResult<BoilingPoint>> {
         const pageSize = 20;
         const [list, count] = await this.boilingPointRepository.findAndCount({
@@ -150,6 +173,43 @@ export class BoilingPointService {
             await manager.query(`UPDATE users SET boilingpoint_count = boilingpoint_count + 1 WHERE id = ${userID}`);
         });
         return insertResult.raw.insertId;
+    }
+
+    /**
+     * 用户创建的沸点
+     */
+    async userBoilingPoints(userID: number, page: number, pageSize: number): Promise<ListResult<BoilingPoint>> {
+        const [list, count] = await this.boilingPointRepository.findAndCount({
+            select: {
+                id: true,
+                createdAt: true,
+                htmlContent: true,
+                imgs: true,
+                userID: true,
+                topicID: true,
+                browseCount: true,
+                commentCount: true,
+                likeCount: true,
+                summary: true,
+                topic: {
+                    id: true,
+                    name: true,
+                },
+            },
+            where: { userID },
+            relations: ['topic'],
+            order: {
+                createdAt: -1,
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
     }
 
     /**

@@ -14,7 +14,7 @@
                 <template v-slot:content>
                     <div>
                         <ul class="boilingpoint-list" :style="{'margin-top': hasEditor ? '8px' : '0'}">
-                            <BoilingPointItem @bigImageChange="onBrowseBigImg" 
+                            <BoilingPointItem :maxMiddleImgWidth="maxMiddleImgWidth" @bigImageChange="onBrowseBigImg" 
                                 :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
                                 :userID="userID" :boilingData="item" @followChange="onFollowChange"
                                 :ref="`boilingPointItem-${item.id}`"
@@ -76,7 +76,8 @@ export default {
         'topicID', // 有topicID时，那么是话题下的沸点列表
         'userID', // 当前登录用户的id
         'boilingPoint', // boilingPoint 不为空的话，那就是具体的沸点页面，否则是沸点列表
-        'loadingStyle'
+        'loadingStyle',
+        'maxMiddleImgWidth'
     ],
     data() {
         return {

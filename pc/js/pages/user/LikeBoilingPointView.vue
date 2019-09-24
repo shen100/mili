@@ -7,7 +7,7 @@
                 <router-link :to="`/users/${author.id}/like/boilings`" class="sub-type active">沸点</router-link>
             </div>
         </div>
-        <BoilingPoint :editorEnable="false" :url="`/boilingpoints/user/${author.id}/like`" 
+        <BoilingPoint :maxMiddleImgWidth="584" :editorEnable="false" :url="`/boilingpoints/user/${author.id}/like`" 
             :loadingStyle="loadingStyle" :userID="userID" @empty="onEmpty" />
         <div v-if="isEmpty" class="empty-box">
             <img src="../../../images/user/emptybox.svg" />

@@ -17,7 +17,6 @@
     </div>
 </template>
 
-
 <script>
 import HandBookItem from '~/js/components/handbook/HandBookItem.vue';
 import Pinterest from '~/js/components/common/Pinterest.vue';

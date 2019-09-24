@@ -38,7 +38,7 @@
                 <div class="detail-list">
                     <div class="list-header">
                         <div class="header-content">
-                            <router-link :to="`/users/${author.id}/articles`" class="nav-item" active-class="active">
+                            <router-link :to="`/users/${author.id}`" class="nav-item" :class="{active: isArticlePage}">
                                 <div class="item-title">文章</div>
                                 <div class="item-count">1</div>
                             </router-link>
@@ -63,6 +63,9 @@
                             </router-link>
                             <router-link :to="`/users/${author.id}/handbooks`" class="nav-item" active-class="active">
                                 <div class="item-title">小册</div>
+                            </router-link>
+                            <router-link :to="`/users/${author.id}/collections`" class="nav-item" active-class="active">
+                                <div class="item-title">收藏集</div>
                             </router-link>
                         </div>
                     </div>
@@ -166,6 +169,7 @@ export default {
                 'font-size': '16px',
                 'font-weight': 500
             },
+            isArticlePage: false,
             isLikePage: false,
             isFollowPage: false,
         };
@@ -173,9 +177,12 @@ export default {
     mounted() {
         this.$nextTick(() => {
             this.$router.afterEach((to, from) => {
+                this.isArticlePage = false;
                 this.isLikePage = false;
                 this.isFollowPage = false;
-                if (to.path.match(/\/users\/[0-9]+\/like\/articles/)) {
+                if (to.path.match(/\/users\/[0-9]+\/?$/)) {
+                    this.isArticlePage = true;
+                } else if (to.path.match(/\/users\/[0-9]+\/like\/articles/)) {
                     this.isLikePage = true;
                 } else if (to.path.match(/\/users\/[0-9]+\/like\/boilings/)) {
                     this.isLikePage = true;

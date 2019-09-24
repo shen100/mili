@@ -1,6 +1,6 @@
 <template>
     <div>
-        <BoilingPoint :editorEnable="false" :url="`/boilingpoints/user/${author.id}`" 
+        <BoilingPoint :maxMiddleImgWidth="584" :editorEnable="false" :url="`/boilingpoints/user/${author.id}`" 
             :loadingStyle="loadingStyle" :userID="userID" @empty="onEmpty" />
         <div v-if="isEmpty" class="empty-box">
             <img src="../../../images/user/emptybox.svg" />

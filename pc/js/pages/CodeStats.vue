@@ -53,6 +53,7 @@ export default {
             'pc/js/entry/codeStats.js',
             'pc/js/pages/boilingpoint/BoilingPoint.vue',
             'pc/js/pages/CodeStats.vue',
+            'pc/js/pages/user/ArticleView.vue',
             'pc/js/pages/user/BoilingPointView.vue',
             'pc/js/pages/user/FollowTagView.vue',
             'pc/js/pages/user/FollowView.vue',
