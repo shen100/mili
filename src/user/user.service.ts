@@ -45,7 +45,7 @@ export class UserService {
     async basicInfo(id: number): Promise<User | undefined> {
         const user: User | undefined = await this.userRepository.findOne({
             select: [
-                'id', 'createdAt', 'username', 'articleCount', 'collectCount',
+                'id', 'createdAt', 'username', 'articleCount',
                 'commentCount', 'introduce', 'role', 'avatarURL', 'sex',
             ] as any,
             where: { id },
@@ -53,9 +53,9 @@ export class UserService {
         return user;
     }
 
-    async detail(id: number): Promise<User | undefined> {
+    async detail(id: number): Promise<User> {
         return await this.userRepository.createQueryBuilder('user')
-            .select(['user.id', 'user.createdAt', 'user.username', 'user.articleCount', 'user.collectCount',
+            .select(['user.id', 'user.createdAt', 'user.username', 'user.articleCount', 'user.likedCount', 'user.uLikeCount',
                 'user.commentCount', 'user.job', 'user.company', 'user.introduce', 'user.role', 'user.avatarURL', 'user.sex',
                 'c.id', 'c.name', 'c.coverURL', 'c.creatorID',
             ])
@@ -344,7 +344,7 @@ export class UserService {
         if (!user) {
             user = await this.userRepository.findOne({
                 select: [
-                    'id', 'status', 'createdAt', 'username', 'articleCount', 'collectCount',
+                    'id', 'status', 'createdAt', 'username', 'articleCount', 'collectionCount',
                     'commentCount', 'followCount', 'followerCount', 'boilingPointCount',
                     'introduce', 'role', 'avatarURL', 'sex',
                 ] as any,

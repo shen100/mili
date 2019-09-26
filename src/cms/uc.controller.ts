@@ -1,6 +1,7 @@
 import {
   Controller, Get, Param, Query, Res,
 } from '@nestjs/common';
+import * as moment from 'moment';
 import * as bluebird from 'bluebird';
 import { ArticleService } from './article.service';
 import { UserService } from '../user/user.service';
@@ -25,7 +26,7 @@ export class UCController {
 
     @Get('/users/:authorID/:page?')
     async userCenter(@Param('authorID', MustIntPipe) authorID: number, @Param('page') page: string, @CurUser() user, @Res() res) {
-        if (page && ['articles', 'boilings', 'follows', 'followers', 'followtags', 'handbooks'].indexOf(page) < 0) {
+        if (page && ['articles', 'boilings', 'follows', 'followers', 'followtags', 'handbooks', 'collections'].indexOf(page) < 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });
@@ -55,7 +56,10 @@ export class UCController {
             userLevelChapterURL: this.configService.static.userLevelChapterURL,
             followed,
             user,
-            author,
+            author: {
+                ...author,
+                createdAtLabel: moment(author.createdAt).format('YYYY-MM-DD'),
+            },
             salutation: user && user.id === author.id ? '我' : '他',
             articles,
             createCollections,

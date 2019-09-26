@@ -97,7 +97,7 @@ new Vue({
 // 喜欢文章
 (function () {
     let articleUserLiked = window.userLiked;
-    let articleLikeCount = window.articleLikeCount;
+    let articleLikedCount = window.articleLikedCount;
     const likeArticelBtn = document.getElementById('likeArticelBtn');
     if (articleUserLiked) {
         addClass(likeArticelBtn, 'active');
@@ -108,9 +108,9 @@ new Vue({
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     removeClass(likeArticelBtn, 'like-animation');
                     removeClass(likeArticelBtn, 'active');
-                    articleLikeCount--;
+                    articleLikedCount--;
                     articleUserLiked = false;
-                    document.getElementById('articelLikeCount').innerHTML = articleLikeCount;
+                    document.getElementById('articelLikedCount').innerHTML = articleLikedCount;
                 }
             });
         } else {
@@ -118,9 +118,9 @@ new Vue({
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     addClass(likeArticelBtn, 'like-animation');
                     addClass(likeArticelBtn, 'active');
-                    articleLikeCount++;
+                    articleLikedCount++;
                     articleUserLiked = true;
-                    document.getElementById('articelLikeCount').innerHTML = articleLikeCount;
+                    document.getElementById('articelLikedCount').innerHTML = articleLikedCount;
                 } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
                     location.href = '/signin.html';
                 }

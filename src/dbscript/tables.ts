@@ -54,7 +54,7 @@ export const tablesRun = async function (connection) {
             updated_at datetime NOT NULL,
             deleted_at datetime DEFAULT NULL,
             root_id int(11) NOT NULL DEFAULT '0',
-            like_count int(11) NOT NULL DEFAULT '0',
+            liked_count int(11) NOT NULL DEFAULT '0',
             comment_count int(11) NOT NULL DEFAULT '0',
             PRIMARY KEY (id)
           ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
@@ -249,7 +249,7 @@ export const tablesRun = async function (connection) {
           topic_id int(11) unsigned,
           browse_count int(11) unsigned NOT NULL DEFAULT 0,
           comment_count int(11) unsigned NOT NULL DEFAULT 0,
-          like_count int(11) unsigned NOT NULL DEFAULT 0,
+          liked_count int(11) unsigned NOT NULL DEFAULT 0,
           PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);

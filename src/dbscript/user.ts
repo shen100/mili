@@ -11,12 +11,22 @@ export const userRun = async function (connection, config) {
         await connection.manager.query(`alter table users drop column score`);
         await connection.manager.query(`alter table users change name username varchar(100)`);
 
-        await connection.manager.query(`alter table users add column word_count int`);
+        await connection.manager.query(`alter table users add column word_count int not null default 0`);
+        await connection.manager.query(`alter table users add column value int not null default 0`);
 
+        await connection.manager.query(`alter table users add column article_view_count int not null default 0`);
         await connection.manager.query(`alter table users add column follow_count int not null default 0`);
         await connection.manager.query(`alter table users add column boilingpoint_count int not null default 0`);
         await connection.manager.query(`alter table users add column follower_count int not null default 0`);
-        await connection.manager.query(`alter table users add column like_count int not null default 0`);
+
+        await connection.manager.query(`alter table users add column follow_tag_count int not null default 0`);
+        await connection.manager.query(`alter table users add column collection_count int not null default 0`);
+
+        await connection.manager.query(`alter table users add column liked_count int not null default 0`);
+        await connection.manager.query(`alter table users add column u_like_count int not null default 0`);
+        await connection.manager.query(`alter table users add column u_article_like_count int not null default 0`);
+        await connection.manager.query(`alter table users add column u_bp_like_count int not null default 0`);
+
         await connection.manager.query(`alter table users add column job varchar(100)`);
         await connection.manager.query(`alter table users add column company varchar(100)`);
 

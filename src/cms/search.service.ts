@@ -24,7 +24,7 @@ export class SearchService {
                     createdAt: true,
                     summary: true,
                     commentCount: true,
-                    likeCount: true,
+                    likedCount: true,
                     user: {
                         id: true,
                         username: true,

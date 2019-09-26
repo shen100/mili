@@ -26,7 +26,7 @@
                         <span class="wordage">字数 {{article.wordCount | defaultValue(0)}}</span>
                         <span class="views-count">阅读 {{article.browseCount | defaultValue(0)}}</span>
                         <span class="comments-count">评论 {{article.commentCount | defaultValue(0)}}</span>
-                        <span class="likes-count">喜欢 {{article.likeCount | defaultValue(0)}}</span>
+                        <span class="likes-count">喜欢 {{article.likedCount | defaultValue(0)}}</span>
                         <span class="dot">·</span>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                         {% endif %}
                     {% endif %}
                     <a class="title" href="/users/{{article.user.id}}.html" target="_blank">{{article.user.username}}</a>
-                    <p>写了 {{article.user.wordCount | defaultValue(0)}} 字，被 {{article.user.followerCount | defaultValue(0)}} 人关注，获得了 {{article.user.likeCount | defaultValue(0)}} 个喜欢</p>
+                    <p>写了 {{article.user.wordCount | defaultValue(0)}} 字，被 {{article.user.followerCount | defaultValue(0)}} 人关注，获得了 {{article.user.likedCount | defaultValue(0)}} 个喜欢</p>
                 </div>
                 {% if article.user.introduce %}
                 <div class="introduce">{{article.user.introduce}}</div>
@@ -82,7 +82,7 @@
                 <div class="like">
                     <div id="likeArticelBtn" class="btn like-group">
                         <div class="btn-like"><a>喜欢</a></div>
-                        <div class="modal-wrap"><a id="articelLikeCount">{{article.likeCount | defaultValue(0)}}</a></div>
+                        <div class="modal-wrap"><a id="articelLikedCount">{{article.likedCount | defaultValue(0)}}</a></div>
                     </div>
                 </div>
                 <div class="share-group" style="position: relative;">
@@ -202,7 +202,7 @@
   var isAuthorSelf = {{ isAuthorSelf }};
   var userLiked = {{ userLiked }};
   var userFollowed = {{ userFollowed }};
-  var articleLikeCount = {{ article.likeCount }};
+  var articleLikedCount = {{ article.likedCount }};
   var commentEnabled = {{ article.commentEnabled }};
   // 当前登录用户
   var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};

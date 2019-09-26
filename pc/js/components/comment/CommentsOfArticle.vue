@@ -64,7 +64,7 @@
                                 <div v-html="comment.htmlContent"></div>
                                 <div class="tool-group">
                                     <a @click="onLikeOrNot(comment)" class="like-button" :class="{active: comment.userLiked, 'zan-animation': comment.userLiked}">
-                                        <span>{{comment.likeCount || ''}}{{comment.likeCount ? '人' : ''}}赞</span>
+                                        <span>{{comment.likedCount || ''}}{{comment.likedCount ? '人' : ''}}赞</span>
                                     </a>
                                     <a @click="onAddComment(comment)">
                                         <i class="iconfont ic-comment"></i>
@@ -101,7 +101,7 @@
                                 <div class="sub-tool-group">
                                     <span>{{subcomment.createdAtLabel}}</span>
                                     <a @click="onLikeOrNot(subcomment)" class="like-button" :class="{active: subcomment.userLiked, 'zan-animation': subcomment.userLiked}">
-                                        <span>{{subcomment.likeCount || ''}}{{subcomment.likeCount ? '人' : ''}}赞</span>
+                                        <span>{{subcomment.likedCount || ''}}{{subcomment.likedCount ? '人' : ''}}赞</span>
                                     </a>
                                     <a @click="onAddComment(subcomment)"><i class="iconfont ic-comment"></i> <span>回复</span></a> 
                                     <a v-if="subcomment.user.id === userID" @click="showDeleteCommentAlert(subcomment)" class="report"><span>删除</span></a>
@@ -314,7 +314,7 @@ export default {
             };
             comment.editorToggled = false;
             comment.userLiked = false;
-            comment.likeCount = 0;
+            comment.likedCount = 0;
             comment.comments = [];
             this.commentMap[comment.id] = comment;
             if (comment.parentID) {
@@ -346,14 +346,14 @@ export default {
                 myHTTP.post(url).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         comment.userLiked = true;
-                        comment.likeCount++;
+                        comment.likedCount++;
                     }
                 });
             } else {
                 myHTTP.delete(url).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         comment.userLiked = false;
-                        comment.likeCount--;
+                        comment.likedCount--;
                     }
                 });
             }

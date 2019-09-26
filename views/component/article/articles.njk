@@ -16,7 +16,7 @@
                     {{article.commentCount | defaultValue(0)}}
                 </a>
                 <a target="_blank" href="/p/{{article.id}}.html#like">
-                    <i class="iconfont ic-list-like"></i> {{article.likeCount | defaultValue(0)}}
+                    <i class="iconfont ic-list-like"></i> {{article.likedCount | defaultValue(0)}}
                 </a>
                 <span class="time">{{article.createdAt | recentTime('YYYY.MM.DD HH:mm')}}</span>
             </div>

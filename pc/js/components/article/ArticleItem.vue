@@ -12,7 +12,7 @@
                     {{articleData.commentCount || 0}}
                 </a>
                 <a target="_blank" :href="`/p/${articleData.id}.html#like`">
-                    <i class="iconfont ic-list-like"></i> {{articleData.likeCount || 0}}
+                    <i class="iconfont ic-list-like"></i> {{articleData.likedCount || 0}}
                 </a>
                 <span class="time">{{articleData.createdAtLabel}}</span>
             </div>

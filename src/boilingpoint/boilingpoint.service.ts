@@ -50,7 +50,7 @@ export class BoilingPointService {
                 topicID: true,
                 browseCount: true,
                 commentCount: true,
-                likeCount: true,
+                likedCount: true,
                 summary: true,
                 topic: {
                     id: true,
@@ -189,7 +189,7 @@ export class BoilingPointService {
                 topicID: true,
                 browseCount: true,
                 commentCount: true,
-                likeCount: true,
+                likedCount: true,
                 summary: true,
                 topic: {
                     id: true,
@@ -233,7 +233,7 @@ export class BoilingPointService {
         const sql = `SELECT boilingpoints.id as id, boilingpoints.created_at as createdAt, boilingpoints.html_content as htmlContent,
                 boilingpoints.imgs as imgs, boilingpoints.user_id as userID, boilingpoints.topic_id as topicID,
                 boilingpoints.browse_count as browseCount, boilingpoints.comment_count as commentCount,
-                boilingpoints.like_count as likeCount, boilingpoints.summary as summary
+                boilingpoints.liked_count as likedCount, boilingpoints.summary as summary
             FROM user_like_boilingpoints, boilingpoints
             WHERE user_like_boilingpoints.user_id = ? AND user_like_boilingpoints.boilingpoint_id = boilingpoints.id
             ORDER BY user_like_boilingpoints.created_at DESC LIMIT ?, ?`;
@@ -360,7 +360,7 @@ export class BoilingPointService {
         await this.boilingPointRepository.manager.connection.transaction(async manager => {
             const sql2 = `INSERT INTO user_like_boilingpoints (boilingpoint_id, user_id, created_at)
                 VALUES(${boilingpointID}, ${userID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}")`;
-            const sql3 = `UPDATE boilingpoints SET like_count = like_count + 1 WHERE id = ${boilingpointID}`;
+            const sql3 = `UPDATE boilingpoints SET liked_count = liked_count + 1 WHERE id = ${boilingpointID}`;
             await manager.query(sql2);
             await manager.query(sql3);
         });
@@ -380,7 +380,7 @@ export class BoilingPointService {
         await this.boilingPointRepository.manager.connection.transaction(async manager => {
             const sql2 = `DELETE FROM user_like_boilingpoints
                 WHERE boilingpoint_id = ${boilingpointID} AND user_id = ${userID}`;
-            const sql3 = `UPDATE boilingpoints SET like_count = like_count - 1 WHERE id = ${boilingpointID}`;
+            const sql3 = `UPDATE boilingpoints SET liked_count = liked_count - 1 WHERE id = ${boilingpointID}`;
             await manager.query(sql2);
             await manager.query(sql3);
         });

@@ -78,7 +78,7 @@ export class TransformResInterceptor<T> implements NestInterceptor {
     getStat(req: MyRequest) {
         const pathname = url.parse(req.originalUrl).pathname;
         if (pathname === '/') {
-            return req.method.toLocaleLowerCase() + '_/';
+            return req.method.toLocaleLowerCase() + '_' + '/';
         }
         let partArr = pathname.split('/');
         partArr = partArr.map(p => p.replace(/^[0-9]+$/, 'id'));

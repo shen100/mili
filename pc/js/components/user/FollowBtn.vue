@@ -1,5 +1,5 @@
 <template>
-    <button class="subscribe-btn follow-btn"
+    <button class="subscribe-btn follow-btn" :style="isFollowed ? followedStyle : notFollowedStyle"
         @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave" 
         :class="{'followed': isFollowed}">{{followText}}</button>
 </template>
@@ -13,6 +13,8 @@ export default {
         'userID', // 有userID时，是关注用户
         'tagID',  // 有tagID时，是关注标签
         'followed',
+        'followedStyle',
+        'notFollowedStyle'
     ],
     data () {
         return {

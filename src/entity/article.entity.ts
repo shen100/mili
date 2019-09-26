@@ -51,11 +51,8 @@ export class Article {
     @Column('int', { name: 'comment_count' })
     commentCount: number;
 
-    @Column('int', { name: 'collect_count' })
-    collectCount: number;
-
-    @Column('int', { name: 'like_count' })
-    likeCount: number;
+    @Column('int', { name: 'liked_count' })
+    likedCount: number;
 
     @Column('int', { name: 'word_count' })
     wordCount: number;

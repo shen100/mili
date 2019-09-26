@@ -12,7 +12,7 @@ export const mdToHTML = async function (connection) {
 
     try {
         await connection.manager.query(`alter table articles add column summary varchar(${summaryLenth})`);
-        await connection.manager.query(`alter table articles add column like_count int default 0`);
+        await connection.manager.query(`alter table articles add column liked_count int default 0`);
         await connection.manager.query(`alter table articles add column word_count int default 0`);
         await connection.manager.query(`alter table articles add column hot int default 0`);
         await connection.manager.query(`alter table articles add column comment_enabled tinyint(1) NOT NULL DEFAULT '1'`);

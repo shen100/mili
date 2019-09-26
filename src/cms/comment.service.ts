@@ -112,7 +112,7 @@ export class CommentService {
                         username: true,
                         avatarURL: true,
                     },
-                    likeCount: true,
+                    likedCount: true,
                 },
                 relations: ['user'],
                 where: condition,
@@ -264,7 +264,7 @@ export class CommentService {
             const sql2 = `INSERT INTO ${userLikeTable} (comment_id, user_id, created_at, article_id, parent_id, root_id)
                 VALUES(${commentID}, ${userID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}", ${articleID},
                 ${parentID}, ${rootID})`;
-            const sql3 = `UPDATE ${commentTable} SET like_count = like_count + 1 WHERE id = ${commentID}`;
+            const sql3 = `UPDATE ${commentTable} SET liked_count = liked_count + 1 WHERE id = ${commentID}`;
             await manager.query(sql2);
             await manager.query(sql3);
         });
@@ -287,7 +287,7 @@ export class CommentService {
         await this.commentRepository.manager.connection.transaction(async manager => {
             const sql2 = `DELETE FROM ${userLikeTable}
                 WHERE comment_id = ${commentID} AND user_id = ${userID}`;
-            const sql3 = `UPDATE ${commentTable} SET like_count = like_count - 1 WHERE id = ${commentID}`;
+            const sql3 = `UPDATE ${commentTable} SET liked_count = liked_count - 1 WHERE id = ${commentID}`;
             await manager.query(sql2);
             await manager.query(sql3);
         });

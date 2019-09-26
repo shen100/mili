@@ -68,11 +68,14 @@ export class User {
     @Column('varchar', { length: 100 })
     pass: string;
 
+    @Column('int', { name: 'value', default: 0 })
+    value: number; // 米粒值
+
     @Column('int', { name: 'article_count', default: 0 })
     articleCount: number;
 
-    @Column('int', { name: 'collect_count', default: 0 })
-    collectCount: number;
+    @Column('int', { name: 'article_view_count', default: 0 })
+    articleViewCount: number; // 文章被阅读的次数
 
     @Column('int', { name: 'comment_count', default: 0 })
     commentCount: number;
@@ -89,8 +92,23 @@ export class User {
     @Column('int', { name: 'follower_count', default: 0 })
     followerCount: number; // 被多少人关注
 
-    @Column('int', { name: 'like_count', default: 0 })
-    likeCount: number; // 获得多少个喜欢, 如点击文章的喜欢，这时作者将获得一个喜欢
+    @Column('int', { name: 'follow_tag_count', default: 0 })
+    followTagCount: number; // 关注了多少个标签
+
+    @Column('int', { name: 'liked_count', default: 0 })
+    likedCount: number; // 获得多少个赞
+
+    @Column('int', { name: 'u_like_count', default: 0 })
+    uLikeCount: number; // 用户一共点了多少个赞
+
+    @Column('int', { name: 'u_article_like_count', default: 0 })
+    uArticleLikeCount: number; // 用户对文章点了多少个赞
+
+    @Column('int', { name: 'u_bp_like_count', default: 0 })
+    uBoilingPointLikeCount: number; // 用户对沸点点了多少个赞
+
+    @Column('int', { name: 'collection_count', default: 0 })
+    collectionCount: number; // 收藏集的个数
 
     @Column('int')
     role: UserRole; // 角色

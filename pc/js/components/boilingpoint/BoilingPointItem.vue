@@ -30,7 +30,7 @@
                 <div class="header-action">
                     <FollowBtn ref="userFollowBtn" v-if="userID !== boilingData.user.id" @followChange="onFollowChange"
                         :userID="boilingData.user.id" :followed="isFollowed" 
-                        :style="isFollowed ? followedStyle : notFollowedStyle" />
+                        :followedStyle="followedStyle" :notFollowedStyle="notFollowedStyle" />
                     <div v-clickoutside="clickoutsideReport" class="pin-header-more header-menu">
                         <div @click="onReport" class="more-button">
                             <More />
@@ -133,7 +133,7 @@
                                     </template>    
                                 </g>
                             </svg>
-                            <span class="action-title" :style="{color: boilingData.userLiked ? '#37c700' : '#8a93a0'}">{{boilingData.likeCount ? boilingData.likeCount : '赞'}}</span>
+                            <span class="action-title" :style="{color: boilingData.userLiked ? '#37c700' : '#8a93a0'}">{{boilingData.likedCount ? boilingData.likedCount : '赞'}}</span>
                         </div>
                     </div>
                     <div class="comment-action action">
@@ -464,14 +464,14 @@ export default {
                 myHTTP.post(url).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         boilingPoint.userLiked = true;
-                        boilingPoint.likeCount++;
+                        boilingPoint.likedCount++;
                     }
                 });
             } else {
                 myHTTP.delete(url).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         boilingPoint.userLiked = false;
-                        boilingPoint.likeCount--;
+                        boilingPoint.likedCount--;
                     }
                 });
             }

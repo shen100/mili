@@ -41,7 +41,7 @@
                                 <a :href="`/p/${msg.article.id}.html#comments`">
                                     <i class="iconfont ic-list-comments"></i> {{msg.article.commentCount}}
                                 </a> 
-                                <a :href="`/p/${msg.article.id}.html#like`"><i class="iconfont ic-list-like"></i> {{msg.article.likeCount}}</a> 
+                                <a :href="`/p/${msg.article.id}.html#like`"><i class="iconfont ic-list-like"></i> {{msg.article.likedCount}}</a> 
                             </div>
                         </div> 
                         <div class="push-action">

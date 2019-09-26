@@ -43,7 +43,6 @@ export default {
         host: '',
         port: 8125,
         prefix: 'mili_',
-        telegraf: true,
         protocol: 'udp',
     },
     server: {

@@ -27,7 +27,7 @@
                     <div class="social">
                         <FollowBtn ref="userFollowBtn" v-if="userID !== followerID" @followChange="onFollowChange"
                             :userID="userID" :followed="isFollowed" 
-                            :style="isFollowed ? followedStyle : notFollowedStyle" />
+                            :followedStyle="followedStyle" :notFollowedStyle="notFollowedStyle" />
                     </div>
                 </div>
             </div>

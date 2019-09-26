@@ -66,9 +66,6 @@ export class Book {
     @Column('int', { name: 'comment_count' })
     commentCount: number;
 
-    @Column('int', { name: 'collect_count' })
-    collectCount: number;
-
     @Column('int', { name: 'chapter_count' })
     chapterCount: number;
 

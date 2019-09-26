@@ -18,3 +18,8 @@ export const levelImgURL = (level) => {
     }[level] || 'lv1.svg';
     return globalConfig.imgPath + '/user/level/' + imgURL;
 };
+
+export const prettyCount = (count) => {
+    count = count || 0;
+    return count.toLocaleString();
+}

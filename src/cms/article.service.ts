@@ -51,7 +51,7 @@ export class ArticleService {
                     wordCount: true,
                     browseCount: true,
                     commentCount: true,
-                    likeCount: true,
+                    likedCount: true,
                     summary: true,
                     htmlContent: true,
                     commentEnabled: true,
@@ -61,7 +61,7 @@ export class ArticleService {
                         avatarURL: true,
                         wordCount: true,
                         followerCount: true,
-                        likeCount: true,
+                        likedCount: true,
                         introduce: true,
                     },
                 },
@@ -94,7 +94,7 @@ export class ArticleService {
                 wordCount: true,
                 browseCount: true,
                 commentCount: true,
-                likeCount: true,
+                likedCount: true,
                 contentType: true,
                 summary: true,
                 content: true,
@@ -117,7 +117,7 @@ export class ArticleService {
                 createdAt: true,
                 summary: true,
                 commentCount: true,
-                likeCount: true,
+                likedCount: true,
                 coverURL: true,
                 user: {
                     id: true,
@@ -148,7 +148,7 @@ export class ArticleService {
      */
     async userLikeArticles(userID: number, page: number, pageSize: number): Promise<ListResult<Article>> {
         const sql = `SELECT articles.id as id, articles.name as name, articles.created_at as createdAt, articles.summary as summary,
-                articles.comment_count as commentCount, articles.like_count as likeCount, articles.cover_url as coverURL
+                articles.comment_count as commentCount, articles.liked_count as likedCount, articles.cover_url as coverURL
             FROM user_like_articles, articles
             WHERE user_like_articles.user_id = ? AND articles.id = user_like_articles.article_id 
             ORDER BY user_like_articles.created_at DESC LIMIT ?, ?`;
@@ -168,7 +168,7 @@ export class ArticleService {
     async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult<Article>> {
         const [list, count] = await this.articleRepository.createQueryBuilder('a')
             .select(['a.id', 'a.name', 'a.createdAt', 'a.summary', 'a.commentCount',
-                'a.coverURL', 'a.likeCount', 'user.id', 'user.username', 'user.avatarURL'])
+                'a.coverURL', 'a.likedCount', 'user.id', 'user.username', 'user.avatarURL'])
             .leftJoin('a.user', 'user')
             .leftJoin('a.categories', 'c')
             .where('a.status != :status AND c.id = :categoryID', {
@@ -194,7 +194,7 @@ export class ArticleService {
         }
         const [list, count] = await this.articleRepository.createQueryBuilder('a')
             .select(['a.id', 'a.name', 'a.createdAt', 'a.summary', 'a.commentCount', 'a.browseCount',
-                'a.coverURL', 'a.likeCount', 'user.id', 'user.username', 'user.avatarURL'])
+                'a.coverURL', 'a.likedCount', 'user.id', 'user.username', 'user.avatarURL'])
             .leftJoin('a.user', 'user')
             .leftJoin('a.tags', 't')
             .where('a.status != :status AND t.id = :tagID', {
@@ -247,7 +247,7 @@ export class ArticleService {
                 createdAt: true,
                 summary: true,
                 commentCount: true,
-                likeCount: true,
+                likedCount: true,
                 coverURL: true,
                 user: {
                     id: true,
@@ -412,7 +412,6 @@ export class ArticleService {
         article.name = createArticleDto.name;
         article.categories = categories;
         article.tags = tags;
-        article.collectCount = 0;
         article.commentCount = 0;
         article.browseCount = 0;
         article.contentType = createArticleDto.contentType;
@@ -571,11 +570,11 @@ export class ArticleService {
     async likeOrCancelLike(articleID: number, userID: number) {
         const sql = `DELETE FROM user_like_articles
                 WHERE article_id = ${articleID} AND user_id = ${userID}`;
-        const sql2 = `UPDATE articles SET like_count = like_count - 1 WHERE id = ${articleID}`;
+        const sql2 = `UPDATE articles SET liked_count = liked_count - 1 WHERE id = ${articleID}`;
 
         const sql3 = `INSERT INTO user_like_articles (user_id, article_id, created_at)
                 VALUES (${userID}, ${articleID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}")`;
-        const sql4 = `UPDATE articles SET like_count = like_count + 1 WHERE id = ${articleID}`;
+        const sql4 = `UPDATE articles SET liked_count = liked_count + 1 WHERE id = ${articleID}`;
 
         const userLiked = await this.isUserLiked(articleID, userID);
 
@@ -615,7 +614,7 @@ export class ArticleService {
                     createdAt: true,
                     summary: true,
                     commentCount: true,
-                    likeCount: true,
+                    likedCount: true,
                     user: {
                         id: true,
                         username: true,

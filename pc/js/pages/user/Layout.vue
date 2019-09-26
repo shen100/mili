@@ -6,7 +6,7 @@
                 <div class="info-box">
                     <div class="top">
                         <h1 class="username">{{author.username}}<a href="/" target="_blank" class="rank">
-                            <img src="https://b-gold-cdn.xitu.io/v3/static/img/lv-3.e108c68.svg"></a>
+                            <img :src="author.level | levelImgURL"></a>
                         </h1>
                     </div>
                     <div class="position">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="action-box">
                     <FollowBtn ref="followBtn" @followChange="onFollowChange" :userID="author.id" 
-                        :followed="isFollowed" :style="isFollowed ? followedStyle : notFollowedStyle"></FollowBtn>
+                        :followed="isFollowed" :followedStyle="followedStyle" :notFollowedStyle="notFollowedStyle"></FollowBtn>
                 </div>
             </div>
             <div class="list-block">
@@ -40,22 +40,22 @@
                         <div class="header-content">
                             <router-link :to="`/users/${author.id}`" class="nav-item" :class="{active: isArticlePage}">
                                 <div class="item-title">文章</div>
-                                <div class="item-count">1</div>
+                                <div class="item-count">{{author.articleCount}}</div>
                             </router-link>
                             <router-link :to="`/users/${author.id}/boilings`" class="nav-item" active-class="active">
                                 <div class="item-title">沸点</div>
-                                <div class="item-count">1</div>
+                                <div class="item-count">{{author.boilingPointCount}}</div>
                             </router-link>
                             <div @click="onLikeClick" v-clickoutside="onClickOutSide" class="nav-item not-in-scroll-mode" 
                                 :class="{open: likeClicked, active: isLikePage}">
                                 <div class="item-title">赞</div>
-                                <div class="item-count">1</div>
+                                <div class="item-count">{{author.uLikeCount || 0}}</div>
                                 <div class="item-count">
                                     <i class="fa fa-caret-down"></i>
                                 </div>
                                 <div v-if="likeClicked" class="more-panel">
-                                    <router-link :to="`/users/${author.id}/like/articles`" class="more-item">文章 0</router-link>
-                                    <router-link :to="`/users/${author.id}/like/boilings`" class="more-item">沸点 1</router-link>
+                                    <router-link :to="`/users/${author.id}/like/articles`" class="more-item">文章 {{author.articleLikeCount || 0}}</router-link>
+                                    <router-link :to="`/users/${author.id}/like/boilings`" class="more-item">沸点 {{author.boilingPointLikeCount || 0}}</router-link>
                                 </div>
                             </div>
                             <router-link :to="`/users/${author.id}/follows`" class="nav-item" :class="{active: isFollowPage}">
@@ -81,13 +81,13 @@
                     <div class="block-title">个人成就</div>
                     <div class="block-body">
                         <div class="stat-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="26" viewBox="0 0 25 26" class="zan-icon">
+                            <svg width="25" height="26" viewBox="0 0 25 26" class="zan-icon">
                                 <g fill="none" fill-rule="evenodd" transform="translate(0 .57)">
                                     <ellipse cx="12.5" cy="12.57" fill="#fadcd6" rx="12.5" ry="12.57"></ellipse>
                                     <path fill="#e77c6a" d="M8.596 11.238V19H7.033C6.463 19 6 18.465 6 17.807v-5.282c0-.685.483-1.287 1.033-1.287h1.563zm4.275-4.156A1.284 1.284 0 0 1 14.156 6c.885.016 1.412.722 1.595 1.07.334.638.343 1.687.114 2.361-.207.61-.687 1.412-.687 1.412h3.596c.38 0 .733.178.969.488.239.317.318.728.21 1.102l-1.628 5.645a1.245 1.245 0 0 1-1.192.922h-7.068v-7.889c1.624-.336 2.623-2.866 2.806-4.029z"></path>
                                 </g>
                             </svg>
-                            <span class="content">获得点赞<span class="count">1,129</span></span>
+                            <span class="content">获得点赞<span class="count">{{author.likedCount | prettyCount}}</span></span>
                         </div>
                         <div class="stat-item">
                             <svg width="25" height="25" viewBox="0 0 25 25" class="article-view-icon">
@@ -96,42 +96,42 @@
                                     <path fill="#e77c6a" d="M4 12.5S6.917 7 12.75 7s8.75 5.5 8.75 5.5-2.917 5.5-8.75 5.5S4 12.5 4 12.5zm8.75 2.292c1.208 0 2.188-1.026 2.188-2.292 0-1.266-.98-2.292-2.188-2.292-1.208 0-2.188 1.026-2.188 2.292 0 1.266.98 2.292 2.188 2.292z"></path>
                                 </g>
                             </svg>
-                            <span class="content">文章被阅读<span class="count">46,499</span></span>
+                            <span class="content">文章被阅读<span class="count">{{author.articleViewCount | prettyCount}}</span></span>
                         </div>
                         <div class="stat-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" class="stat-jp-icon">
+                            <svg width="25" height="25" viewBox="0 0 25 25" class="stat-jp-icon">
                                 <g fill="none" fill-rule="evenodd">
                                     <circle cx="12.5" cy="12.5" r="12.5" fill="#fadcd6"></circle> 
                                     <path fill="#e77c6a" d="M16.694 13.516l-3.719 3.055a1.1 1.1 0 0 1-1.412-.013l-2.77-2.362-3.597 2.437a.693.693 0 0 1-.895-.101.649.649 0 0 1-.008-.876l3.68-4.096a1.1 1.1 0 0 1 1.507-.122l2.653 2.135 2.248-2.4-1.34-1.358a.5.5 0 0 1 .327-.85l5.438-.313a.5.5 0 0 1 .528.533l-.368 5.449a.5.5 0 0 1-.855.317l-1.417-1.435z"></path>
                                 </g>
                             </svg>
-                            <span class="content">米粒值<span class="count">1,592</span></span>
+                            <span class="content">米粒值<span class="count">{{author.value | prettyCount}}</span></span>
                         </div>
                     </div>
                 </div>
                 <div class="follow-block">
                     <router-link :to="`/users/${author.id}/follows`" class="follow-item">
                         <div class="item-title">关注</div>
-                        <div class="item-count">45</div>
+                        <div class="item-count">{{author.followCount | prettyCount}}</div>
                     </router-link>
                     <router-link :to="`/users/${author.id}/followers`" class="follow-item">
                         <div class="item-title">粉丝</div>
-                        <div class="item-count">1,088</div>
+                        <div class="item-count">{{author.followerCount | prettyCount}}</div>
                     </router-link>
                 </div>
                 <div class="more-block">
-                    <router-link :to="`/users/${author.id}/followtags`" class="more-item">
+                    <router-link :to="`/users/${author.id}/collections`" class="more-item">
                         <div class="item-title">收藏集</div>
-                        <div class="item-count">0</div>
+                        <div class="item-count">{{author.collectionCount | prettyCount}}</div>
                     </router-link>
                     <router-link :to="`/users/${author.id}/followtags`" class="more-item">
                         <div class="item-title">关注标签</div>
-                        <div class="item-count">18</div>
+                        <div class="item-count">{{author.followTagCount | prettyCount}}</div>
                     </router-link>
                     <div class="more-item">
                         <div class="item-title">加入于</div>
                         <div class="item-count">
-                            <time class="time">2018-07-24</time>
+                            <time class="time">{{author.createdAtLabel}}</time>
                         </div>
                     </div>
                 </div>
@@ -141,12 +141,13 @@
 </template>
 
 <script>
+import { levelImgURL, prettyCount } from '~/js/common/filters.js';
 import FollowBtn from '~/js/components/user/FollowBtn.vue';
 
 export default {
     data () {
         return {
-            likeClicked: false,
+            likeClicked: false, // tab中的赞是否已点击，点击了的话，弹出文章、沸点下拉列表
             author: window.author,
             userID: window.userID || undefined,
             isFollowed: window.followed,
@@ -169,9 +170,9 @@ export default {
                 'font-size': '16px',
                 'font-weight': 500
             },
-            isArticlePage: false,
-            isLikePage: false,
-            isFollowPage: false,
+            isArticlePage: false, // 当前浏览器中的url是否是文章页面url
+            isLikePage: false, // 当前浏览器中的url是否是赞页面url
+            isFollowPage: false, // 当前浏览器中的url是否是关注页面url
         };
     },
     mounted() {
@@ -205,9 +206,10 @@ export default {
         },
         onFollowChange(userID, isFollowed) {
             this.isFollowed = isFollowed;
-            this.$emit('followChange', userID, isFollowed);
+            // TODO: 个人中心文章页中，要产生联动 ---> to
         },
-        changeTagFollow(userID, isFollowed) {
+        // TODO: 个人中心文章页中，要产生联动 from --->
+        onFollowChange2(userID, isFollowed) {
             if (userID === this.author.id) {
                 this.isFollowed = isFollowed;
                 this.$refs['followBtn'].changeFollow(userID, isFollowed);
@@ -216,7 +218,11 @@ export default {
     },
     components: {
         FollowBtn,
-    }
+    },
+    filters: {
+        levelImgURL,
+        prettyCount,
+    },
 }
 </script>
 

@@ -27,7 +27,7 @@ export class MessageService {
                         summary: true,
                         browseCount: true,
                         commentCount: true,
-                        likeCount: true,
+                        likedCount: true,
                     },
                     collection: {
                         id: true,
