@@ -33,6 +33,10 @@ export default {
         uploadImgURL: 'https://img.golang123.com',
         userLevelChapterURL: '/books/37/chapters/872', // 用户等级在《如何使用米粒社区》中的章节url
     },
+    statsD: {
+        host: 'localhost',
+        port: 8125,
+    },
     server: {
         companyName: '北京xxxxxxx有限公司',
         url,

@@ -36,6 +36,7 @@
     "express-rate-limit": "^5.0.0",
     "gt3-sdk": "^2.0.0",
     "helmet": "^3.18.0",
+    "hot-shots": "^6.4.1",
     "jsonwebtoken": "^8.5.1",
     "marked": "^0.6.2",
     "mime": "^2.4.4",

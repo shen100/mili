@@ -1,16 +1,20 @@
 import { Injectable, NestMiddleware, } from '@nestjs/common';
 import { ConfigService } from '../../config/config.service';
+import { MyRequest, MyResponse } from '../types/net';
 
 @Injectable()
-export class LocalsMiddleware implements NestMiddleware {
+export class PreRequestMiddleware implements NestMiddleware {
     constructor(
         private readonly configService: ConfigService,
     ) {}
 
     use(request: Request, response: Response, next: () => void) {
-        const req: any = request;
-        const res: any = response;
+        const nestReq: any = request;
+        const nestRes: any = response;
+        const req: MyRequest = nestReq as MyRequest;
+        const res: MyResponse = nestRes as MyResponse;
         const configService = this.configService;
+        req.reqStartTime = Date.now();
         res.locals.env = configService.env;
         res.locals.siteName = configService.server.siteName;
         res.locals.apiPrefix = configService.server.apiPrefix,

@@ -39,6 +39,13 @@ export default {
         imgMaxSizeError: '图片大小不能超过%sM',
         userLevelChapterURL: '/books/37/chapters/872', // 用户等级在《如何使用米粒社区》中的章节url
     },
+    statsD: {
+        host: '',
+        port: 8125,
+        prefix: 'mili_',
+        telegraf: true,
+        protocol: 'udp',
+    },
     server: {
         siteName: '米粒',
         companyName: '',

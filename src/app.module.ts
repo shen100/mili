@@ -10,7 +10,7 @@ import { UserMiddleware } from './core/middleware/user.middleware';
 import { CommonModule } from './common/common.module';
 import { StatsModule } from './stats/stats.module';
 import * as csurf from 'csurf';
-import { LocalsMiddleware } from './core/middleware/locals.middleware';
+import { PreRequestMiddleware } from './core/middleware/prereq.middleware';
 import { BoilingPointModule } from './boilingpoint/boilingpoint.module';
 import { AdminModule } from './admin/admin.module';
 
@@ -54,7 +54,7 @@ export class AppModule implements NestModule {
             }));
         }
         localsMiddlewares = localsMiddlewares.concat([
-            LocalsMiddleware,
+            PreRequestMiddleware,
             UserMiddleware,
         ]);
         consumer

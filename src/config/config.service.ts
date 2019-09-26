@@ -60,6 +60,18 @@ class StaticConfig extends BaseConfig {
     }
 }
 
+class StatsDConfig extends BaseConfig {
+    readonly host: string;
+    readonly port: number;
+    readonly prefix: string;
+    readonly telegraf: boolean;
+    readonly protocol: 'tcp' | 'udp' | 'uds';
+
+    constructor(cfg) {
+        super(cfg);
+    }
+}
+
 class ServerConfig extends BaseConfig {
     readonly siteName: string;
     readonly companyName: string;
@@ -164,6 +176,7 @@ export class ConfigService {
     readonly env: string;
     readonly db: DBConfig;
     readonly redis: RedisConfig;
+    readonly statsD: StatsDConfig;
     readonly server: ServerConfig;
     readonly static: StaticConfig;
     readonly baiduAd: BaiduAdConfig;
@@ -191,6 +204,7 @@ export class ConfigService {
             process.exit(-1);
         }
         this.redis = new RedisConfig(defaultJSON.redis);
+        this.statsD = new StatsDConfig(defaultJSON.statsD);
         this.server = new ServerConfig(defaultJSON.server);
         this.static = new StaticConfig(defaultJSON.static);
         this.baiduAd = new BaiduAdConfig(defaultJSON.baiduAd);
