@@ -24,7 +24,7 @@ export class UCController {
         private readonly collectionService: CollectionService,
     ) {}
 
-    @Get('/users/:authorID/:page?')
+    @Get('/uc/:authorID/:page?')
     async userCenter(@Param('authorID', MustIntPipe) authorID: number, @Param('page') page: string, @CurUser() user, @Res() res) {
         if (page && ['articles', 'boilings', 'follows', 'followers', 'followtags', 'handbooks', 'collections'].indexOf(page) < 0) {
             throw new MyHttpException({
@@ -67,7 +67,7 @@ export class UCController {
         });
     }
 
-    @Get('/users/:authorID/like/:type')
+    @Get('/uc/:authorID/like/:type')
     async userCenterLike(@Param('authorID', MustIntPipe) authorID: number, @Param('type') type: string, @CurUser() user, @Res() res) {
         if (['articles', 'boilings'].indexOf(type) < 0) {
             throw new MyHttpException({
@@ -102,43 +102,6 @@ export class UCController {
             createCollections,
             manageCollections,
         });
-    }
-
-    @Get('/users/articles')
-    async list(@Query('userID', MustIntPipe) userID: number,
-               @Query('page', MustIntPipe) page: number,
-               @Query('format') format: string,
-               @Query('sort') sort: string) {
-        const pageSize: number = 2;
-        let articles: Article[];
-        switch (sort) {
-            case 'createdat': {
-                articles = await this.articleService.userArticlesSortByCreatedAt(userID, page, pageSize);
-                break;
-            }
-            case 'hot': {
-                articles = await this.articleService.userArticlesSortByHot(userID, page, pageSize);
-                break;
-            }
-            case 'commentcount': {
-                articles = await this.articleService.userArticlesSortByCommentCount(userID, page, pageSize);
-                break;
-            }
-            default: {
-                articles = await this.articleService.userArticlesSortByCreatedAt(userID, page, pageSize);
-            }
-        }
-        const result: any = {
-            data: {
-                articles,
-            },
-        };
-        if (format === 'html') {
-            result.view = 'component/cms/articles';
-        } else {
-            result.errNo = ErrorCode.SUCCESS.CODE;
-        }
-        return result;
     }
 
     @Get('/api/v1/users/:userID/businesscard')

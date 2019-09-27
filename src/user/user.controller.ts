@@ -36,6 +36,16 @@ export class UserController {
         private readonly configService: ConfigService,
     ) {}
 
+    @Get('/settings/:html')
+    async settingsView(@CurUser() user, @Param('html') html: string, @Res() res) {
+        if (['profile', 'password'].indexOf(html) < 0) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        return res.render('pages/settings/settings');
+    }
+
     @Get('/signup.html')
     async signupHTML(@CurUser() user, @Res() res) {
         // 如果已登录，那么跳到首页

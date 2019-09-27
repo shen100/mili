@@ -1,0 +1,20 @@
+{% extends '../../layout/default.njk' %}
+
+{% block main %}
+<div id="mainBox">
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block pageData %}
+<script>
+    // 当前登录用户 
+    var user = {{ user | dump | safe }};
+</script>
+{% endblock %}
+
+{% block devjs %}
+  {{ loadjs('entry/settings/settings.js') }}
+{% endblock %}

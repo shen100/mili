@@ -25,15 +25,15 @@ Vue.component('Radio', Radio);
 Vue.component('RadioGroup', RadioGroup);
 
 const routes = [
-    { path: '/users/:id', component: () => import('~/js/pages/user/ArticleView.vue') },
-    { path: '/users/:id/boilings', component: () => import('~/js/pages/user/BoilingPointView.vue') },
-    { path: '/users/:id/like/articles', component: () => import('~/js/pages/user/LikeArticleView.vue') },
-    { path: '/users/:id/like/boilings', component: () => import('~/js/pages/user/LikeBoilingPointView.vue') },
-    { path: '/users/:id/follows', component: () => import('~/js/pages/user/FollowView.vue') },
-    { path: '/users/:id/followers', component: () => import('~/js/pages/user/FollowerView.vue') },
-    { path: '/users/:id/followtags', component: () => import('~/js/pages/user/FollowTagView.vue') },
-    { path: '/users/:id/handbooks', component: () => import('~/js/pages/user/HandBookView.vue') },
-    { path: '/users/:id/collections', component: () => import('~/js/pages/user/CollectionView.vue') },
+    { path: '/uc/:id', component: () => import('~/js/pages/user/ArticleView.vue') },
+    { path: '/uc/:id/boilings', component: () => import('~/js/pages/user/BoilingPointView.vue') },
+    { path: '/uc/:id/like/articles', component: () => import('~/js/pages/user/LikeArticleView.vue') },
+    { path: '/uc/:id/like/boilings', component: () => import('~/js/pages/user/LikeBoilingPointView.vue') },
+    { path: '/uc/:id/follows', component: () => import('~/js/pages/user/FollowView.vue') },
+    { path: '/uc/:id/followers', component: () => import('~/js/pages/user/FollowerView.vue') },
+    { path: '/uc/:id/followtags', component: () => import('~/js/pages/user/FollowTagView.vue') },
+    { path: '/uc/:id/handbooks', component: () => import('~/js/pages/user/HandBookView.vue') },
+    { path: '/uc/:id/collections', component: () => import('~/js/pages/user/CollectionView.vue') },
 ];
 
 const router = new VueRouter({

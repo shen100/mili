@@ -30,7 +30,8 @@
                     </div>
                 </div>
                 <div class="action-box">
-                    <FollowBtn ref="followBtn" @followChange="onFollowChange" :userID="author.id" 
+                    <button v-if="author && author.id === userID" @click="onEditUserInfo" class="edit-userinfo-btn">编辑个人资料</button>
+                    <FollowBtn v-else ref="followBtn" @followChange="onFollowChange" :userID="author.id" 
                         :followed="isFollowed" :followedStyle="followedStyle" :notFollowedStyle="notFollowedStyle"></FollowBtn>
                 </div>
             </div>
@@ -38,11 +39,11 @@
                 <div class="detail-list">
                     <div class="list-header">
                         <div class="header-content">
-                            <router-link :to="`/users/${author.id}`" class="nav-item" :class="{active: isArticlePage}">
+                            <router-link :to="`/uc/${author.id}`" class="nav-item" :class="{active: isArticlePage}">
                                 <div class="item-title">文章</div>
                                 <div class="item-count">{{author.articleCount}}</div>
                             </router-link>
-                            <router-link :to="`/users/${author.id}/boilings`" class="nav-item" active-class="active">
+                            <router-link :to="`/uc/${author.id}/boilings`" class="nav-item" active-class="active">
                                 <div class="item-title">沸点</div>
                                 <div class="item-count">{{author.boilingPointCount}}</div>
                             </router-link>
@@ -54,17 +55,17 @@
                                     <i class="fa fa-caret-down"></i>
                                 </div>
                                 <div v-if="likeClicked" class="more-panel">
-                                    <router-link :to="`/users/${author.id}/like/articles`" class="more-item">文章 {{author.articleLikeCount || 0}}</router-link>
-                                    <router-link :to="`/users/${author.id}/like/boilings`" class="more-item">沸点 {{author.boilingPointLikeCount || 0}}</router-link>
+                                    <router-link :to="`/uc/${author.id}/like/articles`" class="more-item">文章 {{author.articleLikeCount || 0}}</router-link>
+                                    <router-link :to="`/uc/${author.id}/like/boilings`" class="more-item">沸点 {{author.boilingPointLikeCount || 0}}</router-link>
                                 </div>
                             </div>
-                            <router-link :to="`/users/${author.id}/follows`" class="nav-item" :class="{active: isFollowPage}">
+                            <router-link :to="`/uc/${author.id}/follows`" class="nav-item" :class="{active: isFollowPage}">
                                 <div class="item-title">关注</div>
                             </router-link>
-                            <router-link :to="`/users/${author.id}/handbooks`" class="nav-item" active-class="active">
+                            <router-link :to="`/uc/${author.id}/handbooks`" class="nav-item" active-class="active">
                                 <div class="item-title">小册</div>
                             </router-link>
-                            <router-link :to="`/users/${author.id}/collections`" class="nav-item" active-class="active">
+                            <router-link :to="`/uc/${author.id}/collections`" class="nav-item" active-class="active">
                                 <div class="item-title">收藏集</div>
                             </router-link>
                         </div>
@@ -110,21 +111,21 @@
                     </div>
                 </div>
                 <div class="follow-block">
-                    <router-link :to="`/users/${author.id}/follows`" class="follow-item">
+                    <router-link :to="`/uc/${author.id}/follows`" class="follow-item">
                         <div class="item-title">关注</div>
                         <div class="item-count">{{author.followCount | prettyCount}}</div>
                     </router-link>
-                    <router-link :to="`/users/${author.id}/followers`" class="follow-item">
+                    <router-link :to="`/uc/${author.id}/followers`" class="follow-item">
                         <div class="item-title">粉丝</div>
                         <div class="item-count">{{author.followerCount | prettyCount}}</div>
                     </router-link>
                 </div>
                 <div class="more-block">
-                    <router-link :to="`/users/${author.id}/collections`" class="more-item">
+                    <router-link :to="`/uc/${author.id}/collections`" class="more-item">
                         <div class="item-title">收藏集</div>
                         <div class="item-count">{{author.collectionCount | prettyCount}}</div>
                     </router-link>
-                    <router-link :to="`/users/${author.id}/followtags`" class="more-item">
+                    <router-link :to="`/uc/${author.id}/followtags`" class="more-item">
                         <div class="item-title">关注标签</div>
                         <div class="item-count">{{author.followTagCount | prettyCount}}</div>
                     </router-link>
@@ -181,23 +182,26 @@ export default {
                 this.isArticlePage = false;
                 this.isLikePage = false;
                 this.isFollowPage = false;
-                if (to.path.match(/\/users\/[0-9]+\/?$/)) {
+                if (to.path.match(/\/uc\/[0-9]+\/?$/)) {
                     this.isArticlePage = true;
-                } else if (to.path.match(/\/users\/[0-9]+\/like\/articles/)) {
+                } else if (to.path.match(/\/uc\/[0-9]+\/like\/articles/)) {
                     this.isLikePage = true;
-                } else if (to.path.match(/\/users\/[0-9]+\/like\/boilings/)) {
+                } else if (to.path.match(/\/uc\/[0-9]+\/like\/boilings/)) {
                     this.isLikePage = true;
-                } else if (to.path.match(/\/users\/[0-9]+\/follows/)) {
+                } else if (to.path.match(/\/uc\/[0-9]+\/follows/)) {
                     this.isFollowPage = true;
-                } else if (to.path.match(/\/users\/[0-9]+\/followers/)) {
+                } else if (to.path.match(/\/uc\/[0-9]+\/followers/)) {
                     this.isFollowPage = true;
-                } else if (to.path.match(/\/users\/[0-9]+\/followtags/)) {
+                } else if (to.path.match(/\/uc\/[0-9]+\/followtags/)) {
                     this.isFollowPage = true;
                 }
             });
         });
     },
     methods: {
+        onEditUserInfo() {
+            location.href = '/settings/profile';
+        },
         onLikeClick() {
             this.likeClicked = !this.likeClicked;
         },
@@ -409,6 +413,24 @@ export default {
 
 .list-body .empty-box .empty-text {
     margin-top: 14px;
+}
+
+.edit-userinfo-btn {
+    width: 120px;
+    height: 34px;
+    text-align: center;
+    line-height: 34px;
+    color: #ea6f5a;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 4px;
+    border-color: rgba(236, 97, 73, 0.7);
+    transition: background-color .3s, color .3s;
+}
+
+.edit-userinfo-btn:hover {
+    border-color: #ea6f5a;
+    background-color: rgba(236, 97, 73, 0.05);
 }
 </style>
 

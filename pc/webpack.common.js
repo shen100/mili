@@ -36,6 +36,7 @@ module.exports = {
         'entry/handbook/editHandbook': './js/entry/handbook/editHandbook.js',
         'entry/search/search': './js/entry/search/search.js',
         'entry/recommendations/users': './js/entry/recommendations/users.js',
+        'entry/settings/settings': './js/entry/settings/settings.js',
         'entry/admin/app': './js/entry/admin/app.js',
     },
     output: {

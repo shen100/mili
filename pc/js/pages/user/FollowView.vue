@@ -3,9 +3,9 @@
         <div class="sub-header">
             <div class="sub-header-title">关注</div>
             <div class="sub-type-box">
-                <router-link :to="`/users/${author.id}/follows`" class="sub-type active">关注了</router-link>
-                <router-link :to="`/users/${author.id}/followers`" class="sub-type">粉丝</router-link>
-                <router-link :to="`/users/${author.id}/followtags`" class="sub-type">关注标签</router-link>
+                <router-link :to="`/uc/${author.id}/follows`" class="sub-type active">关注了</router-link>
+                <router-link :to="`/uc/${author.id}/followers`" class="sub-type">粉丝</router-link>
+                <router-link :to="`/uc/${author.id}/followtags`" class="sub-type">关注标签</router-link>
             </div>
         </div>
         <Pinterest :url="`/users/${author.id}/follows`" @load="onLoad">
