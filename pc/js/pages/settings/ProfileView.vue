@@ -97,6 +97,7 @@ export default {
 
 .user-info {
     font-size: 24px;
+    margin: 16px 0;
 }
 
 .setting-list .item {
@@ -192,5 +193,9 @@ export default {
     vertical-align: bottom;
     height: 18px;
     margin-right: 7px;
+}
+
+.setting-list .item:last-child {
+    border-bottom: 1px solid #f1f1f1;
 }
 </style>
