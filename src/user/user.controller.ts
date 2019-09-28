@@ -27,6 +27,7 @@ import { SigninDto } from './dto/signin.dto';
 import { ActiveGuard } from '../core/guards/active.guard';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { APIPrefix } from '../constants/constants';
+import { OSSService } from '../common/oss.service';
 
 @Controller()
 export class UserController {
@@ -34,6 +35,7 @@ export class UserController {
         private readonly userService: UserService,
         private readonly redisService: RedisService,
         private readonly configService: ConfigService,
+        private readonly ossService: OSSService,
     ) {}
 
     @Get('/settings/:html')
@@ -43,7 +45,12 @@ export class UserController {
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
-        return res.render('pages/settings/settings');
+        const [uploadPolicy] = await Promise.all([
+            this.ossService.requestPolicy(),
+        ]);
+        return res.render('pages/settings/settings', {
+            uploadPolicy,
+        });
     }
 
     @Get('/signup.html')

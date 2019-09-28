@@ -1,9 +1,11 @@
 <template>
     <div class="uploader-box">
+        <ErrorTip ref="errorTip" />
         <Upload :action="uploadActionURL"
             :on-success="onUploadCallback" :on-error="onUploadError" :name="uploadFieldName"
             :data="uploadData" :format="imgFormat" :before-upload="beforeUpload"
-            :show-upload-list="false">
+            :show-upload-list="false"
+            :on-format-error="onFormatError">
             <slot></slot>
         </Upload>
     </div>
@@ -15,6 +17,7 @@ import Vue from 'vue';
 import { Upload } from 'iview';
 import { ossResponseParse } from '~/js/utils/utils.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import { myHTTP } from '~/js/common/net.js';
 
 Vue.component('Upload', Upload);
@@ -38,6 +41,9 @@ export default {
         }
     },
     methods: {
+        onFormatError() {
+            this.$refs.errorTip.show('不是有效的图片格式');
+        },
         beforeUpload(file) {
             this.lastImageURL = '';
             if (file.size > this.imgMaxSize) {

@@ -1,16 +1,20 @@
 <template>
     <div class="main-area">
+        <ErrorTip ref="errorTip" />
         <div>
             <h1 class="user-info">个人资料</h1>
             <ul class="setting-list">
                 <li class="item">
                     <span class="title">头像</span>
                     <div class="avatar-uploader">
-                        <input type="file" class="input" />
-                        <div class="lazy avatar avatar loaded" style=""></div>
+                        <div class="avatar-loaded" :style="{'background-image': `url(${avatarURL})`}"></div>
                         <div class="action-box">
                             <div class="hint">支持 jpg、png 格式大小 5M 以内的图片</div>
-                            <button class="upload-btn">点击上传</button>
+                            <CroppieImage :uploadPolicy="uploadPolicy"
+                                    @uploading="onImgUploading"
+                                    @success="onImgUploadSuccess" @error="onImgUploadFail">
+                                <button class="upload-btn">点击上传</button>
+                            </CroppieImage>
                         </div>
                     </div>
                 </li>
@@ -80,8 +84,32 @@
 </template>
 
 <script>
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
+import CroppieImage from '~/js/components/common/CroppieImage.vue';
+
 export default {
-    
+    data() {
+        return {
+            uploadPolicy: window.uploadPolicy,
+            avatarURL: '',
+        };
+    },
+    methods: {
+        onImgUploading() {
+        },
+        onImgUploadSuccess(imgURL) {
+            console.log(12345, imgURL);
+            this.avatarURL = imgURL;
+        },
+        onImgUploadFail(message) {
+            this.avatarURL = '';
+            this.$refs.errorTip.show(message);
+        },
+    },
+    components: {
+        CroppieImage,
+        ErrorTip,
+    }
 }
 </script>
 
@@ -197,5 +225,18 @@ export default {
 
 .setting-list .item:last-child {
     border-bottom: 1px solid #f1f1f1;
+}
+
+.avatar-loaded {
+    display: inline-block;
+    position: relative;
+    background-position: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #eee;
+    flex: 0 0 auto;
+    width: 72px;
+    height: 72px;
+    margin-right: 12px;
 }
 </style>

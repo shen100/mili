@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 import { User } from '../entity/user.entity';
 import { AdminController } from './admin.controller';
 import { Settings } from '../entity/settings.entity';
+import { CommonModule } from '../common/common.module';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { Settings } from '../entity/settings.entity';
             User,
             Settings,
         ]),
+        CommonModule,
     ],
     controllers: [
         UserController,

@@ -4,7 +4,6 @@ import { OSSService } from './oss.service';
 import { CommonController } from './common.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Image } from '../entity/image.entity';
-import { Article } from '../entity/article.entity';
 
 @Module({
     imports: [
