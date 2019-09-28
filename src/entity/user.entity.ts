@@ -131,6 +131,9 @@ export class User {
     @Column('varchar', { length: 200 })
     introduce: string; // 个人介绍
 
+    @Column('varchar', { name: 'personal_hp', length: 100 })
+    personalHomePage: string; // 个人主页
+
     @Column('int', { name: 'github_id', nullable: true, default: null })
     githubID: number;
 

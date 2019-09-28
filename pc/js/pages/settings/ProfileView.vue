@@ -9,7 +9,7 @@
                     <div class="avatar-uploader">
                         <div class="avatar-loaded" :style="{'background-image': `url(${avatarURL})`}"></div>
                         <div class="action-box">
-                            <div class="hint">支持 jpg、png 格式大小 5M 以内的图片</div>
+                            <div class="hint">支持 jpg、png 格式大小 {{imgMaxSizeLabel}}M 以内的图片</div>
                             <CroppieImage :uploadPolicy="uploadPolicy"
                                     @uploading="onImgUploading"
                                     @success="onImgUploadSuccess" @error="onImgUploadFail">
@@ -18,63 +18,73 @@
                         </div>
                     </div>
                 </li>
-                <li class="item">
+                <li v-clickoutside="onUpdatingUserNameHidden" class="item">
                     <span class="title">用户名</span>
                     <div class="input-box profile-input">
                         <input spellcheck="false" placeholder="填写你的用户名" class="input">
                         <div class="action-box">
-                            <button tabindex="-1" class="btn edit-btn">
+                            <button v-show="!updatingUserName" @click="onUpdatingUserName" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
+                            <button v-show="updatingUserName" class="user-save-btn">保存</button>
+                            <button v-show="updatingUserName" @click="onUpdatingUserNameHidden" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
-                <li class="item">
+                <li v-clickoutside="onUpdatingJobHidden" class="item">
                     <span class="title">职位</span>
                     <div class="input-box profile-input">
                         <input spellcheck="false" placeholder="填写你的职位" class="input">
                         <div class="action-box">
-                            <button tabindex="-1" class="btn edit-btn">
+                            <button v-show="!updatingJob" @click="onUpdatingJob" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
+                            <button v-show="updatingJob" class="user-save-btn">保存</button>
+                            <button v-show="updatingJob" @click="onUpdatingJobHidden" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
-                <li class="item">
+                <li v-clickoutside="onUpdatingCompanyHidden" class="item">
                     <span class="title">公司</span>
                     <div class="input-box profile-input">
                         <input spellcheck="false" placeholder="填写你的公司" class="input">
                         <div class="action-box">
-                            <button tabindex="-1" class="btn edit-btn">
+                            <button v-show="!updatingCompany" @click="onUpdatingCompany" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
+                            <button v-show="updatingCompany" class="user-save-btn">保存</button>
+                            <button v-show="updatingCompany" @click="onUpdatingCompanyHidden" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
-                <li class="item">
+                <li v-clickoutside="onUpdatingIntroduceHidden" class="item">
                     <span class="title">个人介绍</span>
                     <div class="input-box profile-input">
                         <input spellcheck="false" placeholder="填写职业技能、擅长的事情、喜欢的事情等" class="input">
                         <div class="action-box">
-                            <button tabindex="-1" class="btn edit-btn">
+                            <button v-show="!updatingIntroduce" @click="onUpdatingIntroduce" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
+                            <button v-show="updatingIntroduce" class="user-save-btn">保存</button>
+                            <button v-show="updatingIntroduce" @click="onUpdatingIntroduceHidden" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
-                <li class="item">
+                <li v-clickoutside="onUpdatingPersonalHomePageHidden" class="item">
                     <span class="title">个人主页</span>
                     <div class="input-box profile-input">
                         <input spellcheck="false" placeholder="填写你的个人主页" class="input">
                         <div class="action-box">
-                            <button tabindex="-1" class="btn edit-btn">
+                            <button v-show="!updatingPersonalHomePage" @click="onUpdatingPersonalHomePage" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
+                            <button v-show="updatingPersonalHomePage" class="user-save-btn">保存</button>
+                            <button v-show="updatingPersonalHomePage" @click="onUpdatingPersonalHomePageHidden" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
@@ -86,20 +96,64 @@
 <script>
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import CroppieImage from '~/js/components/common/CroppieImage.vue';
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
 
 export default {
     data() {
         return {
             uploadPolicy: window.uploadPolicy,
-            avatarURL: '',
+            imgMaxSizeLabel: parseInt(window.uploadPolicy.imgMaxSize / 1024 / 1024),
+            avatarURL: window.user.avatarURL || '',
+            updatingUserName: false,
+            updatingJob: false,
+            updatingCompany: false,
+            updatingIntroduce: false,
+            updatingPersonalHomePage: false,
         };
     },
     methods: {
+        onUpdatingUserName() {
+            this.updatingUserName = true;
+        },
+        onUpdatingUserNameHidden() {
+            this.updatingUserName = false;
+        },
+        onUpdatingJob() {
+            console.log('onUpdatingJob');
+            this.updatingJob = true;
+        },
+        onUpdatingJobHidden() {
+            console.log('onUpdatingJobHidden');
+
+            this.updatingJob = false;
+        },
+        onUpdatingCompany() {
+            this.updatingCompany = true;
+        },
+        onUpdatingCompanyHidden() {
+            this.updatingCompany = false;
+        },
+        onUpdatingIntroduce() {
+            this.updatingIntroduce = true;
+        },
+        onUpdatingIntroduceHidden() {
+            this.updatingIntroduce = false;
+        },
+        onUpdatingPersonalHomePage() {
+            this.updatingPersonalHomePage = true;
+        },
+        onUpdatingPersonalHomePageHidden() {
+            this.updatingPersonalHomePage = false;
+        },
         onImgUploading() {
         },
         onImgUploadSuccess(imgURL) {
-            console.log(12345, imgURL);
-            this.avatarURL = imgURL;
+            myHTTP.put('/users/avatar', { avatarURL: imgURL }).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.avatarURL = imgURL;
+                }
+            });
         },
         onImgUploadFail(message) {
             this.avatarURL = '';
@@ -171,7 +225,7 @@ export default {
 .upload-btn {
     -webkit-appearance: none;
     appearance: none;
-    background-color: #007fff;
+    background-color: #42c02e;
     color: #fff;
     border-radius: 2px;
     border: none;
@@ -182,7 +236,7 @@ export default {
 }
 
 .upload-btn:hover {
-    background-color: #0371df;
+    background-color: #3db922;
     color: #fff;
 }
 
@@ -238,5 +292,18 @@ export default {
     width: 72px;
     height: 72px;
     margin-right: 12px;
+}
+
+.user-save-btn {
+    border: 0;
+    color: #ea6f5a;
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+.user-cancel-btn {
+    border: 0;
+    color: #666;
+    font-size: 14px;
 }
 </style>

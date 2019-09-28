@@ -85,6 +85,14 @@ export class UserService {
             .execute();
     }
 
+    async updateAvatar(userID: number, avatarURL: string): Promise<UpdateResult> {
+        return await this.userRepository.update({
+            id: userID,
+        }, {
+            avatarURL,
+        });
+    }
+
     async findByPhoneOrUsername(phone: string, login: string): Promise<User | undefined> {
         const users: Array<User> = await this.userRepository.createQueryBuilder()
             .select(['id', 'phone', 'login'])

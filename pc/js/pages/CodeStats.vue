@@ -68,6 +68,7 @@ export default {
             'pc/styles/settings/settings.scss',
             'pc/styles/user/user.scss',
             'src/stats/codestats.controller.ts',
+            'src/user/dto/update-avatar.dto.ts',
             'views/pages/boilingpoint/boilingpoint.njk',
             'views/pages/codeStats.njk',
             'views/pages/settings/settings.njk',

@@ -8,6 +8,7 @@ import {
     UseGuards,
     Param,
     Delete,
+    Put,
 } from '@nestjs/common';
 
 import * as util from 'util';
@@ -28,6 +29,8 @@ import { ActiveGuard } from '../core/guards/active.guard';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { APIPrefix } from '../constants/constants';
 import { OSSService } from '../common/oss.service';
+import { CreateArticleDto } from '../cms/dto/create-article.dto';
+import { UpdateAvatarDto } from './dto/update-avatar.dto';
 
 @Controller()
 export class UserController {
@@ -49,6 +52,7 @@ export class UserController {
             this.ossService.requestPolicy(),
         ]);
         return res.render('pages/settings/settings', {
+            user,
             uploadPolicy,
         });
     }
@@ -355,6 +359,15 @@ export class UserController {
             await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
             await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, userID)),
         ]);
+        return {};
+    }
+
+    @Put(`${APIPrefix}/users/avatar`)
+    @UseGuards(ActiveGuard)
+    async updateAvatar(@CurUser() user, @Body() updateAvatarDto: UpdateAvatarDto) {
+        await this.userService.updateAvatar(user.id, updateAvatarDto.avatarURL);
+        const cacheKey = util.format(this.redisService.cacheKeys.user, user.id);
+        this.redisService.delCache(cacheKey);
         return {};
     }
 }

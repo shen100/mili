@@ -16,7 +16,7 @@ export class UploadService {
         const now = moment();
         const aliyun = this.configService.aliyunOSS;
         const staticConfig = this.configService.static;
-        const imgMaxSizeM = staticConfig.imgMaxSize * 1024 * 1024;
+        const imgMaxSizeM = staticConfig.imgMaxSize;
         const policy = {
             // 设置Policy的失效时间, 以ISO8601 GMT时间表示
             // 超过失效时间，就无法通过此Policy上传文件
@@ -36,7 +36,7 @@ export class UploadService {
             uploadPrefix: aliyun.uploadPrefix + '/' + now.year() + '/' + (now.month() + 1),
             imgFormat: staticConfig.imgFormat,
             imgMaxSize: imgMaxSizeM,
-            imgMaxSizeError: util.format(staticConfig.imgMaxSizeError, staticConfig.imgMaxSize),
+            imgMaxSizeError: util.format(staticConfig.imgMaxSizeError, staticConfig.imgMaxSize / 1024 / 1024),
             uploadData: {
                 OSSAccessKeyId: aliyun.accessKeyID,
                 policy: base64Policy,

@@ -35,7 +35,7 @@ export default {
         fontPath: `${staticURL}/fonts`,
         uploadImgURL: '',
         imgFormat: ['jpg', 'jpeg', 'png', 'gif'],
-        imgMaxSize: 3,
+        imgMaxSize: 3 * 1024 * 1024,
         imgMaxSizeError: '图片大小不能超过%sM',
         userLevelChapterURL: '/books/37/chapters/872', // 用户等级在《如何使用米粒社区》中的章节url
     },
@@ -81,7 +81,7 @@ export default {
         uploadPrefix: 'local', // 上传路径加个前缀
         uploadFieldName: 'file',
         expiration: 6, // 上传凭证过期时间, 单位小时
-        imgMaxSize: 3, // 设置上传图片的大小限制, 单位M
+        imgMaxSize: 3 * 1024 * 1024, // 设置上传图片的大小限制, 单位M
         imgMaxSizeError: '图片大小要小于%sM', // 图片大小超过限制时的提示
         callbackSecretToken: '123456789', // 用来验证是否是阿里云发过来的回调
     },
