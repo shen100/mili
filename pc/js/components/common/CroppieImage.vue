@@ -38,6 +38,7 @@ Vue.component('Upload', Upload);
 
 export default {
     props: [
+        'imageFormat',
         'uploadPolicy'
     ],
     data() {
@@ -48,7 +49,7 @@ export default {
             croppieImgWidth: 160,
             croppieImgHeight: 160,
             modalVisible: false,
-            imgFormat: uploadPolicy.imgFormat,
+            imgFormat: this.imageFormat || uploadPolicy.imgFormat,
             uploadActionURL: uploadPolicy.uploadActionURL,
             uploadFieldName: uploadPolicy.uploadFieldName,
             uploadPrefix: uploadPolicy.uploadPrefix,
@@ -79,23 +80,27 @@ export default {
             this.modalVisible = !this.modalVisible;
             this.$nextTick(() => {
                 let avatarUploader = document.getElementById('avatarUploader');
-                avatarUploader.innerHTML = '';
-                self.croppie = null;
+                // avatarUploader.innerHTML = '';
+                // self.croppie = null;
                 const reader = new FileReader()
                 reader.addEventListener('load', function() {
                     setTimeout(() => {
-                        self.croppie = new window.Croppie(avatarUploader, {
-                            url: reader.result,
-                            boundary: {
-                                width: self.croppieImgWidth + 80,
-                                height: self.croppieImgHeight + 80
-                            },
-                            viewport: {
-                                width: self.croppieImgWidth,
-                                height: self.croppieImgHeight,
-                                type: 'square'
-                            }
-                        })
+                        if (!self.croppie) {
+                            self.croppie = new window.Croppie(avatarUploader, {
+                                url: reader.result,
+                                boundary: {
+                                    width: self.croppieImgWidth + 80,
+                                    height: self.croppieImgHeight + 80
+                                },
+                                viewport: {
+                                    width: self.croppieImgWidth,
+                                    height: self.croppieImgHeight,
+                                    type: 'square'
+                                }
+                            });
+                            return;
+                        }
+                        self.croppie.bind(reader.result);
                     }, 200);
                 });
                 reader.readAsDataURL(file);

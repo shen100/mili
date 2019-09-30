@@ -16,6 +16,8 @@ import { Settings } from '../entity/settings.entity';
 import { ArticleContentType } from '../entity/article.entity';
 import * as moment from 'moment';
 import { ListResult } from '../entity/listresult.entity';
+import { ErrorCode } from '../constants/error';
+import { UpdateUserInfoDto } from './dto/update-userinfo.dto';
 
 @Injectable()
 export class UserService {
@@ -56,8 +58,8 @@ export class UserService {
     async detail(id: number): Promise<User> {
         return await this.userRepository.createQueryBuilder('user')
             .select(['user.id', 'user.createdAt', 'user.username', 'user.articleCount', 'user.likedCount', 'user.uLikeCount',
-                'user.commentCount', 'user.job', 'user.company', 'user.introduce', 'user.role', 'user.avatarURL', 'user.sex',
-                'c.id', 'c.name', 'c.coverURL', 'c.creatorID',
+                'user.commentCount', 'user.job', 'user.company', 'user.introduce', 'user.personalHomePage', 'user.role',
+                'user.avatarURL', 'user.sex', 'c.id', 'c.name', 'c.coverURL', 'c.creatorID',
             ])
             .leftJoin('user.collections', 'c')
             .where('user.id = :id', { id })
@@ -85,11 +87,59 @@ export class UserService {
             .execute();
     }
 
-    async updateAvatar(userID: number, avatarURL: string): Promise<UpdateResult> {
+    /**
+     * 更新用户信息(头像、职位、公司、个人介绍、个人主页)
+     */
+    async updateUserInfo(userID: number, updateUserInfoDto: UpdateUserInfoDto): Promise<UpdateResult> {
+        const updateData: any = {};
+        if (typeof updateUserInfoDto.avatarURL !== 'undefined') {
+            updateData.avatarURL = updateUserInfoDto.avatarURL;
+        }
+        if (typeof updateUserInfoDto.job !== 'undefined') {
+            updateData.job = updateUserInfoDto.job;
+        }
+        if (typeof updateUserInfoDto.company !== 'undefined') {
+            updateData.company = updateUserInfoDto.company;
+        }
+        if (typeof updateUserInfoDto.introduce !== 'undefined') {
+            updateData.introduce = updateUserInfoDto.introduce;
+        }
+        if (typeof updateUserInfoDto.personalHomePage !== 'undefined') {
+            updateData.personalHomePage = updateUserInfoDto.personalHomePage;
+        }
+        if (typeof updateUserInfoDto.username !== 'undefined') {
+            updateData.username = updateUserInfoDto.username;
+            const theUser: User = await this.userRepository.findOne({
+                select: [ 'id'],
+                where: { username: updateData.username },
+            });
+            if (theUser) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.ParamsError.CODE,
+                    message: `已存在用户名为 ${updateData.username} 的用户`,
+                });
+            }
+        }
+        return await this.userRepository.update({
+            id: userID,
+        }, updateData);
+    }
+
+    async updatePassword(userID: number, oldPass: string, pass: string): Promise<UpdateResult> {
+        const user: User = await this.userRepository.findOne({
+            select: ['pass'],
+            where: { id: userID },
+        });
+        if (!user || !this.verifyPassword(oldPass, user.pass)) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '原密码不正确',
+            });
+        }
         return await this.userRepository.update({
             id: userID,
         }, {
-            avatarURL,
+            pass: this.generateHashPassword(pass),
         });
     }
 

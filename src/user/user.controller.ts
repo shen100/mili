@@ -29,8 +29,8 @@ import { ActiveGuard } from '../core/guards/active.guard';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { APIPrefix } from '../constants/constants';
 import { OSSService } from '../common/oss.service';
-import { CreateArticleDto } from '../cms/dto/create-article.dto';
-import { UpdateAvatarDto } from './dto/update-avatar.dto';
+import { UpdateUserInfoDto } from './dto/update-userinfo.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller()
 export class UserController {
@@ -48,11 +48,12 @@ export class UserController {
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
-        const [uploadPolicy] = await Promise.all([
+        const [userDetailData, uploadPolicy] = await Promise.all([
+            this.userService.detail(user.id),
             this.ossService.requestPolicy(),
         ]);
         return res.render('pages/settings/settings', {
-            user,
+            user: userDetailData,
             uploadPolicy,
         });
     }
@@ -362,10 +363,22 @@ export class UserController {
         return {};
     }
 
-    @Put(`${APIPrefix}/users/avatar`)
+    /**
+     * 更新用户信息(头像、职位、公司、个人介绍、个人主页)
+     */
+    @Put(`${APIPrefix}/users/info`)
     @UseGuards(ActiveGuard)
-    async updateAvatar(@CurUser() user, @Body() updateAvatarDto: UpdateAvatarDto) {
-        await this.userService.updateAvatar(user.id, updateAvatarDto.avatarURL);
+    async updateUserInfo(@CurUser() user, @Body() updateUserInfoDto: UpdateUserInfoDto) {
+        await this.userService.updateUserInfo(user.id, updateUserInfoDto);
+        const cacheKey = util.format(this.redisService.cacheKeys.user, user.id);
+        this.redisService.delCache(cacheKey);
+        return {};
+    }
+
+    @Put(`${APIPrefix}/users/password`)
+    @UseGuards(ActiveGuard)
+    async updatePassword(@CurUser() user, @Body() updatePasswordDto: UpdatePasswordDto) {
+        await this.userService.updatePassword(user.id, updatePasswordDto.oldPass, updatePasswordDto.pass);
         const cacheKey = util.format(this.redisService.cacheKeys.user, user.id);
         this.redisService.delCache(cacheKey);
         return {};

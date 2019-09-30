@@ -11,6 +11,7 @@
                         <div class="action-box">
                             <div class="hint">支持 jpg、png 格式大小 {{imgMaxSizeLabel}}M 以内的图片</div>
                             <CroppieImage :uploadPolicy="uploadPolicy"
+                                    :imageFormat="imageFormat"
                                     @uploading="onImgUploading"
                                     @success="onImgUploadSuccess" @error="onImgUploadFail">
                                 <button class="upload-btn">点击上传</button>
@@ -21,70 +22,70 @@
                 <li v-clickoutside="onUpdatingUserNameHidden" class="item">
                     <span class="title">用户名</span>
                     <div class="input-box profile-input">
-                        <input spellcheck="false" placeholder="填写你的用户名" class="input">
+                        <input v-model="username" spellcheck="false" placeholder="填写你的用户名" class="input">
                         <div class="action-box">
                             <button v-show="!updatingUserName" @click="onUpdatingUserName" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingUserName" class="user-save-btn">保存</button>
-                            <button v-show="updatingUserName" @click="onUpdatingUserNameHidden" class="user-cancel-btn">取消</button>
+                            <button v-show="updatingUserName" @click="onSaveUserName" class="user-save-btn">保存</button>
+                            <button v-show="updatingUserName" @click="onUpdatingUserNameHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
                 <li v-clickoutside="onUpdatingJobHidden" class="item">
                     <span class="title">职位</span>
                     <div class="input-box profile-input">
-                        <input spellcheck="false" placeholder="填写你的职位" class="input">
+                        <input v-model="job" spellcheck="false" placeholder="填写你的职位" class="input">
                         <div class="action-box">
                             <button v-show="!updatingJob" @click="onUpdatingJob" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingJob" class="user-save-btn">保存</button>
-                            <button v-show="updatingJob" @click="onUpdatingJobHidden" class="user-cancel-btn">取消</button>
+                            <button v-show="updatingJob" @click="onSaveJob" class="user-save-btn">保存</button>
+                            <button v-show="updatingJob" @click="onUpdatingJobHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
                 <li v-clickoutside="onUpdatingCompanyHidden" class="item">
                     <span class="title">公司</span>
                     <div class="input-box profile-input">
-                        <input spellcheck="false" placeholder="填写你的公司" class="input">
+                        <input v-model="company" spellcheck="false" placeholder="填写你的公司" class="input">
                         <div class="action-box">
                             <button v-show="!updatingCompany" @click="onUpdatingCompany" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingCompany" class="user-save-btn">保存</button>
-                            <button v-show="updatingCompany" @click="onUpdatingCompanyHidden" class="user-cancel-btn">取消</button>
+                            <button v-show="updatingCompany" @click="onSaveCompany" class="user-save-btn">保存</button>
+                            <button v-show="updatingCompany" @click="onUpdatingCompanyHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
                 <li v-clickoutside="onUpdatingIntroduceHidden" class="item">
                     <span class="title">个人介绍</span>
                     <div class="input-box profile-input">
-                        <input spellcheck="false" placeholder="填写职业技能、擅长的事情、喜欢的事情等" class="input">
+                        <input v-model="introduce" spellcheck="false" placeholder="填写职业技能、擅长的事情、喜欢的事情等" class="input">
                         <div class="action-box">
                             <button v-show="!updatingIntroduce" @click="onUpdatingIntroduce" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingIntroduce" class="user-save-btn">保存</button>
-                            <button v-show="updatingIntroduce" @click="onUpdatingIntroduceHidden" class="user-cancel-btn">取消</button>
+                            <button v-show="updatingIntroduce" @click="onSaveIntroduce" class="user-save-btn">保存</button>
+                            <button v-show="updatingIntroduce" @click="onUpdatingIntroduceHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
                 <li v-clickoutside="onUpdatingPersonalHomePageHidden" class="item">
                     <span class="title">个人主页</span>
                     <div class="input-box profile-input">
-                        <input spellcheck="false" placeholder="填写你的个人主页" class="input">
+                        <input v-model="personalHomePage" spellcheck="false" placeholder="填写你的个人主页" class="input">
                         <div class="action-box">
                             <button v-show="!updatingPersonalHomePage" @click="onUpdatingPersonalHomePage" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingPersonalHomePage" class="user-save-btn">保存</button>
-                            <button v-show="updatingPersonalHomePage" @click="onUpdatingPersonalHomePageHidden" class="user-cancel-btn">取消</button>
+                            <button v-show="updatingPersonalHomePage" @click="onSavePersonalHomePage" class="user-save-btn">保存</button>
+                            <button v-show="updatingPersonalHomePage" @click="onUpdatingPersonalHomePageHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
                 </li>
@@ -103,8 +104,19 @@ export default {
     data() {
         return {
             uploadPolicy: window.uploadPolicy,
-            imgMaxSizeLabel: parseInt(window.uploadPolicy.imgMaxSize / 1024 / 1024),
+            imgMaxSizeLabel: parseInt(window.uploadPolicy.imgMaxSize / 1024 / 1024), // 字节转为 M
+            imageFormat: window.imageFormat,
             avatarURL: window.user.avatarURL || '',
+            username: window.user.username,
+            job: window.user.job,
+            company: window.user.company,
+            introduce: window.user.introduce,
+            personalHomePage: window.user.personalHomePage,
+            oldUsername: window.user.username,
+            oldJob: window.user.job,
+            oldCompany: window.user.company,
+            oldIntroduce: window.user.introduce,
+            oldPersonalHomePage: window.user.personalHomePage,
             updatingUserName: false,
             updatingJob: false,
             updatingCompany: false,
@@ -116,49 +128,141 @@ export default {
         onUpdatingUserName() {
             this.updatingUserName = true;
         },
-        onUpdatingUserNameHidden() {
-            this.updatingUserName = false;
+        onUpdatingUserNameHidden(interactiveType) {
+            // 点取消按钮时，interactiveType为 cancel
+            if (interactiveType === 'cancel') {
+                this.updatingUserName = false;
+                this.username = this.oldUsername;
+                return;
+            }
+            // 走到这里，说明是 v-clickoutside 调用的
+            if (this.username === this.oldUsername) {
+                this.updatingUserName = false;
+                return;
+            }
         },
         onUpdatingJob() {
-            console.log('onUpdatingJob');
             this.updatingJob = true;
         },
-        onUpdatingJobHidden() {
-            console.log('onUpdatingJobHidden');
-
-            this.updatingJob = false;
+        onUpdatingJobHidden(interactiveType) {
+            if (interactiveType === 'cancel') {
+                this.updatingJob = false;
+                this.job = this.oldJob;
+                return;
+            }
+            if (this.job === this.oldJob) {
+                this.updatingJob = false;
+                return;
+            }
         },
         onUpdatingCompany() {
             this.updatingCompany = true;
         },
-        onUpdatingCompanyHidden() {
-            this.updatingCompany = false;
+        onUpdatingCompanyHidden(interactiveType) {
+            if (interactiveType === 'cancel') {
+                this.updatingCompany = false;
+                this.company = this.oldCompany;
+                return;
+            }
+            if (this.company === this.oldCompany) {
+                this.updatingCompany = false;
+                return;
+            }
         },
         onUpdatingIntroduce() {
             this.updatingIntroduce = true;
         },
-        onUpdatingIntroduceHidden() {
-            this.updatingIntroduce = false;
+        onUpdatingIntroduceHidden(interactiveType) {
+            if (interactiveType === 'cancel') {
+                this.updatingIntroduce = false;
+                this.introduce = this.oldIntroduce;
+                return;
+            }
+            if (this.introduce === this.oldIntroduce) {
+                this.updatingIntroduce = false;
+                return;
+            }
         },
         onUpdatingPersonalHomePage() {
             this.updatingPersonalHomePage = true;
         },
-        onUpdatingPersonalHomePageHidden() {
-            this.updatingPersonalHomePage = false;
+        onUpdatingPersonalHomePageHidden(interactiveType) {
+            if (interactiveType === 'cancel') {
+                this.updatingPersonalHomePage = false;
+                this.personalHomePage = this.oldPersonalHomePage;
+                return;
+            }
+            if (this.personalHomePage === this.oldPersonalHomePage) {
+                this.updatingPersonalHomePage = false;
+                return;
+            }
         },
         onImgUploading() {
         },
         onImgUploadSuccess(imgURL) {
-            myHTTP.put('/users/avatar', { avatarURL: imgURL }).then((res) => {
+            myHTTP.put('/users/info', { avatarURL: imgURL }).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.avatarURL = imgURL;
                 }
             });
         },
         onImgUploadFail(message) {
-            this.avatarURL = '';
             this.$refs.errorTip.show(message);
         },
+        onSaveUserName() {
+            if (this.oldUsername === this.username) {
+                this.updatingUserName = false;
+                return;
+            }
+            myHTTP.put('/users/info', { username: this.username }).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.oldUsername = this.username;
+                    this.updatingUserName = false;
+                } else {
+                    this.$refs.errorTip.show(res.data.message);
+                }
+            });
+        },
+        onSaveJob() {
+            myHTTP.put('/users/info', { job: this.job }).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.oldJob = this.job;
+                    this.updatingJob = false;
+                } else {
+                    this.$refs.errorTip.show(res.data.message);
+                }
+            });
+        },
+        onSaveCompany() {
+            myHTTP.put('/users/info', { company: this.company }).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.oldCompany = this.company;
+                    this.updatingCompany = false;
+                } else {
+                    this.$refs.errorTip.show(res.data.message);
+                }
+            });
+        },
+        onSaveIntroduce() {
+            myHTTP.put('/users/info', { introduce: this.introduce }).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.oldIntroduce = this.introduce;
+                    this.updatingIntroduce = false;
+                } else {
+                    this.$refs.errorTip.show(res.data.message);
+                }
+            });
+        },
+        onSavePersonalHomePage() {
+            myHTTP.put('/users/info', { personalHomePage: this.personalHomePage }).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.oldPersonalHomePage = this.personalHomePage;
+                    this.updatingPersonalHomePage = false;
+                } else {
+                    this.$refs.errorTip.show(res.data.message);
+                }
+            });
+        }
     },
     components: {
         CroppieImage,
