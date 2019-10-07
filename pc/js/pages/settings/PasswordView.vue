@@ -1,35 +1,78 @@
 <template>
     <div class="main-area">
+        <SuccessTip ref="successTip" />
+        <ErrorTip ref="errorTip" />
         <div>
             <h1 class="user-info">修改密码</h1>
             <ul class="setting-list">
                 <li class="item">
                     <span class="title">旧密码</span>
                     <div class="input-box profile-input">
-                        <input spellcheck="false" placeholder="请输入原密码" class="input">
+                        <input v-model="oldPassword" spellcheck="false" type="password" placeholder="请输入原密码" class="input">
                     </div>
                 </li>
                 <li class="item">
                     <span class="title">新密码</span>
                     <div class="input-box profile-input">
-                        <input spellcheck="false" placeholder="请输入新密码" class="input">
+                        <input v-model="password" spellcheck="false" type="password" placeholder="请输入新密码" class="input">
                     </div>
                 </li>
                 <li class="item">
                     <span class="title">确认新密码</span>
                     <div class="input-box profile-input">
-                        <input spellcheck="false" placeholder="确认新密码" class="input">
+                        <input v-model="confirmPassword" spellcheck="false" type="password" placeholder="确认新密码" class="input">
                     </div>
                 </li>
             </ul>
-            <button class="submit-btn">保存修改</button>
+            <button @click="onSubmit" class="submit-btn">保存修改</button>
         </div>
     </div>
 </template>
 
 <script>
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
+import SuccessTip from '~/js/components/common/SuccessTip.vue';
+
 export default {
-    
+    data() {
+        return {
+            oldPassword: '',
+            password: '',
+            confirmPassword: '',
+        };
+    },
+    methods: {
+        onSubmit() {
+            if (!this.oldPassword) {
+                this.$refs.errorTip.show('旧密码错误');
+                return;
+            }
+            if (this.password !== this.confirmPassword) {
+                this.$refs.errorTip.show('两次输入的密码不一致');
+                return;
+            }
+            const data = {
+                oldPass: this.oldPassword,
+                pass: this.password
+            };
+            myHTTP.put('/users/password', data).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.oldPassword = '';
+                    this.password = '';
+                    this.confirmPassword = '';
+                    this.$refs.successTip.show('密码修改成功');
+                } else {
+                    this.$refs.errorTip.show(res.data.message);
+                }
+            });
+        }
+    },
+    components: {
+        ErrorTip,
+        SuccessTip,
+    }
 }
 </script>
 
@@ -161,5 +204,9 @@ export default {
     font-size: 16px;
     color: #fff;
     background-color: #ea6f5a;
+}
+
+.profile-input input::-webkit-input-placeholder {
+    color: #c2c2c2;
 }
 </style>

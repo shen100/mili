@@ -88,6 +88,9 @@ export default {
             return this.lastImageURL;
         }
     },
+    components: {
+        ErrorTip,
+    }
 }
 </script>
 

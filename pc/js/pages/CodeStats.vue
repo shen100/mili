@@ -56,6 +56,8 @@ export default {
             'pc/js/pages/boilingpoint/BoilingPoint.vue',
             'pc/js/pages/CodeStats.vue',
             'pc/js/pages/settings/Layout.vue',
+            'pc/js/pages/settings/PasswordView.vue',
+            'pc/js/pages/settings/ProfileView.vue',
             'pc/js/pages/user/ArticleView.vue',
             'pc/js/pages/user/BoilingPointView.vue',
             'pc/js/pages/user/FollowTagView.vue',

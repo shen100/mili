@@ -133,7 +133,7 @@ export class UserService {
         if (!user || !this.verifyPassword(oldPass, user.pass)) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
-                message: '原密码不正确',
+                message: '旧密码不正确',
             });
         }
         return await this.userRepository.update({

@@ -22,13 +22,13 @@
                 <li v-clickoutside="onUpdatingUserNameHidden" class="item">
                     <span class="title">用户名</span>
                     <div class="input-box profile-input">
-                        <input v-model="username" spellcheck="false" placeholder="填写你的用户名" class="input">
+                        <input v-model="username" @focus="onUpdatingUserName" spellcheck="false" placeholder="填写你的用户名" class="input">
                         <div class="action-box">
                             <button v-show="!updatingUserName" @click="onUpdatingUserName" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingUserName" @click="onSaveUserName" class="user-save-btn">保存</button>
+                            <button v-show="updatingUserName" @click="onSave('username', 'oldUsername', 'updatingUserName')" class="user-save-btn">保存</button>
                             <button v-show="updatingUserName" @click="onUpdatingUserNameHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
@@ -36,13 +36,13 @@
                 <li v-clickoutside="onUpdatingJobHidden" class="item">
                     <span class="title">职位</span>
                     <div class="input-box profile-input">
-                        <input v-model="job" spellcheck="false" placeholder="填写你的职位" class="input">
+                        <input v-model="job" @focus="onUpdatingJob" spellcheck="false" placeholder="填写你的职位" class="input">
                         <div class="action-box">
                             <button v-show="!updatingJob" @click="onUpdatingJob" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingJob" @click="onSaveJob" class="user-save-btn">保存</button>
+                            <button v-show="updatingJob" @click="onSave('job', 'oldJob', 'updatingJob')" class="user-save-btn">保存</button>
                             <button v-show="updatingJob" @click="onUpdatingJobHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
@@ -50,13 +50,13 @@
                 <li v-clickoutside="onUpdatingCompanyHidden" class="item">
                     <span class="title">公司</span>
                     <div class="input-box profile-input">
-                        <input v-model="company" spellcheck="false" placeholder="填写你的公司" class="input">
+                        <input v-model="company" @focus="onUpdatingCompany" spellcheck="false" placeholder="填写你的公司" class="input">
                         <div class="action-box">
                             <button v-show="!updatingCompany" @click="onUpdatingCompany" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingCompany" @click="onSaveCompany" class="user-save-btn">保存</button>
+                            <button v-show="updatingCompany" @click="onSave('company', 'oldCompany', 'updatingCompany')" class="user-save-btn">保存</button>
                             <button v-show="updatingCompany" @click="onUpdatingCompanyHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
@@ -64,13 +64,13 @@
                 <li v-clickoutside="onUpdatingIntroduceHidden" class="item">
                     <span class="title">个人介绍</span>
                     <div class="input-box profile-input">
-                        <input v-model="introduce" spellcheck="false" placeholder="填写职业技能、擅长的事情、喜欢的事情等" class="input">
+                        <input v-model="introduce" @focus="onUpdatingIntroduce" spellcheck="false" placeholder="填写职业技能、擅长的事情、喜欢的事情等" class="input">
                         <div class="action-box">
                             <button v-show="!updatingIntroduce" @click="onUpdatingIntroduce" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingIntroduce" @click="onSaveIntroduce" class="user-save-btn">保存</button>
+                            <button v-show="updatingIntroduce" @click="onSave('introduce', 'oldIntroduce', 'updatingIntroduce')" class="user-save-btn">保存</button>
                             <button v-show="updatingIntroduce" @click="onUpdatingIntroduceHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
@@ -78,13 +78,13 @@
                 <li v-clickoutside="onUpdatingPersonalHomePageHidden" class="item">
                     <span class="title">个人主页</span>
                     <div class="input-box profile-input">
-                        <input v-model="personalHomePage" spellcheck="false" placeholder="填写你的个人主页" class="input">
+                        <input v-model="personalHomePage" @focus="onUpdatingPersonalHomePage" spellcheck="false" placeholder="填写你的个人主页" class="input">
                         <div class="action-box">
                             <button v-show="!updatingPersonalHomePage" @click="onUpdatingPersonalHomePage" tabindex="-1" class="btn edit-btn">
                                 <img src="../../../images/settings/edit_icon.svg" class="icon" />
                                 <span>修改</span>
                             </button>
-                            <button v-show="updatingPersonalHomePage" @click="onSavePersonalHomePage" class="user-save-btn">保存</button>
+                            <button v-show="updatingPersonalHomePage" @click="onSave('personalHomePage', 'oldPersonalHomePage', 'updatingPersonalHomePage')" class="user-save-btn">保存</button>
                             <button v-show="updatingPersonalHomePage" @click="onUpdatingPersonalHomePageHidden('cancel')" class="user-cancel-btn">取消</button>
                         </div>
                     </div>
@@ -97,6 +97,7 @@
 <script>
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import CroppieImage from '~/js/components/common/CroppieImage.vue';
+import { trim } from '~/js/utils/utils.js';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 
@@ -105,7 +106,7 @@ export default {
         return {
             uploadPolicy: window.uploadPolicy,
             imgMaxSizeLabel: parseInt(window.uploadPolicy.imgMaxSize / 1024 / 1024), // 字节转为 M
-            imageFormat: window.imageFormat,
+            imageFormat: window.uploadPolicy.imgFormat,
             avatarURL: window.user.avatarURL || '',
             username: window.user.username,
             job: window.user.job,
@@ -209,60 +210,24 @@ export default {
         onImgUploadFail(message) {
             this.$refs.errorTip.show(message);
         },
-        onSaveUserName() {
-            if (this.oldUsername === this.username) {
-                this.updatingUserName = false;
+        onSave(field, oldField, updatingField) {
+            if (this[oldField] === this[field]) {
+                this[updatingField] = false;
                 return;
             }
-            myHTTP.put('/users/info', { username: this.username }).then((res) => {
+            this[field] = trim(this[field]);
+            const data = {
+                [field]: this[field]
+            };
+            myHTTP.put('/users/info', data).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.oldUsername = this.username;
-                    this.updatingUserName = false;
+                    this[oldField] = this[field];
+                    this[updatingField] = false;
                 } else {
                     this.$refs.errorTip.show(res.data.message);
                 }
             });
         },
-        onSaveJob() {
-            myHTTP.put('/users/info', { job: this.job }).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.oldJob = this.job;
-                    this.updatingJob = false;
-                } else {
-                    this.$refs.errorTip.show(res.data.message);
-                }
-            });
-        },
-        onSaveCompany() {
-            myHTTP.put('/users/info', { company: this.company }).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.oldCompany = this.company;
-                    this.updatingCompany = false;
-                } else {
-                    this.$refs.errorTip.show(res.data.message);
-                }
-            });
-        },
-        onSaveIntroduce() {
-            myHTTP.put('/users/info', { introduce: this.introduce }).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.oldIntroduce = this.introduce;
-                    this.updatingIntroduce = false;
-                } else {
-                    this.$refs.errorTip.show(res.data.message);
-                }
-            });
-        },
-        onSavePersonalHomePage() {
-            myHTTP.put('/users/info', { personalHomePage: this.personalHomePage }).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.oldPersonalHomePage = this.personalHomePage;
-                    this.updatingPersonalHomePage = false;
-                } else {
-                    this.$refs.errorTip.show(res.data.message);
-                }
-            });
-        }
     },
     components: {
         CroppieImage,
@@ -409,5 +374,9 @@ export default {
     border: 0;
     color: #666;
     font-size: 14px;
+}
+
+.profile-input input::-webkit-input-placeholder {
+    color: #c2c2c2;
 }
 </style>

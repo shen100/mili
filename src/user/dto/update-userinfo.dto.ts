@@ -74,8 +74,9 @@ export class UpdateUserInfoDto {
     })
     readonly introduce: string;
 
+    // personalHomePage为空字符串时，可以保存到数据库
     @ValidateIf(obj => {
-        return obj && typeof obj.personalHomePage !== 'undefined';
+        return obj && typeof obj.personalHomePage !== 'undefined' && obj.personalHomePage !== '';
     })
     @MinLength(UserConstants.PERSONAL_HOMEPAGE_MIN_LENGTH, {
         message: '个人主页最少为 $constraint1 个字符',
