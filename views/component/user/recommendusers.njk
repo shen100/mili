@@ -1,29 +1,31 @@
 <div class="recommended-authors">
     <div class="title">
-        <span style="color: #333;">{{siteName}}优秀作者</span>
+        <span style="color: #333;">🎖️作者榜</span>
     </div>
     <ul class="list">
         {% for user in recommendUsers %}
-        <li>
-            <a href="/users/{{user.id}}.html" target="_blank">
-                <div class="avatar">
-                    <img src="{{staticURL | imgAbsoluteURL(user.avatarURL)}}">
+        <li class="item">
+            <div class="link">
+                <a href="/uc/{{user.id}}" target="_blank" class="recommended-avatar" style="background-image: url({{staticURL | imgAbsoluteURL(user.avatarURL)}});"></a>
+                <div class="user-info">
+                    <a href="/uc/{{user.id}}" target="_blank" class="username">{{user.username}}</a>
+                    <a href="{{userLevelChapterURL}}" target="_blank" class="rank">
+                        <img src="{{imgPath | levelImgURL(user.level)}}">
+                    </a>
+                    <div class="position">{{user | jobCompany}}</div>
+                    <div class="description">{{user.introduce}}</div>
                 </div>
-                <div>
-                    <div class="name">{{user.username}}</div>
-                    {% if user.job %}
-                    <p>{{user.job}}</p>
-                    {% elif user.introduce %}
-                    <p>{{user.introduce}}</p>
-                    {% else %}
-                    <p></p>
-                    {% endif %}
-                </div>
-            </a>
+            </div>
         </li>
         {% endfor %}
+        <li class="item">
+            <div class="more">
+                <span>完整榜单</span>
+                <i class="fa fa-angle-right" style="font-size: 16px;"></i>
+            </div>
+        </li>
     </ul>
     <div class="find-more-box">
-        <a href="/recommendations/users" target="_blank" class="find-more">查看更多<i class="iconfont ic-link"></i></a>
+        {# <a href="/recommendations/users" target="_blank" class="find-more">查看更多<i class="iconfont ic-link"></i></a> #}
     </div>
 </div>

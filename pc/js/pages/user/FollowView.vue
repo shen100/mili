@@ -24,10 +24,10 @@
             </template>
             <template v-slot:content>
                 <div>
-                    <a :key="user.id" :href="`/users/${user.id}`" v-for="user in users" target="_blank" class="link user-follow-item">
+                    <a :key="user.id" :href="`/uc/${user.id}`" v-for="user in users" target="_blank" class="link user-follow-item">
                         <div class="lazy avatar avatar loaded" :style="{'background-image': `url(${user.avatarURL})`}"></div>
                         <div class="info-box">
-                            <a :href="`/users/${user.id}`" target="_blank" class="username">{{user.username}}
+                            <a :href="`/uc/${user.id}`" target="_blank" class="username">{{user.username}}
                                 <a :href="userLevelChapterURL" target="_blank" class="the-rank">
                                     <img :src="user.level | levelImgURL">
                                 </a>
@@ -215,5 +215,19 @@ export default {
     margin-top: 5px;
     float: right;
     background-color: #eaeaea;
+}
+
+.avatar {
+    display: inline-block;
+    position: relative;
+    background-position: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #eee;
+    flex: 0 0 auto;
+    margin-right: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
 }
 </style>

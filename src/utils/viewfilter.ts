@@ -1,5 +1,26 @@
 import * as moment from 'moment';
 
+export const jobCompany = (user) => {
+    let str = '';
+    if (user.job) {
+        str = str + user.job;
+    }
+    if (user.job && user.company) {
+        str = str + ' @ ';
+    }
+    if (user.company) {
+        str = str + user.company;
+    }
+    return str;
+};
+
+export const levelImgURL = (imgPath, level) => {
+    const imgURL = {
+        1: 'lv1.svg',
+    }[level] || 'lv1.svg';
+    return imgPath + '/user/level/' + imgURL;
+};
+
 export const imgAbsoluteURL = (staticURL: string, imgURL: string): string => {
     imgURL = imgURL || '';
     if (imgURL.indexOf('http') === 0) {

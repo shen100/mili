@@ -24,10 +24,10 @@
             </template>
             <template v-slot:content>
                 <div>
-                    <a :key="follower.id" :href="`/users/${follower.id}`" v-for="follower in followers" target="_blank" class="link user-follow-item">
+                    <a :key="follower.id" :href="`/uc/${follower.id}`" v-for="follower in followers" target="_blank" class="link user-follow-item">
                         <div class="lazy avatar avatar loaded" :style="{'background-image': `url(${follower.avatarURL})`}"></div>
                         <div class="info-box">
-                            <a :href="`/users/${follower.id}`" target="_blank" class="username">{{follower.username}}
+                            <a :href="`/uc/${follower.id}`" target="_blank" class="username">{{follower.username}}
                                 <a v-if="follower.level" :href="userLevelChapterURL" target="_blank" class="the-rank">
                                     <img :src="follower.level | levelImgURL">
                                 </a>
@@ -67,6 +67,7 @@ export default {
     methods: {
         onLoad(result) {
             this.followers = this.followers.concat(result.data.data.list);
+            console.log('this.followers', this.followers);
             if (!result.data.data.count) {
                 this.isEmpty = true;
             }
@@ -215,5 +216,19 @@ export default {
     margin-top: 5px;
     float: right;
     background-color: #eaeaea;
+}
+
+.avatar {
+    display: inline-block;
+    position: relative;
+    background-position: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #eee;
+    flex: 0 0 auto;
+    margin-right: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
 }
 </style>

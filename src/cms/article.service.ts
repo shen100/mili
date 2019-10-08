@@ -211,8 +211,16 @@ export class ArticleService {
         };
     }
 
-    async recommendList(page: number, pageSize: number) {
-        return await this.articleRepository.find({
+    /**
+     * 推荐的文章
+     */
+    async recommendList(page: number, pageSize: number, sort: string): Promise<ListResult<Article>> {
+        const sortMap = {
+            popular: { hot: 'DESC'},
+            newest: { id: 'DESC'},
+            noreply: { commentCount: 'ASC', id: 'DESC' },
+        };
+        const [list, count] = await this.articleRepository.findAndCount({
             select: {
                 id: true,
                 name: true,
@@ -228,12 +236,48 @@ export class ArticleService {
             where: {
                 status: Not(ArticleStatus.VerifyFail),
             },
-            order: {
-                id: 'DESC',
-            },
+            order: sortMap[sort],
             skip: (page - 1) * pageSize,
             take: pageSize,
         });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    /**
+     * 相关推荐
+     */
+    async relativeRecommendList(page: number, pageSize: number): Promise<ListResult<Article>> {
+        const [list, count] = await this.articleRepository.findAndCount({
+            select: {
+                id: true,
+                name: true,
+                summary: true,
+                coverURL: true,
+                user: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
+            },
+            relations: ['user'],
+            where: {
+                status: Not(ArticleStatus.VerifyFail),
+            },
+            order: { id: 'DESC'},
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
     }
 
     /**

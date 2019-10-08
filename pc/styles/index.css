@@ -107,7 +107,7 @@ body {
 }
 
 .home-sidebar {
-    width: 275px;
+    width: 240px;
     float: right;
     font-size: 0;
 }
@@ -177,13 +177,14 @@ body {
 }
 
 .recommended-books .book-item {
-    padding: 15px 16px;
+    padding: 15px;
     overflow: hidden;
     margin-bottom: 0;
 }
 
-.recommended-books .book-item:hover {
-    background: #f8f8f8;
+.recommended-books .book-item a {
+    display: block;
+    overflow: hidden;
 }
 
 .recommended-books .book-item-img {
@@ -194,8 +195,7 @@ body {
 
 .recommended-books .book-item-info {
     float: left;
-    float: left;
-    width: 180px;
+    width: 148px;
     margin-left: 10px;
     text-align: left;
 }
@@ -238,10 +238,9 @@ body {
 }
 
 .recommended-books .title, .recommended-authors .title {
-    padding: 16px 16px 0 16px;
+    padding: 12px 16px;
     text-align: left;
     border-bottom: 1px solid hsla(0, 0%, 58.8%, .1);
-    padding-bottom: 12px;
 }
 
 .recommended-books .title span, .recommended-authors .title span {
@@ -276,19 +275,14 @@ body {
     text-decoration: none;
 }
 
-.home-sidebar-ad1 {
-    width: 275px;
-    text-align: center;
-    background: #fff;
-    padding: 12px 0;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-}
-
 .article-list-baiduad {
     text-align: center;
     background: #fff;
     border-bottom: 1px solid #f0f0f0;
     padding-top: 20px;
     padding-bottom: 20px;
+}
+
+.home-sidebar li {
+    margin-bottom: 0;
 }

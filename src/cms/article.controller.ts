@@ -28,7 +28,7 @@ export class ArticleController {
         const [userLiked, article, recommends] = await Promise.all([
             user ? this.articleService.isUserLiked(id, user.id) : Promise.resolve(false),
             this.articleService.detail(id),
-            this.articleService.recommendList(1, 20),
+            this.articleService.relativeRecommendList(1, 20),
         ]);
         if (!article) {
             throw new MyHttpException({

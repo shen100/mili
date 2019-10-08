@@ -646,4 +646,25 @@ export class UserService {
             pageSize,
         };
     }
+
+    /**
+     * 作者排名
+     */
+    async userRankings(page: number, pageSize: number): Promise<Array<User>> {
+        return await this.userRepository.find({
+            select: {
+                id: true,
+                username: true,
+                avatarURL: true,
+                introduce: true,
+                job: true,
+                company: true,
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+            order: {
+                articleCount: 'DESC',
+            },
+        });
+    }
 }
