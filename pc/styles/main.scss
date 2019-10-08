@@ -1338,10 +1338,15 @@ nav .width-limit {
 }
 
 .recommended-authors .item .more {
+    display: block;
     color: #ea6f5a;
     padding: 12px 0;
     text-align: center;
     border-top: 1px solid hsla(0, 0%, 59.2%, .1);
+}
+
+.recommended-authors .item .more:hover {
+    text-decoration: none;
 }
 
 .ic-link:before { 
