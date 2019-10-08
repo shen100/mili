@@ -6,7 +6,7 @@
     <ul class="navbar-nav">
       <li {% if reqPath === '/' %}class="navbar-nav-select"{% endif %}><a href="/">首页</a></li>
       <li {% if reqPath.startsWith('/boiling') %}class="navbar-nav-select"{% endif %}><a href="/boilings/recommend">沸点</a></li>
-      <li {% if reqPath.startsWith('/handbooks') %}class="navbar-nav-select"{% endif %}><a href="/handbooks">小册</a></li>
+      <!-- <li {% if reqPath.startsWith('/handbooks') %}class="navbar-nav-select"{% endif %}><a href="/handbooks">小册</a></li> -->
       <li {% if reqPath.startsWith('/books') %}class="navbar-nav-select"{% endif %}><a href="/books">开源图书</a></li>
       <li id="topnavsearch" class="search">
         <form>

@@ -12,6 +12,7 @@ export const tablesRun = async function (connection) {
         await connection.manager.query(`alter table categories add column follower_count int default 0`);
         await connection.manager.query(`alter table categories add column article_count int default 0`);
         await connection.manager.query(`alter table categories add column cover_url varchar(500)`);
+        await connection.manager.query(`alter table categories add column path varchar(50)`);
 
         await connection.manager.query(`CREATE TABLE follower_category (
             user_id int(11) unsigned NOT NULL,

@@ -4,9 +4,9 @@
 <div class="category-nav-box">
     <div class="category-nav">
         <ul class="category-list">
-            <li><a class="category-item {% if not categoryID %}category-item-select{% endif %}" href="/">推荐</a></li>
+            <li><a class="category-item {% if not pathname %}category-item-select{% endif %}" href="/">推荐</a></li>
             {% for category in categories %}
-            <li><a class="category-item {% if categoryID == category.id %}category-item-select{% endif %}" href="/?c={{category.id}}">{{category.name}}</a></li>
+            <li><a class="category-item {% if pathname == category.path %}category-item-select{% endif %}" href="{{category.path}}">{{category.name}}</a></li>
             {% endfor %}
             <li style="float: right;margin-right: 0;"><a class="category-item" href="/tags">标签管理</a></li>
         </ul>
@@ -15,14 +15,13 @@
 <div class="container">
     <div class="index-container">
         <div class="content-box">
-            <div class="user-action-nav">
-                <div class="default-avatar-box"><img class="default-avatar" src="{{imgPath}}/avatar_default2.svg"></div>
-                <a id="boilingPointBtn" class="user-action-item"><img src="{{imgPath}}/index/pin-icon.svg" />发沸点</a>
-                <a href="/editor/drafts/new.html" target="_blank" class="user-action-item"><img src="{{imgPath}}/index/write-icon.svg" />写文章</a>
-                <a href="/handbooks/new" target="_blank" class="user-action-item"><img style="margin-top: 4px; margin-right: 4px;" src="{{imgPath}}/index/book.svg" />写小册</a>
-                <a href="/editor/drafts.html" target="_blank" class="user-action-item" style="float: right;margin-right: 20px;">草稿</a>
+            <div class="list-header">
+                <ul class="content-list-sort">
+                    <li><a href="?sort=popular" class="{% if sort == 'popular' or not sort %}active{% endif %}">热门</a></li>
+                    <li><a href="?sort=newest" class="{% if sort == 'newest' %}active{% endif %}">最新</a></li>
+                    <li><a href="?sort=noreply" class="{% if sort == 'noreply' %}active{% endif %}">等待回复</a></li>
+                </ul>
             </div>
-            <div class="article-box-sep"></div>
             <div id="articleBox">
                 {% include '../component/article/articles.njk' %}
             </div>
@@ -51,29 +50,23 @@
         <div class="home-sidebar">
             <div class="recommended-books">
                 <div class="title">
-                    <span>推荐小册</span>
+                    <span>开源图书</span>
                 </div>
                 <ul>
+                    {% for book in recommendedBooks %}
                     <li class="book-item">
-                        <img class="book-item-img" src="{{imgPath}}/index/book1.jpg">
-                        <div class="book-item-info">
-                            <div class="book-item-title">Python 实战：用 Scrapyd 打造个人化的爬虫部署管理控制台</div>
-                            <div>
-                                <span class="book-item-buycount">698人已购买</span>
-                                <span class="try-read">试读</span>
+                        <a href="/books/{{book.id}}">
+                            <img class="book-item-img" src="{{book.coverURL}}">
+                            <div class="book-item-info">
+                                <div class="book-item-title">{{book.name}}</div>
+                                <div>
+                                    <span class="book-item-buycount">{{book.browseCount}}人已阅读</span>
+                                    <span class="try-read">阅读</span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </li>
-                    <li class="book-item">
-                        <img class="book-item-img" src="{{imgPath}}/index/book2.jpg">
-                        <div class="book-item-info">
-                            <div class="book-item-title">基于 Go 语言构建企业级的 RESTful API 服务</div>
-                            <div>
-                                <span class="book-item-buycount">698人已购买</span>
-                                <span class="try-read">试读</span>
-                            </div>
-                        </div>
-                    </li>
+                    {% endfor %}
                 </ul>
             </div>
 
@@ -100,7 +93,7 @@
 
 {% block pageData %}
 <script>
-    var categoryID = {{ categoryID }};
+    var categoryID = {% if categoryID %}{{categoryID}}{% else %}undefined{% endif %};
     var uploadPolicy = {{ uploadPolicy | dump | safe }};
 </script>
 {% endblock %}

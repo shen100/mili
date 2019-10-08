@@ -40,4 +40,7 @@ export class Category {
 
     @Column('int', { name: 'article_count' })
     articleCount: number; // 有多少人关注
+
+    @Column('varchar', { length: 50 })
+    path: string;
 }

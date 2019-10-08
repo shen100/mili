@@ -19,6 +19,42 @@ body {
     background: #fff;
 }
 
+.list-header {
+    padding: 12px 20px;
+    padding-left: 6px;
+    font-size: 0;
+    border-bottom: 1px solid hsla(0, 0%, 59.2%, .1);
+}
+
+.content-list-sort, .content-list-sort li {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+}
+
+.content-list-sort li {
+    padding: 0 14px;
+    border-right: 1px solid hsla(0, 0%, 59.2%, .2);
+}
+
+.content-list-sort li:last-child {
+    border: none;
+}
+
+.content-list-sort a {
+    color: #909090;
+    font-size: 14px;
+}
+
+.content-list-sort a:hover {
+    color: #ea6f5a;
+    text-decoration: none;
+}
+
+.content-list-sort a.active {
+    color: #ea6f5a;
+}
+
 .user-action-nav {
     overflow: hidden;
     border-radius: 2px;
@@ -168,6 +204,7 @@ body {
     color: #333;
     font-weight: 500;
     font-size: 14px;
+    margin-bottom: 5px;
 }
 
 .book-item-buycount {

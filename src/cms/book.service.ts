@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Book, BookCategory, BookStatus, BookChapter } from '../entity/book.entity';
 import { ListResult } from '../entity/listresult.entity';
 
@@ -72,6 +72,20 @@ export class BookService {
             pageSize,
             count,
         };
+    }
+
+    async recommendList() {
+        return await this.bookRepository.find({
+            select: {
+                id: true,
+                name: true,
+                coverURL: true,
+                browseCount: true,
+            },
+            where: {
+                id: In([9, 19]),
+            },
+        });
     }
 
     async chapters(bookID: number) {

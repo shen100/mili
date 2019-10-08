@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { Category } from '../entity/category.entity';
 import { Article } from '../entity/article.entity';
+import { RedisService, cacheKeys } from '../redis/redis.service';
 
 @Injectable()
 export class CategoryService {
@@ -11,15 +12,22 @@ export class CategoryService {
     constructor(
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,
+        private readonly redisService: RedisService,
     ) {}
 
     async all(): Promise<Array<Category>> {
-        return await this.categoryRepository.find({
-            select: {
-                id: true,
-                name: true,
-            },
-        });
+        let categories = await this.redisService.getCategories();
+        if (!categories || categories.length <= 0) {
+            categories = await this.categoryRepository.find({
+                select: {
+                    id: true,
+                    name: true,
+                    path: true,
+                },
+            });
+            await this.redisService.setCategories(categories);
+        }
+        return categories;
     }
 
     async isExists(id: number): Promise<boolean> {

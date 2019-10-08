@@ -23,9 +23,9 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
-            document.getElementById('boilingPointBtn').addEventListener('click', () => {
-                this.modalVisible = true;
-            });
+            // document.getElementById('boilingPointBtn').addEventListener('click', () => {
+            //     this.modalVisible = true;
+            // });
         });
     },
     methods: {

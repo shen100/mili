@@ -5,12 +5,14 @@ import * as util from 'util';
 import * as _ from 'lodash';
 import { User } from '../entity/user.entity';
 import { ConfigService } from '../config/config.service';
+import { Category } from '../entity/category.entity';
 
 class CacheKeys {
     readonly user: string = 'golang123:user:%d';
     readonly signupCode: string = 'golang123:signupcode:%s';
     readonly userToken: string = 'golang123:usertoken:%d';
     readonly publishArticle: string = 'golang123:publisharticle:%d';
+    readonly categories: string = 'golang123:categories';
 }
 
 export const cacheKeys: CacheKeys = new CacheKeys();
@@ -66,6 +68,18 @@ export class RedisService {
     async setPublishArticle(userID: number, article) {
         const cacheKey = util.format(this.cacheKeys.publishArticle, userID);
         return await this.client.setAsync(cacheKey, JSON.stringify(article), 'EX', 60);
+    }
+
+    async getCategories(): Promise<Category[]> {
+        const str = await this.client.getAsync(this.cacheKeys.categories);
+        if (!str) {
+            return null;
+        }
+        return JSON.parse(str);
+    }
+
+    async setCategories(categories: Category[]) {
+        return await this.client.setAsync(this.cacheKeys.categories, JSON.stringify(categories), 'EX', 1 * 60 * 60);
     }
 
     async getCache(key: string) {
