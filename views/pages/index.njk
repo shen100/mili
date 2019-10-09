@@ -64,6 +64,7 @@
 {% block pageData %}
 <script>
     var categoryID = {% if categoryID %}{{categoryID}}{% else %}undefined{% endif %};
+    var sort = '{% if sort %}{{sort}}{% else %}{% endif %}';
 </script>
 {% endblock %}
 

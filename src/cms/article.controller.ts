@@ -23,7 +23,7 @@ export class ArticleController {
         private readonly redisService: RedisService,
     ) {}
 
-    @Get('/p/:id.html')
+    @Get('/p/:id')
     async detailView(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
         const [userLiked, article, recommends] = await Promise.all([
             user ? this.articleService.isUserLiked(id, user.id) : Promise.resolve(false),

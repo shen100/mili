@@ -3,26 +3,25 @@
     {% for article in articles %}
     <div class="article-list-item" {% if article.coverURL %} style="min-height: 145px;" {% endif %}>
         <div class="article-content" {% if article.coverURL %} style="padding-right: 140px;" {% endif %}>
-            <a href="/p/{{article.id}}.html" target="_blank" class="article-title">{{article.name}}</a>
+            <a href="/p/{{article.id}}" target="_blank" class="article-title">{{article.name}}</a>
             <p class="article-content">{{article.summary}}...</p>
             <div class="article-meta">
-                <!-- <span class="paid-meta"><i class="iconfont ic-paid"></i> 付费</span> -->
-                <a href="/p/{{article.id}}.html" target="_blank"><i class="iconfont ic-list-read"></i> {{article.browseCount  | defaultValue(0)}}</a>
+                <a href="/p/{{article.id}}" target="_blank"><i class="iconfont ic-list-read"></i> {{article.browseCount  | defaultValue(0)}}</a>
                 {% if article.user and article.user.username %}
-                <a href="/users/{{article.user.id}}.html" target="_blank" class="article-username">{{article.user.username}}</a>
+                <a href="/uc/{{article.user.id}}" target="_blank" class="article-username">{{article.user.username}}</a>
                 {% endif %}
-                <a href="/p/{{article.id}}.html#comments" target="_blank">
+                <a href="/p/{{article.id}}#comments" target="_blank">
                     <i class="iconfont ic-list-comments"></i>
                     {{article.commentCount | defaultValue(0)}}
                 </a>
-                <a target="_blank" href="/p/{{article.id}}.html#like">
-                    <i class="iconfont ic-list-like"></i> {{article.likedCount | defaultValue(0)}}
+                <a href="javascript:void(0)" style="color: #b4b4b4; cursor: default;">
+                    <img src="{{imgPath}}/article/zan.svg" style="width: 12px;" /> {{article.likedCount | defaultValue(0)}}
                 </a>
                 <span class="time">{{article.createdAt | recentTime('YYYY.MM.DD HH:mm')}}</span>
             </div>
         </div>
         {% if article.coverURL %}
-        <a class="article-img" target="_blank" href="/p/{{article.id}}.html">
+        <a class="article-img" target="_blank" href="/p/{{article.id}}">
             <img src="{{article.coverURL}}" />
         </a>
         {% endif %}

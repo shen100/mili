@@ -1,8 +1,9 @@
 <template>
     <li id="topnavsearch" class="search">
-        <form v-clickoutside="onClickOutside" target="_blank" :action="`/search?q=${keyword}`" accept-charset="UTF-8" method="get">
-            <input v-model="searchKeyword" @focus="onFocus" type="text" name="q" value="" autocomplete="off" placeholder="搜索" class="search-input">
-            <a class="search-btn" :href="`/search?q=${keyword}`" target="_blank">
+        <form v-clickoutside="onClickOutside" target="_blank" action="/search" accept-charset="UTF-8" method="get">
+            <input type="hidden" name="q" :value="keyword"> 
+            <input v-model="searchKeyword" @focus="onFocus" type="text" autocomplete="off" placeholder="搜索" class="search-input">
+            <a class="search-btn" :href="`/search?q=${encodedKeyword}`" target="_blank">
                 <i class="iconfont ic-search"></i>
             </a>
             <div v-if="searchTipVisible" id="navbar-search-tips">
@@ -60,19 +61,26 @@ export default {
         };
     },
     computed: {
-        keyword: {
+        encodedKeyword: {
             get: function () {
                 let k = this.searchKeyword;
                 k = trim(k || '');
                 return encodeURIComponent(k);
             },
+        },
+        keyword: {
+            get: function () {
+                let k = this.searchKeyword;
+                k = trim(k || '');
+                return k;
+            },
         }
     },
     methods: {
-        onFocus () {
-            this.searchTipVisible = true;
+        onFocus() {
+            this.searchTipVisible = false;
         },
-        onClickOutside () {
+        onClickOutside() {
             this.searchTipVisible = false;
         }
     }
