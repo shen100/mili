@@ -1,38 +1,31 @@
 import {
-    Controller, Get, Res, Query,
+    Controller, Get, Res, Param,
 } from '@nestjs/common';
-import { RecommendService } from './recommend.service';
-import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
-import { CurUser } from '../core/decorators/user.decorator';
 import { UserService } from '../user/user.service';
+import { CategoryService } from './category.service';
+import { MyHttpException } from '../core/exception/my-http.exception';
+import { ErrorCode } from '../constants/error';
 
 @Controller()
 export class RecommendController {
     constructor(
-        private readonly recommendService: RecommendService,
-        private readonly userService: UserService,
+        private readonly categoryService: CategoryService,
     ) {}
 
-    @Get('/recommendations/users')
-    async usersView(@Res() res) {
-        res.render('pages/recommendations/users');
-    }
-
-    @Get('/api/v1/recommendations/users')
-    async users(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
-        const result = await this.recommendService.recommendUsersWithRecentUpdate(page, 24);
-        if (user) {
-            const users = result.list.map(u => u.id);
-            const followedUsers = await this.userService.usersFilterByFollowerID(users, user.id);
-            const userFollowedMap = {};
-            followedUsers.forEach(followedUser => {
-                userFollowedMap[followedUser.userID] = true;
-            });
-            result.list.forEach((userData: any) => {
-                userData.isFollowed = !!userFollowedMap[userData.id];
-                userData.isSelf = user.id === userData.id;
+    @Get('/recommendations/authors/:categoryPathName')
+    async usersView(@Param('categoryPathName') categoryPathName: string, @Res() res) {
+        const [categories] = await Promise.all([
+            this.categoryService.all(),
+        ]);
+        const category = categories.find(c => c.pathname === categoryPathName);
+        if (!category && categoryPathName !== 'recommended') {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
             });
         }
-        return result;
+        res.render('pages/recommendations/authors', {
+            categoryPathName,
+            categories,
+        });
     }
 }

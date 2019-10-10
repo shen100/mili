@@ -1,6 +1,6 @@
 <template>
     <div class="search-view">
-        <Pinterest url="/articles" :start="2" :query="{c: categoryID, sort}" @load="onLoad">
+        <Pinterest url="/articles" :start="2" :query="{cPath: categoryPathName, sort}" @load="onLoad">
             <template v-slot:loading>
                 <div style="padding: 20px; padding-top: 10px;">
                     <ArticleLoading />
@@ -27,7 +27,7 @@ export default {
     data () {
         return {
             articles: [],
-            categoryID: window.categoryID || undefined,
+            categoryPathName: window.categoryPathName || undefined,
             sort: window.sort,
         };
     },

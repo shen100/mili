@@ -14,11 +14,13 @@ import { ArticleService } from './article.service';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { recentTime } from '../utils/viewfilter';
+import { CategoryService } from './category.service';
 
 @Controller()
 export class ArticleController {
     constructor(
         private readonly articleService: ArticleService,
+        private readonly categoryService: CategoryService,
         private readonly userService: UserService,
         private readonly redisService: RedisService,
     ) {}
@@ -49,11 +51,17 @@ export class ArticleController {
     }
 
     @Get(`${APIPrefix}/articles`)
-    async list(@Query('c') c: number, @Query('page', ParsePagePipe) page: number) {
-        const categoryID = parseInt((c as any), 10) || 0;
+    async list(@Query('cPath') categoryPathName: string, @Query('page', ParsePagePipe) page: number) {
         const pageSize = 20;
-        if (categoryID) {
-            return this.articleService.listInCategory(categoryID, page, pageSize);
+        const categories = await this.categoryService.all();
+        const category = categories.find(c => c.pathname === categoryPathName);
+        if (!category && categoryPathName !== 'recommended') {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        if (category) {
+            return this.articleService.listInCategory(category.id, page, pageSize);
         }
         const listResult = await this.articleService.list(page, pageSize);
         const list = listResult.list.map(article => {

@@ -4,9 +4,9 @@
 <div class="category-nav-box">
     <div class="category-nav">
         <ul class="category-list">
-            <li><a class="category-item {% if not pathname %}category-item-select{% endif %}" href="/">推荐</a></li>
+            <li><a class="category-item {% if categoryPathName == 'recommended' %}category-item-select{% endif %}" href="/">推荐</a></li>
             {% for category in categories %}
-            <li><a class="category-item {% if pathname == category.path %}category-item-select{% endif %}" href="{{category.path}}">{{category.name}}</a></li>
+            <li><a class="category-item {% if categoryPathName == category.pathname %}category-item-select{% endif %}" href="/timeline/{{category.pathname}}">{{category.name}}</a></li>
             {% endfor %}
             <li style="float: right;margin-right: 0;"><a class="category-item" href="/tags">标签管理</a></li>
         </ul>
@@ -63,7 +63,7 @@
 
 {% block pageData %}
 <script>
-    var categoryID = {% if categoryID %}{{categoryID}}{% else %}undefined{% endif %};
+    var categoryPathName = '{{categoryPathName}}';
     var sort = '{% if sort %}{{sort}}{% else %}{% endif %}';
 </script>
 {% endblock %}

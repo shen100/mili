@@ -22,7 +22,7 @@ export class CategoryService {
                 select: {
                     id: true,
                     name: true,
-                    path: true,
+                    pathname: true,
                 },
             });
             await this.redisService.setCategories(categories);

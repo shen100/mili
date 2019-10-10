@@ -42,5 +42,5 @@ export class Category {
     articleCount: number; // 有多少人关注
 
     @Column('varchar', { length: 50 })
-    path: string;
+    pathname: string;
 }
