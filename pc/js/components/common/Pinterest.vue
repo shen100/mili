@@ -39,16 +39,21 @@ export default {
     },
     methods: {
         refresh(query) {
+            console.log('xxxxxx', this.url);
             this.isLoading = false;
             this.isComplete = false;
             this.page = this.start || 1;
-            this.queryData = query ? { ...query } : this.queryData;
+            this.queryData = query ? { ...query } : {};
             this.load();
         },
         load() {
             if (this.isLoading || this.isComplete) {
                 return;
             }
+            console.log('xxxxxx load', this.url);
+            setTimeout(() => {
+                console.log('xxxxxx load2222', this.url);
+            }, 100);
             this.isLoading = true;
             let url = this.url + '?page=' + this.page;
             if (this.queryData) {

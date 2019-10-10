@@ -185,7 +185,7 @@ export class ArticleService {
         };
     }
 
-    async listInTag(tagID: number, order: string, page: number, pageSize: number): Promise<ListResult<Article>> {
+    async listInTag(tagID: number, page: number, pageSize: number, order: string): Promise<ListResult<Article>> {
         let orderStr = '';
         if (order === 'new') {
             orderStr = 'a.createdAt';

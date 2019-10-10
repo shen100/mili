@@ -67,7 +67,7 @@ export default {
                     } else {
                         this.followerCount--;
                     }
-                    this.$emit(this.isFollowed ? 'on-follow' : 'on-cancel');
+                    this.$emit(this.isFollowed ? 'follow' : 'cancel');
                 }
             });
         },

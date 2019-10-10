@@ -3,22 +3,22 @@
         <div class="view-nav">
             <div class="tag-nav">
                 <ul class="nav-list">
-                    <li @click="onTagNavClick('subscribed')" v-if="userID" class="nav-item" :class="{active: query.type !== 'all'}">
+                    <li @click="onTagNavClick('subscribed')" class="nav-item" :class="{active: type !== 'all'}">
                         <a href="javascript:void(0)" class="text-muted1">已关注标签</a>
                     </li>
-                    <li @click="onTagNavClick('all')" class="nav-item router-link-exact-active route-active" :class="{active: query.type === 'all'}">
+                    <li @click="onTagNavClick('all')" class="nav-item router-link-exact-active route-active" :class="{active: type === 'all'}">
                         <a href="javascript:void(0)" class="text-muted1">全部标签</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <header v-if="query.type === 'all'" class="list-header">
+        <header v-if="type === 'all'" class="list-header">
             <nav class="list-nav">
                 <ul class="nav-list">
-                    <li @click="onSortNavClick('hot')" class="nav-item" :class="{active: query.order === 'hot'}">
+                    <li @click="onSortNavClick('popular')" class="nav-item" :class="{active: query.sort === 'popular'}">
                         <a>最热</a>
                     </li>
-                    <li @click="onSortNavClick('new')" class="nav-item" :class="{active: query.order === 'new'}">
+                    <li @click="onSortNavClick('newest')" class="nav-item" :class="{active: query.sort === 'newest'}">
                         <a>最新</a>
                     </li>
                     <li class="nav-item search">
@@ -27,11 +27,11 @@
                 </ul>
             </nav>
         </header>
-        <div class="tag-box" :style="{'padding-top': query.type === 'all' ? '0' : '20px'}">
-            <Pinterest ref="tagPinterest" url="/tags" :query="query" @load="onLoad">
+        <div class="tag-box" :style="{'padding-top': type === 'all' ? '0' : '20px'}">
+            <Pinterest ref="tagPinterest" :url="url" @load="onLoad">
                 <template v-slot:content>
                     <div>
-                        <TagInfo @on-cancel="onFollowCancel(tag.id)" :key="tag.id" :tag="tag" v-for="tag in tags" />
+                        <TagInfo @cancel="onFollowCancel(tag.id)" :key="tag.id" :tag="tag" v-for="tag in tags" />
                     </div>
                 </template>
             </Pinterest>
@@ -43,22 +43,18 @@
 <script>
 import Pinterest from '~/js/components/common/Pinterest.vue';
 import TagInfo from '~/js/components/tag/TagInfo.vue';
+import { trim } from '~/js/utils/utils.js';
 
 export default {
     data () {
-        let type;
-        if (window.userID) {
-            type = 'subscribed';
-        } else {
-            type = 'all';
-        }
+        const type = 'subscribed'; // subscribed、all
         return {
             userID: window.userID,
+            type,
             tags: [],
             query: {
-                order: 'hot',
+                sort: 'popular',
                 q: '',
-                type,
             },
             tempInputQ: '',
             isLoading: true,
@@ -68,34 +64,63 @@ export default {
         this.$nextTick(() => {
         });
     },
+    computed: {
+        isSearch() {
+            if (this.type === 'all') {
+                const q = trim(this.tempInputQ);
+                if (q) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        url() {
+            if (this.type === 'all') {
+                const q = trim(this.tempInputQ);
+                if (q) {
+                    // 搜索标签
+                    return '/tags/search';
+                }
+                // 全部标签
+                return '/tags';
+            }
+            // 关注的标签
+            return `/tags/users/${this.userID}/follow`;
+        }
+    },
     methods: {
         onLoad(result) {
             this.tags = this.tags.concat(result.data.data.list);
             this.isLoading = false;
         },
         onTagNavClick(type) {
-            if (type === this.query.type) {
+            if (type === this.type) {
                 return;
             }
+            this.type = type;
             this.isLoading = true;
             this.tags = [];
-            this.query = {
-                ...this.query,
-                type,
-            };
-            this.$refs.tagPinterest.refresh(this.query);
+            this.$nextTick(() => {
+                let query = null;
+                if (type === 'all') {
+                    query = this.isSearch ? this.query : { sort: this.query.sort };
+                }
+                this.$refs.tagPinterest.refresh(query);
+            });
         },
-        onSortNavClick(order) {
-            if (order === this.query.order) {
+        onSortNavClick(sort) {
+            if (sort === this.query.sort) {
                 return;
             }
             this.isLoading = true;
             this.tags = [];
             this.query = {
                 ...this.query,
-                order,
+                sort,
             };
-            this.$refs.tagPinterest.refresh(this.query);
+            this.$nextTick(() => {
+                this.$refs.tagPinterest.refresh(this.isSearch ? this.query : { sort });
+            });
         },
         onSearch(event) {
             this.isLoading = true;
@@ -104,10 +129,12 @@ export default {
                 ...this.query,
                 q: event.target.value,
             };
-            this.$refs.tagPinterest.refresh(this.query);
+            this.$nextTick(() => {
+                this.$refs.tagPinterest.refresh(this.isSearch ? this.query : { sort : this.query.sort });
+            });
         },
         onFollowCancel(tagID) {
-            if (this.query.type === 'all') {
+            if (this.type === 'all') {
                 return;
             }
             for (let i = 0; i < this.tags.length; i++) {
@@ -129,7 +156,7 @@ export default {
 .view-nav {
     width: 100%;
     height: 46px;
-    box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
     transition: all .2s;
     transform: translateZ(0);
 }

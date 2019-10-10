@@ -11,9 +11,9 @@
 {% block pageData %}
 <script>
     // 当前登录用户
-    var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
-    var username = '{% if user %}{{user.username}}{% else %}{% endif %}';
-    var avatarURL = '{% if user %}{{user.avatarURL}}{% else %}{% endif %}';
+    var userID = {{user.id}};
+    var username = '{{user.username}}';
+    var avatarURL = '{{user.avatarURL}}';
 </script>
 {% endblock %}
 
@@ -21,5 +21,5 @@
 {% endblock %}
 
 {% block devjs %}
-{{ loadjs('entry/tag/tag.js') }}
+    {{ loadjs('entry/tag/tag.js') }}
 {% endblock %}

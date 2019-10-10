@@ -35,7 +35,28 @@ export class TagService {
         });
     }
 
-    async list(page: number, pageSize: number, order: string, keyword: string): Promise<ListResult<Tag>> {
+    async list(page: number, pageSize: number, sort: string): Promise<ListResult<Tag>> {
+        const [list, count] = await this.tagRepository.findAndCount({
+            select: {
+                id: true,
+                name: true,
+                articleCount: true,
+                followerCount: true,
+                iconURL: true,
+            },
+            order: sort === 'popular' ? { followerCount: 'DESC' } : { createdAt: 'DESC' },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    async search(keyword: string, page: number, pageSize: number, sort: string): Promise<ListResult<Tag>> {
         const [list, count] = await this.tagRepository.findAndCount({
             select: {
                 id: true,
@@ -45,7 +66,7 @@ export class TagService {
                 iconURL: true,
             },
             where: keyword ? { name: Like(`%${keyword}%`) } : {},
-            order: order === 'hot' ? { followerCount: 'DESC' } : { createdAt: 'DESC' },
+            order: sort === 'popular' ? { followerCount: 'DESC' } : { createdAt: 'DESC' },
             skip: (page - 1) * pageSize,
             take: pageSize,
         });
@@ -132,6 +153,9 @@ export class TagService {
         });
     }
 
+    /**
+     * 给定一组tag，根据 followerID 来过滤被用户关注的tag
+     */
     async tagsFilterByFollowerID(tags: number[], followerID: number) {
         if (!tags || tags.length <= 0) {
             return [];
@@ -141,7 +165,10 @@ export class TagService {
         return await this.tagRepository.manager.query(sql);
     }
 
-    async isFollowed(userID: number, tagID: number): Promise<boolean> {
+    /**
+     * 用户是否关注了此 tag
+     */
+    async isFollowed(tagID: number, userID: number): Promise<boolean> {
         const sql = `SELECT * FROM user_subscribed_tag WHERE user_id = ${userID} AND tag_id = ${tagID}`;
         const arr = await this.tagRepository.manager.query(sql);
         return arr && arr.length > 0;

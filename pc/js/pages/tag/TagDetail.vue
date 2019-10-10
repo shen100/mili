@@ -7,11 +7,11 @@
                     @click.stop.prevent="onFollow" @mouseenter="onMouseenter" @mouseleave="onMouseleave">{{followText}}</button>
             </div>
             <ul class="nav-list">
-                <li class="nav-item" :class="{active: query.order === 'new'}">
-                    <a @click="onSort('new')">最新</a>
+                <li class="nav-item" :class="{active: query.sort === 'newest'}">
+                    <a @click="onSort('newest')">最新</a>
                 </li>
-                <li class="nav-item" :class="{active: query.order === 'hot'}">
-                    <a @click="onSort('hot')">最热</a>
+                <li class="nav-item" :class="{active: query.sort === 'popular'}">
+                    <a @click="onSort('popular')">最热</a>
                 </li>
             </ul>
         </header>
@@ -50,7 +50,7 @@ export default {
             articles: [],
             url: `/tags/${window.tag.id}/articles`,
             query: {
-                order: 'new',
+                sort: 'newest',
             }
         };
     },
@@ -69,14 +69,14 @@ export default {
         onLoad(result) {
             this.articles = this.articles.concat(result.data.data.list);
         },
-        onSort(order) {
-            if (order === this.query.order) {
+        onSort(sort) {
+            if (sort === this.query.sort) {
                 return;
             }
             this.articles = [];
             this.query = {
                 ...this.query,
-                order,
+                sort,
             };
             this.$refs.articlePinterest.refresh(this.query);
         },

@@ -19,21 +19,30 @@ import { Tag } from '../entity/tag.entity';
 
 @Controller()
 export class TagController {
+    private readonly sortArr = ['popular', 'newest'];
+
     constructor(
         private readonly tagService: TagService,
         private readonly articleService: ArticleService,
     ) {}
 
+    /**
+     * 标签管理页面
+     */
     @Get('/tags')
+    @UseGuards(ActiveGuard)
     async tagView(@Res() res) {
         res.render('pages/tag/tag');
     }
 
+    /**
+     * 标签详情页面
+     */
     @Get('/tags/:id')
-    async tagDetailView(@Res() res, @CurUser() user, @Param('id', MustIntPipe) id: number) {
+    async tagDetailView(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
         const [tag, isFollowed] = await Promise.all([
             this.tagService.detail(id),
-            user ? this.tagService.isFollowed(user.id, id) : Promise.resolve(false),
+            user ? this.tagService.isFollowed(id, user.id) : Promise.resolve(false),
         ]);
         if (!tag) {
             throw new MyHttpException({
@@ -46,81 +55,87 @@ export class TagController {
         });
     }
 
-    @Get(`${APIPrefix}/tags/:id/articles`)
-    async articles(@Param('id', MustIntPipe) id: number, @Query('page', ParsePagePipe) page: number,
-                   @Query('order') order: string) {
-        const pageSize = 20;
-        const listResult = await this.articleService.listInTag(id, order, page, pageSize);
-        return listResult;
-    }
-
-    @Get(`${APIPrefix}/tags/search`)
-    async search(@Query('q') q: string) {
-        if (q) {
-            q = decodeURIComponent(q);
-        }
-        const listResult = await this.tagService.list(1, 20, 'hot', q);
-        return listResult.list;
-    }
-
     /**
-     * 关注的标签
+     * 用户关注的标签
      */
     @Get(`${APIPrefix}/tags/users/:userID/follow`)
     async userFollowTags(@CurUser() user, @Param('userID', MustIntPipe) userID: number, @Query('page', ParsePagePipe) page: number) {
         const pageSize = 20;
-        // 用户A访问用户B的个人中心，查出用户A关注了哪些标签
         const listResult: ListResult<Tag> = await this.tagService.userFollowTags(userID, page, pageSize);
-        const tags = listResult.list.map(tag => tag.id);
-        // 再查出这些标签中，有哪些是用户B也关注了的
-        const followedTags = await this.tagService.tagsFilterByFollowerID(tags, user.id);
-        const tagMap = {};
-        followedTags.forEach(followedTag => {
-            tagMap[followedTag.tagID] = true;
-        });
-        listResult.list.forEach((tag: any) => {
-            tag.isFollowed = !!tagMap[tag.id];
-        });
-        return listResult;
+        if (!user) {
+            listResult.list.forEach((tag: any) => tag.isFollowed = false);
+            return listResult;
+        }
+        if (user.id === userID) {
+            listResult.list.forEach((tag: any) => tag.isFollowed = true);
+            return listResult;
+        }
+        return this.addPropertyIsFollowed(listResult, user.id);
     }
 
+    /**
+     * 全部标签
+     */
     @Get(`${APIPrefix}/tags`)
-    async list(@CurUser() user, @Query('type') type: string,
-               @Query('order') order: string, @Query('q') q: string,
-               @Query('page', ParsePagePipe) page: number) {
+    async list(@CurUser() user, @Query('sort') sort: string, @Query('page', ParsePagePipe) page: number) {
         const pageSize = 20;
-        if (q) {
-            q = decodeURIComponent(q);
+        if (this.sortArr.indexOf(sort) < 0) {
+            sort = this.sortArr[0];
         }
-        let listResult: ListResult<Tag>;
-        if (type === 'all') {
-            listResult = await this.tagService.list(page, pageSize, order, q);
-        } else {
-            if (!user) {
-                throw new MyHttpException({
-                    errorCode: ErrorCode.Forbidden.CODE,
-                });
-            }
-            listResult = await this.tagService.subscribedList(user.id, page, pageSize, order, q);
+        const listResult: ListResult<Tag> = await this.tagService.list(page, pageSize, sort);
+        if (!user) {
+            listResult.list.forEach((tag: any) => tag.isFollowed = false);
+            return listResult;
         }
-        if (user) {
-            const tags = listResult.list.map(tag => tag.id);
-            const followedTags = await this.tagService.tagsFilterByFollowerID(tags, user.id);
-            const tagMap = {};
-            followedTags.forEach(followedTag => {
-                tagMap[followedTag.tagID] = true;
-            });
-            listResult.list.forEach((tag: any) => {
-                tag.isFollowed = !!tagMap[tag.id];
-            });
-        } else {
-            listResult.list.forEach((tag: any) => {
-                tag.isFollowed = false;
-            });
+        return this.addPropertyIsFollowed(listResult, user.id);
+    }
+
+    /**
+     * 根据关键词搜索标签
+     */
+    @Get(`${APIPrefix}/tags/search`)
+    async search(@CurUser() user, @Query('sort') sort: string, @Query('q') q: string,
+                 @Query('page', ParsePagePipe) page: number) {
+        const pageSize = 20;
+        q = q ? decodeURIComponent(q) : '';
+        q = q.trim();
+        if (!q) {
+            return { list: [], count: 0, page: 1, pageSize };
         }
+        const listResult: ListResult<Tag> = await this.tagService.search(q, page, pageSize, sort);
+        if (!user) {
+            listResult.list.forEach((tag: any) => tag.isFollowed = false);
+            return listResult;
+        }
+        return this.addPropertyIsFollowed(listResult, user.id);
+    }
+
+    private async addPropertyIsFollowed(listResult: ListResult<Tag>, userID: number) {
+        const tagIDs: number[] = listResult.list.map(tag => tag.id);
+        const followedTags = await this.tagService.tagsFilterByFollowerID(tagIDs, userID);
+        const tagMap = {};
+        followedTags.forEach(t => tagMap[t.tagID] = true);
+        listResult.list.forEach((tag: any) => tag.isFollowed = !!tagMap[tag.id]);
         return listResult;
     }
 
+    /**
+     * 标签下的文章
+     */
+    @Get(`${APIPrefix}/tags/:id/articles`)
+    async articles(@Param('id', MustIntPipe) id: number, @Query('page', ParsePagePipe) page: number,
+                   @Query('sort') sort: string) {
+        const pageSize = 20;
+        if (this.sortArr.indexOf(sort) < 0) {
+            sort = this.sortArr[0];
+        }
+        const listResult = await this.articleService.listInTag(id, page, pageSize, sort);
+        return listResult;
+    }
+
+    /**
+     * 关注标签
+     */
     @Post(`${APIPrefix}/tags/:id/follow`)
     @UseGuards(ActiveGuard)
     async follow(@CurUser() user, @Param('id', MustIntPipe) id: number) {
@@ -134,6 +149,14 @@ export class TagController {
         return {};
     }
 
+    @Post(`${APIPrefix}/tags`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Editor, UserRole.Admin, UserRole.SuperAdmin)
+    async create(@Body() createArticleDto: CreateTagDto) {
+        await this.tagService.create(createArticleDto);
+        return {};
+    }
+
     @Delete(`${APIPrefix}/tags/:id/follow`)
     @UseGuards(ActiveGuard)
     async cancelFollow(@CurUser() user, @Param('id', MustIntPipe) id: number) {
@@ -144,14 +167,6 @@ export class TagController {
             });
         }
         await this.tagService.removeFollower(id, user.id);
-        return {};
-    }
-
-    @Post(`${APIPrefix}/tags`)
-    @UseGuards(ActiveGuard, RolesGuard)
-    @Roles(UserRole.Editor, UserRole.Admin, UserRole.SuperAdmin)
-    async create(@Body() createArticleDto: CreateTagDto) {
-        await this.tagService.create(createArticleDto);
         return {};
     }
 }
