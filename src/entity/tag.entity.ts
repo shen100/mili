@@ -14,6 +14,9 @@ export class Tag {
     @Column('datetime', { name: 'created_at' })
     createdAt: Date;
 
+    @Column('datetime', { name: 'updated_at' })
+    updatedAt: Date;
+
     @Column('varchar', { length: 200 })
     name: string;
 

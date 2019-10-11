@@ -82,6 +82,7 @@ export const tablesRun = async function (connection) {
         sql = `CREATE TABLE tags (
           id int(11) unsigned NOT NULL AUTO_INCREMENT,
           created_at datetime NOT NULL,
+          updated_at datetime NOT NULL,
           name varchar(200) NOT NULL DEFAULT '',
           follower_count int(11) unsigned NOT NULL,
           article_count int(11) unsigned NOT NULL,
@@ -93,6 +94,7 @@ export const tablesRun = async function (connection) {
         sql = `CREATE TABLE user_subscribed_tag (
           user_id int(11) unsigned NOT NULL,
           tag_id int(11) unsigned NOT NULL,
+          created_at datetime NOT NULL,
           PRIMARY KEY (user_id, tag_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);

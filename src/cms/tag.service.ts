@@ -3,32 +3,39 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { Tag } from '../entity/tag.entity';
 import { CreateTagDto } from './dto/create-tag.dto';
-import { OSSService } from '../common/oss.service';
 import { ListResult } from '../entity/listresult.entity';
+import { UpdateTagDto } from './dto/update-tag.dto';
 
 @Injectable()
 export class TagService {
     constructor(
         @InjectRepository(Tag)
         private readonly tagRepository: Repository<Tag>,
-
-        private readonly ossService: OSSService,
     ) {}
 
     async create(createTagDto: CreateTagDto) {
-        const imgURL = await this.ossService.uploadFromStreamURL(createTagDto.iconURL);
         const tag: Tag = new Tag();
         tag.name = createTagDto.name;
-        tag.iconURL = imgURL;
+        tag.iconURL = createTagDto.iconURL;
         tag.followerCount = 0;
         tag.articleCount = 0;
         tag.createdAt = new Date();
+        tag.updatedAt = tag.createdAt;
         return await this.tagRepository.save(tag);
+    }
+
+    async update(updateTagDto: UpdateTagDto) {
+        return await this.tagRepository.update({
+            id: updateTagDto.id,
+        }, {
+            name: updateTagDto.name,
+            iconURL: updateTagDto.iconURL,
+        });
     }
 
     async detail(id: number) {
         return await this.tagRepository.findOne({
-            select: ['id', 'name', 'followerCount', 'articleCount', 'iconURL', 'createdAt'],
+            select: ['id', 'name', 'followerCount', 'articleCount', 'iconURL', 'createdAt', 'updatedAt'],
             where: {
                 id,
             },
@@ -43,8 +50,10 @@ export class TagService {
                 articleCount: true,
                 followerCount: true,
                 iconURL: true,
+                createdAt: true,
+                updatedAt: true,
             },
-            order: sort === 'popular' ? { followerCount: 'DESC' } : { createdAt: 'DESC' },
+            order: sort === 'popular' ? { followerCount: 'DESC' } : { updatedAt: 'DESC' },
             skip: (page - 1) * pageSize,
             take: pageSize,
         });
@@ -66,33 +75,10 @@ export class TagService {
                 iconURL: true,
             },
             where: keyword ? { name: Like(`%${keyword}%`) } : {},
-            order: sort === 'popular' ? { followerCount: 'DESC' } : { createdAt: 'DESC' },
+            order: sort === 'popular' ? { followerCount: 'DESC' } : { updatedAt: 'DESC' },
             skip: (page - 1) * pageSize,
             take: pageSize,
         });
-        return {
-            list,
-            count,
-            page,
-            pageSize,
-        };
-    }
-
-    async subscribedList(userID: number, page: number, pageSize: number, order: string, keyword: string): Promise<ListResult<Tag>> {
-        const orderField = order === 'hot' ? 'follower_count' : 'created_at';
-        const likeSQL = keyword ? `AND tags.name LIKE "%${keyword}%"` : '';
-        const sql1 = `SELECT tags.id as id, tags.name as name, tags.article_count as articleCount,
-                tags.follower_count as followerCount, tags.icon_url as iconURL
-            FROM tags, user_subscribed_tag
-            WHERE user_subscribed_tag.user_id = ${userID} AND tags.id = user_subscribed_tag.tag_id ${likeSQL}
-            ORDER BY ${orderField} DESC
-            LIMIT ${(page - 1) * pageSize}, ${pageSize}`;
-        const sql2 = `SELECT COUNT(*) as count FROM tags, user_subscribed_tag
-            WHERE user_subscribed_tag.user_id = ${userID} AND tags.id = user_subscribed_tag.tag_id`;
-        const [list, count] = await Promise.all([
-            this.tagRepository.manager.query(sql1),
-            this.tagRepository.manager.query(sql2),
-        ]);
         return {
             list,
             count,
@@ -109,7 +95,7 @@ export class TagService {
                 tags.follower_count as followerCount, tags.icon_url as iconURL
             FROM tags, user_subscribed_tag
             WHERE user_subscribed_tag.user_id = ? AND tags.id = user_subscribed_tag.tag_id
-            ORDER BY created_at DESC
+            ORDER BY user_subscribed_tag.created_at DESC
             LIMIT ?, ?`;
         const sql2 = `SELECT COUNT(*) as count FROM user_subscribed_tag
             WHERE user_subscribed_tag.user_id = ?`;
@@ -135,21 +121,15 @@ export class TagService {
 
     async addFollower(tagID: number, userID: number) {
         await this.tagRepository.manager.connection.transaction(async manager => {
-            await manager.createQueryBuilder()
-                .relation(Tag, 'followers')
-                .of(tagID)
-                .add(userID);
-            await manager.query(`UPDATE tags SET follower_count = follower_count + 1 WHERE id = ${tagID}`);
+            await manager.query('INSERT INTO user_subscribed_tag (user_id, tag_id, created_at) VALUES(?, ?, ?)', [userID, tagID, new Date()]);
+            await manager.query('UPDATE tags SET follower_count = follower_count + 1 WHERE id = ?', [tagID]);
         });
     }
 
     async removeFollower(tagID: number, userID: number) {
         await this.tagRepository.manager.connection.transaction(async manager => {
-            await manager.createQueryBuilder()
-                .relation(Tag, 'followers')
-                .of(tagID)
-                .remove(userID);
-            await manager.query(`UPDATE tags SET follower_count = follower_count - 1 WHERE id = ${tagID}`);
+            await manager.query('DELETE FROM user_subscribed_tag WHERE user_id = ? AND tag_id = ?', [userID, tagID]);
+            await manager.query('UPDATE tags SET follower_count = follower_count - 1 WHERE id = ?', [tagID]);
         });
     }
 
@@ -161,16 +141,16 @@ export class TagService {
             return [];
         }
         const sql = `SELECT user_id as userID, tag_id as tagID FROM user_subscribed_tag
-            WHERE user_id = ${followerID} AND tag_id IN (${tags.join(',')})`;
-        return await this.tagRepository.manager.query(sql);
+            WHERE user_id = ? AND tag_id IN (?)`;
+        return await this.tagRepository.manager.query(sql, [followerID, tags.join(',')]);
     }
 
     /**
-     * 用户是否关注了此 tag
+     * 用户是否关注了此标签
      */
     async isFollowed(tagID: number, userID: number): Promise<boolean> {
-        const sql = `SELECT * FROM user_subscribed_tag WHERE user_id = ${userID} AND tag_id = ${tagID}`;
-        const arr = await this.tagRepository.manager.query(sql);
+        const sql = `SELECT user_subscribed_tag.user_id FROM user_subscribed_tag WHERE user_id = ? AND tag_id = ?`;
+        const arr = await this.tagRepository.manager.query(sql, [userID, tagID]);
         return arr && arr.length > 0;
     }
 }

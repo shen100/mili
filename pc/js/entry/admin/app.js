@@ -47,6 +47,7 @@ Vue.use(VueRouter);
 
 const routes = [
     { path: '/', component: () => import('~/js/pages/admin/index.vue') },
+    { path: '/tag', component: () => import('~/js/pages/admin/tag/TagList.vue') },
     { path: '/boilingpoint/topic', component: () => import('~/js/pages/admin/boilingpoint/Topic.vue') },
     { path: '*', component: () => import('~/js/pages/admin/404.vue') }
 ];

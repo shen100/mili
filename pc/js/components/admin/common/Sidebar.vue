@@ -32,6 +32,9 @@
             <router-link to="/admin/topic/list">
                 <MenuItem name="/admin/topic/list">全部文章</MenuItem>
             </router-link>
+            <router-link to="/tag">
+                <MenuItem name="/tag">标签</MenuItem>
+            </router-link>
         </Submenu>
         <Submenu name="reply">
             <template slot="title">

@@ -2,15 +2,15 @@
     <div>
         <Breadcrumb>
             <BreadcrumbItem to="/">首页</BreadcrumbItem>
-            <BreadcrumbItem>话题</BreadcrumbItem>
+            <BreadcrumbItem>标签</BreadcrumbItem>
         </Breadcrumb>
         <div>
-            <Button type="primary" @click="onNewTopic">创建话题</Button>
+            <Button type="primary" @click="onNewTag">创建标签</Button>
         </div>
-        <Table :columns="columns" :data="topics">
-            <template slot-scope="{ row }" slot="icon">
+        <Table :columns="columns" :data="tags">
+            <template slot-scope="{ row }" slot="iconURL">
                 <div class="item-icon-box">
-                    <div class="item-icon" :style="{'background-image': `url(${row.icon})`}" />
+                    <div class="item-icon" :style="{'background-image': `url(${row.iconURL})`}" />
                 </div>
             </template>
             <template slot-scope="{ row }" slot="action">
@@ -20,18 +20,15 @@
         <Modal
             @on-visible-change="onModalVisibleChange"
             :value="modalVisible"
-            :title="topicID ? '编辑话题' : '创建话题'"
+            :title="tagID ? '编辑标签' : '创建标签'"
             footer-hide>
-            <Form ref="formNode" :model="formData" :rules="rules" :label-width="80">
-                <FormItem prop="name" label="话题名称">
-                    <Input v-model="formData.name" placeholder="请输入话题名称" />
+            <Form v-if="modalVisible" ref="formNode" :model="formData" :rules="rules" :label-width="80">
+                <FormItem prop="name" label="标签名称">
+                    <Input v-model="formData.name" placeholder="请输入标签名称" />
                 </FormItem>
-                <FormItem prop="icon" label="图标">
+                <FormItem prop="iconURL" label="图标">
                     <SimpleUploader ref="simpleUploader" v-if="uploadPolicy" :uploadPolicy="uploadPolicy" 
-                        @success="onImgUploadSuccess" @remove="onImgRemove" :img="formData.icon"/>
-                </FormItem>
-                <FormItem prop="sequence" label="排序">
-                    <InputNumber :max="10" :min="1" v-model="formData.sequence"></InputNumber>                    
+                        @success="onImgUploadSuccess" @remove="onImgRemove" :img="formData.iconURL"/>
                 </FormItem>
             </Form>
             <div class="admin-modal-footer">
@@ -50,22 +47,19 @@ import SimpleUploader from '~/js/components/admin/common/SimpleUploader.vue';
 
 export default {
     data () {
-        const defaultSequence = 1;
         return {
             uploadPolicy: null,
-            defaultSequence,
-            topicID: undefined,
+            tagID: undefined,
             modalVisible: false,
             formData: {
                 name: '',
-                sequence: defaultSequence,
-                icon: '',
+                iconURL: '',
             },
             rules: {
                 name: [
-                    { required: true, message: '请输入话题名称', trigger: 'blur' }
+                    { required: true, message: '请输入标签名称', trigger: 'blur' }
                 ],
-                icon: [
+                iconURL: [
                     { required: true, message: '请上传图标' }
                 ],
             },
@@ -80,11 +74,15 @@ export default {
                 },
                 {
                     title: '图标',
-                    slot: 'icon'
+                    slot: 'iconURL'
                 },
                 {
-                    title: '排序',
-                    key: 'sequence'
+                    title: '文章数量',
+                    key: 'articleCount'
+                },
+                {
+                    title: '关注人数',
+                    key: 'followerCount'
                 },
                 {
                     title: '创建时间',
@@ -99,7 +97,7 @@ export default {
                     slot: 'action'
                 },
             ],
-            topics: []
+            tags: []
         };
     },
     mounted() {
@@ -119,13 +117,12 @@ export default {
             });
         },
         onEdit(row) {
-            this.topicID = row.id;
+            this.tagID = row.id;
             this.formData.name = row.name;
-            this.formData.sequence = row.sequence;
-            this.formData.icon = row.icon;
+            this.formData.iconURL = row.iconURL;
             this.modalVisible = true;
             this.$nextTick(() => {
-                this.$refs.simpleUploader.setImgURL(row.icon);
+                this.$refs.simpleUploader.setImgURL(row.iconURL);
             });
         },
         onOk() {
@@ -134,15 +131,15 @@ export default {
                     return;
                 }
                 let reqMethod;
-                let url = '/admin/boilingpoint/topics';
+                let url = '/admin/tags';
                 const data = {
                     name: this.formData.name,
-                    sequence: this.formData.sequence,
-                    icon: this.formData.icon,
+                    iconURL: this.formData.iconURL,
                 };
-                if (this.topicID) {
+                if (this.tagID) {
                     reqMethod = myHTTP.put;
-                    url += `/${this.topicID}`;
+                    url += `/${this.tagID}`;
+                    data.id = this.tagID;
                 } else {
                     reqMethod = myHTTP.post;
                 }
@@ -153,7 +150,6 @@ export default {
                     }
                     this.modalVisible = false;
                     this.formData.name = '';
-                    this.formData.sequence = this.defaultSequence;
                     this.reqList();
                 }).catch(err => {
                     this.$Message.error(err.message);
@@ -165,36 +161,37 @@ export default {
             this.modalVisible = false;
         },
         reqList() {
-            myHTTP.get('/admin/boilingpoint/topics').then((res) => {
+            myHTTP.get('/tags').then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    let topics = res.data.data.topics;
-                    topics = topics.map(topic => {
+                    let tags = res.data.data.list;
+                    tags = tags.map(tag => {
                         return {
-                            ...topic,
-                            createdAt: formatYMDHMS(topic.createdAt),
-                            updatedAt: formatYMDHMS(topic.updatedAt)
+                            ...tag,
+                            createdAt: formatYMDHMS(tag.createdAt),
+                            updatedAt: formatYMDHMS(tag.updatedAt)
                         };
                     });
-                    this.topics = topics;
+                    this.tags = tags;
                 }
             });
         },
-        onNewTopic() {
-            this.topicID = undefined;
+        onNewTag() {
+            this.tagID = undefined;
             this.formData.name = '';
-            this.formData.icon = '';
-            this.formData.sequence = this.defaultSequence;
+            this.formData.iconURL = '';
             this.modalVisible = true;
+            this.$nextTick(() => {
+                this.$refs.simpleUploader.setImgURL('');
+            });
         },
         onModalVisibleChange(visible) {
             this.modalVisible = visible;
-            console.log(arguments);
         },
         onImgUploadSuccess(imgURL) {
-            this.formData.icon = imgURL;
+            this.formData.iconURL = imgURL;
         },
         onImgRemove() {
-            this.formData.icon = '';
+            this.formData.iconURL = '';
         }
     },
     components: {
@@ -220,4 +217,3 @@ export default {
     background-position: 50%;
 }
 </style>
-

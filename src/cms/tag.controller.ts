@@ -1,7 +1,7 @@
 import {
-    Controller, Post, UseGuards, Body, Res, Get, Query, Param, Delete,
+    Controller, Post, UseGuards, Body, Res, Get, Query, Param, Delete, Put,
 } from '@nestjs/common';
-import { APIPrefix } from '../constants/constants';
+import { APIPrefix, AdminAPIPrefix } from '../constants/constants';
 import { TagService } from './tag.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { ActiveGuard } from '../core/guards/active.guard';
@@ -16,6 +16,7 @@ import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ListResult } from '../entity/listresult.entity';
 import { ArticleService } from './article.service';
 import { Tag } from '../entity/tag.entity';
+import { UpdateTagDto } from './dto/update-tag.dto';
 
 @Controller()
 export class TagController {
@@ -149,14 +150,36 @@ export class TagController {
         return {};
     }
 
-    @Post(`${APIPrefix}/tags`)
+    /**
+     * 创建标签
+     */
+    @Post(`${AdminAPIPrefix}/tags`)
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Editor, UserRole.Admin, UserRole.SuperAdmin)
     async create(@Body() createArticleDto: CreateTagDto) {
-        await this.tagService.create(createArticleDto);
+        const tag: Tag = await this.tagService.create(createArticleDto);
+        return { id: tag.id };
+    }
+
+    /**
+     * 编辑标签
+     */
+    @Put(`${AdminAPIPrefix}/tags/:id`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Editor, UserRole.Admin, UserRole.SuperAdmin)
+    async update(@Param('id', MustIntPipe) id: number, @Body() updateTagDto: UpdateTagDto) {
+        if (id !== updateTagDto.id) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        await this.tagService.update(updateTagDto);
         return {};
     }
 
+    /**
+     * 取消关注标签
+     */
     @Delete(`${APIPrefix}/tags/:id/follow`)
     @UseGuards(ActiveGuard)
     async cancelFollow(@CurUser() user, @Param('id', MustIntPipe) id: number) {
