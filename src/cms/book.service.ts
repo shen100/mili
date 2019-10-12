@@ -23,6 +23,7 @@ export class BookService {
             select: {
                 id: true,
                 name: true,
+                pathname: true,
             },
         });
     }
@@ -50,6 +51,10 @@ export class BookService {
             },
         });
         return chapter !== null;
+    }
+
+    async list(page: number, pageSize: number): Promise<ListResult<Book>> {
+        return this.listInCategory(undefined, page, pageSize);
     }
 
     async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult<Book>> {

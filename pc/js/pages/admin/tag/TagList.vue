@@ -60,8 +60,15 @@ export default {
                     { required: true, message: '请输入标签名称', trigger: 'blur' }
                 ],
                 iconURL: [
-                    { required: true, message: '请上传图标' }
-                ],
+                    {
+                        required: true, // 仅仅是为了在图标旁边加个红*
+                        trigger: 'change', 
+                        validator: (rule, value, callback) => {
+                            // 直接回调callback, 由后台来验证
+                            callback()
+                        }
+                    }
+                ]
             },
             columns: [
                 {

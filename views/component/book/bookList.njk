@@ -1,22 +1,24 @@
 <div class="handbooks">
     {% for book in list %}
     <div>
-        <a href="/books/{{book.id}}.html" target="_blank" class="item"
+        <div class="item"
             {% if loop.last %} style="border-bottom: none;"{% endif %}>
             <div class="poster">
-                <div class="lazy thumb poster-img loaded" style="background-image: url({{book.coverURL}}); background-size: cover;"></div>
+                <a href="/books/{{book.id}}" target="_blank">
+                    <div class="lazy thumb poster-img loaded" style="background-image: url({{book.coverURL}}); background-size: cover;"></div>
+                </a>
             </div>
             <div class="info">
-                <div class="title">
+                <a href="/books/{{book.id}}" target="_blank" class="title">
                     <span>{{book.name}}</span>
-                </div>
-                <div class="desc">{{book.summary}}</div>
+                </a>
+                <div class="desc">{{book.summary}}...</div>
                 <div class="author">
                     <div class="author-info">
-                        <div target="_blank" class="user">
+                        <a href="/uc/{{book.user.id}}" target="_blank" class="user">
                             <div class="lazy avatar hero loaded" style="background-image: url({{book.user.avatarURL}});"></div>
                             <span>{{book.user.username}}</span>
-                        </div>
+                        </a>
                     </div>
                     <div class="author-desc">
                     </div>
@@ -39,22 +41,7 @@
                 </div>
                 <div class="footer-bar" style="display: none;"></div>
             </div>
-        </a>
+        </div>
     </div>
     {% endfor %}
-    
-    {% if baiduAd.ad580x90 %}
-    <div class="book-list-baiduad">
-        <script type="text/javascript">
-            (function() {
-                var s = "_" + Math.random().toString(36).slice(2);
-                document.write('<div style="" id="' + s + '"></div>');
-                (window.slotbydup = window.slotbydup || []).push({
-                    id: "{{baiduAd.ad580x90}}",
-                    container: s
-                });
-            })();
-        </script>
-    </div>
-    {% endif %}
 </div>

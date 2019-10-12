@@ -80,6 +80,11 @@ body {
     font-weight: 400;
 }
 
+.handbooks .info .title:hover {
+    text-decoration: none;
+    color: #ea6f5a;
+}
+
 .handbooks .info .title .presale {
     display: inline-block;
     vertical-align: middle;
@@ -126,6 +131,10 @@ body {
     display: inline-flex;
     align-items: center;
     color: #000;
+}
+
+.handbooks .info .author .user:hover {
+    text-decoration: none;
 }
 
 .handbooks .info .author .hero {
@@ -186,16 +195,6 @@ body {
     float: right;
 }
 
-.search-side-ad1 {
-    width: 275px;
-    text-align: center;
-    background: #fff;
-    padding: 12px 0;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-}
-
-
 .recommended-books, .recommended-authors {
     border-radius: 2px;
     overflow: hidden;
@@ -227,7 +226,6 @@ body {
 }
 
 .recommended-books .book-item-info {
-    float: left;
     float: left;
     width: 180px;
     margin-left: 10px;
@@ -293,12 +291,4 @@ body {
     display: inline-block;
     line-height: 1;
     transition: .5s ease;
-}
-
-.book-list-baiduad {
-    text-align: center;
-    background: #fff;
-    border-top: 1px solid #f0f0f0;
-    padding-top: 20px;
-    padding-bottom: 20px;
 }

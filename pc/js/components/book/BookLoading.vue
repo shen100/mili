@@ -17,6 +17,11 @@
 </template>
 
 <style scoped>
+.article-placeholder {
+    height: 145px;
+    margin-bottom: 0;
+}
+
 .article-placeholder .title {
     width: 50%;
     margin-bottom: 20px!important;

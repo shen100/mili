@@ -1,20 +1,22 @@
 <template>
     <div>
-        <a :href="`/books/${bookData.id}.html`" target="_blank" class="item">
+        <a class="item">
             <div class="poster">
-                <div class="lazy thumb poster-img loaded" :style="{'background-image': `url(${bookData.coverURL})`}" style="background-size: cover;"></div>
+                <a :href="`/books/${bookData.id}`" target="_blank">
+                    <div class="lazy thumb poster-img loaded" :style="{'background-image': `url(${bookData.coverURL})`}" style="background-size: cover;"></div>
+                </a>
             </div>
             <div class="info">
-                <div class="title">
+                <a :href="`/books/${bookData.id}`" target="_blank" class="title">
                     <span>{{bookData.name}}</span>
-                </div>
-                <div class="desc">{{bookData.summary}}</div>
+                </a>
+                <div class="desc" v-html="bookData.summary"></div>
                 <div class="author">
                     <div class="author-info">
-                        <div target="_blank" class="user">
+                        <a :href="`/uc/${bookData.user.id}`" target="_blank" class="user">
                             <div class="lazy avatar hero loaded" :style="{'background-image': `url(${bookData.user.avatarURL})`}"></div>
                             <span>{{bookData.user.username}}</span>
-                        </div>
+                        </a>
                     </div>
                     <div class="author-desc">
                     </div>
@@ -55,6 +57,7 @@ export default {
         const bookData = {
             ...this.book,
         };
+        bookData.summary = (bookData.summary || '') + '...';
         if (this.keyword) {
             bookData.name = replaceIgnoreCase(bookData.name, this.keyword, strongHTML);
             bookData.summary = replaceIgnoreCase(bookData.summary, this.keyword, strongHTML);

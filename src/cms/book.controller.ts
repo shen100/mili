@@ -1,11 +1,11 @@
 import {
-    Controller, Get, Res, Query, Param,
+    Controller, Get, Res, Query, Param, Next,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
-import { BookStatus } from '../entity/book.entity';
+import { BookStatus, BookCategory } from '../entity/book.entity';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 
@@ -15,32 +15,36 @@ export class BookController {
         private readonly bookService: BookService,
     ) {}
 
-    @Get('/books')
-    async booksView(@Query('c', ShouldIntPipe) c: number, @Query('page', ParsePagePipe) page: number, @Res() res) {
-        const recommendHandBooks = [
-            {
-                name: 'Kubernetes 从上手到实践Kubernetes 从上手到实践Kubernetes 从上手到实践',
-                saleCount: 1123,
-                coverURL: '/images/index/book1.jpg',
-            },
-            {
-                name: 'Kubernetes 从上手到实践',
-                saleCount: 1123,
-                coverURL: '/images/index/book1.jpg',
-            },
-        ];
-
-        const categoryID = parseInt((c as any), 10) || 0;
+    @Get('/books/:categoryPathName?')
+    async booksView(@Param('categoryPathName') categoryPathName: string, @Query('page', ParsePagePipe) page: number, @Res() res, @Next() next) {
+        if (categoryPathName && !isNaN(Number(categoryPathName))) {
+            // 转到图书详情页面
+            next();
+            return;
+        }
         const pageSize = 20;
-
-        const [categories, listResult] = await Promise.all([
-            this.bookService.allCategories(),
-            this.bookService.listInCategory(categoryID, page, pageSize),
+        const categories: BookCategory[] = await this.bookService.allCategories();
+        let category: BookCategory;
+        if (categoryPathName) {
+            category = categories.find(c => c.pathname === categoryPathName);
+            if (!category) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.NotFound.CODE,
+                });
+            }
+        }
+        let bookListQuery = this.bookService.list(page, pageSize);
+        if (category) {
+            bookListQuery = this.bookService.listInCategory(category.id, page, pageSize);
+        }
+        const [listResult, recommendBooks] = await Promise.all([
+            bookListQuery,
+            this.bookService.recommendList(),
         ]);
 
         res.render('pages/books/books', {
-            recommendHandBooks,
-            categoryID,
+            recommendBooks,
+            categoryPathName: categoryPathName || 'all',
             categories,
             ...listResult,
         });
@@ -81,11 +85,25 @@ export class BookController {
         });
     }
 
-    @Get('/api/v1/books')
-    async list(@Query('c', ShouldIntPipe) c: number, @Query('page', ParsePagePipe) page: number) {
-        const categoryID = parseInt((c as any), 10) || 0;
+    @Get('/api/v1/books/:categoryPathName')
+    async list(@Param('categoryPathName') categoryPathName: string, @Query('page', ParsePagePipe) page: number) {
+        const categories = await this.bookService.allCategories();
+        const category = categories.find(c => c.pathname === categoryPathName);
+        if (!category && categoryPathName !== 'all') {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+
         const pageSize = 20;
-        const listResult = await this.bookService.listInCategory(categoryID, page, pageSize);
+
+        let bookListQuery = this.bookService.list(page, pageSize);
+        if (category) {
+            bookListQuery = this.bookService.listInCategory(category.id, page, pageSize);
+        }
+        const [listResult] = await Promise.all([
+            bookListQuery,
+        ]);
         return listResult;
     }
 }

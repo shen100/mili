@@ -24,6 +24,9 @@ export class BookCategory {
 
     @Column('int', { name: 'parent_id' })
     parentID: number;
+
+    @Column('varchar', { length: 50 })
+    pathname: string;
 }
 
 export enum BookStatus {
@@ -73,7 +76,7 @@ export class Book {
     wordCount: number;
 
     @Column('int', { name: 'user_count' })
-    userCount: number; // 已阅读过本书的用户数
+    userCount: number; // 已阅读此书的人数
 
     @Column('varchar', { name: 'cover_url', length: 200, nullable: true, default: null })
     coverURL: string;

@@ -5,9 +5,9 @@
     <div class="category-nav-box">
         <div class="category-nav">
             <ul class="category-list">
-                <li><a href="/books" class="category-item {% if not categoryID %}category-item-select {% endif %}">全部</a></li>
+                <li><a href="/books" class="category-item {% if categoryPathName === 'all' %}category-item-select {% endif %}">全部</a></li>
                 {% for category in categories %}
-                <li><a href="/books?c={{category.id}}" class="category-item {% if categoryID == category.id %}category-item-select {% endif %}">{{category.name}}</a></li>
+                <li><a href="/books/{{category.pathname}}" class="category-item {% if categoryPathName == category.pathname %}category-item-select {% endif %}">{{category.name}}</a></li>
                 {% endfor %}
             </ul>
         </div>
@@ -24,37 +24,23 @@
         <div class="side-box">
             <div class="recommended-books">
                 <div class="title">
-                    <span>推荐小册</span>
+                    <span>开源图书</span>
                 </div>
                 <ul>
-                    {% for handBook in recommendHandBooks %}
+                    {% for book in recommendBooks %}
                     <li class="book-item">
-                        <img class="book-item-img" src="{{handBook.coverURL}}">
+                        <img class="book-item-img" src="{{book.coverURL}}">
                         <div class="book-item-info">
-                            <div class="book-item-title">{{handBook.name}}</div>
+                            <div class="book-item-title">{{book.name}}</div>
                             <div style="margin-top: 2px;">
-                                <span class="book-item-buycount">{{handBook.saleCount}}人已购买</span>
-                                <span class="try-read">购买</span>
+                                <span class="book-item-buycount">{{book.browseCount}}人已购买</span>
+                                <span class="try-read">阅读</span>
                             </div>
                         </div>
                     </li>
                     {% endfor %}
                 </ul>
             </div>
-            {% if baiduAd.ad250x250 %}
-            <div class="search-side-ad1">
-                <script type="text/javascript">
-                    (function() {
-                        var s = "_" + Math.random().toString(36).slice(2);
-                        document.write('<div style="" id="' + s + '"></div>');
-                        (window.slotbydup = window.slotbydup || []).push({
-                            id: "{{baiduAd.ad250x250}}",
-                            container: s
-                        });
-                    })();
-                </script>
-            </div>
-            {% endif %}
         </div>
     </div>
 </div>
@@ -68,12 +54,10 @@
 
 {% block pageData %}
 <script>
-    var categoryID = {{categoryID}};
+    var categoryPathName = '{{categoryPathName}}';
+    var bookCount = {{count}};
+    var pageSize = {{pageSize}};
 </script>
-{% endblock %}
-
-{% block libjs %}
-<script src="//cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript" async="async" defer="defer"></script>
 {% endblock %}
 
 {% block devjs %}

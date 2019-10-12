@@ -9,6 +9,8 @@ export const tablesRun = async function (connection) {
         await connection.manager.query(`alter table books add column word_count int default 0`);
         await connection.manager.query(`alter table books add column user_count int default 0`);
 
+        await connection.manager.query(`alter table book_categories add column pathname varchar(50)`);
+
         await connection.manager.query(`alter table categories add column follower_count int default 0`);
         await connection.manager.query(`alter table categories add column article_count int default 0`);
         await connection.manager.query(`alter table categories add column cover_url varchar(500)`);

@@ -19,6 +19,8 @@ export class CreateTagDto {
     @IsUrl({
         protocols: ['https'],
         require_protocol: true,
+    }, {
+        message: '图标不能为空',
     })
     readonly iconURL: string;
 }
