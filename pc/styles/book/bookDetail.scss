@@ -403,7 +403,7 @@ body {
 }
 
 .book-content {
-    padding: 30px 30px 0;
+    padding: 30px;
 }
 
 .book-content .book-content-head {
@@ -437,6 +437,10 @@ body {
 
 .section.section-link {
     cursor: pointer;
+}
+
+.section.section-link:hover {
+    text-decoration: none;
 }
 
 .section-of-info .section {
@@ -526,6 +530,7 @@ body {
 
 .section .center .title {
     font-size: 16px;
+    line-height: normal;
 }
 
 .section-of-info .section .title {

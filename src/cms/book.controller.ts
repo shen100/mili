@@ -8,6 +8,7 @@ import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { BookStatus, BookCategory } from '../entity/book.entity';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
+import { CurUser } from '../core/decorators/user.decorator';
 
 @Controller()
 export class BookController {
@@ -55,9 +56,10 @@ export class BookController {
      */
     @Get('/books/:id')
     async bookView(@Param('id', MustIntPipe) id: number, @Res() res) {
-        const [book, chapters, recommendBooks] = await Promise.all([
+        const [book, chapters, studyUsers, recommendBooks] = await Promise.all([
             this.bookService.detail(id),
             this.bookService.chapters(id),
+            this.bookService.studyBookUsers(id, 1, 20),
             this.bookService.recommendList(),
         ]);
 
@@ -69,15 +71,17 @@ export class BookController {
         res.render('pages/books/bookDetail', {
             book,
             chapters,
+            studyUsers,
             list: recommendBooks,
         });
     }
 
     @Get('/books/:bookID/chapters/:chapterID')
-    async chapterView(@Param('bookID', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
+    async chapterView(@CurUser() user, @Param('bookID', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
         const [chapters, chapter] = await Promise.all([
             this.bookService.chapters(bookID),
             this.bookService.chapterDetail(chapterID),
+            user ? this.bookService.studyBook(bookID, user.id) : Promise.resolve(),
         ]);
         if (!chapter || chapter.book.status !== BookStatus.BookVerifySuccess) {
             throw new MyHttpException({

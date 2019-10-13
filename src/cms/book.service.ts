@@ -33,7 +33,7 @@ export class BookService {
             select: {
                 id: true,
                 name: true,
-                userCount: true,
+                userStudyCount: true,
                 coverURL: true,
                 summary: true,
             },
@@ -62,7 +62,7 @@ export class BookService {
     async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult<Book>> {
         let query = await this.bookRepository.createQueryBuilder('b')
             .select(['b.id', 'b.name', 'b.coverURL', 'b.chapterCount',
-                'b.wordCount', 'b.userCount', 'b.summary',
+                'b.wordCount', 'b.userStudyCount', 'b.summary',
                 'u.id', 'u.username', 'u.avatarURL',
                 'c.id', 'c.name'])
             .leftJoin('b.user', 'u')
@@ -89,7 +89,7 @@ export class BookService {
                 coverURL: true,
                 chapterCount: true,
                 wordCount: true,
-                userCount: true,
+                userStudyCount: true,
             },
             relations: ['user'],
             where: {
@@ -104,6 +104,10 @@ export class BookService {
                 id: true,
                 name: true,
                 parentID: true,
+                bookID: true,
+                wordCount: true,
+                browseCount: true,
+                commentCount: true,
             },
             where: {
                 bookID,
@@ -136,5 +140,24 @@ export class BookService {
                 id,
             },
         });
+    }
+
+    async studyBook(bookID: number, userID: number) {
+        const sql = `INSERT INTO book_user_study (user_id, book_id, created_at, updated_at) VALUES(?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE updated_at = ?`;
+        const now = new Date();
+        await this.bookRepository.manager.connection.transaction(async manager => {
+            const result = await manager.query(sql, [userID, bookID, now, now, now]);
+            if (result.affectedRows === 1) {
+                await manager.query('UPDATE books SET user_study_count = user_study_count + 1 WHERE id = ?', [bookID]);
+            }
+        });
+    }
+
+    async studyBookUsers(bookID: number, page: number, pageSize: number) {
+        const sql = `SELECT users.id as id, users.username as username, users.avatar_url as avatarURL
+            FROM book_user_study, users WHERE  book_user_study.book_id = ? AND book_user_study.user_id = users.id
+            ORDER BY book_user_study.updated_at LIMIT ?, ?`;
+        return await this.bookRepository.manager.query(sql, [bookID, (page - 1) * pageSize, pageSize]);
     }
 }

@@ -7,9 +7,19 @@ export const tablesRun = async function (connection) {
 
         await connection.manager.query(`alter table books add column summary varchar(500)`);
         await connection.manager.query(`alter table books add column word_count int default 0`);
-        await connection.manager.query(`alter table books add column user_count int default 0`);
+        await connection.manager.query(`alter table books add column user_study_count int default 0`);
+
+        await connection.manager.query(`alter table book_chapters add column word_count int default 0`);
 
         await connection.manager.query(`alter table book_categories add column pathname varchar(50)`);
+
+        await connection.manager.query(`CREATE TABLE book_user_study (
+          user_id int(11) unsigned NOT NULL,
+          book_id int(11) unsigned NOT NULL,
+          created_at datetime,
+          updated_at datetime,
+          PRIMARY KEY (user_id, book_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         await connection.manager.query(`alter table categories add column follower_count int default 0`);
         await connection.manager.query(`alter table categories add column article_count int default 0`);
@@ -19,14 +29,14 @@ export const tablesRun = async function (connection) {
         await connection.manager.query(`CREATE TABLE follower_category (
             user_id int(11) unsigned NOT NULL,
             category_id int(11) unsigned NOT NULL,
-            date datetime DEFAULT CURRENT_TIMESTAMP,
+            date datetime,
             PRIMARY KEY (user_id, category_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         let sql = `CREATE TABLE handbooks (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            created_at datetime NOT NULL,
+            updated_at datetime NOT NULL,
             name varchar(200) NOT NULL,
             introduce text,
             summary varchar(200) NOT NULL,
@@ -153,8 +163,8 @@ export const tablesRun = async function (connection) {
 
         sql = `CREATE TABLE drafts (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            created_at datetime NOT NULL,
+            updated_at datetime NOT NULL,
             deleted_at datetime DEFAULT NULL,
             name varchar(200) NOT NULL,
             cover_url varchar(500) DEFAULT NULL,
@@ -176,8 +186,8 @@ export const tablesRun = async function (connection) {
 
         sql = `CREATE TABLE collections (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            created_at datetime NOT NULL,
+            updated_at datetime NOT NULL,
             deleted_at datetime DEFAULT NULL,
             name varchar(200) NOT NULL,
             article_count int(11) unsigned NOT NULL DEFAULT '0',
@@ -209,7 +219,7 @@ export const tablesRun = async function (connection) {
         sql = `CREATE TABLE follower_collection (
             user_id int(11) unsigned NOT NULL,
             collection_id int(11) unsigned NOT NULL,
-            date datetime DEFAULT CURRENT_TIMESTAMP,
+            date datetime,
             PRIMARY KEY (user_id, collection_id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);
@@ -223,7 +233,7 @@ export const tablesRun = async function (connection) {
 
         sql = `CREATE TABLE post_message (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            created_at datetime NOT NULL,
             author_id int(11) unsigned NOT NULL,
             user_id int(11) unsigned NOT NULL,
             article_id int(11) unsigned NOT NULL,
@@ -235,8 +245,8 @@ export const tablesRun = async function (connection) {
 
         sql = `CREATE TABLE boilingpoint_topics (
           id int(11) unsigned NOT NULL AUTO_INCREMENT,
-          created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          created_at datetime NOT NULL,
+          updated_at datetime NOT NULL,
           sequence int(11) unsigned NOT NULL,
           name varchar(200) NOT NULL,
           icon varchar(500) NOT NULL,
@@ -246,7 +256,7 @@ export const tablesRun = async function (connection) {
 
         sql = `CREATE TABLE boilingpoints (
           id int(11) unsigned NOT NULL AUTO_INCREMENT,
-          created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          created_at datetime NOT NULL,
           html_content varchar(2000) NOT NULL,
           summary varchar(100) NOT NULL,
           imgs varchar(2000),

@@ -26,10 +26,6 @@
                             <div class="author-desc">
                                 <span class="desc"></span>
                             </div>
-                            <div title="加入作者互动群" class="add-group" style="display: none;">
-                                <img src="https://b-gold-cdn.xitu.io/v3/static/img/add-group.f7844b8.svg">
-                                <span>加群</span>
-                            </div>
                         </div>
                     </div>
                     <div class="other">
@@ -42,15 +38,12 @@
             <div class="book-bought">
                 <div class="label">
                     <img src="{{imgPath}}/handbook/buy-icon.svg">
-                    <span>{{book.userCount}} 人已阅读</span>
+                    <span>{{book.userStudyCount}} 人已学习</span>
                 </div>
                 <div class="users">
-                    <div data-src="https://user-gold-cdn.xitu.io/2019/4/5/169e9335fae05880?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1" class="lazy avatar user loaded" style="background-image: url(&quot;https://user-gold-cdn.xitu.io/2019/4/5/169e9335fae05880?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1&quot;);"></div>
-                    <div data-src="https://leancloud-gold-cdn.xitu.io/08Rl6hylE4JMAT6qXxg68dgKkhGH7g9igG6QCNlp?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1" class="lazy avatar user loaded" style="background-image: url(&quot;https://leancloud-gold-cdn.xitu.io/08Rl6hylE4JMAT6qXxg68dgKkhGH7g9igG6QCNlp?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1&quot;);"></div>
-                    <div data-src="https://b-gold-cdn.xitu.io/v3/static/img/default-avatar.e30559a.svg" class="lazy avatar user loaded" style="background-image: url(&quot;https://b-gold-cdn.xitu.io/v3/static/img/default-avatar.e30559a.svg&quot;);"></div>
-                    <div data-src="https://mirror-gold-cdn.xitu.io/168e095f0233ec87dd5?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1" class="lazy avatar user loaded" style="background-image: url(&quot;https://mirror-gold-cdn.xitu.io/168e095f0233ec87dd5?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1&quot;);"></div>
-                    <div data-src="https://mirror-gold-cdn.xitu.io/168e084679d02b29269?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1" class="lazy avatar user loaded" style="background-image: url(&quot;https://mirror-gold-cdn.xitu.io/168e084679d02b29269?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1&quot;);"></div>
-                    <div data-src="https://mirror-gold-cdn.xitu.io/168e93f941f3d80f9aa?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1" class="lazy avatar user loaded" style="background-image: url(&quot;https://mirror-gold-cdn.xitu.io/168e93f941f3d80f9aa?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1&quot;);"></div>
+                    {% for studyUser in studyUsers %}
+                    <a href="/uc/{{studyUser.id}}" target="_blank" class="lazy avatar user loaded" style="background-image: url({{studyUser.avatarURL}});"></a>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -70,20 +63,20 @@
                 </div>
             </div>
             <div class="book-content">
-                <div class="book-content-head">小册内容</div>
+                <div class="book-content-head">图书目录</div>
                 <div class="book-directory section-of-info">
                     {% for chapter in chapters %}
-                    <div class="section section-link">
+                    <div href="/books/{{chapter.bookID}}/chapters/{{chapter.id}}" class="section section-link">
                         <div class="step">
-                            <div class="step-btn">1</div>
+                            <div class="step-btn">{{loop.index}}</div>
                         </div>
                         <div class="center">
                             <div class="title">{{chapter.name}}</div>
                             <div class="sub-line">
                                 <div class="statistics">
-                                    <span class="duration">时长: {{chapter.wordCount | readDuration}}</span>
-                                    <span class="readed">{{book.browseCount}}次学习</span>
-                                    <span class="comment">{{book.commentCount}}条评论</span>
+                                    <span class="duration">阅读时长: {{chapter.wordCount | readDuration}}</span>
+                                    <span class="readed">{{chapter.browseCount}}次学习</span>
+                                    <span class="comment">{{chapter.commentCount}}条评论</span>
                                 </div>
                             </div>
                         </div>

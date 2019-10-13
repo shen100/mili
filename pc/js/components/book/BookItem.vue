@@ -32,8 +32,8 @@
                         </span>
                         <span class="dot">·</span>
                         <span class="message">
-                            <span>{{bookData.userCount}}</span>
-                            <span>人已阅读</span>
+                            <span>{{bookData.userStudyCount}}</span>
+                            <span>人已学习</span>
                         </span>
                     </div>
                 </div>

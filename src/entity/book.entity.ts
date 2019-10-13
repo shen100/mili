@@ -75,8 +75,8 @@ export class Book {
     @Column('int', { name: 'word_count' })
     wordCount: number;
 
-    @Column('int', { name: 'user_count' })
-    userCount: number; // 已阅读此书的人数
+    @Column('int', { name: 'user_study_count' })
+    userStudyCount: number; // 已学习过此书的人数
 
     @Column('varchar', { name: 'cover_url', length: 200, nullable: true, default: null })
     coverURL: string;
@@ -152,6 +152,9 @@ export class BookChapter {
 
     @Column('varchar', { length: 200 })
     name: string;
+
+    @Column('int', { name: 'word_count' })
+    wordCount: number;
 
     @Column('int', { name: 'browse_count' })
     browseCount: number;

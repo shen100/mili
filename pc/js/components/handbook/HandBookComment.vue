@@ -9,7 +9,7 @@
                 <div :key="star.id" v-for="star in stars" class="comment">
                     <div class="aside">
                         <a href="/user/5666fbb400b0a9f1b6ce3e90" target="_blank" class="user">
-                            <div class="lazy avatar avatar loaded" style="background-image: url(&quot;https://lc-gold-cdn.xitu.io/e57395d508d6644b69e5.jpg?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1&quot;);"></div>
+                            <div class="lazy avatar avatar loaded" style="background-image: url(g?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1&quot;);"></div>
                         </a>
                     </div>
                     <div class="content-box">
@@ -199,7 +199,7 @@ export default {
 .star-panel .star {
     width: 15px;
     height: 15px;
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/star.30920c8.svg);
+    background-image: url(../../../images/handbook/star.svg);
     background-size: contain;
     background-position: 50%;
     background-repeat: no-repeat;
@@ -207,7 +207,7 @@ export default {
 }
 
 .star-panel .star.star-selected {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/star-selected.4c987d6.svg);
+    background-image: url(../../../images/handbook/star_selected.svg);
     background-size: contain;
 }
 
