@@ -10,7 +10,7 @@
                 </div>
                 <div class="book-directory bought">
                     <a :key="c.id" v-for="(c, i) in traverseArr" 
-                        :href="`/${isHandbook ? 'handbooks' : 'books'}/${book.id}/chapters/${c.id}.html`"
+                        :href="`/${isHandbook ? 'handbooks' : 'books'}/${book.id}/chapters/${c.id}`"
                         class="section section-link"
                         :class="{'route-active': c.id === chapter.id}"
                         :style="{'padding-left': (c.depth * 20) + 'px'}">
@@ -31,7 +31,7 @@
                         <img src="../../../images/handbook/menu.svg">
                     </div>
                     <div class="title">
-                        <a :href="`/${isHandbook ? 'handbooks' : 'books'}/${book.id}.html`">{{book.name}}</a>
+                        <a :href="`/${isHandbook ? 'handbooks' : 'books'}/${book.id}`">{{book.name}}</a>
                     </div>
                 </div>
                 <div class="book-body transition--next">
@@ -40,7 +40,6 @@
                             <div class="section-page book-section-view">
                                 <h1 id="article-content-h1">{{chapter.name}}</h1>
                                 <div class="mili-editor" v-html="chapter.htmlContent"></div>
-                                <div id="ad580x90_2" class="baidu-ad-580x90"></div>
                                 <div>
                                     <CommentsOfArticle :articleID="chapter.id" :userID="userID" 
                                         :commentType="'chapter'" :username="username" :avatarURL="avatarURL" 
@@ -103,19 +102,10 @@ export default {
             avatarURL: window.user && window.user.avatarURL || '',
             authorID: chapter.user.id,
             menuToggled: false,
-            baiduAd: window.baiduAd,
         };
     },
     mounted () {
         this.$nextTick(() => {
-            if (this.baiduAd && this.baiduAd.ad580x90_2) {
-                const intervalID = setInterval(() => {
-                    if (window.BAIDU_CLB_fillSlotAsync) {
-                        clearInterval(intervalID);
-                        window.BAIDU_CLB_fillSlotAsync(this.baiduAd.ad580x90_2, 'ad580x90_2');
-                    }
-                }, 1000);
-            }
         })
     },
     filters: {
@@ -123,11 +113,11 @@ export default {
     methods: {
         gotoPrevChapter () {
             const path = this.isHandbook ? 'handbooks' : 'books';
-            location.href = `/${path}/${this.book.id}/chapters/${this.prevChapter.id}.html`;
+            location.href = `/${path}/${this.book.id}/chapters/${this.prevChapter.id}`;
         },
         gotoNextChapter () {
             const path = this.isHandbook ? 'handbooks' : 'books';
-            location.href = `/${path}/${this.book.id}/chapters/${this.nextChapter.id}.html`;
+            location.href = `/${path}/${this.book.id}/chapters/${this.nextChapter.id}`;
         },
         onMenuClick () {
             this.menuToggled = !this.menuToggled;

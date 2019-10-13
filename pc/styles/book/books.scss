@@ -213,11 +213,12 @@ body {
     padding: 15px 16px;
     overflow: hidden;
     margin-bottom: 0;
+    cursor: pointer;
 }
 
-.recommended-books .book-item:hover {
-    background: #f8f8f8;
-}
+// .recommended-books .book-item:hover {
+//     background: #f8f8f8;
+// }
 
 .recommended-books .book-item-img {
     float: left;

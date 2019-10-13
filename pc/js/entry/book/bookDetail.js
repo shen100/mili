@@ -5,6 +5,7 @@ import Vue from 'vue';
 import {
     parseTree,
 } from '~/js/utils/tree';
+import BookDetail from '~/js/pages/book/BookDetail.vue';
 
 import {
     registerDirective,
@@ -25,6 +26,11 @@ registerDirective(Vue);
     const gotoChapterID = treeData[0].id;
     const gotoChapterBtn = document.getElementById('gotoChapterBtn');
     gotoChapterBtn.addEventListener('click', () => {
-        location.href = `/books/${book.id}/chapters/${gotoChapterID}.html`;
+        location.href = `/books/${book.id}/chapters/${gotoChapterID}`;
     });
 }());
+
+new Vue({
+    render: h => h(BookDetail),
+}).$mount('#bookDetailStarComment');
+

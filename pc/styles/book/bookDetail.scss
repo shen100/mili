@@ -200,7 +200,7 @@ body {
     font-size: 16px;
     padding-left: 30px;
     padding-right: 30px;
-    background-color: #007fff;
+    background-color: #ea6f5a;
     color: #fff;
     text-align: center;
 }
@@ -327,7 +327,7 @@ body {
 }
 
 .button--buy:not(:disabled):hover {
-    background-color: #0371df;
+    background-color: #ec6149;
 }
 
 .button--write:not(:disabled):hover {
@@ -382,8 +382,8 @@ body {
 }
 
 .book-menu .item.active {
-    color: #007fff;
-    border-bottom: 2px solid #007fff;
+    color: #ea6f5a;
+    border-bottom: 2px solid #ea6f5a;
 }
 
 .book-menu .item .text {
@@ -658,6 +658,11 @@ body {
     font-weight: 400;
 }
 
+.handbooks .info .title:hover {
+    text-decoration: none;
+    color: #ea6f5a;
+}
+
 .handbooks .info .title .presale {
     display: inline-block;
     vertical-align: middle;
@@ -704,6 +709,10 @@ body {
     display: inline-flex;
     align-items: center;
     color: #000;
+}
+
+.handbooks .info .author .user:hover {
+    text-decoration: none;
 }
 
 .handbooks .info .author .hero {

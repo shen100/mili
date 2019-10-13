@@ -50,11 +50,15 @@ export class BookController {
         });
     }
 
+    /**
+     * 图书详情页面
+     */
     @Get('/books/:id')
     async bookView(@Param('id', MustIntPipe) id: number, @Res() res) {
-        const [book, chapters] = await Promise.all([
+        const [book, chapters, recommendBooks] = await Promise.all([
             this.bookService.detail(id),
             this.bookService.chapters(id),
+            this.bookService.recommendList(),
         ]);
 
         if (!book) {
@@ -65,6 +69,7 @@ export class BookController {
         res.render('pages/books/bookDetail', {
             book,
             chapters,
+            list: recommendBooks,
         });
     }
 

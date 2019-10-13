@@ -35,7 +35,9 @@ export class BookService {
                 name: true,
                 userCount: true,
                 coverURL: true,
+                summary: true,
             },
+            relations: ['user'],
             where: {
                 id: bookID,
                 status: BookStatus.BookVerifySuccess,
@@ -85,8 +87,11 @@ export class BookService {
                 id: true,
                 name: true,
                 coverURL: true,
-                browseCount: true,
+                chapterCount: true,
+                wordCount: true,
+                userCount: true,
             },
+            relations: ['user'],
             where: {
                 id: In([9, 19]),
             },

@@ -29,14 +29,16 @@
                 <ul>
                     {% for book in recommendBooks %}
                     <li class="book-item">
-                        <img class="book-item-img" src="{{book.coverURL}}">
-                        <div class="book-item-info">
-                            <div class="book-item-title">{{book.name}}</div>
-                            <div style="margin-top: 2px;">
-                                <span class="book-item-buycount">{{book.browseCount}}人已购买</span>
-                                <span class="try-read">阅读</span>
+                        <a href="/books/{{book.id}}" target="_blank">
+                            <img class="book-item-img" src="{{book.coverURL}}">
+                            <div class="book-item-info">
+                                <div class="book-item-title">{{book.name}}</div>
+                                <div style="margin-top: 2px;">
+                                    <span class="book-item-buycount">{{book.userCount}}人已阅读</span>
+                                    <span class="try-read">阅读</span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </li>
                     {% endfor %}
                 </ul>
