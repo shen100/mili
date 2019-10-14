@@ -132,6 +132,7 @@ export class BookService {
                 book: {
                     id: true,
                     name: true,
+                    coverURL: true,
                     status: true,
                 },
             },

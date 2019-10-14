@@ -53,18 +53,21 @@
                     <div v-if="prevChapter" @click="gotoPrevChapter" class="step-btn step-btn--prev">
                         <img src="../../../images/handbook/prev.svg">
                     </div>
-                    <div v-if="nextChapter" @click="gotoNextChapter" class="step-btn step-btn--next">
-                        <img src="../../../images/handbook/next.svg">
+                    <div @click="gotoNextChapter" class="step-btn step-btn--next" :class="{'step-btn--finished': !nextChapter}">
+                        <img v-if="nextChapter" src="../../../images/handbook/next.svg">
+                        <img v-else src="../../../images/handbook/finished.svg">
                     </div>
                 </div>
             </div>
         </div>
+        <StarModal ref="starModal" :user="user" :book="book" type="book" />
     </div>
 </template>
 
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { parseTree, getTreeNode, getPrevNode, getNextNode } from '~/js/utils/tree';
+import StarModal from '~/js/components/handbook/StarModal.vue';
 import CommentsOfArticle from '~/js/components/comment/CommentsOfArticle.vue';
 
 export default {
@@ -116,6 +119,10 @@ export default {
             location.href = `/${path}/${this.book.id}/chapters/${this.prevChapter.id}`;
         },
         gotoNextChapter () {
+            if (!this.nextChapter) {
+                this.$refs.starModal.show();
+                return;
+            }
             const path = this.isHandbook ? 'handbooks' : 'books';
             location.href = `/${path}/${this.book.id}/chapters/${this.nextChapter.id}`;
         },
@@ -125,6 +132,7 @@ export default {
     },
     components: {
         CommentsOfArticle,
+        StarModal,
     }
 }
 </script>

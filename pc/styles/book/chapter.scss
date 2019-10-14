@@ -292,14 +292,14 @@
 
 .book-handle {
     position: fixed;
-    width: 100%;
+    width: 980px;
+    height: 50px;
+    margin-left: 160px;
     left: 50%;
-    max-width: calc(100vw - 340px);
     bottom: 70px;
     transform: translateX(-50%);
     display: flex;
     justify-content: center;
-    margin-left: 160px;
 }
 
 .book-handle .step-btn {
@@ -314,7 +314,7 @@
     align-items: center;
     font-size: 14px;
     border-radius: 50%;
-    background-color: #007fff;
+    background-color: #ea6f5a;
     color: #fff;
     user-select: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, .15);
@@ -330,6 +330,10 @@
 
 .book-handle .step-btn.step-btn--next {
     right: 10px;
+}
+
+.book-handle .step-btn.step-btn--finished {
+    background-color: #fff;
 }
 
 #article-content-h1 {
