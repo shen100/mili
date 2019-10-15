@@ -23,7 +23,7 @@
                         </div>
                         <p class="remark">备注：评价审核通过后将在{{bookTypeLabel}}详情页显示</p>
                         <div class="bottom">
-                            <button class="submit-btn" :class="{'submit-disabled': !submitEnabled}">提交评价</button>
+                            <button @click="onCommit" class="submit-btn" :class="{'submit-disabled': !submitEnabled}">提交评价</button>
                         </div>
                     </div>
             </div>
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
 
 export default {
     props: ['user', 'book', 'type'],
@@ -55,6 +57,7 @@ export default {
             if (!this.starCount) {
                 return false;
             }
+            return true;
         },
         bookTypeLabel() {
             return {
@@ -79,6 +82,21 @@ export default {
         },
         show() {
             this.modalVisible = true;  
+        },
+        onCommit() {
+            if (!this.starCount) {
+                return;
+            }
+            myHTTP.post('/books/star', {
+                bookID: this.book.id,
+                star: this.starCount,
+            }).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.$emit('commit', res.data.data);
+                    this.modalVisible = false;
+                }
+            }).catch((err) => {
+            });
         }
     },
     components: {

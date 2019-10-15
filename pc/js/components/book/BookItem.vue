@@ -32,7 +32,7 @@
                         </span>
                         <span class="dot">·</span>
                         <span class="message">
-                            <span>{{bookData.userStudyCount}}</span>
+                            <span>{{bookData.studyUserCount}}</span>
                             <span>人已学习</span>
                         </span>
                     </div>

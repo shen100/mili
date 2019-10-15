@@ -7,7 +7,8 @@ export const tablesRun = async function (connection) {
 
         await connection.manager.query(`alter table books add column summary varchar(500)`);
         await connection.manager.query(`alter table books add column word_count int default 0`);
-        await connection.manager.query(`alter table books add column user_study_count int default 0`);
+        await connection.manager.query(`alter table books add column study_user_count int default 0`);
+        await connection.manager.query(`alter table books add column star_user_count int default 0`);
 
         await connection.manager.query(`alter table book_chapters add column word_count int default 0`);
 
@@ -85,6 +86,18 @@ export const tablesRun = async function (connection) {
           html_content text,
           word_count int(11) DEFAULT '0',
           try_read tinyint(1) DEFAULT '0',
+          user_id int(11) unsigned NOT NULL,
+          book_id int(11) unsigned NOT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        await connection.manager.query(sql);
+
+        sql = `CREATE TABLE book_stars (
+          id int(11) unsigned NOT NULL AUTO_INCREMENT,
+          created_at datetime NOT NULL,
+          star int(11),
+          content varchar(200) NOT NULL DEFAULT '',
+          status int(11) NOT NULL ,
           user_id int(11) unsigned NOT NULL,
           book_id int(11) unsigned NOT NULL,
           PRIMARY KEY (id)

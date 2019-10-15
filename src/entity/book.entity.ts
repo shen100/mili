@@ -75,14 +75,17 @@ export class Book {
     @Column('int', { name: 'word_count' })
     wordCount: number;
 
-    @Column('int', { name: 'user_study_count' })
-    userStudyCount: number; // 已学习过此书的人数
+    @Column('int', { name: 'study_user_count' })
+    studyUserCount: number; // 已学习过此书的人数
 
     @Column('varchar', { name: 'cover_url', length: 200, nullable: true, default: null })
     coverURL: string;
 
     @Column('int')
     status: BookStatus;
+
+    @Column('int', { name: 'star_user_count' })
+    starUserCount: number; // 评价过图书的人数
 
     @Column('int', { name: 'star' })
     star: number;
@@ -187,4 +190,43 @@ export class BookChapter {
     @ManyToOne(type => Book)
     @JoinColumn({ name: 'book_id' })
     book: Book;
+}
+
+export enum BookStarStatus {
+	// BookVerifying 审核中
+	BookVerifying = 1,
+
+	// BookVerifySuccess 审核通过
+	BookVerifySuccess = 2,
+
+	// BookVerifyFail 审核未通过
+	BookVerifyFail = 3,
+}
+
+@Entity({name: 'book_stars'})
+export class BookStar {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column('datetime', { name: 'created_at' })
+    createdAt: Date;
+
+    @Column('varchar', { length: 200 })
+    content: string;
+
+    @Column('int')
+    status: BookStarStatus;
+
+    @Column('int', { name: 'star' })
+    star: number;
+
+    @Column('int', { name: 'book_id' })
+    bookID: number;
+
+    @Column('int', { name: 'user_id' })
+    userID: number;
+
+    @ManyToOne(type => User)
+    @JoinColumn({ name: 'user_id' })
+    user: User;
 }

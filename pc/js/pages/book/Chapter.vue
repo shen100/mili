@@ -1,5 +1,6 @@
 <template>
     <div class="book-chapter" :class="{'fold-pc': menuToggled}">
+         <SuccessTip ref="successTip" :width="200" />
         <div class="book-summary">
             <div class="book-summary-inner">
                 <div class="book-summary__header">
@@ -53,18 +54,19 @@
                     <div v-if="prevChapter" @click="gotoPrevChapter" class="step-btn step-btn--prev">
                         <img src="../../../images/handbook/prev.svg">
                     </div>
-                    <div @click="gotoNextChapter" class="step-btn step-btn--next" :class="{'step-btn--finished': !nextChapter}">
+                    <div v-if="nextChapter || !isCommitedStar" @click="gotoNextChapter" class="step-btn step-btn--next" :class="{'step-btn--finished': !nextChapter}">
                         <img v-if="nextChapter" src="../../../images/handbook/next.svg">
                         <img v-else src="../../../images/handbook/finished.svg">
                     </div>
                 </div>
             </div>
         </div>
-        <StarModal ref="starModal" :user="user" :book="book" type="book" />
+        <StarModal v-if="!isCommitedStar" ref="starModal" @commit="onStarCommit" :user="user" :book="book" type="book" />
     </div>
 </template>
 
 <script>
+import SuccessTip from '~/js/components/common/SuccessTip.vue';
 import { myHTTP } from '~/js/common/net.js';
 import { parseTree, getTreeNode, getPrevNode, getNextNode } from '~/js/utils/tree';
 import StarModal from '~/js/components/handbook/StarModal.vue';
@@ -95,6 +97,7 @@ export default {
         return {
             traverseArr,
             isHandbook: false,
+            isCommitedStar: window.isCommitedStar,
             book: chapter.book,
             chapter,
             prevChapter: getPrevNode(getTreeNode(chapter.id, treeData), treeData),
@@ -128,11 +131,15 @@ export default {
         },
         onMenuClick () {
             this.menuToggled = !this.menuToggled;
+        },
+        onStarCommit() {
+            this.$refs.successTip.show('评价已提交，请等待审核');
         }
     },
     components: {
         CommentsOfArticle,
         StarModal,
+        SuccessTip,
     }
 }
 </script>

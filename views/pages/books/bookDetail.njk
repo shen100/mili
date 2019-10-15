@@ -38,7 +38,7 @@
             <div class="book-bought">
                 <div class="label">
                     <img src="{{imgPath}}/handbook/buy-icon.svg">
-                    <span>{{book.userStudyCount}} 人已学习</span>
+                    <span>{{book.studyUserCount}} 人已学习</span>
                 </div>
                 <div class="users">
                     {% for studyUser in studyUsers %}
@@ -55,10 +55,7 @@
                     </div>
                     <div class="item">
                         <span class="text">评价</span>
-                    </div>
-                    <div class="item" style="display: none;">
-                        <span class="text">评论</span>
-                        <span class="badge">0</span>
+                        <span class="badge">{{book.starUserCount}}</span>
                     </div>
                 </div>
             </div>

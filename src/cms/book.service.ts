@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
-import { Book, BookCategory, BookStatus, BookChapter } from '../entity/book.entity';
+import { Book, BookCategory, BookStatus, BookChapter, BookStar, BookStarStatus } from '../entity/book.entity';
 import { ListResult } from '../entity/listresult.entity';
+import { CreateBookStarDto } from './dto/create-book-star.dto';
 
 @Injectable()
 export class BookService {
@@ -16,6 +17,9 @@ export class BookService {
 
         @InjectRepository(BookChapter)
         private readonly chapterRepository: Repository<BookChapter>,
+
+        @InjectRepository(BookStar)
+        private readonly bookStarRepository: Repository<BookStar>,
     ) {}
 
     async allCategories() {
@@ -33,9 +37,10 @@ export class BookService {
             select: {
                 id: true,
                 name: true,
-                userStudyCount: true,
+                studyUserCount: true,
                 coverURL: true,
                 summary: true,
+                starUserCount: true,
             },
             relations: ['user'],
             where: {
@@ -62,7 +67,7 @@ export class BookService {
     async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult<Book>> {
         let query = await this.bookRepository.createQueryBuilder('b')
             .select(['b.id', 'b.name', 'b.coverURL', 'b.chapterCount',
-                'b.wordCount', 'b.userStudyCount', 'b.summary',
+                'b.wordCount', 'b.studyUserCount', 'b.summary',
                 'u.id', 'u.username', 'u.avatarURL',
                 'c.id', 'c.name'])
             .leftJoin('b.user', 'u')
@@ -89,7 +94,7 @@ export class BookService {
                 coverURL: true,
                 chapterCount: true,
                 wordCount: true,
-                userStudyCount: true,
+                studyUserCount: true,
             },
             relations: ['user'],
             where: {
@@ -150,7 +155,7 @@ export class BookService {
         await this.bookRepository.manager.connection.transaction(async manager => {
             const result = await manager.query(sql, [userID, bookID, now, now, now]);
             if (result.affectedRows === 1) {
-                await manager.query('UPDATE books SET user_study_count = user_study_count + 1 WHERE id = ?', [bookID]);
+                await manager.query('UPDATE books SET study_user_count = study_user_count + 1 WHERE id = ?', [bookID]);
             }
         });
     }
@@ -160,5 +165,34 @@ export class BookService {
             FROM book_user_study, users WHERE  book_user_study.book_id = ? AND book_user_study.user_id = users.id
             ORDER BY book_user_study.updated_at LIMIT ?, ?`;
         return await this.bookRepository.manager.query(sql, [bookID, (page - 1) * pageSize, pageSize]);
+    }
+
+    async createStar(createBookStarDto: CreateBookStarDto, userID: number) {
+        await this.bookRepository.manager.connection.transaction(async manager => {
+            await manager.getRepository(BookStar).insert({
+                createdAt: new Date(),
+                content: createBookStarDto.content,
+                userID,
+                bookID: createBookStarDto.bookID,
+                star: createBookStarDto.star,
+                status: BookStarStatus.BookVerifying,
+            });
+            await await manager.query('UPDATE books SET star_user_count = star_user_count + 1 WHERE id = ?', [createBookStarDto.bookID]);
+        });
+        return;
+    }
+
+    /**
+     * 是否已提交过评价
+     */
+    async isCommitedStar(bookID: number, userID: number): Promise<boolean> {
+        const result = await this.bookStarRepository.findOne({
+            select: ['id'],
+            where: {
+                bookID,
+                userID,
+            },
+        });
+        return !!result;
     }
 }

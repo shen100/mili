@@ -1,14 +1,16 @@
 import {
-    Controller, Get, Res, Query, Param, Next,
+    Controller, Get, Res, Query, Param, Next, Post, Body, UseGuards,
 } from '@nestjs/common';
 import { BookService } from './book.service';
-import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { BookStatus, BookCategory } from '../entity/book.entity';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { CurUser } from '../core/decorators/user.decorator';
+import { APIPrefix } from '../constants/constants';
+import { CreateBookStarDto } from './dto/create-book-star.dto';
+import { ActiveGuard } from '../core/guards/active.guard';
 
 @Controller()
 export class BookController {
@@ -78,9 +80,10 @@ export class BookController {
 
     @Get('/books/:bookID/chapters/:chapterID')
     async chapterView(@CurUser() user, @Param('bookID', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
-        const [chapters, chapter] = await Promise.all([
+        const [chapters, chapter, isCommitedStar] = await Promise.all([
             this.bookService.chapters(bookID),
             this.bookService.chapterDetail(chapterID),
+            user ? this.bookService.isCommitedStar(bookID, user.id) : Promise.resolve(false),
             user ? this.bookService.studyBook(bookID, user.id) : Promise.resolve(),
         ]);
         if (!chapter || chapter.book.status !== BookStatus.BookVerifySuccess) {
@@ -91,10 +94,11 @@ export class BookController {
         res.render('pages/books/chapter', {
             chapter,
             chapters,
+            isCommitedStar,
         });
     }
 
-    @Get('/api/v1/books/:categoryPathName')
+    @Get(`${APIPrefix}/books/:categoryPathName`)
     async list(@Param('categoryPathName') categoryPathName: string, @Query('page', ParsePagePipe) page: number) {
         const categories = await this.bookService.allCategories();
         const category = categories.find(c => c.pathname === categoryPathName);
@@ -114,5 +118,12 @@ export class BookController {
             bookListQuery,
         ]);
         return listResult;
+    }
+
+    @Post(`${APIPrefix}/books/star`)
+    @UseGuards(ActiveGuard)
+    async commitStar(@CurUser() user, @Body() createBookStarDto: CreateBookStarDto) {
+        await this.bookService.createStar(createBookStarDto, user.id);
+        return {};
     }
 }

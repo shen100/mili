@@ -29,7 +29,7 @@ import { SearchService } from './search.service';
 import { RecommendController } from './recommend.controller';
 import { BookController } from './book.controller';
 import { BookService } from './book.service';
-import { Book, BookCategory, BookChapter } from '../entity/book.entity';
+import { Book, BookCategory, BookChapter, BookStar } from '../entity/book.entity';
 import { HandBook, HandBookChapter } from '../entity/handbook.entity';
 import { HandBookService } from './handbook.service';
 import { Tag } from '../entity/tag.entity';
@@ -56,6 +56,7 @@ import { Image } from '../entity/image.entity';
             HandBookChapter,
             BookChapter,
             BookCategory,
+            BookStar,
             Tag,
             Image,
         ]),
