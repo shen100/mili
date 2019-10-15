@@ -31,6 +31,9 @@ registerDirective(Vue);
 }());
 
 new Vue({
-    render: h => h(BookDetail),
+    render: h => h(BookDetail, {
+        props: {
+            book: window.book,
+        }
+    }),
 }).$mount('#bookDetailStarComment');
-

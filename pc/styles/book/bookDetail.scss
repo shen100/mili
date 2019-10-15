@@ -50,7 +50,7 @@ body {
 }
 
 .book-info .info .title-line .title:hover {
-    color: #007fff;
+    color: #ea6f5a;
     text-decoration: none;
 }
 
@@ -85,6 +85,10 @@ body {
     display: flex;
     align-items: center;
     color: #000;
+}
+
+.book-info .info .media .author .author-info .user:hover {
+    text-decoration: none;
 }
 
 .book-info .info .media .author .author-info .hero {

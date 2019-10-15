@@ -10,7 +10,7 @@
                 </div>
                 <div class="info">
                     <div class="title-line">
-                        <a href="" class="title">
+                        <a href="/books/{{book.id}}" class="title">
                             <span>{{book.name}}</span>
                         </a>
                     </div>
@@ -18,7 +18,7 @@
                         <div class="desc">{{book.summary}}</div>
                         <div class="author">
                             <div class="author-info">
-                                <a href="/user/551d677ee4b0cd5b623f49cb" target="_blank" class="user">
+                                <a href="/uc/{{book.user.id}}" target="_blank" class="user">
                                     <div class="lazy avatar hero loaded" style="background-image: url({{book.user.avatarURL}});"></div>
                                     <span>{{book.user.username}}</span>
                                 </a>
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="book-bought">
-                <div class="label">
+                <div id="userStudyOrBuyBtn" class="label">
                     <img src="{{imgPath}}/handbook/buy-icon.svg">
                     <span>{{book.studyUserCount}} 人已学习</span>
                 </div>
@@ -63,7 +63,7 @@
                 <div class="book-content-head">图书目录</div>
                 <div class="book-directory section-of-info">
                     {% for chapter in chapters %}
-                    <div href="/books/{{chapter.bookID}}/chapters/{{chapter.id}}" class="section section-link">
+                    <a href="/books/{{chapter.bookID}}/chapters/{{chapter.id}}" class="section section-link">
                         <div class="step">
                             <div class="step-btn">{{loop.index}}</div>
                         </div>
@@ -77,7 +77,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
             </div>

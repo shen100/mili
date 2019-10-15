@@ -73,7 +73,7 @@ export class BookController {
         res.render('pages/books/bookDetail', {
             book,
             chapters,
-            studyUsers,
+            studyUsers: studyUsers.list,
             list: recommendBooks,
         });
     }
@@ -96,6 +96,12 @@ export class BookController {
             chapters,
             isCommitedStar,
         });
+    }
+
+    @Get(`${APIPrefix}/books/:bookID/studyusers`)
+    async studyBookUsers(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number) {
+        const listResult = await this.bookService.studyBookUsers(bookID, page, 20);
+        return listResult;
     }
 
     @Get(`${APIPrefix}/books/:categoryPathName`)

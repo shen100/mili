@@ -39,7 +39,7 @@ export default {
     props: ['user', 'book', 'type'],
     data() {
         return {
-            modalVisible: true,
+            modalVisible: false,
             starCount: 0,
         }
     },
@@ -122,7 +122,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, .65);
+    background-color: rgba(0, 0, 0, .8);
 }
 
 .handbook-modal-box {
@@ -147,7 +147,7 @@ export default {
     font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
     line-height: 1;
     color: #000;
-    opacity: .2;
+    opacity: .4;
     filter: alpha(opacity=20);
     font-weight: 200;
     font-size: 26px;

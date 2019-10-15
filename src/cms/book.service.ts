@@ -4,6 +4,8 @@ import { Repository, In } from 'typeorm';
 import { Book, BookCategory, BookStatus, BookChapter, BookStar, BookStarStatus } from '../entity/book.entity';
 import { ListResult } from '../entity/listresult.entity';
 import { CreateBookStarDto } from './dto/create-book-star.dto';
+import { parseCountResult } from '../utils/query';
+import { User } from '../entity/user.entity';
 
 @Injectable()
 export class BookService {
@@ -160,11 +162,23 @@ export class BookService {
         });
     }
 
-    async studyBookUsers(bookID: number, page: number, pageSize: number) {
-        const sql = `SELECT users.id as id, users.username as username, users.avatar_url as avatarURL
+    async studyBookUsers(bookID: number, page: number, pageSize: number): Promise<ListResult<User>> {
+        const sql = `SELECT users.id as id, users.username as username, users.avatar_url as avatarURL, 
+                users.job as job, users.company as company
             FROM book_user_study, users WHERE  book_user_study.book_id = ? AND book_user_study.user_id = users.id
             ORDER BY book_user_study.updated_at LIMIT ?, ?`;
-        return await this.bookRepository.manager.query(sql, [bookID, (page - 1) * pageSize, pageSize]);
+        const sql2 = `SELECT COUNT(*) as count FROM book_user_study
+            WHERE book_user_study.book_id = ?`;
+        const [list, countResult] = await Promise.all([
+            this.bookRepository.manager.query(sql, [bookID, (page - 1) * pageSize, pageSize]),
+            this.bookRepository.manager.query(sql2, [bookID]),
+        ]);
+        return {
+            list,
+            count: parseCountResult(countResult),
+            page,
+            pageSize,
+        };
     }
 
     async createStar(createBookStarDto: CreateBookStarDto, userID: number) {
