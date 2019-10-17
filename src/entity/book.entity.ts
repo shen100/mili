@@ -211,8 +211,8 @@ export class BookStar {
     @Column('datetime', { name: 'created_at' })
     createdAt: Date;
 
-    @Column('varchar', { length: 200 })
-    content: string;
+    @Column('varchar', { name: 'html_content', length: 200 })
+    htmlContent: string;
 
     @Column('int')
     status: BookStarStatus;

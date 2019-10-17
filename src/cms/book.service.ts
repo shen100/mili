@@ -185,7 +185,7 @@ export class BookService {
         await this.bookRepository.manager.connection.transaction(async manager => {
             await manager.getRepository(BookStar).insert({
                 createdAt: new Date(),
-                content: createBookStarDto.content,
+                htmlContent: createBookStarDto.htmlContent,
                 userID,
                 bookID: createBookStarDto.bookID,
                 star: createBookStarDto.star,
@@ -194,6 +194,37 @@ export class BookService {
             await await manager.query('UPDATE books SET star_user_count = star_user_count + 1 WHERE id = ?', [createBookStarDto.bookID]);
         });
         return;
+    }
+
+    async starList(bookID: number, page: number, pageSize: number): Promise<ListResult<BookStar>> {
+        const [list, count] = await this.bookStarRepository.findAndCount({
+            select: {
+                id: true,
+                star: true,
+                createdAt: true,
+                htmlContent: true,
+                user: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
+            },
+            relations: ['user'],
+            where: {
+                bookID,
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            take: pageSize,
+            skip: (page - 1) * pageSize,
+        });
+        return {
+            list,
+            page,
+            pageSize,
+            count,
+        };
     }
 
     /**

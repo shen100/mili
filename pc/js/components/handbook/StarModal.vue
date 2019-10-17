@@ -19,7 +19,7 @@
                             <img :src="book.coverURL"></div>
                         </div>
                         <div class="text-content">
-                            <textarea placeholder="说说你的感受吧…"></textarea>
+                            <textarea v-model="content" placeholder="说说你的感受吧…"></textarea>
                         </div>
                         <p class="remark">备注：评价审核通过后将在{{bookTypeLabel}}详情页显示</p>
                         <div class="bottom">
@@ -41,6 +41,7 @@ export default {
         return {
             modalVisible: false,
             starCount: 0,
+            content: '',
         }
     },
     computed: {
@@ -90,6 +91,7 @@ export default {
             myHTTP.post('/books/star', {
                 bookID: this.book.id,
                 star: this.starCount,
+                htmlContent: content || undefined,
             }).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.$emit('commit', res.data.data);

@@ -104,6 +104,12 @@ export class BookController {
         return listResult;
     }
 
+    @Get(`${APIPrefix}/books/:bookID/stars`)
+    async stars(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number) {
+        const listResult = await this.bookService.starList(bookID, page, 20);
+        return listResult;
+    }
+
     @Get(`${APIPrefix}/books/:categoryPathName`)
     async list(@Param('categoryPathName') categoryPathName: string, @Query('page', ParsePagePipe) page: number) {
         const categories = await this.bookService.allCategories();

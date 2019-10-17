@@ -1,8 +1,8 @@
 <template>
     <div class="book-card">
         <div class="header header-equal">
-            <div @click="changeSelect('star')" class="header-item" :class="{selected: select === 'star'}">图书评价</div>
-            <div @click="changeSelect('comment')" class="header-item" :class="{selected: select === 'comment'}">章节留言</div>
+            <div @click="changeSelect('star')" class="header-item" :class="{selected: type === 'star'}">图书评价</div>
+            <div @click="changeSelect('comment')" class="header-item" :class="{selected: type === 'comment'}">章节留言</div>
         </div>
         <div class="comments-book">
             <div class="comments-list">
@@ -17,7 +17,7 @@
                             <a :href="`/uc/${star.user.id}`" target="_blank" class="username">{{star.user.username}}<a href="" target="_blank" class="rank">
                                 <img src="https://b-gold-cdn.xitu.io/v3/static/img/lv-2.f597b88.svg" alt="lv-2"></a>
                             </a>
-                            <div v-if="select === 'star'" class="star-panel">
+                            <div v-if="type === 'star'" class="star-panel">
                                 <div :key="i" v-for="i in 5" class="star" :class="{'star-selected': i <= star.value}"></div>
                             </div>
                         </div>
@@ -31,50 +31,46 @@
                 </div>
             </div>
         </div>
-        <Paging />
+        <div v-if="totalPage > 1" class="border-sep"></div>
+        <Paging :page="page" :totalPage="totalPage" />
     </div>
 </template>
 
 <script>
 import Paging from '~/js/components/common/Paging.vue';
+import { ErrorCode } from '~/js/constants/error.js';
+import { myHTTP } from '~/js/common/net.js';
 
 export default {
-    props: ['select'],
+    props: ['type', 'bookID'],
     data() {
-        console.log('=============>');
         return {
             stars: [
-            ]
+            ],
+            page: 1,
+            totalPage: 1,
         };
     },
     mounted() {
         console.log('=============> mounted');
-        this.stars = [
-            {
-                value: 4,
-                user: {
-                    id: 44,
-                    username: this.select,
-                    avatarURL: 'https://mirror-gold-cdn.xitu.io/168e0909374b6025cee?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1'
-                },
-                htmlContent: '内容丰富、充实，值得好好阅读。不过前面基本 Widget 介绍过多，希望能多点小的案例实践一下，提高阅读体验！',
-                createdAt: '2018-10-10T08:54:33.000Z',
-            },
-            {
-                value: 3,
-                user: {
-                    id: 45,
-                    username: 'taokexia',
-                    avatarURL: 'https://mirror-gold-cdn.xitu.io/168e0909374b6025cee?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1'
-                },
-                htmlContent: '内容丰富、充实，值得好好阅读。不过前面基本 Widget 介绍过多，希望能多点小的案例实践一下，提高阅读体验！',
-                createdAt: '2018-10-10T08:54:33.000Z',
-            }
-        ];
+        this.reqList();
     },
     methods: {
         changeSelect(select) {
             this.$emit('change', select);
+        },
+        reqList() {
+            let url;
+            if (this.type == 'star') {
+                url = `/books/${this.bookID}/stars`;
+            } else if (this.type == 'comment') {
+                url = `/books/${this.bookID}/stars`;
+            }
+            myHTTP.get(url).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.stars = res.data.data.list;
+                }
+            });
         }
     },
     components: {
@@ -241,5 +237,9 @@ export default {
     color: #b1bac2;
     font-size: 14px;
     padding-bottom: 10px;
+}
+
+.border-sep {
+    border-top: 1px solid #eceded;
 }
 </style>

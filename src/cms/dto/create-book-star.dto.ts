@@ -16,7 +16,7 @@ export class CreateBookStarDto {
         message: '评价内容不能超过 $constraint1 个字符',
     })
     @IsString()
-    readonly content: string;
+    readonly htmlContent: string;
 
     @IsInt()
     @Min(BookConstants.MIN_STAR_VALUE, {

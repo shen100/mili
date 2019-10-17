@@ -1,7 +1,7 @@
 <template>
     <div>
-        <HandBookComment v-show="currentSelect === 'star'" select="star" @change="onChange" />
-        <HandBookComment v-show="currentSelect === 'comment'" select="comment" @change="onChange" />
+        <HandBookComment v-show="currentSelect === 'star'" type="star" :bookID="book.id" @change="onChange" />
+        <HandBookComment v-show="currentSelect === 'comment'" type="comment" :bookID="book.id" @change="onChange" />
         <UserList v-if="userListVisible" @close="onUserListClose" type="book" :bookID="book.id"/>
     </div>
 </template>

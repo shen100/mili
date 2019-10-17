@@ -96,7 +96,7 @@ export const tablesRun = async function (connection) {
           id int(11) unsigned NOT NULL AUTO_INCREMENT,
           created_at datetime NOT NULL,
           star int(11),
-          content varchar(200) NOT NULL DEFAULT '',
+          html_content varchar(200) NOT NULL DEFAULT '',
           status int(11) NOT NULL ,
           user_id int(11) unsigned NOT NULL,
           book_id int(11) unsigned NOT NULL,
