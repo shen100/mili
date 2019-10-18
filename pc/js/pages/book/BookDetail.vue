@@ -1,7 +1,13 @@
 <template>
     <div>
-        <HandBookComment v-show="currentSelect === 'star'" type="star" :bookID="book.id" @change="onChange" />
-        <HandBookComment v-show="currentSelect === 'comment'" type="comment" :bookID="book.id" @change="onChange" />
+        <template v-if="book.starUserCount">
+            <HandBookComment v-show="currentSelect === 'star'" type="star" @change="onChange"
+                :bookID="book.id" :starUserCount="book.starUserCount" :commentCount="book.commentCount" />
+        </template>
+        <template v-if="book.commentCount">
+            <HandBookComment v-show="currentSelect === 'comment'" type="comment" @change="onChange"
+                :bookID="book.id" :starUserCount="book.starUserCount" :commentCount="book.commentCount" />
+        </template>
         <UserList v-if="userListVisible" @close="onUserListClose" type="book" :bookID="book.id"/>
     </div>
 </template>
@@ -13,8 +19,15 @@ import UserList from '~/js/components/handbook/UserList.vue';
 export default {
     props: ['book'],
     data() {
+        let currentSelect;
+        if (book.commentCount) {
+            currentSelect = 'comment';
+        }
+        if (book.starUserCount) {
+            currentSelect = 'star';
+        }
         return {
-            currentSelect: 'star',
+            currentSelect: currentSelect,
             userListVisible: false,
         };
     },

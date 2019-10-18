@@ -2,7 +2,7 @@
     <div v-clickoutside="onClickOutside" class="comment-editor-box">
         <div @keyup.meta.enter="onEnterSubmit" @keyup.ctrl.enter="onEnterSubmit" 
             class="comment-editor-cbox"
-            :class="{'comment-editor-cbox-boilingpoint': editorType === 'boilingpoint', 'comment-editor-focus': isFocus}">
+            :class="{'comment-editor-cbox-boilingpoint': commentType === 'boilingpoint', 'comment-editor-focus': isFocus}">
             <editor-content class="mili-editor-content" :editor="editor" />
             <div @click="onFocusAreaClick" class="editor-focus-area"></div>
         </div>
@@ -15,14 +15,14 @@
                     @topicSelected="onTopicSelected"
                     :editor="editor" />
             </div>
-            <template v-if="editorType === 'comment'">
+            <template v-if="commentType !== 'boilingpoint'">
                 <div class="hint">Ctrl or ⌘ + Enter 发表</div>
                 <a @click="onEnterSubmit" class="btn btn-send">发送</a>
                 <a @click="onCancelComment" class="cancel">取消</a>
             </template>
             <template>
                 <button @click="onEnterSubmit" class="btn btn-send-boilingpoint" :class="{active: boilingpointSubmitEnable}">发布</button>
-                <div v-if="editorType === 'boilingpoint'" class="hint-boilingpoint">Ctrl or ⌘ + Enter</div>
+                <div v-if="commentType === 'boilingpoint'" class="hint-boilingpoint">Ctrl or ⌘ + Enter</div>
             </template>
         </div>
     </div>
@@ -49,8 +49,8 @@ export default {
     name: 'CommentRichEditor',
     props: [
         'uploadAllowed', // 是否允许上传图片
-        'editorType', // comment, boilingpoint
         'commentType',
+        'bookID',
         'articleID',
         'parentID',
         'rootID',
@@ -163,10 +163,10 @@ export default {
             this.$emit('cancel');
         },
         onEnterSubmit() {
-            if (this.editorType === 'comment') {
-                this.onComment();
-            } else {
+            if (this.commentType === 'boilingpoint') {
                 this.onBoilingpointSubmit();
+            } else {
+                this.onComment();
             }
         },
         onComment() {
@@ -181,8 +181,9 @@ export default {
             }
             const url = `/comments?commentType=${this.commentType}`;
             const reqData = {
-                articleID: this.articleID,
+                commentTo: this.articleID,
                 content: content,
+                bookID: this.bookID,
             };
             if (this.parentID) {
                 reqData.parentID = this.parentID;

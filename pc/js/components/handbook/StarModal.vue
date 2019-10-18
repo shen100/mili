@@ -91,7 +91,7 @@ export default {
             myHTTP.post('/books/star', {
                 bookID: this.book.id,
                 star: this.starCount,
-                htmlContent: content || undefined,
+                htmlContent: this.content || undefined,
             }).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.$emit('commit', res.data.data);

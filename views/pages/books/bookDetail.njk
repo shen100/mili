@@ -53,10 +53,18 @@
                     <div class="item active">
                         <span class="text">目录</span>
                     </div>
+                    {% if book.starUserCount %}
                     <div class="item">
                         <span class="text">评价</span>
                         <span class="badge">{{book.starUserCount}}</span>
                     </div>
+                    {% endif %}
+                    {% if not book.starUserCount and book.commentCount %}
+                    <div class="item">
+                        <span class="text">章节留言</span>
+                        <span class="badge">{{book.commentCount}}</span>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="book-content">
@@ -83,7 +91,9 @@
             </div>
         </div>
 
+        {% if book.starUserCount or book.commentCount %}
         <div id="bookDetailStarComment"></div>
+        {% endif %}
 
         <div class="book-card">
             <div class="header">推荐开源图书</div>
@@ -107,6 +117,7 @@
 <script>
     var chapters = {{ chapters | dump | safe }};
     var book = {{ book | dump | safe }};
+    var userLevelChapterURL = '{{ userLevelChapterURL }}';
 </script>
 {% endblock %}
 

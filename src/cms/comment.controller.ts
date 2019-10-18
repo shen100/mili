@@ -73,7 +73,7 @@ export class CommentController {
                     message: '无效的parentID',
                 });
             }
-            if (createCommentDto.articleID !== parentComment.articleID) {
+            if (createCommentDto.commentTo !== parentComment.articleID) {
                 throw new MyHttpException({
                     errorCode: ErrorCode.ParamsError.CODE,
                     message: '无效的articleID',
@@ -95,9 +95,9 @@ export class CommentController {
             const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
             let isArticleExist = false;
             if (commentType === CommentTypeArticle) {
-                isArticleExist = await this.articleService.isExist(createCommentDto.articleID);
+                isArticleExist = await this.articleService.isExist(createCommentDto.commentTo);
             } else if (commentType === CommentTypeChapter) {
-                isArticleExist = await this.bookService.isChapterExist(createCommentDto.articleID);
+                isArticleExist = await this.bookService.isChapterExist(createCommentDto.commentTo);
             }
             if (!isArticleExist) {
                 throw new MyHttpException({

@@ -23,7 +23,7 @@
                 </div>
 
                 <template v-if="isCommentEnabled">
-                    <CommentRichEditor ref="commentRichEditor" v-if="userID" :articleID="articleID" 
+                    <CommentRichEditor ref="commentRichEditor" v-if="userID" :bookID="bookID" :articleID="articleID" 
                         emptyPlaceholder="写下你的评论" @success="addCommentSuccess"
                         @error="addCommentError" :sendDefVisible="false"
                         :commentType="commentType" />
@@ -73,7 +73,7 @@
                                     <a v-if="comment.user.id === userID" @click="showDeleteCommentAlert(comment)" class="report"><span>删除</span></a>
                                 </div>
                             </div>
-                            <CommentRichEditor v-if="userID && comment.editorToggled" :articleID="articleID" :emptyPlaceholder="`回复${comment.user.username}`"
+                            <CommentRichEditor v-if="userID && comment.editorToggled" :bookID="bookID" :articleID="articleID" :emptyPlaceholder="`回复${comment.user.username}`"
                                 :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
                                 @error="addCommentError" :parentID="comment.id" 
                                 @cancel="onCancelComment(comment)"
@@ -107,7 +107,7 @@
                                     <a v-if="subcomment.user.id === userID" @click="showDeleteCommentAlert(subcomment)" class="report"><span>删除</span></a>
                                 </div>
                                 <CommentRichEditor v-if="userID && subcomment.editorToggled" :emptyPlaceholder="`回复${subcomment.user.username}`"
-                                    :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
+                                    :bookID="bookID" :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
                                     @error="addCommentError" :parentID="subcomment.id" 
                                     @cancel="onCancelComment(subcomment)" 
                                     :commentType="commentType" />
@@ -146,6 +146,7 @@ export default {
     name: 'CommentsOfArticle',
     props: [
         'commentType',
+        'bookID',
         'articleID',
         'authorID',
         'userID',

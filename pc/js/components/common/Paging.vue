@@ -28,12 +28,15 @@ export default {
                 return;
             }
             this.createPages(parseInt(page));
+            this.$emit('change', this.curPage);
         },
         onPrev() {
             this.createPages(this.curPage - 1);
+            this.$emit('change', this.curPage);
         },
         onNext() {
             this.createPages(this.curPage + 1);
+            this.$emit('change', this.curPage);
         },
         createPages(currentPage) {
             if (currentPage === 1 && this.totalPage === 1) {

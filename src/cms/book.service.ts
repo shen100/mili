@@ -6,6 +6,7 @@ import { ListResult } from '../entity/listresult.entity';
 import { CreateBookStarDto } from './dto/create-book-star.dto';
 import { parseCountResult } from '../utils/query';
 import { User } from '../entity/user.entity';
+import { ChapterComment } from '../entity/comment.entity';
 
 @Injectable()
 export class BookService {
@@ -22,6 +23,9 @@ export class BookService {
 
         @InjectRepository(BookStar)
         private readonly bookStarRepository: Repository<BookStar>,
+
+        @InjectRepository(ChapterComment)
+        private readonly chapterCommentRepository: Repository<ChapterComment>,
     ) {}
 
     async allCategories() {
@@ -40,6 +44,7 @@ export class BookService {
                 id: true,
                 name: true,
                 studyUserCount: true,
+                commentCount: true,
                 coverURL: true,
                 summary: true,
                 starUserCount: true,
@@ -163,7 +168,7 @@ export class BookService {
     }
 
     async studyBookUsers(bookID: number, page: number, pageSize: number): Promise<ListResult<User>> {
-        const sql = `SELECT users.id as id, users.username as username, users.avatar_url as avatarURL, 
+        const sql = `SELECT users.id as id, users.username as username, users.avatar_url as avatarURL,
                 users.job as job, users.company as company
             FROM book_user_study, users WHERE  book_user_study.book_id = ? AND book_user_study.user_id = users.id
             ORDER BY book_user_study.updated_at LIMIT ?, ?`;
@@ -201,6 +206,36 @@ export class BookService {
             select: {
                 id: true,
                 star: true,
+                createdAt: true,
+                htmlContent: true,
+                user: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
+            },
+            relations: ['user'],
+            where: {
+                bookID,
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            take: pageSize,
+            skip: (page - 1) * pageSize,
+        });
+        return {
+            list,
+            page,
+            pageSize,
+            count,
+        };
+    }
+
+    async commentList(bookID: number, page: number, pageSize: number): Promise<ListResult<ChapterComment>> {
+        const [list, count] = await this.chapterCommentRepository.findAndCount({
+            select: {
+                id: true,
                 createdAt: true,
                 htmlContent: true,
                 user: {

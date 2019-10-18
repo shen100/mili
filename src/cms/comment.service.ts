@@ -23,7 +23,7 @@ const userLikeTableMap = {
 
 const commentTableMap = {
     [CommentTypeArticle]: 'comments',
-    [CommentTypeChapter]: 'chaptercomments',
+    [CommentTypeChapter]: 'chapter_comments',
 };
 
 const articleTableMap = {
@@ -60,11 +60,15 @@ export class CommentService {
     }
 
     async getParent(commentType: string, id: number, fields = []) {
-        const entityRepository = {
-            [CommentTypeArticle]: this.commentRepository,
-            [CommentTypeChapter]: this.chapterCommentRepository,
-        };
-        return await entityRepository[commentType].findOne({
+        if (commentType === CommentTypeArticle) {
+            return await this.commentRepository.findOne({
+                select: fields,
+                where: {
+                    id,
+                },
+            });
+        }
+        return await this.chapterCommentRepository.findOne({
             select: fields,
             where: {
                 id,
@@ -179,7 +183,7 @@ export class CommentService {
         } else if (commentType === CommentTypeChapter) {
             comment = new ChapterComment();
         }
-        comment.articleID = createCommentDto.articleID;
+        comment.articleID = createCommentDto.commentTo;
         comment.contentType = CommentContentType.HTML;
         comment.htmlContent = createCommentDto.content;
         comment.parentID = createCommentDto.parentID || NO_PARENT;
@@ -195,12 +199,19 @@ export class CommentService {
             if (commentType === CommentTypeChapter) {
                 sql = `UPDATE book_chapters SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
             }
-            let commentRepository = manager.getRepository(Comment);
+            let commentRepository: any = manager.getRepository(Comment);
             if (commentType === CommentTypeChapter) {
                 commentRepository = manager.getRepository(ChapterComment);
             }
-            await commentRepository.save(comment);
+            const commentData: any = { ...comment };
+            if (commentType === CommentTypeChapter) {
+                commentData.bookID = createCommentDto.bookID;
+            }
+            await commentRepository.save(commentData);
             await manager.query(sql);
+            if (commentType === CommentTypeChapter) {
+                await manager.query('UPDATE books SET comment_count = comment_count + 1 WHERE id = ?', [createCommentDto.bookID]);
+            }
         });
         return comment;
     }

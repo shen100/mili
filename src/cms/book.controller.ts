@@ -11,11 +11,14 @@ import { CurUser } from '../core/decorators/user.decorator';
 import { APIPrefix } from '../constants/constants';
 import { CreateBookStarDto } from './dto/create-book-star.dto';
 import { ActiveGuard } from '../core/guards/active.guard';
+import { ConfigService } from '../config/config.service';
+import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 
 @Controller()
 export class BookController {
     constructor(
         private readonly bookService: BookService,
+        private readonly configService: ConfigService,
     ) {}
 
     @Get('/books/:categoryPathName?')
@@ -75,6 +78,7 @@ export class BookController {
             chapters,
             studyUsers: studyUsers.list,
             list: recommendBooks,
+            userLevelChapterURL: this.configService.static.userLevelChapterURL,
         });
     }
 
@@ -105,8 +109,26 @@ export class BookController {
     }
 
     @Get(`${APIPrefix}/books/:bookID/stars`)
-    async stars(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number) {
-        const listResult = await this.bookService.starList(bookID, page, 20);
+    async stars(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number,
+                @Query('pageSize', ShouldIntPipe) pageSize: number) {
+        if (!pageSize) {
+            pageSize = 20;
+        }
+        pageSize = Math.min(pageSize, 20);
+        pageSize = Math.max(pageSize, 1);
+        const listResult = await this.bookService.starList(bookID, page, pageSize);
+        return listResult;
+    }
+
+    @Get(`${APIPrefix}/books/:bookID/comments`)
+    async comments(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number,
+                   @Query('pageSize', ShouldIntPipe) pageSize: number) {
+        if (!pageSize) {
+            pageSize = 20;
+        }
+        pageSize = Math.min(pageSize, 20);
+        pageSize = Math.max(pageSize, 1);
+        const listResult = await this.bookService.commentList(bookID, page, pageSize);
         return listResult;
     }
 

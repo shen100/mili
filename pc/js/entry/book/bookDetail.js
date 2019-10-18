@@ -30,10 +30,12 @@ registerDirective(Vue);
     });
 }());
 
-new Vue({
-    render: h => h(BookDetail, {
-        props: {
-            book: window.book,
-        }
-    }),
-}).$mount('#bookDetailStarComment');
+if (book.starUserCount || book.commentCount) {
+    new Vue({
+        render: h => h(BookDetail, {
+            props: {
+                book: window.book,
+            }
+        }),
+    }).$mount('#bookDetailStarComment');
+}

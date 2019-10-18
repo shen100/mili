@@ -133,6 +133,8 @@ export class VoteComment {
     voteID: number;
 }
 
-@Entity({name: 'chaptercomments'})
+@Entity({name: 'chapter_comments'})
 export class ChapterComment extends Comment {
+    @Column('int', { name: 'book_id' })
+    bookID: number;
 }

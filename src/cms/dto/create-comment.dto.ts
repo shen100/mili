@@ -6,13 +6,20 @@ import {
     IsEnum,
     ValidateIf,
 } from 'class-validator';
-import { ArticleContentType } from '../../entity/article.entity';
 
 export class CreateCommentDto {
-    @IsInt({
-        message: '无效的articleID',
+    @ValidateIf(obj => {
+        return obj && typeof obj.bookID !== 'undefined';
     })
-    readonly articleID: number;
+    @IsInt({
+        message: '无效的bookID',
+    })
+    readonly bookID: number;
+
+    @IsInt({
+        message: '无效的commentTo',
+    })
+    readonly commentTo: number;
 
     @ValidateIf(o => o.parentID !== undefined)
     @IsInt({

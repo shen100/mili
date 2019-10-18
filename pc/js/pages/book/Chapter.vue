@@ -42,7 +42,7 @@
                                 <h1 id="article-content-h1">{{chapter.name}}</h1>
                                 <div class="mili-editor" v-html="chapter.htmlContent"></div>
                                 <div>
-                                    <CommentsOfArticle :articleID="chapter.id" :userID="userID" 
+                                    <CommentsOfArticle :bookID="book.id" :articleID="chapter.id" :userID="userID" 
                                         :commentType="'chapter'" :username="username" :avatarURL="avatarURL" 
                                         :authorID="authorID" :commentEnabled="true" />
                                 </div>

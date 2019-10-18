@@ -1,58 +1,60 @@
 <template>
     <div class="book-card">
         <div class="header header-equal">
-            <div @click="changeSelect('star')" class="header-item" :class="{selected: type === 'star'}">图书评价</div>
-            <div @click="changeSelect('comment')" class="header-item" :class="{selected: type === 'comment'}">章节留言</div>
+            <div v-if="starUserCount" @click="changeSelect('star')" class="header-item" :class="{selected: type === 'star'}">图书评价</div>
+            <div v-if="commentCount" @click="changeSelect('comment')" class="header-item" :class="{selected: type === 'comment'}">章节留言</div>
         </div>
         <div class="comments-book">
             <div class="comments-list">
                 <div :key="star.id" v-for="star in stars" class="comment">
                     <div class="aside">
-                        <a href="/user/5666fbb400b0a9f1b6ce3e90" target="_blank" class="user">
-                            <div class="lazy avatar avatar loaded" style="background-image: url(g?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1&quot;);"></div>
+                        <a :href="`/uc/${star.user.id}`" target="_blank" class="user">
+                            <div class="lazy avatar loaded" :style="{'background-image': `url(${star.user.avatarURL})`}"></div>
                         </a>
                     </div>
                     <div class="content-box">
                         <div class="comment-header">
-                            <a :href="`/uc/${star.user.id}`" target="_blank" class="username">{{star.user.username}}<a href="" target="_blank" class="rank">
-                                <img src="https://b-gold-cdn.xitu.io/v3/static/img/lv-2.f597b88.svg" alt="lv-2"></a>
+                            <a :href="`/uc/${star.user.id}`" target="_blank" class="username">{{star.user.username}}<a :href="userLevelChapterURL" target="_blank" class="rank">
+                                <img :src="star.user.level | levelImgURL"></a>
                             </a>
                             <div v-if="type === 'star'" class="star-panel">
-                                <div :key="i" v-for="i in 5" class="star" :class="{'star-selected': i <= star.value}"></div>
+                                <div :key="i" v-for="i in 5" class="star" :class="{'star-selected': i <= star.star}" style="cursor: default;"></div>
                             </div>
                         </div>
                         <div class="content">
                             <span class="content-html" v-html="star.htmlContent"></span>
                         </div>
                         <div class="footer-line">
-                            <span class="date">4月前</span>
+                            <span class="date">{{star.createdAtLabel}}</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div v-if="totalPage > 1" class="border-sep"></div>
-        <Paging :page="page" :totalPage="totalPage" />
+        <Paging v-if="totalPageGeted" :page="page" :totalPage="totalPage" @change="onPageChange" />
     </div>
 </template>
 
 <script>
+import { levelImgURL } from '~/js/common/filters.js';
 import Paging from '~/js/components/common/Paging.vue';
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
 
 export default {
-    props: ['type', 'bookID'],
+    props: ['type', 'bookID', 'starUserCount', 'commentCount'],
     data() {
         return {
             stars: [
             ],
             page: 1,
-            totalPage: 1,
+            totalPage: 0,
+            totalPageGeted: false,
+            userLevelChapterURL: window.userLevelChapterURL,
         };
     },
     mounted() {
-        console.log('=============> mounted');
         this.reqList();
     },
     methods: {
@@ -62,16 +64,26 @@ export default {
         reqList() {
             let url;
             if (this.type == 'star') {
-                url = `/books/${this.bookID}/stars`;
+                url = `/books/${this.bookID}/stars?page=${this.page}&pageSize=5`;
             } else if (this.type == 'comment') {
-                url = `/books/${this.bookID}/stars`;
+                url = `/books/${this.bookID}/comments?page=${this.page}&pageSize=5`;
             }
             myHTTP.get(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.stars = res.data.data.list;
+                    this.page = res.data.data.page;
+                    this.totalPage = Math.ceil(res.data.data.count / res.data.data.pageSize);
+                    this.totalPageGeted = true;
                 }
             });
+        },
+        onPageChange(page) {
+            this.page = page;
+            this.reqList();
         }
+    },
+    filters: {
+        levelImgURL,
     },
     components: {
         Paging,
@@ -99,16 +111,13 @@ export default {
     color: #232323;
 }
 
-.book-card .header.header-equal {
-    cursor: pointer;
-}
-
 .book-card .header .header-item {
     min-width: 60px;
     height: 50px;
     line-height: 50px;
     padding-left: 25px;
     padding-right: 25px;
+    cursor: pointer;
 }
 
 .book-card .header.header-equal .selected {
@@ -181,6 +190,10 @@ export default {
     font-size: 15px;
     font-weight: 600;
     color: #2e3135;
+}
+
+.username:hover {
+    text-decoration: none;
 }
 
 .rank {
