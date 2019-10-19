@@ -8,11 +8,11 @@
                 <template v-slot:content>
                     <li :key="user.id" v-for="user in users" class="item">
                         <div class="user">
-                            <a href="">
+                            <a :href="`/uc/${user.id}`" target="_blank">
                                 <div class="avatar" :style="{'background-image': `url(${user.avatarURL})`}"></div>
                             </a>
                             <div class="user-info">
-                                <a href="" class="username">{{user.username}}</a>
+                                <a :href="`/uc/${user.id}`" target="_blank" class="username">{{user.username}}</a>
                                 <div class="intro">{{user | jobCompany}}</div>
                             </div>
                         </div>
@@ -26,6 +26,7 @@
 <script>
 import Pinterest from '~/js/components/common/Pinterest.vue';
 import { jobCompany } from '~/js/common/filters.js';
+import { getWindowSize } from '~/js/utils/dom.js';
 
 export default {
     props: ['type', 'bookID'],
@@ -34,6 +35,7 @@ export default {
             visible: true,
             users: [],
             url: this.type == 'book' ? `/books/${this.bookID}/studyusers` : '',
+            styleNode: null,
         }
     },
     computed: {
@@ -43,6 +45,24 @@ export default {
                 'handbook': '已购买用户',
             }[this.type];
         },
+    },
+    mounted() {
+        const winSize = getWindowSize();
+        const node = document.createElement('style');
+        const str = `.container { height: ${winSize.height - 80 - 60 - 20}px; overflow: hidden; }`; 
+        node.type = 'text/css'; 
+        if (node.styleSheet) {
+            node.styleSheet.cssText = str;
+        } else {
+            node.innerHTML = str; 
+        }
+        document.getElementsByTagName('head')[0].appendChild(node);
+        this.styleNode = node;
+    },
+    beforeDestroy() {
+        if (this.styleNode) {
+            document.getElementsByTagName('head')[0].removeChild(this.styleNode);
+        }
     },
     methods: {
         onLoad(result) {
@@ -84,13 +104,12 @@ export default {
     outline: none;
     text-shadow: none;
     padding: 0;
-    cursor: pointer;
     background: transparent;
     border: 0;
     -webkit-appearance: none;
     top: 24px;
     right: 36px;
-    font-size: 26px;
+    font-size: 32px;
     cursor: pointer;
 }
 
@@ -139,6 +158,10 @@ export default {
     font-size: 15px;
     font-weight: 600;
     color: #2e3135;
+}
+
+.related-user-list-modal .username:hover {
+    text-decoration: none;
 }
 
 .related-user-list-modal .intro {

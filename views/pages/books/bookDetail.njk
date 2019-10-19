@@ -50,17 +50,17 @@
         <div class="book-card">
             <div class="book-menu-wrap">
                 <div class="book-menu">
-                    <div class="item active">
+                    <div id="bookMenuNavItem" class="item active">
                         <span class="text">目录</span>
                     </div>
                     {% if book.starUserCount %}
-                    <div class="item">
+                    <div id="starNavItem" class="item">
                         <span class="text">评价</span>
                         <span class="badge">{{book.starUserCount}}</span>
                     </div>
                     {% endif %}
                     {% if not book.starUserCount and book.commentCount %}
-                    <div class="item">
+                    <div id="commentNavItem" class="item">
                         <span class="text">章节留言</span>
                         <span class="badge">{{book.commentCount}}</span>
                     </div>

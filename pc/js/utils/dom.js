@@ -111,6 +111,10 @@ export const getScrollPos = function () {
     };
 };
 
+export const hasScroller = function () {
+    return document.body.scrollHeight > (window.innerHeight || document.documentElement.clientHeight);
+};
+
 export const isContentEmpty = function (content, editorType) {
     if (editorType === 'rich') {
         if (!content || content === '<p></p>') {
@@ -124,3 +128,11 @@ export const isContentEmpty = function (content, editorType) {
     }
     return false;
 };
+
+export const elementScrollToTop = function(el, dt) {
+    el.scrollIntoView();
+    if (hasScroller()) {
+        let top = document.documentElement.scrollTop - dt;
+        document.documentElement.scrollTop = top >= 0 ? top : 0;
+    }
+}

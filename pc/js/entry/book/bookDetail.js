@@ -6,6 +6,7 @@ import {
     parseTree,
 } from '~/js/utils/tree';
 import BookDetail from '~/js/pages/book/BookDetail.vue';
+import { addClass, removeClass, elementScrollToTop } from '~/js/utils/dom.js';
 
 import {
     registerDirective,
@@ -38,4 +39,38 @@ if (book.starUserCount || book.commentCount) {
             }
         }),
     }).$mount('#bookDetailStarComment');
+}
+
+const bookMenuNavItem = document.getElementById('bookMenuNavItem');
+const starNavItem = document.getElementById('starNavItem');
+const commentNavItem = document.getElementById('commentNavItem');
+
+const topNavHeight = 57;
+
+function scrollIntoView(el) {
+    bookMenuNavItem && removeClass(bookMenuNavItem, 'active');
+    starNavItem && removeClass(starNavItem, 'active');
+    commentNavItem && removeClass(commentNavItem, 'active');
+    addClass(el, 'active');
+    if (el === bookMenuNavItem) {
+        elementScrollToTop(bookMenuNavItem, topNavHeight);
+    } else {
+        elementScrollToTop(document.getElementById('bookDetailStarComment'), topNavHeight);
+    }
+}
+
+bookMenuNavItem.addEventListener('click', () => {
+    scrollIntoView(bookMenuNavItem);
+});
+
+if (starNavItem) {
+    starNavItem.addEventListener('click', () => {
+        scrollIntoView(starNavItem);
+    });
+}
+
+if (commentNavItem) {
+    commentNavItem.addEventListener('click', () => {
+        scrollIntoView(commentNavItem);
+    });
 }

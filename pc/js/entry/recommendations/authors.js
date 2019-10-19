@@ -1,5 +1,4 @@
 import '~/styles/main.scss';
-import '~/styles/recommendations/authors.scss';
 import '~/js/common/default.js';
 import Vue from 'vue';
 import VueRouter from 'vue-router';

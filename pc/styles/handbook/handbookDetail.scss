@@ -2,8 +2,12 @@ body {
     background: #f4f5f5;
 }
 
+.container {
+    padding-top: 80px;
+}
+
 .book-info-view {
-    margin-top: 80px;
+    margin-top: 0;
     min-height: 600px;
 }
 
@@ -304,14 +308,6 @@ body {
 
 .book-bought .users .user:first-child {
     margin-left: 0;
-}
-
-.copy-right {
-    text-align: center;
-    font-size: 14px;
-    opacity: .7;
-    color: #3a4e64;
-    margin-bottom: 40px;
 }
 
 .button--write {
@@ -771,4 +767,16 @@ body {
 .handbooks {
     width: 100%;
     box-shadow: none;
+}
+
+.copy-right-box {
+    height: 20px;
+    margin-bottom: 40px;
+}
+
+.copy-right {
+    text-align: center;
+    font-size: 14px;
+    opacity: .7;
+    color: #3a4e64;
 }

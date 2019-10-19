@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="bookDetailStarComment">
         <template v-if="book.starUserCount">
             <HandBookComment v-show="currentSelect === 'star'" type="star" @change="onChange"
                 :bookID="book.id" :starUserCount="book.starUserCount" :commentCount="book.commentCount" />

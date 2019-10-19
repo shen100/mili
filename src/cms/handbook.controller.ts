@@ -58,7 +58,7 @@ export class HandBookController {
         res.render('pages/handbook/handbooks.njk', data);
     }
 
-    @Get('/handbooks/:id.html')
+    @Get('/handbooks/:id')
     async detail(@CurUser() user, @Res() res) {
         res.render('pages/handbook/handbookDetail.njk', {
             handbooks: [
