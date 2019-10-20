@@ -44,10 +44,10 @@ export class BookService {
                 id: true,
                 name: true,
                 coverURL: true,
+                status: true,
             },
             where: {
                 id: bookID,
-                status: BookStatus.BookVerifySuccess,
             },
         });
     }
@@ -62,11 +62,16 @@ export class BookService {
                 coverURL: true,
                 summary: true,
                 starUserCount: true,
+                status: true,
+                user: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
             },
             relations: ['user'],
             where: {
                 id: bookID,
-                status: BookStatus.BookVerifySuccess,
             },
         });
     }
@@ -93,7 +98,7 @@ export class BookService {
                 'c.id', 'c.name'])
             .leftJoin('b.user', 'u')
             .leftJoin('b.categories', 'c')
-            .where('b.status = :status', { status: BookStatus.BookVerifySuccess });
+            .where('b.status = :status', { status: BookStatus.BookPublished });
         if (categoryID) {
             query = query.andWhere('c.id = :id', { id: categoryID });
         }
@@ -116,6 +121,11 @@ export class BookService {
                 chapterCount: true,
                 wordCount: true,
                 studyUserCount: true,
+                user: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
             },
             relations: ['user'],
             where: {
@@ -168,20 +178,18 @@ export class BookService {
                     username: true,
                     avatarURL: true,
                 },
-                book: {
-                    id: true,
-                    name: true,
-                    coverURL: true,
-                    status: true,
-                },
+                bookID: true,
             },
-            relations: ['book', 'user'],
+            relations: ['user'],
             where: {
                 id,
             },
         });
     }
 
+    /**
+     * 标记用户学习过此图书
+     */
     async studyBook(bookID: number, userID: number) {
         const sql = `INSERT INTO book_user_study (user_id, book_id, created_at, updated_at) VALUES(?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE updated_at = ?`;
@@ -194,7 +202,10 @@ export class BookService {
         });
     }
 
-    async studyBookUsers(bookID: number, page: number, pageSize: number): Promise<ListResult<User>> {
+    /**
+     * 学习过此图书的用户
+     */
+    async bookStudyUsers(bookID: number, page: number, pageSize: number): Promise<ListResult<User>> {
         const sql = `SELECT users.id as id, users.username as username, users.avatar_url as avatarURL,
                 users.job as job, users.company as company
             FROM book_user_study, users WHERE  book_user_study.book_id = ? AND book_user_study.user_id = users.id
@@ -213,6 +224,9 @@ export class BookService {
         };
     }
 
+    /**
+     * 创建图书评价
+     */
     async createStar(createBookStarDto: CreateBookStarDto, userID: number) {
         await this.bookRepository.manager.connection.transaction(async manager => {
             await manager.getRepository(BookStar).insert({
@@ -228,6 +242,9 @@ export class BookService {
         return;
     }
 
+    /**
+     * 图书下的评价列表
+     */
     async starList(bookID: number, page: number, pageSize: number): Promise<ListResult<BookStar>> {
         const [list, count] = await this.bookStarRepository.findAndCount({
             select: {
@@ -259,6 +276,9 @@ export class BookService {
         };
     }
 
+    /**
+     * 章节下的评论，在图书下显示时，不区分父评论，子评论
+     */
     async commentList(bookID: number, page: number, pageSize: number): Promise<ListResult<ChapterComment>> {
         const [list, count] = await this.chapterCommentRepository.findAndCount({
             select: {

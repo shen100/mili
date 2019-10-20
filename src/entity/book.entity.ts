@@ -31,16 +31,10 @@ export class BookCategory {
 
 export enum BookStatus {
 	// BookUnpublish 未发布
-	BookUnpublish = 'book_unpublish',
+	BookUnpublish = 0,
 
-	// BookVerifying 审核中
-	BookVerifying = 'book_verifying',
-
-	// BookVerifySuccess 审核通过
-	BookVerifySuccess = 'book_verify_success',
-
-	// BookVerifyFail 审核未通过
-	BookVerifyFail = 'book_verify_fail',
+	// BookPublished 已发布
+	BookPublished = 1,
 }
 
 @Entity({name: 'books'})

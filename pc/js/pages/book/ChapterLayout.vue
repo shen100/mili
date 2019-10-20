@@ -96,7 +96,7 @@ export default {
             stepVisible,
             traverseArr,
             chapterIndex,
-            isHandbook: false,
+            isHandbook: window.isHandbook,
             chapterID,
             chapterTree: root.children,
             book: window.book,

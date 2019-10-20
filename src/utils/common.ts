@@ -22,3 +22,9 @@ export const extName = (urlStr: string) => {
     }
     return ext;
 };
+
+export const clampPage = (pageSize: number, min: number, max: number) => {
+    pageSize = Math.min(pageSize, max);
+    pageSize = Math.max(pageSize, min);
+    return pageSize;
+};

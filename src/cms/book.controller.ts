@@ -13,6 +13,7 @@ import { CreateBookStarDto } from './dto/create-book-star.dto';
 import { ActiveGuard } from '../core/guards/active.guard';
 import { ConfigService } from '../config/config.service';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
+import { clampPage } from '../utils/common';
 
 @Controller()
 export class BookController {
@@ -21,6 +22,9 @@ export class BookController {
         private readonly configService: ConfigService,
     ) {}
 
+    /**
+     * 全部图书或分类下的图书
+     */
     @Get('/books/:categoryPathName?')
     async booksView(@Param('categoryPathName') categoryPathName: string, @Query('page', ParsePagePipe) page: number, @Res() res, @Next() next) {
         if (categoryPathName && !isNaN(Number(categoryPathName))) {
@@ -49,10 +53,10 @@ export class BookController {
         ]);
 
         res.render('pages/books/books', {
+            ...listResult,
             recommendBooks,
             categoryPathName: categoryPathName || 'all',
             categories,
-            ...listResult,
         });
     }
 
@@ -61,14 +65,16 @@ export class BookController {
      */
     @Get('/books/:id')
     async bookView(@Param('id', MustIntPipe) id: number, @Res() res) {
+        const page = 1;
+        const pageSize = 20;
         const [book, chapters, studyUsers, recommendBooks] = await Promise.all([
             this.bookService.detail(id),
             this.bookService.chapters(id),
-            this.bookService.studyBookUsers(id, 1, 20),
+            this.bookService.bookStudyUsers(id, page, pageSize),
             this.bookService.recommendList(),
         ]);
 
-        if (!book) {
+        if (!book || book.status !== BookStatus.BookPublished) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });
@@ -82,6 +88,9 @@ export class BookController {
         });
     }
 
+    /**
+     * 章节详情页面
+     */
     @Get('/books/:bookID/chapters/:chapterID')
     async chapterView(@CurUser() user, @Param('bookID', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
         const [book, chapters, isChapterInBook, isCommitedStar] = await Promise.all([
@@ -91,13 +100,13 @@ export class BookController {
             user ? this.bookService.isCommitedStar(bookID, user.id) : Promise.resolve(false),
             user ? this.bookService.studyBook(bookID, user.id) : Promise.resolve(),
         ]);
-        if (!book || !isChapterInBook) {
+        if (!book || book.status !== BookStatus.BookPublished || !isChapterInBook) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
         res.render('pages/books/chapter', {
-            isHandbook: true,
+            isHandbook: false,
             book,
             chapterID,
             chapters,
@@ -108,7 +117,7 @@ export class BookController {
     @Get(`${APIPrefix}/books/chapters/:chapterID`)
     async chapter(@Param('chapterID', MustIntPipe) chapterID: number) {
         const chapter  = await this.bookService.chapterDetail(chapterID);
-        if (!chapter || chapter.book.status !== BookStatus.BookVerifySuccess) {
+        if (!chapter || chapter.book.status !== BookStatus.BookPublished) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });
@@ -117,19 +126,16 @@ export class BookController {
     }
 
     @Get(`${APIPrefix}/books/:bookID/studyusers`)
-    async studyBookUsers(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number) {
-        const listResult = await this.bookService.studyBookUsers(bookID, page, 20);
+    async bookStudyUsers(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number) {
+        const listResult = await this.bookService.bookStudyUsers(bookID, page, 20);
         return listResult;
     }
 
     @Get(`${APIPrefix}/books/:bookID/stars`)
     async stars(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number,
                 @Query('pageSize', ShouldIntPipe) pageSize: number) {
-        if (!pageSize) {
-            pageSize = 20;
-        }
-        pageSize = Math.min(pageSize, 20);
-        pageSize = Math.max(pageSize, 1);
+        pageSize = pageSize || 20;
+        pageSize = clampPage(pageSize, 1, 20);
         const listResult = await this.bookService.starList(bookID, page, pageSize);
         return listResult;
     }
@@ -137,17 +143,15 @@ export class BookController {
     @Get(`${APIPrefix}/books/:bookID/comments`)
     async comments(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number,
                    @Query('pageSize', ShouldIntPipe) pageSize: number) {
-        if (!pageSize) {
-            pageSize = 20;
-        }
-        pageSize = Math.min(pageSize, 20);
-        pageSize = Math.max(pageSize, 1);
+        pageSize = pageSize || 20;
+        pageSize = clampPage(pageSize, 1, 20);
         const listResult = await this.bookService.commentList(bookID, page, pageSize);
         return listResult;
     }
 
     @Get(`${APIPrefix}/books/:categoryPathName`)
     async list(@Param('categoryPathName') categoryPathName: string, @Query('page', ParsePagePipe) page: number) {
+        // 查询全部图书时，categoryPathName 传 all
         const categories = await this.bookService.allCategories();
         const category = categories.find(c => c.pathname === categoryPathName);
         if (!category && categoryPathName !== 'all') {
@@ -157,7 +161,6 @@ export class BookController {
         }
 
         const pageSize = 20;
-
         let bookListQuery = this.bookService.list(page, pageSize);
         if (category) {
             bookListQuery = this.bookService.listInCategory(category.id, page, pageSize);

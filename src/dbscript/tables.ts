@@ -5,6 +5,8 @@ export const tablesRun = async function (connection) {
         await connection.manager.query(`alter table images add column size int(11)`);
         await connection.manager.query(`alter table images add column format varchar(50)`);
 
+        await connection.manager.query(`alter table books drop column status`);
+        await connection.manager.query(`alter table books add column status int`);
         await connection.manager.query(`alter table books add column summary varchar(500)`);
         await connection.manager.query(`alter table books add column word_count int default 0`);
         await connection.manager.query(`alter table books add column study_user_count int default 0`);
