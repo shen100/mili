@@ -178,9 +178,12 @@ export class BookService {
                     username: true,
                     avatarURL: true,
                 },
-                bookID: true,
+                book: {
+                    id: true,
+                    status: true,
+                },
             },
-            relations: ['user'],
+            relations: ['user', 'book'],
             where: {
                 id,
             },
