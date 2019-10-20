@@ -1,5 +1,6 @@
 <template>
     <div v-if="modalVisible" class="handbook-modal">
+        <ErrorTip ref="errorTip" />
         <div @click="onClose" class="handbook-modal-bg"></div>
         <div class="handbook-modal-box">
             <div style="position: relative;">
@@ -34,6 +35,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
 
 export default {
     props: ['user', 'book', 'type'],
@@ -96,12 +98,15 @@ export default {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.$emit('commit', res.data.data);
                     this.modalVisible = false;
+                } else {
+                    this.$refs.errorTip.show(res.data.message);
                 }
             }).catch((err) => {
             });
         }
     },
     components: {
+        ErrorTip,
     }
 }
 </script>
@@ -153,7 +158,7 @@ export default {
     opacity: .4;
     filter: alpha(opacity=20);
     font-weight: 200;
-    font-size: 26px;
+    font-size: 32px;
     outline: none;
     text-shadow: none;
     padding: 0;

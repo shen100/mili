@@ -10,7 +10,7 @@ export class CreateBookStarDto {
     readonly bookID: number;
 
     @ValidateIf(obj => {
-        return obj && typeof obj.content !== 'undefined';
+        return obj && typeof obj.htmlContent !== 'undefined';
     })
     @MaxLength(BookConstants.MAX_CONTENT_LENGTH, {
         message: '评价内容不能超过 $constraint1 个字符',

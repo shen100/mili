@@ -73,6 +73,7 @@ export default {
             'pc/js/pages/boilingpoint/BoilingPoint.vue',
             'pc/js/pages/book/Books.vue',
             'pc/js/pages/book/BookDetail.vue',
+            'pc/js/pages/book/Chapter.vue',
             'pc/js/pages/book/ChapterLayout.vue',
             'pc/js/pages/CodeStats.vue',
             'pc/js/pages/Index.vue',
