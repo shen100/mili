@@ -84,22 +84,36 @@ export class BookController {
 
     @Get('/books/:bookID/chapters/:chapterID')
     async chapterView(@CurUser() user, @Param('bookID', MustIntPipe) bookID: number, @Param('chapterID', MustIntPipe) chapterID: number, @Res() res) {
-        const [chapters, chapter, isCommitedStar] = await Promise.all([
+        const [book, chapters, isChapterInBook, isCommitedStar] = await Promise.all([
+            this.bookService.basic(bookID),
             this.bookService.chapters(bookID),
-            this.bookService.chapterDetail(chapterID),
+            this.bookService.isChapterInBook(chapterID, bookID),
             user ? this.bookService.isCommitedStar(bookID, user.id) : Promise.resolve(false),
             user ? this.bookService.studyBook(bookID, user.id) : Promise.resolve(),
         ]);
-        if (!chapter || chapter.book.status !== BookStatus.BookVerifySuccess) {
+        if (!book || !isChapterInBook) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
         res.render('pages/books/chapter', {
-            chapter,
+            isHandbook: true,
+            book,
+            chapterID,
             chapters,
             isCommitedStar,
         });
+    }
+
+    @Get(`${APIPrefix}/books/chapters/:chapterID`)
+    async chapter(@Param('chapterID', MustIntPipe) chapterID: number) {
+        const chapter  = await this.bookService.chapterDetail(chapterID);
+        if (!chapter || chapter.book.status !== BookStatus.BookVerifySuccess) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        return chapter;
     }
 
     @Get(`${APIPrefix}/books/:bookID/studyusers`)

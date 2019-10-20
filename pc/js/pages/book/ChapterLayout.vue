@@ -128,9 +128,9 @@ export default {
                         break;
                     }
                 }
-                this.$nextTick(() => {
-                    document.getElementById(`chapterLink-${chapterID}`).scrollIntoView();
-                });
+                // this.$nextTick(() => {
+                //     document.getElementById(`chapterLink-${chapterID}`).scrollIntoView();
+                // });
             }
         });
     },
@@ -161,6 +161,7 @@ export default {
             this.$refs.starModal.show();
         },
         onStarCommit() {
+            this.starModalEnabled = false;
             this.$refs.successTip.show('评价已提交，请等待审核');
         }
     },

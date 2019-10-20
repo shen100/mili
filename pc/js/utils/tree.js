@@ -5,6 +5,7 @@
  *   dataKeys: 自定义数据的key组成的数组
  *   withParentRef: 结点是否保留父结点的引用
  *   rootID: 根结点的id
+ *   returnRoot: 返回的树是否包含根结点
  */
 export const parseTree = (nodes, options) => {
     if (!nodes || nodes.length <= 0) {
@@ -61,6 +62,27 @@ export const parseTree = (nodes, options) => {
         return root;
     }
     return root.children;
+};
+
+/**
+ * 将一棵树转成一维数组, 可用来生成图书章节目录树
+ * options:
+ *   returnRoot: 返回的树是否包含根结点
+ */
+export const tree2Array = (root, options) => {
+    let tempArr = [ root ];
+    if (Object.prototype.toString.call(root)== '[object Array]') {
+        tempArr = root.slice(0);
+    }
+    let traverseArr = [];
+    while (tempArr.length) {
+        const node = tempArr.splice(0, 1)[0];
+        traverseArr.push(node);
+        if (node.children && node.children.length) {
+            tempArr = node.children.concat(tempArr);
+        }
+    }
+    return traverseArr;
 };
 
 export const getTreeNode = (id, treeData) => {

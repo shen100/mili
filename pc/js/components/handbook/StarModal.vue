@@ -1,9 +1,8 @@
 <template>
     <div v-if="modalVisible" class="handbook-modal">
-        <div @click="onClose" class="handbook-modal-bg">
-        </div>
+        <div @click="onClose" class="handbook-modal-bg"></div>
         <div class="handbook-modal-box">
-            <div class="" style="position: relative;">
+            <div style="position: relative;">
                 <div class="inner">
                     <button @click="onClose" type="button" class="close">×</button>
                     <div class="top">
@@ -16,16 +15,17 @@
                             </div>
                         </div>
                         <div class="aside">
-                            <img :src="book.coverURL"></div>
-                        </div>
-                        <div class="text-content">
-                            <textarea v-model="content" placeholder="说说你的感受吧…"></textarea>
-                        </div>
-                        <p class="remark">备注：评价审核通过后将在{{bookTypeLabel}}详情页显示</p>
-                        <div class="bottom">
-                            <button @click="onCommit" class="submit-btn" :class="{'submit-disabled': !submitEnabled}">提交评价</button>
+                            <img :src="book.coverURL">
                         </div>
                     </div>
+                    <div class="text-content">
+                        <textarea v-model="content" placeholder="说说你的感受吧…"></textarea>
+                    </div>
+                    <p class="remark">备注：评价审核通过后将在{{bookTypeLabel}}详情页显示</p>
+                    <div class="bottom">
+                        <button @click="onCommit" class="submit-btn" :class="{'submit-disabled': !submitEnabled}">提交评价</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@ export default {
             modalVisible: false,
             starCount: 0,
             content: '',
-        }
+        };
     },
     computed: {
         starLabel() {
@@ -139,6 +139,7 @@ export default {
     border-radius: 2px;
     top: 50%;
     margin-top: -250px;
+    box-sizing: border-box;
 }
 
 .comment-editor-box {
@@ -165,7 +166,7 @@ export default {
     right: -38px;
 }
 
-.mark-star-masker .inner[data-v-b3a159fa] {
+.mark-star-masker .inner {
     position: relative;
     width: 675px;
     min-height: 500px;

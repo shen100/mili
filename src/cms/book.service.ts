@@ -38,6 +38,20 @@ export class BookService {
         });
     }
 
+    async basic(bookID: number) {
+        return await this.bookRepository.findOne({
+            select: {
+                id: true,
+                name: true,
+                coverURL: true,
+            },
+            where: {
+                id: bookID,
+                status: BookStatus.BookVerifySuccess,
+            },
+        });
+    }
+
     async detail(bookID: number) {
         return await this.bookRepository.findOne({
             select: {
@@ -128,6 +142,19 @@ export class BookService {
                 createdAt: 'ASC',
             },
         });
+    }
+
+    async isChapterInBook(chapterID: number, bookID: number) {
+        const chapter = await this.chapterRepository.findOne({
+            select: {
+                id: true,
+            },
+            where: {
+                id: chapterID,
+                bookID,
+            },
+        });
+        return !!chapter;
     }
 
     async chapterDetail(id: number) {

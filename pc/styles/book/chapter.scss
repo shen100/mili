@@ -53,9 +53,13 @@
     line-height: 24px;
     font-size: 15px;
     font-weight: 500;
-    color: #007fff;
+    color: #f06047;
     position: relative;
-    background-color: rgba(0, 127, 255, .1);
+    background-color: rgba(231, 124, 106, 0.2);
+}
+
+.book-summary .book-summary-inner .book-summary__header .label:hover {
+    text-decoration: none;
 }
 
 .book-summary .book-summary-inner .book-summary__header .label:after {
@@ -65,7 +69,7 @@
     right: 0;
     width: 0;
     height: 0;
-    border-color: rgba(0, 127, 255, .2) #fff #fff rgba(0, 127, 255, .2);
+    border-color: rgba(231, 124, 106, 0.3) #fff #fff rgba(231, 124, 106, 0.3);
     border-style: solid;
     border-width: 5px;
 }
@@ -147,6 +151,15 @@
     content: "";
 }
 
+.book-summary .section:first-child .step:before {
+    content: none;
+}
+
+
+.book-summary .section:last-child .step:after {
+    content: none;
+}
+
 .section .step .step-btn {
     position: relative;
     display: flex;
@@ -175,9 +188,21 @@
     font-size: 14px;
 }
 
-.section.read .step .step-btn, .section.route-active .step .step-btn {
-    border-color: #007fff;
-    color: #007fff;
+.section-read .step-btn {
+    border-color: #ea6f5a!important;
+    color: #ea6f5a!important;
+}
+
+.section-read::before {
+    background-color: #ea6f5a!important;
+}
+
+.section-read::after {
+    background-color: #ea6f5a!important;
+}
+
+.section-current::after {
+    background-color: #b5b7ba!important;
 }
 
 .section .step:after, .section .step:before {
@@ -355,13 +380,4 @@
 
 .book-chapter.fold-pc .book-content .book-direction {
     margin-left: 0;
-}
-
-.baidu-ad-580x90 {
-    display: block;
-    width: 100%;
-    background: #f7f7f7;
-    text-align: center;
-    padding: 15px 0;
-    margin: 40px 0;
 }
