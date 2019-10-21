@@ -85,7 +85,7 @@ export class EditorController {
         });
     }
 
-    @Get('/editor/posts/:id.html')
+    @Get('/editor/posts/:id')
     @UseGuards(ActiveGuard)
     async editPostView(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const [article, uploadPolicy] = await Promise.all([

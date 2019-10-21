@@ -83,6 +83,11 @@ export const readDuration = (wordCount: number): string => {
     return parseInt((wordCount / 300 * 60) as any, 10) + '分钟';
 };
 
+export const prettyCount = (count) => {
+    count = count || 0;
+    return count.toLocaleString();
+};
+
 export const getShareURL = (platform: string, title: string, content: string, imageURL: string): string => {
     title = encodeURIComponent(title) || '';
     content = encodeURIComponent(content) || '';

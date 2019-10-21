@@ -15,6 +15,7 @@ import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { recentTime } from '../utils/viewfilter';
 import { CategoryService } from './category.service';
+import { BookService } from './book.service';
 
 @Controller()
 export class ArticleController {
@@ -23,14 +24,16 @@ export class ArticleController {
         private readonly categoryService: CategoryService,
         private readonly userService: UserService,
         private readonly redisService: RedisService,
+        private readonly bookService: BookService,
     ) {}
 
     @Get('/p/:id')
     async detailView(@CurUser() user, @Param('id', MustIntPipe) id: number, @Res() res) {
-        const [userLiked, article, recommends] = await Promise.all([
+        const [userLiked, article, recommends, books] = await Promise.all([
             user ? this.articleService.isUserLiked(id, user.id) : Promise.resolve(false),
             this.articleService.detail(id),
             this.articleService.relativeRecommendList(1, 20),
+            this.bookService.recommendList(),
         ]);
         if (!article) {
             throw new MyHttpException({
@@ -47,6 +50,7 @@ export class ArticleController {
             userFollowed,
             article,
             recommends,
+            recommendedBooks: books,
         });
     }
 

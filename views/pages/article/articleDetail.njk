@@ -4,34 +4,34 @@
 <div class="container">
     <div class="article-box">
         <div class="article">
+            <div class="author-info-block">
+                <a href="/uc/{{user.id}}" target="_blank" class="avatar-link">
+                    <div class="author-avatar" style="background-image: url({{article.user.avatarURL}});"></div>
+                </a>
+                <div class="author-info-box">
+                    <a href="/uc/{{user.id}}" target="_blank" class="username-ellipsis">{{article.user.username}}</a>
+                    <a href="" target="_blank" class="rank levelimg">
+                        <img src="https://b-gold-cdn.xitu.io/v3/static/img/lv-1.636691c.svg" style="margin-top: 4px;">
+                    </a>
+                    <div class="meta-box">
+                        <time class="time">{{article.createdAt | recentTime('YYYY年MM月DD')}}</time>
+                        <span class="views-count">阅读 1513</span>
+                    </div>
+                </div>
+                <button class="follow-button follow">关注</button>
+            </div>
+
             {% if article.coverURL %}
             <div class="article-cover" style="background-image: url({{article.coverURL}})"></div>
             {% endif %}
             <div class="article-title">{{article.name}}</div>
-            <div class="author">
-                <a class="avatar" target="_blank" href="/users/{{article.user.id}}.html">
-                    <img src="{{article.user.avatarURL}}" />
-                </a>
-                <div class="info">
-                    <span class="name"><a href="/users/{{article.user.id}}.html" target="_blank">{{article.user.username}}</a></span>
-                    {% if not isAuthorSelf %}
-                        {% if userFollowed %}
-                        <a id="followUserSmallBtn" href="javascript:void(0)" class="btn btn-default following"><i class="iconfont ic-followed"></i><span>已关注</span></a>
-                        {% else %}
-                        <a id="followUserSmallBtn" href="javascript:void(0)" class="btn btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>                    
-                        {% endif %}
-                    {% endif %}
-                    <div class="meta">
-                        <span class="publish-time">{{article.createdAt | formatTime('YYYY.MM.DD HH:mm')}}</span>
-                        <span class="wordage">字数 {{article.wordCount | defaultValue(0)}}</span>
-                        <span class="views-count">阅读 {{article.browseCount | defaultValue(0)}}</span>
-                        <span class="comments-count">评论 {{article.commentCount | defaultValue(0)}}</span>
-                        <span class="likes-count">喜欢 {{article.likedCount | defaultValue(0)}}</span>
-                        <span class="dot">·</span>
-                    </div>
-                </div>
-                <a href="/editor/posts/{{article.id}}.html" target="_blank" class="article-edit-link">编辑文章</a>
-            </div>
+
+
+
+
+
+
+
             <div class="article-content">
                 <div class="mili-editor">
                     {{article.htmlContent | safe}}
@@ -71,68 +71,18 @@
                         {% endif %}
                     {% endif %}
                     <a class="title" href="/users/{{article.user.id}}.html" target="_blank">{{article.user.username}}</a>
-                    <p>写了 {{article.user.wordCount | defaultValue(0)}} 字，被 {{article.user.followerCount | defaultValue(0)}} 人关注，获得了 {{article.user.likedCount | defaultValue(0)}} 个喜欢</p>
+                    <p>发布了 {{article.user.articleCount | defaultValue(0)}} 篇文章 · 获得点赞 {{article.user.likedCount | defaultValue(0)}} · 获取阅读 {{article.user.articleViewCount | defaultValue(0)}}</p>
                 </div>
                 {% if article.user.introduce %}
                 <div class="introduce">{{article.user.introduce}}</div>
                 {% endif %}
             </div>
 
-            <div class="meta-bottom">
-                <div class="like">
-                    <div id="likeArticelBtn" class="btn like-group">
-                        <div class="btn-like"><a>喜欢</a></div>
-                        <div class="modal-wrap"><a id="articelLikedCount">{{article.likedCount | defaultValue(0)}}</a></div>
-                    </div>
-                </div>
-                <div class="share-group" style="position: relative;">
-                    <a id="articleShareWeixinBtn" class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微信">
-                        <i class="iconfont ic-wechat"></i>
-                    </a>
-                    <a href="{{apiPrefix}}{{'weibo' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank" class="share-circle hint--top hint--rounded hint--no-animate" aria-label="分享到微博">
-                        <i class="iconfont ic-weibo"></i>
-                    </a>
-                    <a class="share-circle" data-toggle="tooltip" id="longshare" target="_blank">
-                        <div class="qrcode" id="qrcode" style="left: 22px;">
-                            <div id="qrcodeContainer" style="width: 160px;height: 160px;"></div>
-                            <p style="margin-top: 6px;">下载app生成长微博图片</p>
-                        </div>
-                        <i class="iconfont ic-picture"></i>
-                    </a>
-                    <a id="articleMoreShareBtn" class="share-circle more-share" tabindex="0" data-toggle="popover" data-placement="top" data-html="true"
-                      data-trigger="focus" href="javascript:void(0);" data-content="" data-original-title="" title="">更多分享</a>
-                    <div style="top: 0; left: 100%; position: absolute;">
-                        <div id="shareListPop" style="top: -171px; left: -128px;" class="popover fade top in" role="tooltip">
-                            <div class="arrow" style="left: 50%;"></div>
-                            <h3 class="popover-title" style="display: none;"></h3>
-                            <div class="popover-content">
-                                <ul class="share-list">
-                                    <li><a href="{{apiPrefix}}{{'weibo' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-zone"></i><span>分享到QQ空间</span></a></li>
-                                    <li><a href="{{apiPrefix}}{{'twitter' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-twitter"></i><span>分享到Twitter</span></a></li>
-                                    <li><a href="{{apiPrefix}}{{'facebook' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-facebook"></i><span>分享到Facebook</span></a></li>
-                                    <li><a href="{{apiPrefix}}{{'google' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-google"></i><span>分享到Google+</span></a></li>
-                                    <li><a href="{{apiPrefix}}{{'douban' | getShareURL(article.name, article.summary, article.coverURL)}}" target="_blank"><i class="social-icon-sprite social-icon-douban"></i><span>分享到豆瓣</span></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="article-banner">
+                <a class="banner-title" href="" target="_blank">下载{{siteName}}网源码</a>
+                <div class="banner-content">打开新标签页发现好内容，掘金、GitHub、Dribbble、ProductHunt 等站点内容轻松获取。快来安装掘金浏览器插件获取高质量内容吧！</div>
             </div>
 
-            {% if baiduAd.ad580x90 %}
-            <div class="web-note-ad">
-                <script type="text/javascript">
-                    (function() {
-                        var s = "_" + Math.random().toString(36).slice(2);
-                        document.write('<div style="" id="' + s + '"></div>');
-                        (window.slotbydup = window.slotbydup || []).push({
-                            id: "{{baiduAd.ad580x90}}",
-                            container: s
-                        });
-                    })();
-                </script>
-            </div>
-            {% endif %}
 
             <div>
                 <div id="comment-list" class="comment-list">
@@ -141,7 +91,63 @@
                 </div>
             </div>
         </div>
-        <div class="article-box-fixed-box" style="display: none;">
+        <div class="article-sidebar">
+            <div class="sidebar-block">
+                <div class="block-title">关于作者</div>
+                <div class="block-body">
+                    <div class="user-item item">
+                        <div class="user-item-avatar" style="background-image: url({{article.user.avatarURL}});"></div>
+                        <div class="info-box">
+                            <a href="/user/5960218cf265da6c2d2c733e" target="_blank" class="username">voanit</a>
+                            <a href="" target="_blank" class="rank levelimg">
+                                <img src="https://b-gold-cdn.xitu.io/v3/static/img/lv-1.636691c.svg" style="margin-top: 4px;">
+                            </a>
+                            <div class="position">前端 @ 朴新</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <svg width="25" height="26" viewBox="0 0 25 26" class="zan-icon">
+                            <g fill="none" fill-rule="evenodd" transform="translate(0 .57)">
+                                <ellipse cx="12.5" cy="12.57" fill="#fadcd6" rx="12.5" ry="12.57"></ellipse>
+                                <path fill="#e77c6a" d="M8.596 11.238V19H7.033C6.463 19 6 18.465 6 17.807v-5.282c0-.685.483-1.287 1.033-1.287h1.563zm4.275-4.156A1.284 1.284 0 0 1 14.156 6c.885.016 1.412.722 1.595 1.07.334.638.343 1.687.114 2.361-.207.61-.687 1.412-.687 1.412h3.596c.38 0 .733.178.969.488.239.317.318.728.21 1.102l-1.628 5.645a1.245 1.245 0 0 1-1.192.922h-7.068v-7.889c1.624-.336 2.623-2.866 2.806-4.029z"></path>
+                            </g>
+                        </svg>
+                        <span class="content">获得点赞<span class="count">{{article.user.likedCount | prettyCount}}</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <svg width="25" height="25" viewBox="0 0 25 25" class="article-view-icon">
+                            <g fill="none" fill-rule="evenodd">
+                                <circle cx="12.5" cy="12.5" r="12.5" fill="#fadcd6"></circle>
+                                <path fill="#e77c6a" d="M4 12.5S6.917 7 12.75 7s8.75 5.5 8.75 5.5-2.917 5.5-8.75 5.5S4 12.5 4 12.5zm8.75 2.292c1.208 0 2.188-1.026 2.188-2.292 0-1.266-.98-2.292-2.188-2.292-1.208 0-2.188 1.026-2.188 2.292 0 1.266.98 2.292 2.188 2.292z"></path>
+                            </g>
+                        </svg>
+                        <span class="content">文章被阅读<span class="count">{{article.user.articleViewCount | prettyCount}}</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommended-books">
+                <div class="title">
+                    <span>开源图书</span>
+                </div>
+                <ul>
+                    {% for book in recommendedBooks %}
+                    <li class="book-item">
+                        <a href="/books/{{book.id}}" target="_blank">
+                            <img class="book-item-img" src="{{book.coverURL}}">
+                            <div class="book-item-info">
+                                <div class="book-item-title">{{book.name}}</div>
+                                <div>
+                                    <span class="book-item-buycount">{{book.studyUserCount}}人已学习</span>
+                                    <span class="try-read">阅读</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
         </div>
     </div>
 
@@ -172,24 +178,9 @@
                 </div>
             </div>
 
-            {% if baiduAd.ad580x90_2 %}
-            <div class="web-note-ad">
-                <script type="text/javascript">
-                    (function() {
-                        var s = "_" + Math.random().toString(36).slice(2);
-                        document.write('<div style="" id="' + s + '"></div>');
-                        (window.slotbydup = window.slotbydup || []).push({
-                            id: "{{baiduAd.ad580x90_2}}",
-                            container: s
-                        });
-                    })();
-                </script>
-            </div>
-            {% endif %}
         </div>
     </div>
 
-    <div id="articleShareQRCode"></div>
 </div>
 {% endblock %}
 
