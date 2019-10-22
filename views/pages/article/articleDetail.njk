@@ -16,9 +16,11 @@
                     <div class="meta-box">
                         <time class="time">{{article.createdAt | recentTime('YYYY年MM月DD')}}</time>
                         <span class="views-count">阅读 1513</span>
+                        <span class="dot">·</span>
+                        <a href="/editor/posts/{{article.id}}" class="edit-btn">编辑</a>
                     </div>
                 </div>
-                <button class="follow-button follow">关注</button>
+                <div id="followUserSmallBtn" class="follow-button follow"></div>
             </div>
 
             {% if article.coverURL %}
@@ -79,7 +81,7 @@
             </div>
 
             <div class="article-banner">
-                <a class="banner-title" href="" target="_blank">下载{{siteName}}网源码</a>
+                <a class="banner-title" href="https://github.com/shen100/mili" target="_blank">下载{{siteName}}网源码</a>
                 <div class="banner-content">打开新标签页发现好内容，掘金、GitHub、Dribbble、ProductHunt 等站点内容轻松获取。快来安装掘金浏览器插件获取高质量内容吧！</div>
             </div>
 
@@ -149,6 +151,7 @@
             </div>
 
         </div>
+        <div id="articleSuspendedPanel"></div>
     </div>
 
     <div class="note-bottom">
@@ -194,6 +197,7 @@
   var userLiked = {{ userLiked }};
   var userFollowed = {{ userFollowed }};
   var articleLikedCount = {{ article.likedCount }};
+  var articleCommentCount = {{ article.commentCount }};
   var commentEnabled = {{ article.commentEnabled }};
   // 当前登录用户
   var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};

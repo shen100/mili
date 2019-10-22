@@ -10,15 +10,16 @@ import {
     addClass,
     removeClass,
 } from '~/js/utils/dom.js';
+import { eventEmitter, EVENTS } from '~/js/utils/event.js';
 import {
     ErrorCode,
 } from '~/js/constants/error.js';
 
 import Vue from 'vue';
-import SmallFollow from '~/js/components/user/SmallFollow.vue';
-import BigFollow from '~/js/components/user/BigFollow.vue';
+import FollowBtn from '~/js/components/user/FollowBtn.vue';
 import ArticleShareQRCodeWrap from '~/js/components/article/ArticleShareQRCodeWrap.vue';
 import CommentsOfArticle from '~/js/components/comment/CommentsOfArticle.vue';
+import ArticleSocial from '~/js/components/article/ArticleSocial.vue';
 
 import {
     registerDirective,
@@ -27,46 +28,41 @@ import {
 registerDirective(Vue);
 
 (function () {
-    const methodProxy1 = {};
-    const methodProxy2 = {};
-
-    function onChange (userFollowed) {
-        methodProxy1.setUserFollowed(userFollowed);
-        methodProxy2.setUserFollowed(userFollowed);
-    }
-
-    function onFollowChange (userID, userFollowed) {
-        if (userID === window.authorID) {
-            methodProxy1.setUserFollowed(userFollowed);
-            methodProxy2.setUserFollowed(userFollowed);
-        }
-    }
-
+    const authorID = window.authorID;
+    let smallFollowBtn, bigFollowBtn;
     if (!window.isAuthorSelf) {
         // 关注作者
-        new Vue({
-            render: h => h(SmallFollow, {
+        smallFollowBtn = new Vue({
+            render: h => h(FollowBtn, {
                 props: {
-                    userID: window.authorID,
-                    userFollowed: window.userFollowed,
-                    onChange: onChange,
-                    methodProxy: methodProxy1,
+                    userID: authorID,
+                    followed: window.userFollowed,
                 },
+                style: {
+                    width: '56px',
+                    height: '26px',
+                }
             }),
         }).$mount('#followUserSmallBtn');
 
         // 关注作者
-        new Vue({
-            render: h => h(BigFollow, {
+        bigFollowBtn = new Vue({
+            render: h => h(FollowBtn, {
                 props: {
-                    userID: window.authorID,
-                    userFollowed: window.userFollowed,
-                    onChange: onChange,
-                    methodProxy: methodProxy2,
+                    userID: authorID,
+                    followed: window.userFollowed,
                 },
+                style: { float: 'right' }
             }),
         }).$mount('#followUserBigBtn');
     }
+
+    eventEmitter.on(EVENTS.USER_FOLLOW_CHANGE, (data) => {
+        if (data.userID === authorID) {
+            smallFollowBtn.changeFollow(data.userID, data.isFollowed);
+            bigFollowBtn.changeFollow(data.userID, data.isFollowed);
+        }
+    });
 
     // 评论列表
     new Vue({
@@ -79,90 +75,66 @@ registerDirective(Vue);
                 avatarURL: window.avatarURL,
                 authorID: window.authorID,
                 commentEnabled: window.commentEnabled,
-                onFollowChange,
             },
         }),
     }).$mount('#normal-comment-list');
 }());
 
-// 微信分享文章
-new Vue({
-    render: h => h(ArticleShareQRCodeWrap, {
-        props: {
-            articleID: window.articleID,
-        },
-    }),
-}).$mount('#articleShareQRCode');
-
-// 喜欢文章
-(function () {
-    let articleUserLiked = window.userLiked;
-    let articleLikedCount = window.articleLikedCount;
-    const likeArticelBtn = document.getElementById('likeArticelBtn');
-    if (articleUserLiked) {
-        addClass(likeArticelBtn, 'active');
-    }
-    likeArticelBtn.addEventListener('click', function (event) {
-        if (articleUserLiked) {
-            myHTTP.post(`/articles/${window.articleID}/cancellike`).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    removeClass(likeArticelBtn, 'like-animation');
-                    removeClass(likeArticelBtn, 'active');
-                    articleLikedCount--;
-                    articleUserLiked = false;
-                    document.getElementById('articelLikedCount').innerHTML = articleLikedCount;
-                }
-            });
-        } else {
-            myHTTP.post(`/articles/${window.articleID}/like`).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    addClass(likeArticelBtn, 'like-animation');
-                    addClass(likeArticelBtn, 'active');
-                    articleLikedCount++;
-                    articleUserLiked = true;
-                    document.getElementById('articelLikedCount').innerHTML = articleLikedCount;
-                } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
-                    location.href = '/signin.html';
-                }
-            });
-        }
-    });
+// 左侧边栏分享
+(function() {
+    new Vue({
+        render: h => h(ArticleSocial, {
+            props: {
+                articleID: window.articleID,
+            },
+        }),
+    }).$mount('#articleSuspendedPanel');
 }());
 
-(function () {
-    const QRCode = window.QRCode;
-    // http://davidshimjs.github.io/qrcodejs/
-    // https://github.com/davidshimjs/qrcodejs
+// 微信分享文章
+// new Vue({
+//     render: h => h(ArticleShareQRCodeWrap, {
+//         props: {
+//             articleID: window.articleID,
+//         },
+//     }),
+// }).$mount('#articleShareQRCode');
 
-    // eslint-disable-next-line no-new
-    new QRCode(document.getElementById('qrcodeContainer'), {
-        text: `${url}/downloadapp`,
-        width: 100,
-        height: 100,
-        colorDark: '#000000',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.H,
-    });
+
+(function () {
+    // const QRCode = window.QRCode;
+    // // http://davidshimjs.github.io/qrcodejs/
+    // // https://github.com/davidshimjs/qrcodejs
+
+    // // eslint-disable-next-line no-new
+    // new QRCode(document.getElementById('qrcodeContainer'), {
+    //     text: `${url}/downloadapp`,
+    //     width: 100,
+    //     height: 100,
+    //     colorDark: '#000000',
+    //     colorLight: '#ffffff',
+    //     correctLevel: QRCode.CorrectLevel.H,
+    // });
 }());
 
 // 更多分享
 (function () {
-    const articleMoreShareBtn = document.getElementById('articleMoreShareBtn');
-    const shareListPop = document.getElementById('shareListPop');
-    let shareListPopVisible = false;
-    articleMoreShareBtn.addEventListener('click', function (event) {
-        shareListPopVisible = !shareListPopVisible;
-        if (shareListPopVisible) {
-            shareListPop.style.display = 'block';
-        } else {
-            shareListPop.style.display = 'none';
-        }
-    });
-    document.addEventListener('click', function (event) {
-        if (articleMoreShareBtn.contains(event.target)) {
-            return;
-        }
-        shareListPopVisible = false;
-        shareListPop.style.display = 'none';
-    });
+    // const articleMoreShareBtn = document.getElementById('articleMoreShareBtn');
+    // const shareListPop = document.getElementById('shareListPop');
+    // let shareListPopVisible = false;
+    // articleMoreShareBtn.addEventListener('click', function (event) {
+    //     shareListPopVisible = !shareListPopVisible;
+    //     if (shareListPopVisible) {
+    //         shareListPop.style.display = 'block';
+    //     } else {
+    //         shareListPop.style.display = 'none';
+    //     }
+    // });
+    // document.addEventListener('click', function (event) {
+    //     if (articleMoreShareBtn.contains(event.target)) {
+    //         return;
+    //     }
+    //     shareListPopVisible = false;
+    //     shareListPop.style.display = 'none';
+    // });
 }());

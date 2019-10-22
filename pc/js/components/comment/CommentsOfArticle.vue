@@ -51,7 +51,7 @@
                                     <div class="v-tooltip-content">
                                         <a :href="`/users/${comment.user.id}.html`" target="_blank" class="avatar"><img :src="comment.user.avatarURL"></a>
                                         <UserBusinessCard v-if="true || comment.id === mouseenterCommentID"
-                                            :userID="comment.user.id" :followerID="userID" @followChange="onFollowChange"/>
+                                            :userID="comment.user.id" :followerID="userID" />
                                     </div>
                                 </div>
                                 <div class="info">
@@ -88,7 +88,7 @@
                                         <div class="v-tooltip-content">
                                             <a class="comment-user-name" :href="`/users/${subcomment.user.id}.html`" target="_blank">{{subcomment.user.username}}{{subcomment.user.id === authorID ? '(作者)' : ''}}</a>：
                                             <UserBusinessCard v-if="subcomment.id === mouseenterCommentID2" 
-                                                :userID="subcomment.user.id" :followerID="userID" @followChange="onFollowChange" />
+                                                :userID="subcomment.user.id" :followerID="userID" />
                                         </div>
                                     </div>
                                     <span style="display: inline-block;">
@@ -153,7 +153,6 @@ export default {
         'username',
         'avatarURL',
         'commentEnabled',
-        'onFollowChange'
     ],
     data: function() {
         return {

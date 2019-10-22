@@ -260,6 +260,19 @@ body {
     text-decoration: none;
 }
 
+.author-info-block .dot {
+    margin: 0 6px;
+}
+
+.author-info-block .edit-btn {
+    color: #1264b6;
+    cursor: pointer;
+}
+
+.author-info-block .edit-btn:hover {
+    text-decoration: none;
+}
+
 .rank {
     margin-left: 4px;
     vertical-align: top;
