@@ -118,9 +118,6 @@
                     <a v-if="isLoadDone === 'no'" @click="onLoadMore" class="c-load-more">{{isLoading ? '正在加载...' : '查看更多评论'}}</a>
                     <p v-else-if="isLoadDone === 'yes' && totalCount > 0" class="all-comment-load">没有更多评论了</p>
                 </template>
-                <div v-else-if="userID === authorID" class="open-block">
-                    <a @click="openComment" class="open-btn">打开评论</a>
-                </div>
             </div>
         </div>
     </div>

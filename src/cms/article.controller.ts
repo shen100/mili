@@ -155,20 +155,6 @@ export class ArticleController {
         };
     }
 
-    @Put(`${APIPrefix}/articles/:id/closecomment`)
-    @UseGuards(ActiveGuard)
-    async closeComment(@CurUser() user, @Param('id', MustIntPipe) id: number) {
-        await this.articleService.closeOrOpenComment(id, user.id, false);
-        return {};
-    }
-
-    @Put(`${APIPrefix}/articles/:id/opencomment`)
-    @UseGuards(ActiveGuard)
-    async openComment(@CurUser() user, @Param('id', MustIntPipe) id: number) {
-        await this.articleService.closeOrOpenComment(id, user.id, true);
-        return {};
-    }
-
     @Post(`${APIPrefix}/articles/:id/like`)
     @UseGuards(ActiveGuard)
     async like(@CurUser() user, @Param('id', MustIntPipe) id: number) {

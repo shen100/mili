@@ -112,6 +112,7 @@ export default {
             'views/component/book/bookList.njk',
             'views/component/user/recommendusers.njk',
             'views/layout/default.njk',
+            'views/pages/article/articleDetail.njk',
             'views/pages/boilingpoint/boilingpoint.njk',
             'views/pages/books/books.njk',
             'views/pages/books/bookDetail.njk',
