@@ -75,7 +75,6 @@ registerDirective(Vue);
                 username: window.username,
                 avatarURL: window.avatarURL,
                 authorID: window.authorID,
-                commentEnabled: window.commentEnabled,
             },
         }),
     }).$mount('#normal-comment-list');

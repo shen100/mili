@@ -6,7 +6,7 @@
             <div>
                 <CommentsOfArticle :bookID="chapter.bookID" :articleID="chapter.id" :userID="userID" 
                     :commentType="'chapter'" :username="username" :avatarURL="avatarURL" 
-                    :authorID="chapter.user.id" :commentEnabled="true" />
+                    :authorID="chapter.user.id" />
             </div>
         </div>
     </div>

@@ -15,7 +15,6 @@ export const mdToHTML = async function (connection) {
         await connection.manager.query(`alter table articles add column liked_count int default 0`);
         await connection.manager.query(`alter table articles add column word_count int default 0`);
         await connection.manager.query(`alter table articles add column hot int default 0`);
-        await connection.manager.query(`alter table articles add column comment_enabled tinyint(1) NOT NULL DEFAULT '1'`);
         await connection.manager.query(`alter table articles add column cover_url varchar(500) DEFAULT NULL`);
         await connection.manager.query(`ALTER TABLE articles ADD INDEX (user_id, created_at)`);
 

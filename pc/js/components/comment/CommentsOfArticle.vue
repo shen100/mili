@@ -6,7 +6,7 @@
             @ok="onDeleteCommentOk" @cancel="onDeleteCommentCancel" />
         <div id="comments">
             <!-- 允许评论，并且用户没有登录 -->
-            <form v-if="isCommentEnabled && !userID" class="new-comment" style="margin-top: 15px;">
+            <form v-if="!userID" class="new-comment" style="margin-top: 15px;">
                 <a href="javascript:void(0);" class="avatar" style="cursor: default;"><img style="cursor: default;" src="../../../images/avatar_default.png"></a>
                 <div class="sign-container">
                     <a href="/signin.html" class="btn btn-sign">登录</a>
@@ -15,14 +15,7 @@
             </form>
 
             <div v-if="isUserCommentsLikesLoaded" class="comments">
-                <!-- 不允许评论, 并且不是作者(没登录，或登录了，但不是作者) -->
-                <div v-if="!isCommentEnabled && userID !== authorID">
-                    <div class="top-title"><span>评论</span><span class="close-tip">已关闭评论</span></div>
-                    <div class="close-comment"></div> 
-                    <div class="text">想发表一点看法咩，<a href="/chats">与Ta私信交流</a>吧~</div>
-                </div>
-
-                <template v-if="isCommentEnabled">
+                <template>
                     <CommentRichEditor ref="commentRichEditor" v-if="userID" :bookID="bookID" :articleID="articleID" 
                         emptyPlaceholder="写下你的评论" @success="addCommentSuccess"
                         @error="addCommentError" :sendDefVisible="false"
@@ -125,7 +118,7 @@
                     <a v-if="isLoadDone === 'no'" @click="onLoadMore" class="c-load-more">{{isLoading ? '正在加载...' : '查看更多评论'}}</a>
                     <p v-else-if="isLoadDone === 'yes' && totalCount > 0" class="all-comment-load">没有更多评论了</p>
                 </template>
-                <div v-else-if="userID === authorID" class="open-block" :class="{'no-border-top': !isCommentEnabled}">
+                <div v-else-if="userID === authorID" class="open-block">
                     <a @click="openComment" class="open-btn">打开评论</a>
                 </div>
             </div>
@@ -152,7 +145,6 @@ export default {
         'userID',
         'username',
         'avatarURL',
-        'commentEnabled',
     ],
     data: function() {
         return {
@@ -161,7 +153,6 @@ export default {
             comments: [],
             totalCount: 0,
             isAuthorOnly: false,
-            isCommentEnabled: this.commentEnabled,
             isLoadDone: 'unknow',
             isLoading: false,
             page: 1,
@@ -357,26 +348,6 @@ export default {
                     }
                 });
             }
-        },
-        openComment() {
-            const url = `/articles/${this.articleID}/opencomment?commentType=${this.commentType}`;
-            myHTTP.put(url).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.isCommentEnabled = true;
-                } else if (res.data.errorCode === ErrorCode.Forbidden.CODE) {
-                    this.$refs.errorTip.show(res.data.message);
-                }
-            });
-        },
-        closeComment() {
-            const url = `/articles/${this.articleID}/closecomment?commentType=${this.commentType}`;
-            myHTTP.put(url).then((res) => {
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.isCommentEnabled = false;
-                } else if (res.data.errorCode === ErrorCode.Forbidden.CODE) {
-                    this.$refs.errorTip.show(res.data.message);
-                }
-            });  
         },
         showDeleteCommentAlert(comment) {
             this.curWillDeleteComment = comment;

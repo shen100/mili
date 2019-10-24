@@ -54,7 +54,6 @@ export class ArticleService {
                     likedCount: true,
                     summary: true,
                     htmlContent: true,
-                    commentEnabled: true,
                     user: {
                         id: true,
                         username: true,
@@ -475,7 +474,6 @@ export class ArticleService {
         article.summary = summary;
         article.status = ArticleStatus.Verifying;
         article.userID = userID;
-        article.commentEnabled = true;
         article.createdAt = new Date();
         article.updatedAt = article.createdAt;
 
@@ -595,21 +593,6 @@ export class ArticleService {
             throw new HttpException({
                 errorCode: ErrorCode.ERROR,
             }, HttpStatus.OK);
-        }
-    }
-
-    async closeOrOpenComment(id: number, userID: number, commentEnabled: boolean) {
-        commentEnabled = !!commentEnabled;
-        const result = await this.articleRepository.update({
-            id,
-            userID,
-        }, {
-            commentEnabled,
-        });
-        if (!result.raw.affectedRows) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.Forbidden.CODE,
-            });
         }
     }
 
