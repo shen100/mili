@@ -1,12 +1,12 @@
 <template>
     <Modal v-model="modalVisible" class-name="vertical-center-modal" 
-        :width="360" :closable="false" :mask-closable="true" footer-hide>
+        :width="640" :closable="false" :mask-closable="true" footer-hide>
         <div slot="header" class="alert-modal-header">
             <button @click="onCancel" type="button" class="close">×</button>
         </div>
         <div class="alert-modal-body">
-            <div class="scan-text">打开微信“扫一扫”，然后点击屏幕</div>
-            <div class="scan-text">右上角分享按钮</div>
+            <div class="weixin-share-title">微信分享</div>
+            <div class="scan-text">打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</div>
             <div class="qrcode-box">
                 <img v-if="qrcodeURL" :src="qrcodeURL">
             </div>
@@ -19,7 +19,7 @@ import QRCode from 'qrcode';
 
 export default {
     props: [
-        'articleID'
+        'url'
     ],
     data () {
         return {
@@ -31,10 +31,10 @@ export default {
     mounted() {
         this.$nextTick(() => {
             const options = {
-                width: 240,
-                height: 240
+                width: 200,
+                height: 200
             };
-            QRCode.toDataURL(`${this.mURL}/p/${this.articleID}.html`, options)
+            QRCode.toDataURL(this.url, options)
                 .then(url => {
                     this.qrcodeURL = url;
                 })
@@ -58,14 +58,30 @@ export default {
     }
 }
 </script>
+<style lang="scss">
+@import '../../../styles/variable.scss';
 
-<style>
+.alert-modal-header {
+    height: 30px;
+    padding: 0;
+}
+
+.alert-modal-header .close {
+    margin-top: 4px;
+    margin-right: 6px;
+}
+
 .alert-modal-body {
     display: block;
 }
 
 .ivu-modal-mask {
-    background-color: hsla(0, 0%, 100%, .7);
+    background-color: $bgMask!important;
+    z-index: 1041!important;
+}
+
+.ivu-modal-wrap {
+    z-index: 1041!important;
 }
 
 .ivu-modal-header {
@@ -93,16 +109,23 @@ export default {
     border-radius: 3px;
 }
 
+.weixin-share-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
 .scan-text {
     color: #4d4d4d;
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
     margin-bottom: 4px;
 }
 
 .qrcode-box {
     text-align: center;
-    padding-top: 5px;
-    padding-bottom: 40px;
+    padding-top: 0;
+    padding-bottom: 30px;
 }
 </style>

@@ -10,14 +10,16 @@
                 </a>
                 <div class="author-info-box">
                     <a href="/uc/{{user.id}}" target="_blank" class="username-ellipsis">{{article.user.username}}</a>
-                    <a href="" target="_blank" class="rank levelimg">
-                        <img src="https://b-gold-cdn.xitu.io/v3/static/img/lv-1.636691c.svg" style="margin-top: 4px;">
+                    <a href="{{userLevelChapterURL}}" target="_blank" class="rank levelimg">
+                        <img src="{{imgPath | levelImgURL(article.user.level)}}" style="margin-top: 2px;">
                     </a>
                     <div class="meta-box">
                         <time class="time">{{article.createdAt | recentTime('YYYY年MM月DD')}}</time>
-                        <span class="views-count">阅读 1513</span>
+                        <span class="views-count">阅读 {{article.browseCount}}</span>
+                        {% if user and user.id === article.user.id %}
                         <span class="dot">·</span>
                         <a href="/editor/posts/{{article.id}}" class="edit-btn">编辑</a>
+                        {% endif %}
                     </div>
                 </div>
                 <div id="followUserSmallBtn" class="follow-button follow"></div>
@@ -28,63 +30,44 @@
             {% endif %}
             <div class="article-title">{{article.name}}</div>
 
-
-
-
-
-
-
             <div class="article-content">
                 <div class="mili-editor">
                     {{article.htmlContent | safe}}
                 </div>
             </div>
 
-            <!--
-            <div class="support-author">
-                <p>小红包走一走，来{{siteName}}打赏我~</p>
-                <div class="btn btn-pay">打赏支持</div>
-                <div class="supporter">
-                    <ul class="support-list"></ul>
-                </div>
-            </div> -->
+            {% if article.tags and article.tags.length %}
             <div class="tag-list-box">
                 <div class="tag-list-title">关注下面的标签，发现更多相似文章</div>
                 <div class="tag-list">
                     {% for tag in article.tags %}
-                    <a href="/tags/{{tag.id}}.html" target="_blank" class="item">
+                    <a href="/tags/{{tag.id}}" target="_blank" class="item">
                         <div class="tag-icon" style="background-image: url({{tag.iconURL}});"></div>
                         <div class="tag-title">{{tag.name}}</div>
                     </a>
                     {% endfor %}
                 </div>
             </div>
+            {% endif %}
 
             <div class="follow-detail">
                 <div class="info">
-                    <a class="avatar" href="/users/{{article.user.id}}.html" target="_blank">
+                    <a class="avatar" href="/uc/{{article.user.id}}" target="_blank">
                         <img src="{{article.user.avatarURL}}" />
                     </a>
+                    {# 不是作者本人 #}
                     {% if not isAuthorSelf %}
-                        {% if userFollowed %}
-                        <a id="followUserBigBtn" href="javascript:void(0)" class="btn big btn-success following"><i class="iconfont ic-followed"></i><span>已关注</span></a>
-                        {% else %}
-                        <a id="followUserBigBtn" href="javascript:void(0)" class="btn big btn-success follow"><i class="iconfont ic-follow"></i><span>关注</span></a>
-                        {% endif %}
+                        <a id="followUserBigBtn" href="javascript:void(0)"></a>
                     {% endif %}
-                    <a class="title" href="/users/{{article.user.id}}.html" target="_blank">{{article.user.username}}</a>
-                    <p>发布了 {{article.user.articleCount | defaultValue(0)}} 篇文章 · 获得点赞 {{article.user.likedCount | defaultValue(0)}} · 获取阅读 {{article.user.articleViewCount | defaultValue(0)}}</p>
+                    <a class="title" href="/uc/{{article.user.id}}" target="_blank">{{article.user.username}}</a>
+                    <p>发布了 {{article.user.articleCount | defaultValue(0)}} 篇文章 · 获得点赞 {{article.user.likedCount | defaultValue(0)}} · 获得阅读 {{article.user.articleViewCount | defaultValue(0)}}</p>
                 </div>
-                {% if article.user.introduce %}
-                <div class="introduce">{{article.user.introduce}}</div>
-                {% endif %}
             </div>
 
             <div class="article-banner">
                 <a class="banner-title" href="https://github.com/shen100/mili" target="_blank">下载{{siteName}}网源码</a>
-                <div class="banner-content">打开新标签页发现好内容，掘金、GitHub、Dribbble、ProductHunt 等站点内容轻松获取。快来安装掘金浏览器插件获取高质量内容吧！</div>
+                <div class="banner-content">打开新标签页发现好内容，XX、GitHub、Dribbble、ProductHunt 获取高质量内容吧</div>
             </div>
-
 
             <div>
                 <div id="comment-list" class="comment-list">
@@ -93,18 +76,19 @@
                 </div>
             </div>
         </div>
+
         <div class="article-sidebar">
             <div class="sidebar-block">
                 <div class="block-title">关于作者</div>
                 <div class="block-body">
                     <div class="user-item item">
-                        <div class="user-item-avatar" style="background-image: url({{article.user.avatarURL}});"></div>
+                        <a href="/uc/{{article.user.id}}" target="_blank" class="user-item-avatar" style="background-image: url({{article.user.avatarURL}});"></a>
                         <div class="info-box">
-                            <a href="/user/5960218cf265da6c2d2c733e" target="_blank" class="username">voanit</a>
-                            <a href="" target="_blank" class="rank levelimg">
-                                <img src="https://b-gold-cdn.xitu.io/v3/static/img/lv-1.636691c.svg" style="margin-top: 4px;">
+                            <a href="/uc/{{article.user.id}}" target="_blank" class="username">{{article.user.username}}</a>
+                            <a href="{{userLevelChapterURL}}" target="_blank" class="rank levelimg">
+                                <img src="{{imgPath | levelImgURL(article.user.level)}}" style="margin-top: 2px;">
                             </a>
-                            <div class="position">前端 @ 朴新</div>
+                            <div class="position">{{article.user | jobCompany}}</div>
                         </div>
                     </div>
                     <div class="stat-item">
@@ -151,6 +135,7 @@
             </div>
 
         </div>
+
         <div id="articleSuspendedPanel"></div>
     </div>
 
@@ -158,29 +143,12 @@
         <div>
             <div class="recommend-note">
                 <div class="meta">
-                    <div class="title">推荐阅读
-                        <a target="_blank" href="/" class="more">更多精彩内容<i class="iconfont ic-link"></i></a>
-                    </div>
+                    <div class="title">相关推荐</div>
                 </div>
-                <div class="list">
-                    {% for recommend in recommends %}
-                    <div class="note {% if recommend.coverURL %}have-img{% endif %}">
-                        {% if recommend.coverURL %}
-                        <a class="recommend-img" href="/p/{{recommend.id}}.html" target="_blank">
-                            <img src="{{recommend.coverURL}}" />
-                        </a>
-                        {% endif %}
-                        <a target="_blank" href="/p/{{recommend.id}}.html" class="title">{{recommend.name}}</a>
-                        <p class="description">{{recommend.summary}}...</p>
-                        <a target="_blank" href="/users/{{recommend.user.id}}.html" class="author">
-                            <div class="avatar" style="background-image: url({{recommend.user.avatarURL}});"></div>
-                            <span class="name">{{recommend.user.username}}</span>
-                        </a>
-                    </div>
-                    {% endfor %}
+                <div class="recommend-list-box">
+                {% include '../../component/article/articles.njk' %}
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -193,26 +161,28 @@
 {% block pageData %}
 <script>
   var articleID = {{ article.id }};
-  var isAuthorSelf = {{ isAuthorSelf }};
-  var userLiked = {{ userLiked }};
-  var userFollowed = {{ userFollowed }};
-  var articleLikedCount = {{ article.likedCount }};
+  var isAuthorSelf = {{ isAuthorSelf }}; // 是否是作者本人
+  var userLiked = {{ userLiked }}; // 当前用户是否已对此文章点过赞
+  var userFollowed = {{ userFollowed }}; // 当前用户是否已关注作者
+  var articleLikedCount = {{ article.likedCount }}; // 文章点赞数
   var articleCommentCount = {{ article.commentCount }};
-  var commentEnabled = {{ article.commentEnabled }};
   // 当前登录用户
   var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
   var username = '{% if user %}{{user.username}}{% else %}{% endif %}';
   var avatarURL = '{% if user %}{{user.avatarURL}}{% else %}{% endif %}';
   // 文章作者
   var authorID = {{ article.user.id }};
+
+  var weiboShareURL = '{{ weiboShareURL }}';
+  var qqShareURL = '{{ qqShareURL }}';
+  var weixinShareURL = '{{ weixinShareURL }}';
 </script>
 {% endblock %}
 
 {% block libjs %}
-<script src="//cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript" async="async" defer="defer"></script>
 <script src="{{jsPath}}/libs/qrcode.min.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block devjs %}
-{{ loadjs('entry/article/articleDetail.js') }}
+    {{ loadjs('entry/article/articleDetail.js') }}
 {% endblock %}

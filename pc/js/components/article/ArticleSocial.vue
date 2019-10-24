@@ -5,24 +5,28 @@
         <div class="comment-btn panel-btn comment-adjust" :badge="articleCommentCount" :class="{'with-badge': articleCommentCount}"></div>
         <div class="collect-btn panel-btn"></div>
         <div class="share-title">分享</div>
-        <a class="weibo-btn share-btn panel-btn"></a>
-        <a class="qq-btn share-btn panel-btn"></a>
-        <div class="wechat-btn share-btn panel-btn">
-            <img src="" class="wechat-qr-code-img shadow">
-        </div>
+        <a :href="weiboShareURL" target="_blank" class="weibo-btn share-btn panel-btn"></a>
+        <a :href="qqShareURL" target="_blank" class="qq-btn share-btn panel-btn"></a>
+        <div class="wechat-btn share-btn panel-btn" @click="onWeixinShareClick"></div>
+        <ArticleShareQRCode ref="qrCodePopup" :url="weixinShareURL"/>
     </div>
 </template>
 
 <script>
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
+import ArticleShareQRCode from '~/js/components/article/ArticleShareQRCode.vue';
 
 export default {
     data() {
         return {
+            articleID: window.articleID,
             articleUserLiked: window.userLiked,
             articleLikedCount: window.articleLikedCount,
             articleCommentCount: window.articleCommentCount,
+            weiboShareURL: window.weiboShareURL,
+            qqShareURL: window.qqShareURL,
+            weixinShareURL: window.weixinShareURL,
         };
     },
     methods: {
@@ -31,18 +35,26 @@ export default {
                 myHTTP.post(`/articles/${window.articleID}/cancellike`).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         this.articleUserLiked = false;
+                        this.articleLikedCount--;
                     }
                 });
             } else {
                 myHTTP.post(`/articles/${window.articleID}/like`).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         this.articleUserLiked = true;
+                        this.articleLikedCount++;
                     } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
                         location.href = '/signin.html';
                     }
                 });
             }
+        },
+        onWeixinShareClick() {
+            this.$refs.qrCodePopup.show();
         }
+    },
+    components: {
+        ArticleShareQRCode,
     }
 }
 </script>

@@ -129,7 +129,4 @@ export class Article {
     @ManyToOne(type => User)
     @JoinColumn({ name: 'user_id' })
     user: User;
-
-    @Column({ type: Boolean, name: 'comment_enabled' })
-    commentEnabled: boolean;
 }

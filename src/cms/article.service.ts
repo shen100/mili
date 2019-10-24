@@ -60,6 +60,8 @@ export class ArticleService {
                         username: true,
                         avatarURL: true,
                         wordCount: true,
+                        job: true,
+                        company: true,
                         followerCount: true,
                         likedCount: true,
                         introduce: true,

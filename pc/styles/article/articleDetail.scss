@@ -4,7 +4,7 @@ body {
 
 .article-sidebar {
     position: absolute;
-    top: 85px;
+    top: 75px;
     right: 0;
     width: 240px;
 }
@@ -208,8 +208,8 @@ body {
     width: 960px;
     min-height: 600px;
     margin: 0 auto;
-    padding-top: 85px;
-    padding-bottom: 40px;
+    padding-top: 75px;
+    padding-bottom: 18px;
     position: relative;
 }
 
@@ -732,19 +732,25 @@ body {
 .note-bottom {
     min-height: 213px;
     background-color: #f5f5f5;
-    padding-top: 40px;
+    padding-top: 0;
     padding-bottom: 40px;
 }
 
 .recommend-note {
     margin-bottom: 20px;
+    width: 960px;
+    margin: 0 auto;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
 }
 
 .recommend-note .meta .title {
-    padding-left: 8px;
-    border-left: 3px solid #EA6F5A;
-    line-height: 1;
+    font-weight: 600;
+    color: #909090;
     font-size: 15px;
+    height: 52px;
+    line-height: 52px;
+    padding-left: 20px;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .recommend-note .meta .title .more {
@@ -757,97 +763,26 @@ body {
     text-decoration: none;
 }
 
-.recommend-note .list {
-    margin-top: 20px!important;
-}
-
 .recommend-note .meta, .recommend-note .list {
-    width: 620px;
-    margin: 0 auto;
+    width: 700px;
+    background: #fff;
 }
 
-.recommend-note .list .note {
-    position: relative;
-    display: block;
-    margin-bottom: 25px;
-    padding: 0 0 25px 0;
-    border-bottom: 1px solid #DDDDDD;
+.recommend-list-box .article-list {
+    background: #fff;
 }
 
-.recommend-note .list .note .title {
-    display: inherit;
-    margin-bottom: 4px;
+.recommend-list-box .article-title {
     font-size: 18px;
-    line-height: 27px;
-    font-weight: bold;
-    color: #333;
-    overflow: hidden;
-    -o-text-overflow: ellipsis;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-weight: 700;
+    line-height: 1.5;
+    margin: -7px 0 4px;
 }
 
-.recommend-note .list .note .title:visited {
+.recommend-list-box .article-content {
+    font-size: 13px;
+    line-height: 24px;
     color: #999;
-}
-
-.recommend-note .list .note .description {
-    margin-bottom: 12px;
-    font-size: 13px;
-    line-height: 23px;
-    color: #333;
-    overflow: hidden;
-    -o-text-overflow: ellipsis;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-.recommend-note .list .note .author .avatar {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    margin-right: 3px;
-    border-radius: 50%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    vertical-align: middle;
-}
-
-.recommend-note .list .note .author .name {
-    font-size: 13px;
-    color: #333;
-    vertical-align: middle;
-}
-
-.recommend-note .list .note .author:hover {
-    text-decoration: none!important;
-}
-
-.recommend-note .list .note.have-img .title {
-    width: 455px;
-}
-
-.recommend-note .list .note.have-img .description {
-    width: 455px;
-}
-
-.recommend-note .list .note .recommend-img {
-    width: 150px;
-    height: 120px;
-    float: right;
-}
-
-.recommend-note .list .note .recommend-img img {
-    margin: -5px 0 0 15px;
-    width: 150px;
-    height: 120px;
-    background-position: 50%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    border-radius: 6px;
 }
 
 .ic-link:before {

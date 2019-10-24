@@ -9,6 +9,8 @@ import {
 import {
     addClass,
     removeClass,
+    getScrollPos,
+    getWindowSize
 } from '~/js/utils/dom.js';
 import { eventEmitter, EVENTS } from '~/js/utils/event.js';
 import {
@@ -17,7 +19,6 @@ import {
 
 import Vue from 'vue';
 import FollowBtn from '~/js/components/user/FollowBtn.vue';
-import ArticleShareQRCodeWrap from '~/js/components/article/ArticleShareQRCodeWrap.vue';
 import CommentsOfArticle from '~/js/components/comment/CommentsOfArticle.vue';
 import ArticleSocial from '~/js/components/article/ArticleSocial.vue';
 
@@ -91,16 +92,6 @@ registerDirective(Vue);
     }).$mount('#articleSuspendedPanel');
 }());
 
-// 微信分享文章
-// new Vue({
-//     render: h => h(ArticleShareQRCodeWrap, {
-//         props: {
-//             articleID: window.articleID,
-//         },
-//     }),
-// }).$mount('#articleShareQRCode');
-
-
 (function () {
     // const QRCode = window.QRCode;
     // // http://davidshimjs.github.io/qrcodejs/
@@ -137,4 +128,24 @@ registerDirective(Vue);
     //     shareListPopVisible = false;
     //     shareListPop.style.display = 'none';
     // });
+}());
+
+(function() {
+    function setArticleSidebarPosition() {
+        const articleSidebar = document.getElementsByClassName('article-sidebar')[0];
+        // articleSidebar.style.display = 'position';
+        const scrollTop = getScrollPos().scrollTop;
+        const winWidth = getWindowSize().width;
+        console.log('winWidth', winWidth);
+        articleSidebar.style.position = 'fixed';
+        articleSidebar.style.top = '75px';
+        articleSidebar.style.left = ((winWidth - 960) / 2 + 700 + 20) + 'px';
+    }
+
+    window.addEventListener('scroll', function() {
+        setArticleSidebarPosition();
+    });
+    window.addEventListener('resize', function() {
+        setArticleSidebarPosition();
+    });
 }());

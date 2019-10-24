@@ -16,10 +16,14 @@ import { ErrorCode } from '../constants/error';
 import { recentTime } from '../utils/viewfilter';
 import { CategoryService } from './category.service';
 import { BookService } from './book.service';
+import { getShareURL } from '../utils/social';
+import { SocialConstants } from '../constants/social';
+import { ConfigService } from '../config/config.service';
 
 @Controller()
 export class ArticleController {
     constructor(
+        private readonly configService: ConfigService,
         private readonly articleService: ArticleService,
         private readonly categoryService: CategoryService,
         private readonly userService: UserService,
@@ -44,13 +48,22 @@ export class ArticleController {
         if (user) {
             userFollowed = await this.userService.isUserFollowed(user.id, article.user.id);
         }
+        const shareData = {
+            title: article.name,
+            imageURL: article.coverURL,
+            url: '',
+        };
         res.render('pages/article/articleDetail', {
             isAuthorSelf: !!user && user.id === article.user.id,
+            userLevelChapterURL: this.configService.static.userLevelChapterURL,
             userLiked,
             userFollowed,
             article,
-            recommends,
+            articles: recommends.list,
             recommendedBooks: books,
+            weiboShareURL: getShareURL({ ...shareData, platform: SocialConstants.WEIBO }),
+            qqShareURL: getShareURL({ ...shareData, platform: SocialConstants.QQ }),
+            weixinShareURL: getShareURL({ ...shareData, platform: SocialConstants.WEIXIN }),
         });
     }
 

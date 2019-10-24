@@ -87,10 +87,3 @@ export const prettyCount = (count) => {
     count = count || 0;
     return count.toLocaleString();
 };
-
-export const getShareURL = (platform: string, title: string, content: string, imageURL: string): string => {
-    title = encodeURIComponent(title) || '';
-    content = encodeURIComponent(content) || '';
-    imageURL = imageURL || '';
-    return `/share?platform=${platform}&title=${title}&content=${content}&imgurl=${imageURL}`;
-};

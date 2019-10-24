@@ -112,6 +112,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../../styles/variable.scss';
+
 .handbook-modal {
     position: fixed;
     top: 0;
@@ -129,7 +131,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, .8);
+    background-color: $bgMask;
 }
 
 .handbook-modal-box {
