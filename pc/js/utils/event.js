@@ -1,5 +1,6 @@
 export const EVENTS = {
     USER_FOLLOW_CHANGE: 'user_follow_change',
+    TAG_FOLLOW_CHANGE: 'tag_follow_change',
 };
 
 export const eventEmitter = {

@@ -16,8 +16,7 @@
                         <ul class="boilingpoint-list" :style="{'margin-top': hasEditor ? '8px' : '0'}">
                             <BoilingPointItem :maxMiddleImgWidth="maxMiddleImgWidth" @bigImageChange="onBrowseBigImg" 
                                 :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
-                                :userID="userID" :boilingData="item" @followChange="onFollowChange"
-                                :ref="`boilingPointItem-${item.id}`"
+                                :userID="userID" :boilingData="item" @userFollowChange="onFollowChange"
                                 @report="onReport(item.id)" />
                         </ul>
                     </div>
@@ -29,8 +28,7 @@
             <ul class="boilingpoint-list" style="margin-top: 0;">
                 <BoilingPointItem @bigImageChange="onBrowseBigImg"
                     :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
-                    :userID="userID" :boilingData="item" @followChange="onFollowChange"
-                    :ref="`boilingPointItem-${item.id}`"
+                    :userID="userID" :boilingData="item" @userFollowChange="onFollowChange"
                     @report="onReport(item.id)" />
             </ul>
         </div>
@@ -168,13 +166,6 @@ export default {
             this.changeBigImgStyle(this.bigImgs[this.curBigImgIndex]);
         },
         onFollowChange(userID, isFollowed) {
-            this.boilingPoints.map(bp => {
-                let bpVue = this.$refs[`boilingPointItem-${bp.id}`];
-                if (bpVue.length && bpVue.slice) {
-                    bpVue = bpVue[0];
-                }
-                bpVue.changeUserFollow(userID, isFollowed);
-            });
         },
         onReport(boilingPointID) {
             this.$refs.reportAlert.show(boilingPointID);

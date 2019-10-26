@@ -31,7 +31,7 @@
                 </div>
                 <div class="action-box">
                     <button v-if="author && author.id === userID" @click="onEditUserInfo" class="edit-userinfo-btn">编辑个人资料</button>
-                    <FollowBtn v-else ref="followBtn" @followChange="onFollowChange" :userID="author.id" 
+                    <FollowBtn v-else @userFollowChange="onFollowChange" :userID="author.id" 
                         :followed="isFollowed" :followedStyle="followedStyle" :notFollowedStyle="notFollowedStyle"></FollowBtn>
                 </div>
             </div>
@@ -210,13 +210,10 @@ export default {
         },
         onFollowChange(userID, isFollowed) {
             this.isFollowed = isFollowed;
-            // TODO: 个人中心文章页中，要产生联动 ---> to
         },
-        // TODO: 个人中心文章页中，要产生联动 from --->
         onFollowChange2(userID, isFollowed) {
             if (userID === this.author.id) {
                 this.isFollowed = isFollowed;
-                this.$refs['followBtn'].changeFollow(userID, isFollowed);
             }
         },
     },

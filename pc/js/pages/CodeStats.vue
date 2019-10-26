@@ -46,6 +46,7 @@ export default {
             'pc/js/common/filters.js',
             'pc/js/components/article/ArticleItem.vue',
             'pc/js/components/article/ArticleLoading.vue',
+            'pc/js/components/article/ArticleSocial.vue',
             'pc/js/components/boilingpoint/BoilingPointItem.vue',
             'pc/js/components/boilingpoint/BoilingPointLoading.vue',
             'pc/js/components/boilingpoint/ReportAlert.vue',

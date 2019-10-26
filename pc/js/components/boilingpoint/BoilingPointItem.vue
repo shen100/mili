@@ -7,14 +7,14 @@
                         <a :href="`/users/${boilingData.user.id}`" target="_blank" class="user-link">
                             <div class="lazy avatar loaded" :style="{'background-image': `url(${boilingData.user.avatarURL})`}"></div>
                         </a>
-                        <UserBusinessCard ref="userCard1" v-if="userCardVisible1" :userID="boilingData.user.id" 
-                            :followerID="userID" @followChange="onFollowChange" />
+                        <UserBusinessCard v-if="userCardVisible1" :userID="boilingData.user.id" 
+                            :followerID="userID" @userFollowChange="onFollowChange" />
                     </div>
                     <div class="pin-header-content">
                         <div class="user-popover-box" @mouseenter="onMouseEnterUser2" @mouseleave="onMouseLeaveUser2">
                             <a :href="`/users/${boilingData.user.id}`" target="_blank" class="username">{{boilingData.user.username}}</a>
-                            <UserBusinessCard ref="userCard2" v-if="userCardVisible2" :userID="boilingData.user.id" 
-                                :followerID="userID" @followChange="onFollowChange" />
+                            <UserBusinessCard v-if="userCardVisible2" :userID="boilingData.user.id" 
+                                :followerID="userID" @userFollowChange="onFollowChange" />
                         </div>
                         <div class="meta-box">
                             <template v-if="boilingData.user.job || boilingData.user.company">
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="header-action">
-                    <FollowBtn ref="userFollowBtn" v-if="userID !== boilingData.user.id" @followChange="onFollowChange"
+                    <FollowBtn v-if="userID !== boilingData.user.id" @userFollowChange="onFollowChange"
                         :userID="boilingData.user.id" :followed="isFollowed" 
                         :followedStyle="followedStyle" :notFollowedStyle="notFollowedStyle" />
                     <div v-clickoutside="clickoutsideReport" class="pin-header-more header-menu">
@@ -480,14 +480,11 @@ export default {
             this.$emit('bigImageChange', this.bigImgArr, this.curImgIndex);
         },
         onFollowChange(userID, isFollowed) {
-            this.$emit('followChange', userID, isFollowed);
+            this.$emit('userFollowChange', userID, isFollowed);
         },
         changeUserFollow(userID, isFollowed) {
             if (userID === this.boilingData.user.id) {
                 this.isFollowed = isFollowed;
-                this.$refs['userCard1'] && this.$refs['userCard1'].changeUserFollow(userID, isFollowed);
-                this.$refs['userCard2'] && this.$refs['userCard2'].changeUserFollow(userID, isFollowed);
-                this.$refs['userFollowBtn'].changeFollow(userID, isFollowed);
             }
         },
         onShowReportAlert() {

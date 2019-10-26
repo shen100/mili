@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div class="social">
-                        <FollowBtn ref="userFollowBtn" v-if="userID !== followerID" @followChange="onFollowChange"
+                        <FollowBtn v-if="userID !== followerID" @userFollowChange="onFollowChange"
                             :userID="userID" :followed="isFollowed" 
                             :followedStyle="followedStyle" :notFollowedStyle="notFollowedStyle" />
                     </div>
@@ -73,6 +73,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import { eventEmitter, EVENTS } from '~/js/utils/event.js';
 import { isInViewport, getBoundingClientRect } from '~/js/utils/dom.js';
 import FollowBtn from '~/js/components/user/FollowBtn.vue';
 
@@ -112,6 +113,7 @@ export default {
                 height: '30px',
                 'font-size': '13px'
             },
+            changeUserFollowProxy: null,
         };
     },
     mounted() {
@@ -128,11 +130,15 @@ export default {
             });
             this.adjustCoordinate();
         }, this.delay || 100);
+
+        this.changeUserFollowProxy = this.changeUserFollow.bind(this);
+        eventEmitter.on(EVENTS.USER_FOLLOW_CHANGE, this.changeUserFollowProxy);
     },
     beforeDestroy() {
         if (this.timeoutID) {
             clearTimeout(this.timeoutID);
         }
+        eventEmitter.remove(EVENTS.USER_FOLLOW_CHANGE, this.changeUserFollowProxy);
     },
     methods: {
         adjustCoordinate() {
@@ -151,7 +157,7 @@ export default {
             });
         },
         onFollowChange(userID, isFollowed) {
-            this.$emit('followChange', userID, isFollowed);
+            this.$emit('userFollowChange', userID, isFollowed);
         },
         changeUserFollow(userID, isFollowed) {
             if (userID === this.userID) {

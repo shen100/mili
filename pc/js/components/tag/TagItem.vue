@@ -5,7 +5,7 @@
             <a :href="`/tags/${tag.id}`" target="_blank" class="tag-link">
                 <div class="tag-thumb" :style="{'background-image': `url(${tag.iconURL})`}"></div>
                 <div class="title">{{tag.name}}</div>
-                <FollowBtn ref="followBtn" @followChange="onFollowChange" :tagID="tag.id" :followed="true"></FollowBtn>
+                <FollowBtn @tagFollowChange="onFollowChange" :tagID="tag.id" :followed="true"></FollowBtn>
             </a>
         </div>
     </li>
@@ -27,12 +27,11 @@ export default {
     methods: {
         onFollowChange(tagID, isFollowed) {
             this.isFollowed = isFollowed;
-            this.$emit('followChange', tagID, isFollowed);
+            this.$emit('tagFollowChange', tagID, isFollowed);
         },
         changeTagFollow(tagID, isFollowed) {
             if (tagID === this.tag.id) {
                 this.isFollowed = isFollowed;
-                this.$refs['followBtn'].changeFollow(tagID, isFollowed);
             }
         },
     },

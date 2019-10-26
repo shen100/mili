@@ -37,7 +37,7 @@ export default {
                         this.articleUserLiked = false;
                         this.articleLikedCount--;
                     } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
-                        location.href = '/signin.html?ref=' + encodeURIComponent(location.href);
+                        location.href = '/signin?ref=' + encodeURIComponent(location.href);
                     }
                 });
             } else {
@@ -46,7 +46,7 @@ export default {
                         this.articleUserLiked = true;
                         this.articleLikedCount++;
                     } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
-                        location.href = '/signin.html?ref=' + encodeURIComponent(location.href);
+                        location.href = '/signin?ref=' + encodeURIComponent(location.href);
                     }
                 });
             }
@@ -69,6 +69,7 @@ export default {
 <style lang="scss">
 .article-suspended-panel {
     position: fixed;
+    z-index: 1050;
     margin-left: -84px;
     top: 200px;
 }

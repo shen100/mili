@@ -18,10 +18,14 @@ export default {
         'notFollowedStyle'
     ],
     data () {
+        if (this.userID && this.tagID) {
+            throw new Error('不能同时传userID 和 tagID');
+        }
         return {
             isFollowed: this.followed,
             isMouseEnter: false,
-            changeFollowProxy: null,
+            changeUserFollowProxy: null,
+            changeTagFollowProxy: null,
         };
     },
     computed: {
@@ -36,16 +40,17 @@ export default {
         }
     },
     mounted() {
-        this.changeFollowProxy = this.changeFollow.bind(this);
+        this.changeUserFollowProxy = this.changeUserFollow.bind(this);
+        this.changeTagFollowProxy = this.changeTagFollow.bind(this);
         if (this.userID) {
-            eventEmitter.on(EVENTS.USER_FOLLOW_CHANGE, this.changeFollowProxy);
+            eventEmitter.on(EVENTS.USER_FOLLOW_CHANGE, this.changeUserFollowProxy);
         } else if (this.tagID) {
-            eventEmitter.on(EVENTS.TAG_FOLLOW_CHANGE, this.changeFollowProxy);
+            eventEmitter.on(EVENTS.TAG_FOLLOW_CHANGE, this.changeTagFollowProxy);
         }
     },
     beforeDestroy() {
-        eventEmitter.remove(EVENTS.USER_FOLLOW_CHANGE, this.changeFollowProxy);
-        eventEmitter.remove(EVENTS.TAG_FOLLOW_CHANGE, this.changeFollowProxy);
+        eventEmitter.remove(EVENTS.USER_FOLLOW_CHANGE, this.changeUserFollowProxy);
+        eventEmitter.remove(EVENTS.TAG_FOLLOW_CHANGE, this.changeTagFollowProxy);
     },
     methods: {
         onMouseenter() {
@@ -55,14 +60,13 @@ export default {
             this.isMouseEnter = false;
         },
         onFollow () {
-            let url;
-            let id;
+            let url, id;
             if (this.userID) {
                 id = this.userID;
                 url = `/users/${id}/follow`;
             } else if (this.tagID) {
                 id = this.tagID;
-                url = `/tags/${id}/follow`;    
+                url = `/tags/${id}/follow`;
             }
             let reqMethod;
             if (this.isFollowed) {
@@ -81,13 +85,17 @@ export default {
                         eventEmitter.emit(EVENTS.TAG_FOLLOW_CHANGE, id, this.isFollowed);
                     }
                 } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
-                    location.href = '/signin.html';
+                    location.href = '/signin?ref=' + encodeURIComponent(location.href);
                 }
             });
         },
-        changeFollow(id, isFollowed) {
-            let theID = this.userID || this.tagID;
-            if (id === theID) {
+        changeUserFollow(id, isFollowed) {
+            if (id === this.userID) {
+                this.isFollowed = isFollowed;
+            }
+        },
+        changeTagFollow(id, isFollowed) {
+            if (id === this.tagID) {
                 this.isFollowed = isFollowed;
             }
         },
