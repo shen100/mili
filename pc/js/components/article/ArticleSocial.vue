@@ -2,7 +2,7 @@
     <div class="article-suspended-panel article-suspended-panel">
         <div @click="onLike" class="like-btn panel-btn like-adjust" :badge="articleLikedCount"
             :class="{active: articleUserLiked, 'with-badge': articleLikedCount}"></div>
-        <div class="comment-btn panel-btn comment-adjust" :badge="articleCommentCount" :class="{'with-badge': articleCommentCount}"></div>
+        <div @click="onCommentClick" class="comment-btn panel-btn comment-adjust" :badge="articleCommentCount" :class="{'with-badge': articleCommentCount}"></div>
         <div class="collect-btn panel-btn"></div>
         <div class="share-title">分享</div>
         <a :href="weiboShareURL" target="_blank" class="weibo-btn share-btn panel-btn"></a>
@@ -21,8 +21,8 @@ export default {
     data() {
         return {
             articleID: window.articleID,
-            articleUserLiked: window.userLiked,
-            articleLikedCount: window.articleLikedCount,
+            articleUserLiked: window.userLiked, // 当前用户是否已对此文章点过赞
+            articleLikedCount: window.articleLikedCount, // 文章点赞数
             articleCommentCount: window.articleCommentCount,
             weiboShareURL: window.weiboShareURL,
             qqShareURL: window.qqShareURL,
@@ -36,6 +36,8 @@ export default {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         this.articleUserLiked = false;
                         this.articleLikedCount--;
+                    } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
+                        location.href = '/signin.html?ref=' + encodeURIComponent(location.href);
                     }
                 });
             } else {
@@ -44,10 +46,15 @@ export default {
                         this.articleUserLiked = true;
                         this.articleLikedCount++;
                     } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
-                        location.href = '/signin.html';
+                        location.href = '/signin.html?ref=' + encodeURIComponent(location.href);
                     }
                 });
             }
+        },
+        onCommentClick() {
+            location.href = `/p/${this.articleID}#comments`;
+            // 视图滚动到评论
+            document.getElementsByClassName('article-banner')[0].scrollIntoView();
         },
         onWeixinShareClick() {
             this.$refs.qrCodePopup.show();
@@ -80,7 +87,7 @@ export default {
 }
 
 .panel-btn.like-btn {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/zan.b4bb964.svg);
+    background-image: url(../../../images/article/social_zan.svg);
 }
 
 .panel-btn.like-btn.like-adjust {
@@ -88,19 +95,19 @@ export default {
 }
 
 .panel-btn.like-btn:hover {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/zan-hover.91657d6.svg);
+    background-image: url(../../../images/article/social_zan_hover.svg);
 }
 
 .panel-btn.like-btn.active {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/zan-active.337b9a0.svg);
+    background-image: url(../../../images/article/social_zan_active.svg);
 }
 
 .panel-btn.comment-btn {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/comment.7fc22c2.svg);
+    background-image: url(../../../images/article/social_comment.svg);
 }
 
 .panel-btn.comment-btn:hover {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/comment-hover.1074e67.svg);
+    background-image: url(../../../images/article/social_comment_hover.svg);
 }
 
 .panel-btn.comment-btn.comment-adjust {
@@ -108,11 +115,11 @@ export default {
 }
 
 .panel-btn.collect-btn {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/collect.1db122b.svg);
+    background-image: url(../../../images/article/social_collect.svg);
 }
 
 .panel-btn.collect-btn.open, .panel-btn.collect-btn:hover {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/collect-hover.5d446a7.svg);
+    background-image: url(../../../images/article/social_collect_hover.svg);
 }
 
 .share-title {
@@ -125,29 +132,29 @@ export default {
 
 .panel-btn.weibo-btn {
     display: block;
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/weibo.2076a57.svg);
+    background-image: url(../../../images/article/social_weibo.svg);
 }
 
 .panel-btn.weibo-btn:hover {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/weibo-hover.9abf502.svg);
+    background-image: url(../../../images/article/social_weibo_hover.svg);
 }
 
 .panel-btn.qq-btn {
     display: block;
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/qq.0834411.svg);
+    background-image: url(../../../images/article/social_qq.svg);
 }
 
 .panel-btn.qq-btn:hover {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/qq-hover.d11dd84.svg);
+    background-image: url(../../../images/article/social_qq_hover.svg);
 }
 
 .panel-btn.wechat-btn {
     display: block;
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/wechat.63e1ce0.svg);
+    background-image: url(../../../images/article/social_wechat.svg);
 }
 
 .panel-btn.wechat-btn:hover {
-    background-image: url(https://b-gold-cdn.xitu.io/v3/static/img/wechat-hover.c8ce019.svg);
+    background-image: url(../../../images/article/social_wechat_hover.svg);
 }
 
 .panel-btn.with-badge:after {

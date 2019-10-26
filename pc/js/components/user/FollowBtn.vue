@@ -7,6 +7,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import { eventEmitter, EVENTS } from '~/js/utils/event.js';
 
 export default {
     props: [
@@ -20,6 +21,7 @@ export default {
         return {
             isFollowed: this.followed,
             isMouseEnter: false,
+            changeFollowProxy: null,
         };
     },
     computed: {
@@ -34,8 +36,16 @@ export default {
         }
     },
     mounted() {
-        this.$nextTick(() => {
-        });
+        this.changeFollowProxy = this.changeFollow.bind(this);
+        if (this.userID) {
+            eventEmitter.on(EVENTS.USER_FOLLOW_CHANGE, this.changeFollowProxy);
+        } else if (this.tagID) {
+            eventEmitter.on(EVENTS.TAG_FOLLOW_CHANGE, this.changeFollowProxy);
+        }
+    },
+    beforeDestroy() {
+        eventEmitter.remove(EVENTS.USER_FOLLOW_CHANGE, this.changeFollowProxy);
+        eventEmitter.remove(EVENTS.TAG_FOLLOW_CHANGE, this.changeFollowProxy);
     },
     methods: {
         onMouseenter() {
@@ -63,7 +73,13 @@ export default {
             reqMethod(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.isFollowed = !this.isFollowed;
-                    this.$emit('followChange', id, this.isFollowed);
+                    if (this.userID) {
+                        this.$emit('userFollowChange', id, this.isFollowed);
+                        eventEmitter.emit(EVENTS.USER_FOLLOW_CHANGE, id, this.isFollowed);
+                    } else if (this.tagID) {
+                        this.$emit('tagFollowChange', id, this.isFollowed);
+                        eventEmitter.emit(EVENTS.TAG_FOLLOW_CHANGE, id, this.isFollowed);
+                    }
                 } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
                     location.href = '/signin.html';
                 }

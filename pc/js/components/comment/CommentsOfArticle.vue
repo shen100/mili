@@ -158,6 +158,7 @@ export default {
             curWillDeleteComment: null,
             mouseenterCommentID: undefined,
             mouseenterCommentID2: undefined,
+            isFirstRequest: true, // 请求评论列表，发出的第一个请求
         };
     },
     mounted: function() {
@@ -277,6 +278,13 @@ export default {
                     this.isLoadDone = 'no';
                 }
                 this.updateCommentsLiks();
+
+                if (this.isFirstRequest && location.hash && location.hash.indexOf('#comments') === 0) {
+                    setTimeout(() => {
+                        document.getElementsByClassName('article-banner')[0].scrollIntoView();
+                    }, 50);
+                }
+                this.isFirstRequest = false;
             }).catch(err => {
                 this.isLoading = false;
             });

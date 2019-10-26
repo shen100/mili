@@ -4,29 +4,19 @@ export const EVENTS = {
 
 export const eventEmitter = {
     listeners: {},
-    on: function(type, listener) {
-        if (typeof listener !== "function") {
+    on: function(eventType, listener) {
+        if (typeof listener !== 'function') {
             throw new Error('listener is not a function');
         }
-        if (!this.listeners[type]) {
-            this.listeners[type] = [listener];
-        } else {
-            var found = false;
-            for (var i = 0, len = this.listeners[type].length; i < len; i++) {
-                if (this.listeners[type][i] === listener) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                this.listeners[type].push(listener);
-            }
+        this.listeners[eventType] = this.listeners[eventType] || [];
+        if (this.listeners[eventType].indexOf(listener) < 0) {
+            this.listeners[eventType].push(listener);
         }
     },
-    remove: function(type, listener) {
-        var listeners = this.listeners[type];
+    remove: function(eventType, listener) {
+        const listeners = this.listeners[eventType];
         if (listeners) {
-            for (var i = 0; i < listeners.length; i++) {
+            for (let i = 0; i < listeners.length; i++) {
                 if (listeners[i] === listener) {
                     listeners.splice(i, 1);
                     break;
@@ -34,11 +24,11 @@ export const eventEmitter = {
             }
         }
     },
-    emit: function(event) {
-        var listeners = this.listeners[event.type];
+    emit: function(eventType, ...args) {
+        const listeners = this.listeners[eventType];
         if (listeners) {
-            for (var i = 0; i < listeners.length; i++) {
-                listeners[i].call(null, event);
+            for (let i = 0; i < listeners.length; i++) {
+                listeners[i].apply(null, args);
             }
         }
     }
