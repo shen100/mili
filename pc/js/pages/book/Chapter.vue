@@ -4,7 +4,7 @@
             <h1 id="article-content-h1">{{chapter.name}}</h1>
             <div class="mili-editor" v-html="chapter.htmlContent"></div>
             <div>
-                <CommentsOfArticle :bookID="chapter.bookID" :articleID="chapter.id" :userID="userID" 
+                <CommentList :bookID="chapter.bookID" :articleID="chapter.id" :userID="userID" 
                     :commentType="'chapter'" :username="username" :avatarURL="avatarURL" 
                     :authorID="chapter.user.id" />
             </div>
@@ -15,7 +15,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
-import CommentsOfArticle from '~/js/components/comment/CommentsOfArticle.vue';
+import CommentList from '~/js/components/comment/CommentList.vue';
 
 export default {
     data () {

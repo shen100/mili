@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as marked from 'marked';
 import * as moment from 'moment';
 import { Injectable } from '@nestjs/common';
-import { Repository, Not, In } from 'typeorm';
+import { Repository, Not, In, LessThan } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment,
     CommentContentType,
@@ -29,6 +29,24 @@ const commentTableMap = {
 const articleTableMap = {
     [CommentTypeArticle]: 'articles',
     [CommentTypeChapter]: 'book_chapters',
+};
+
+const commentListSelect = {
+    id: true,
+    createdAt: true,
+    htmlContent: true,
+    parentID: true,
+    rootID: true,
+    subIDs: true,
+    user: {
+        id: true,
+        username: true,
+        avatarURL: true,
+        job: true,
+        company: true,
+    },
+    likedCount: true,
+    commentCount: true,
 };
 
 @Injectable()
@@ -76,104 +94,75 @@ export class CommentService {
         });
     }
 
-    /*
-     * options: {
-     *   authorID: 123, 如果传了 authorID，表示只看作者的回复
-     *   page: 1,
-     *   pageSize: 20,
-     *   dateASC: true 是否按 createdAt 升序
-     * }
-     */
-    async list(commentType: string, articleID: number, options: any = {}) {
-        const authorID = options.authorID || undefined;
-        const dateASC = !!options.dateASC;
-        const page = options.page || 1;
-        const limit: number = options.pageSize || 20;
-        const entityRepository = {
-            [CommentTypeArticle]: this.commentRepository,
-            [CommentTypeChapter]: this.chapterCommentRepository,
-        };
-        async function findComments(rootIDs: number[]) {
-            // rootIDs 为空的话，那么查询文章的直接回复, rootIDs不为空的话，查询的是子回复
-            const condition = {
+    async articleComments(articleID: number, lastCommentID: number, limit: number) {
+        let comments = await this.commentRepository.find({
+            select: commentListSelect,
+            relations: ['user'],
+            where: lastCommentID ? {
                 articleID,
-                rootID: rootIDs ? In(rootIDs) : NO_PARENT,
-                userID: authorID,
-                status: Not(CommentStatus.VerifyFail),
-            };
-            if (!authorID) {
-                delete condition.userID;
-            }
-            const query = {
-                select: {
-                    id: true,
-                    createdAt: true,
-                    htmlContent: true,
-                    parentID: true,
-                    rootID: true,
-                    user: {
-                        id: true,
-                        username: true,
-                        avatarURL: true,
-                    },
-                    likedCount: true,
-                },
-                relations: ['user'],
-                where: condition,
-                order: {
-                    createdAt: dateASC ? 'ASC' : 'DESC',
-                },
-                skip: (page - 1) * limit,
-                take: limit,
-            } as any;
-            // TODO: 暂时把回复的子回复一次性查出来，将来再分页
-            if (rootIDs) {
-                delete query.skip;
-                delete query.take;
-            }
-            const [commentArr, count] = await Promise.all([
-                entityRepository[commentType].find(query),
-                entityRepository[commentType].count(condition),
-            ]);
+                parentID: NO_PARENT,
+                id: LessThan(lastCommentID),
+            } : {
+                articleID,
+                parentID: NO_PARENT,
+            },
+            order: { id: 'DESC' },
+            take: limit,
+        });
+        comments = comments || [];
+        // 一级评论
+        const parentComments = comments.map(comment => {
             return {
-                comments: commentArr,
-                totalCount: count,
-            };
-        }
-
-        // 查文章的直接回复
-        const result = await findComments(null);
-        const comments = result.comments || [];
-        const totalCount = result.totalCount || 0;
-        let subResult;
-        if (comments.length) {
-            const commentIDs = _.map(comments, 'id');
-            // 查回复的子回复
-            subResult = await findComments(commentIDs);
-        }
-        const obj = {
-            comments,
-            page,
-            pageSize: limit,
-            totalCount,
-        };
-        const subComments = subResult && subResult.comments || [];
-        const rootCommentMap = {};
-        obj.comments = obj.comments.map(comment => {
-            rootCommentMap[comment.id] = {
                 ...comment,
-                createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD HH:mm'),
+                subIDs: JSON.parse(comment.subIDs) as number[],
                 comments: [],
+                createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
             };
-            return rootCommentMap[comment.id];
         });
-        subComments.map(comment => {
-            rootCommentMap[comment.rootID].comments.push({
+        let subCommentIDs = [];
+        parentComments.map(pComment => subCommentIDs = subCommentIDs.concat(pComment.subIDs));
+        const subComments = await this.articleSubCommentByIDs(subCommentIDs);
+        const subCommentMap = {};
+        subComments.map(s => subCommentMap[s.id] = s);
+        parentComments.map(comment => {
+            comment.comments = comment.subIDs.map(id => subCommentMap[id]);
+        });
+        return parentComments;
+    }
+
+    async articleSubComments(commentID: number, lastSubCommentID: number, limit: number) {
+        let comments = await this.commentRepository.find({
+            select: commentListSelect,
+            relations: ['user'],
+            where: { rootID: commentID, id: LessThan(lastSubCommentID) },
+            order: { id: 'DESC' },
+            take: limit,
+        });
+        comments = comments || [];
+        const result = comments.map(comment => {
+            return {
                 ...comment,
-                createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD HH:mm'),
-            });
+                createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
+            };
         });
-        return obj;
+        return result;
+    }
+
+    async articleSubCommentByIDs(ids: number[]) {
+        let comments = await this.commentRepository.find({
+            select: commentListSelect,
+            relations: ['user'],
+            where: { id: In(ids) },
+            order: { id: 'DESC' },
+        });
+        comments = comments || [];
+        const result = comments.map(comment => {
+            return {
+                ...comment,
+                createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
+            };
+        });
+        return result;
     }
 
     async create(commentType: string, createCommentDto: CreateCommentDto, userID: number) {

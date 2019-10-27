@@ -24,7 +24,8 @@ export class PreRequestMiddleware implements NestMiddleware {
         res.locals.jsPath = configService.static.jsPath;
         res.locals.imgPath = configService.static.imgPath;
         res.locals.fontPath = configService.static.fontPath;
-        res.locals.baiduAd = configService.baiduAd;
+        res.locals.userLevelChapterURL = configService.static.userLevelChapterURL;
+
         res.locals.globalConfig = {
             url: configService.server.url,
             mURL: configService.server.mURL,

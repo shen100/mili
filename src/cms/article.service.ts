@@ -51,6 +51,7 @@ export class ArticleService {
                     wordCount: true,
                     browseCount: true,
                     commentCount: true,
+                    rootCommentCount: true,
                     likedCount: true,
                     summary: true,
                     htmlContent: true,

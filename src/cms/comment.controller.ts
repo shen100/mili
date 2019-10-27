@@ -39,22 +39,31 @@ export class CommentController {
         return { likes };
     }
 
-    @Get(`${APIPrefix}/comments/:articleID`)
-    async comments(@Param('articleID', MustIntPipe) articleID: number,
-                   @Query('commentType') commentType: string,
-                   @Query('author', ShouldIntPipe) authorID: number,
-                   @Query('page', ParsePagePipe) page: number) {
-        if (!this.isValidCommentType(commentType)) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.NotFound.CODE,
-            });
-        }
-        return await this.commentService.list(commentType, articleID, {
-            authorID,
-            dateASC: true,
-            page,
-            pageSize: 20,
-        });
+    @Get(`${APIPrefix}/comments/article/:articleID`)
+    async articleComments(@Param('articleID', MustIntPipe) articleID: number) {
+        const limit: number = 6;
+        const comments = await this.commentService.articleComments(articleID, 0, limit);
+        return {
+            list: comments,
+        };
+    }
+
+    @Get(`${APIPrefix}/comments/article/:articleID/:lastCommentID`)
+    async articleComments2(@Param('articleID', MustIntPipe) articleID: number, @Param('lastCommentID', MustIntPipe) lastCommentID: number) {
+        const limit: number = 20;
+        const subComments = await this.commentService.articleComments(articleID, lastCommentID, limit);
+        return {
+            list: subComments,
+        };
+    }
+
+    @Get(`${APIPrefix}/comments/article/comment/:commentID/:lastSubCommentID`)
+    async subComments(@Param('commentID', MustIntPipe) commentID: number, @Param('lastSubCommentID', MustIntPipe) lastSubCommentID: number) {
+        const limit: number = 5;
+        const subComments = await this.commentService.articleSubComments(commentID, lastSubCommentID, limit);
+        return {
+            list: subComments,
+        };
     }
 
     @Post(`${APIPrefix}/comments`)

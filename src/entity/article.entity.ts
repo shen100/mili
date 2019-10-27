@@ -49,7 +49,10 @@ export class Article {
     browseCount: number;
 
     @Column('int', { name: 'comment_count' })
-    commentCount: number;
+    commentCount: number; // 总评论数
+
+    @Column('int', { name: 'root_comment_count' })
+    rootCommentCount: number; // 一级评论数
 
     @Column('int', { name: 'liked_count' })
     likedCount: number;

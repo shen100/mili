@@ -66,7 +66,6 @@ import SuccessTip from '~/js/components/common/SuccessTip.vue';
 import { myHTTP } from '~/js/common/net.js';
 import { parseTree, getTreeNode, getPrevNode, getNextNode, tree2Array } from '~/js/utils/tree';
 import StarModal from '~/js/components/handbook/StarModal.vue';
-import CommentsOfArticle from '~/js/components/comment/CommentsOfArticle.vue';
 
 export default {
     data () {
@@ -166,7 +165,6 @@ export default {
         }
     },
     components: {
-        CommentsOfArticle,
         StarModal,
         SuccessTip,
     }

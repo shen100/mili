@@ -8,7 +8,7 @@ import {
 
 import Vue from 'vue';
 import FollowBtn from '~/js/components/user/FollowBtn.vue';
-import CommentsOfArticle from '~/js/components/comment/CommentsOfArticle.vue';
+import CommentList from '~/js/components/comment/CommentList.vue';
 import ArticleSocial from '~/js/components/article/ArticleSocial.vue';
 
 import {
@@ -49,7 +49,7 @@ registerDirective(Vue);
 // 评论列表
 (function() {
     new Vue({
-        render: h => h(CommentsOfArticle, {
+        render: h => h(CommentList, {
             props: {
                 commentType: 'article',
                 articleID: window.articleID,
@@ -57,6 +57,7 @@ registerDirective(Vue);
                 username: window.username,
                 avatarURL: window.avatarURL,
                 authorID: window.authorID,
+                rootCommentCount: window.rootCommentCount,
             },
         }),
     }).$mount('#normal-comment-list');

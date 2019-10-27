@@ -161,21 +161,23 @@
 {% block pageData %}
 <script>
   var articleID = {{ article.id }};
-  var isAuthorSelf = {{ isAuthorSelf }}; // 是否是作者本人
-  var userLiked = {{ userLiked }}; // 当前用户是否已对此文章点过赞
-  var userFollowed = {{ userFollowed }}; // 当前用户是否已关注作者
-  var articleLikedCount = {{ article.likedCount }}; // 文章点赞数
-  var articleCommentCount = {{ article.commentCount }};
-  // 当前登录用户
+  var isAuthorSelf = {{ isAuthorSelf }}; {# 是否是作者本人 #}
+  var userLiked = {{ userLiked }}; {# 当前用户是否已对此文章点过赞 #}
+  var userFollowed = {{ userFollowed }}; {# 当前用户是否已关注作者 #}
+  var articleLikedCount = {{ article.likedCount }}; {# 文章点赞数 #}
+  var articleCommentCount = {{ article.commentCount }}; {# 总评论数 #}
+  var rootCommentCount = {{ article.rootCommentCount }}; {# 一级评论数 #}
+  {# 当前登录用户 #}
   var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
   var username = '{% if user %}{{user.username}}{% else %}{% endif %}';
   var avatarURL = '{% if user %}{{user.avatarURL}}{% else %}{% endif %}';
-  // 文章作者
+  {# 文章作者 #}
   var authorID = {{ article.user.id }};
 
   var weiboShareURL = '{{ weiboShareURL }}';
   var qqShareURL = '{{ qqShareURL }}';
   var weixinShareURL = '{{ weixinShareURL }}';
+  var userLevelChapterURL = '{{ userLevelChapterURL }}';
 </script>
 {% endblock %}
 
