@@ -17,7 +17,7 @@ import { MyHttpException } from '../core/exception/my-http.exception';
 
 const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
 const userLikeTableMap = {
-    [CommentTypeArticle]: 'userlikecomments',
+    [CommentTypeArticle]: 'like_article_comments',
     [CommentTypeChapter]: 'userlikechapter_comments',
 };
 
@@ -94,7 +94,7 @@ export class CommentService {
         });
     }
 
-    async articleComments(articleID: number, lastCommentID: number, limit: number) {
+    async articleComments(userID: number, articleID: number, lastCommentID: number, limit: number) {
         let comments = await this.commentRepository.find({
             select: commentListSelect,
             relations: ['user'],
@@ -110,10 +110,13 @@ export class CommentService {
             take: limit,
         });
         comments = comments || [];
+        let allCommentIDs = [];
         // 一级评论
         const parentComments = comments.map(comment => {
+            allCommentIDs.push(comment.id);
             return {
                 ...comment,
+                userLiked: false,
                 subIDs: JSON.parse(comment.subIDs) as number[],
                 comments: [],
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
@@ -121,16 +124,24 @@ export class CommentService {
         });
         let subCommentIDs = [];
         parentComments.map(pComment => subCommentIDs = subCommentIDs.concat(pComment.subIDs));
-        const subComments = await this.articleSubCommentByIDs(subCommentIDs);
+        allCommentIDs = allCommentIDs.concat(subCommentIDs);
+        const [subComments, likeComments] = await Promise.all([
+            this.articleSubCommentByIDs(subCommentIDs),
+            userID ? this.commentsFilterByUserID(allCommentIDs, userID) : Promise.resolve([]),
+        ]);
         const subCommentMap = {};
         subComments.map(s => subCommentMap[s.id] = s);
+        const userLikeCommentMap = {};
+        likeComments.map(c => userLikeCommentMap[c.commentID] = true);
         parentComments.map(comment => {
+            comment.userLiked = !!userLikeCommentMap[comment.id];
             comment.comments = comment.subIDs.map(id => subCommentMap[id]);
+            comment.comments.map(subC => subC.userLiked = !!userLikeCommentMap[subC.id]);
         });
         return parentComments;
     }
 
-    async articleSubComments(commentID: number, lastSubCommentID: number, limit: number) {
+    async articleSubComments(userID: number, commentID: number, lastSubCommentID: number, limit: number) {
         let comments = await this.commentRepository.find({
             select: commentListSelect,
             relations: ['user'],
@@ -139,13 +150,22 @@ export class CommentService {
             take: limit,
         });
         comments = comments || [];
-        const result = comments.map(comment => {
+        const subCommentIDs = [];
+        const tempComments = comments.map(comment => {
+            subCommentIDs.push(comment.id);
             return {
                 ...comment,
+                userLiked: false,
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
             };
         });
-        return result;
+        const likeComments = await (userID ? this.commentsFilterByUserID(subCommentIDs, userID) : Promise.resolve([]));
+        const userLikeCommentMap = {};
+        likeComments.map(c => userLikeCommentMap[c.commentID] = true);
+        tempComments.map(comment => {
+            comment.userLiked = !!userLikeCommentMap[comment.id];
+        });
+        return tempComments;
     }
 
     async articleSubCommentByIDs(ids: number[]) {
@@ -295,6 +315,18 @@ export class CommentService {
         return result;
     }
 
+    /**
+     * 给定一组评论id，根据 userID 来过滤被用户赞过的的评论
+     */
+    async commentsFilterByUserID(comments: number[], userID: number) {
+        if (!comments || comments.length <= 0) {
+            return [];
+        }
+        const sql = `SELECT user_id as userID, comment_id as commentID FROM like_article_comments
+            WHERE user_id = ? AND comment_id IN (?)`;
+        return await this.commentRepository.manager.query(sql, [userID, comments.join(',')]);
+    }
+
     // 文章或章节下用户点过赞的评论
     // 不传 userID 的话，是未登录用户，直接返回 []
     async userLikesInArticle(commentType: string, articleID: number, userID: number) {
@@ -302,7 +334,7 @@ export class CommentService {
             return [];
         }
         const table = {
-            [CommentTypeArticle]: 'userlikecomments',
+            [CommentTypeArticle]: 'like_article_comments',
             [CommentTypeChapter]: 'userlikechapter_comments',
         }[commentType];
         const sql = `SELECT comment_id as commentID FROM ${table}

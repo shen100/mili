@@ -415,6 +415,10 @@
     height: 16px;
 }
 
+.comment-action-box .like-action.active .action-title {
+    color: #37c700;
+}
+
 .comment-action-box .comment-reply {
     display: flex;
     align-items: center;

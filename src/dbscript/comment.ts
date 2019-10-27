@@ -9,7 +9,7 @@ export const commentRun = async function (connection) {
     try {
         // todo: 增加id作为主键
         console.log('???????????????????????????????????');
-        await connection.manager.query(`CREATE TABLE userlikecomments (
+        await connection.manager.query(`CREATE TABLE like_article_comments (
             comment_id int(11) unsigned NOT NULL,
             user_id int(11) unsigned NOT NULL,
             parent_id int(11) unsigned NOT NULL,

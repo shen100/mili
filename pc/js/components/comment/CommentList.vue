@@ -48,7 +48,7 @@
                         <div class="comment-operate">
                             <div class="comment-time"><span>{{comment.createdAtLabel}}</span></div>
                             <div class="comment-action-box">
-                                <div @click="onLikeOrNot(comment)" class="like-action">
+                                <div @click="onLikeOrNot(comment)" class="like-action" :class="{active: comment.userLiked}">
                                     <ZanIcon :active="comment.userLiked" />
                                     <span class="action-title">{{comment.likedCount || ''}}</span>
                                 </div>
@@ -112,7 +112,7 @@
                                     <div class="comment-operate" style="margin-bottom: 0;">
                                         <div class="comment-time"><span>{{subcomment.createdAtLabel}}</span></div>
                                         <div class="comment-action-box">
-                                            <div @click="onLikeOrNot(subcomment)" class="like-action">
+                                            <div @click="onLikeOrNot(subcomment)" class="like-action" :class="{active: subcomment.userLiked}">
                                                 <ZanIcon :active="subcomment.userLiked" />
                                                 <span class="action-title">{{subcomment.likedCount || ''}}</span>
                                             </div>
@@ -271,7 +271,7 @@ export default {
                     Vue.set(this.subCommentLoadStatusMap, comment.id, false);
                     comment.editorToggled = false;
                     comment.htmlContent = trim(comment.htmlContent);
-                    comment.userLiked = false;
+                    // comment.userLiked = false;
                     comment.comments = comment.comments || [];
                     commentMap[comment.id] = comment;
                     const subComments = comment.comments;

@@ -40,27 +40,32 @@ export class CommentController {
     }
 
     @Get(`${APIPrefix}/comments/article/:articleID`)
-    async articleComments(@Param('articleID', MustIntPipe) articleID: number) {
+    async articleComments(@CurUser() user, @Param('articleID', MustIntPipe) articleID: number) {
         const limit: number = 6;
-        const comments = await this.commentService.articleComments(articleID, 0, limit);
+        const userID: number = user && user.id || undefined;
+        const comments = await this.commentService.articleComments(userID, articleID, 0, limit);
         return {
             list: comments,
         };
     }
 
     @Get(`${APIPrefix}/comments/article/:articleID/:lastCommentID`)
-    async articleComments2(@Param('articleID', MustIntPipe) articleID: number, @Param('lastCommentID', MustIntPipe) lastCommentID: number) {
+    async articleComments2(@CurUser() user, @Param('articleID', MustIntPipe) articleID: number,
+                           @Param('lastCommentID', MustIntPipe) lastCommentID: number) {
         const limit: number = 20;
-        const subComments = await this.commentService.articleComments(articleID, lastCommentID, limit);
+        const userID: number = user && user.id || undefined;
+        const subComments = await this.commentService.articleComments(userID, articleID, lastCommentID, limit);
         return {
             list: subComments,
         };
     }
 
     @Get(`${APIPrefix}/comments/article/comment/:commentID/:lastSubCommentID`)
-    async subComments(@Param('commentID', MustIntPipe) commentID: number, @Param('lastSubCommentID', MustIntPipe) lastSubCommentID: number) {
+    async subComments(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number,
+                      @Param('lastSubCommentID', MustIntPipe) lastSubCommentID: number) {
         const limit: number = 5;
-        const subComments = await this.commentService.articleSubComments(commentID, lastSubCommentID, limit);
+        const userID: number = user && user.id || undefined;
+        const subComments = await this.commentService.articleSubComments(userID, commentID, lastSubCommentID, limit);
         return {
             list: subComments,
         };
