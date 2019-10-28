@@ -3,6 +3,7 @@
         <SuccessTip ref="successTip" />
         <ErrorTip ref="errorTip" />
         <div id="comments">
+            <!-- 未登录时显示登录form -->
             <form v-if="!userID" class="new-comment" style="margin-top: 15px;">
                 <a href="javascript:void(0);" class="avatar" style="cursor: default;">
                     <img style="cursor: default;" src="../../../images/avatar_default.png">
@@ -12,6 +13,7 @@
                     <span>后发表评论</span>
                 </div>
             </form>
+            <!-- 评论列表 -->
             <div class="comments">
                 <CommentRichEditor v-if="userID" ref="commentRichEditor" :bookID="bookID" :articleID="articleID" 
                     emptyPlaceholder="写下你的评论" @success="addCommentSuccess" @error="addCommentError" 
@@ -59,6 +61,7 @@
                             </div>
                         </div>
 
+                        <!-- 回复评论 -->
                         <CommentRichEditor v-if="userID && comment.editorToggled" :bookID="bookID" :articleID="articleID" 
                             :emptyPlaceholder="`回复${comment.user.username}`"
                             :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
@@ -70,10 +73,9 @@
                         <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
                             <div :id="`comment-${subcomment.id}`" :key="`comment-${subcomment.id}`" 
                                 v-for="(subcomment, i) in comment.comments" class="sub-comment" :style="{'padding-top': i === 0 ? '14px' : '12px'}">
-                                <div class="v-tooltip-container"
-                                    @mouseenter="onMouseEnterUser(subcomment.id, 'avatar')"
-                                    @mouseleave="onMouseLeaveUser">
-                                    <div class="v-tooltip-content">
+                                <div class="v-tooltip-container">
+                                    <div class="v-tooltip-content" @mouseenter="onMouseEnterUser(subcomment.id, 'avatar')"
+                                            @mouseleave="onMouseLeaveUser">
                                         <a :href="`/uc/${subcomment.user.id}`" target="_blank" class="avatar"><img :src="subcomment.user.avatarURL"></a>
                                         <UserBusinessCard v-if="subcomment.id === mouseenterCommentID && mouseenterCommentTarget === 'avatar'"
                                             :userID="subcomment.user.id" :followerID="userID" />
@@ -98,12 +100,15 @@
 
                                     <div class="sub-content-box">
                                         <span> 回复 </span>
-                                        <div class="user-popover-box">
-                                            <a href="/" target="_blank" class="username be-replied">{{subcomment.user.username}}
-                                                <a :href="`/uc/${subcomment.user.id}`" target="_blank" class="rank">
-                                                    <img :src="subcomment.user.level | levelImgURL">
+                                        <div class="user-popover-box" @mouseenter="onMouseEnterUser(subcomment.id, 'parent_username')"
+                                                @mouseleave="onMouseLeaveUser">
+                                            <a :href="`/uc/${subcomment.parent.user.id}`" target="_blank" class="username be-replied">{{subcomment.parent.user.username}}
+                                                <a :href="userLevelChapterURL" target="_blank" class="rank">
+                                                    <img :src="subcomment.parent.user.level | levelImgURL">
                                                 </a>
                                             </a>
+                                            <UserBusinessCard v-if="subcomment.id === mouseenterCommentID && mouseenterCommentTarget === 'parent_username'"
+                                                :userID="subcomment.parent.user.id" :followerID="userID" />
                                         </div>
                                         <span>: </span>
                                         <div class="sub-comment-wrap" v-html="subcomment.htmlContent"></div>
@@ -130,6 +135,7 @@
                                         :commentType="commentType" />
                                 </div>
                             </div>
+                            <!-- 一级评论的子评论未加载完时的加载按钮 -->
                             <div v-if="comment.comments.length < comment.commentCount" @click="onLoadSub(comment)" class="sub-comment fetch-more">
                                 <div class="fetch-more-comment">{{subCommentLoadStatusMap[comment.id] ? '正在加载...' : '查看更多 >'}}</div>
                             </div>
@@ -137,6 +143,7 @@
                     </div>
                 </div>
             </div>
+            <!-- 一级评论未加载完时的加载按钮 -->
             <div v-if="comments.length < rootCommentCount" @click="onLoadMore" 
                 class="fetch-more-comment">{{isLoading ? '正在加载...' : '查看更多 >'}}</div>
             <div v-else style="height: 24px;"></div>
@@ -278,7 +285,6 @@ export default {
                     subComments.forEach(subComment => {
                         subComment.editorToggled = false;
                         subComment.userLiked = false;
-                        subComment.parentComment = commentMap[subComment.parentID];
                         subComment.rootComment = commentMap[subComment.rootID];
                         commentMap[subComment.id] = subComment;
                     });
@@ -297,7 +303,7 @@ export default {
                 }
                 this.isFirstRequest = false;
 
-                console.log(comments);
+                console.log(this.commentMap);
             }).catch(err => {
                 console.log(err);
                 this.isLoading = false;
@@ -317,7 +323,6 @@ export default {
                 subComments.forEach(subComment => {
                     subComment.editorToggled = false;
                     subComment.userLiked = false;
-                    subComment.parentComment = commentMap[subComment.parentID];
                     subComment.rootComment = commentMap[subComment.rootID];
                     commentMap[subComment.id] = subComment;
                 });
@@ -352,9 +357,9 @@ export default {
             comment.comments = [];
             this.commentMap[comment.id] = comment;
             if (comment.parentID) {
-                comment.parentComment = this.commentMap[comment.parentID];
+                comment.parent = this.commentMap[comment.parentID];
                 comment.rootComment = this.commentMap[comment.rootID];
-                comment.parentComment.editorToggled = false;
+                comment.parent.editorToggled = false;
             }
             if (comment.rootID) {
                 this.commentMap[comment.rootID].comments.push(comment);

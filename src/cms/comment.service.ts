@@ -37,7 +37,7 @@ const commentListSelect = {
     htmlContent: true,
     parentID: true,
     rootID: true,
-    subIDs: true,
+    latest: true,
     user: {
         id: true,
         username: true,
@@ -95,7 +95,7 @@ export class CommentService {
     }
 
     async articleComments(userID: number, articleID: number, lastCommentID: number, limit: number) {
-        let comments = await this.commentRepository.find({
+        let comments: Comment[] = await this.commentRepository.find({
             select: commentListSelect,
             relations: ['user'],
             where: lastCommentID ? {
@@ -111,31 +111,47 @@ export class CommentService {
         });
         comments = comments || [];
         let allCommentIDs = [];
+        const parentIDArr: number[] = [];
+        const subIDMap = {};
         // 一级评论
         const parentComments = comments.map(comment => {
             allCommentIDs.push(comment.id);
+            const latest = JSON.parse(comment.latest);
+            const tempSubIDs = [];
+            latest.forEach(data => {
+                subIDMap[data.id] = data.id;
+                tempSubIDs.push(data.id);
+                parentIDArr.push(data.pid);
+            });
             return {
                 ...comment,
                 userLiked: false,
-                subIDs: JSON.parse(comment.subIDs) as number[],
+                subIDs: tempSubIDs,
                 comments: [],
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
             };
         });
-        let subCommentIDs = [];
-        parentComments.map(pComment => subCommentIDs = subCommentIDs.concat(pComment.subIDs));
-        allCommentIDs = allCommentIDs.concat(subCommentIDs);
-        const [subComments, likeComments] = await Promise.all([
-            this.articleSubCommentByIDs(subCommentIDs),
+        let subCommentIDArr = [];
+        parentComments.map(pComment => subCommentIDArr = subCommentIDArr.concat(pComment.subIDs));
+        allCommentIDs = allCommentIDs.concat(subCommentIDArr);
+        const [subAndParentComments, likeComments] = await Promise.all([
+            this.articleSubCommentByIDs(subCommentIDArr.concat(parentIDArr)),
             userID ? this.commentsFilterByUserID(allCommentIDs, userID) : Promise.resolve([]),
         ]);
-        const subCommentMap = {};
-        subComments.map(s => subCommentMap[s.id] = s);
+        const subAndParentCommentMap = {};
+        subAndParentComments.map(s => {
+            subAndParentCommentMap[s.id] = s;
+        });
+        subAndParentComments.map(comment => {
+            if (subIDMap[comment.id]) {
+                subAndParentCommentMap[comment.id].parent = subAndParentCommentMap[comment.parentID];
+            }
+        });
         const userLikeCommentMap = {};
         likeComments.map(c => userLikeCommentMap[c.commentID] = true);
         parentComments.map(comment => {
             comment.userLiked = !!userLikeCommentMap[comment.id];
-            comment.comments = comment.subIDs.map(id => subCommentMap[id]);
+            comment.comments = comment.subIDs.map(id => subAndParentCommentMap[id]);
             comment.comments.map(subC => subC.userLiked = !!userLikeCommentMap[subC.id]);
         });
         return parentComments;

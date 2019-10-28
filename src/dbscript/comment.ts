@@ -103,7 +103,7 @@ export const commentRun = async function (connection) {
         await connection.manager.query(`alter table comments drop column ups;`);
         await connection.manager.query(`alter table comments add column comment_count int(11) NOT NULL DEFAULT '0'`);
         await connection.manager.query(`alter table comments add column liked_count int(11) NOT NULL DEFAULT '0'`);
-        await connection.manager.query(`alter table comments add column sub_ids varchar(20)`);
+        await connection.manager.query(`alter table comments add column latest varchar(100)`);
 
         // tslint:disable-next-line:no-console
         console.log('comments.length:', comments.length);

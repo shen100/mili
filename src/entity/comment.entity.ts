@@ -58,8 +58,8 @@ export class Comment {
     @Column('int', { name: 'root_id' })
     rootID: number;
 
-    @Column('varchar', { name: 'sub_ids' })
-    subIDs: string; // 最近的两条子评论
+    @Column('varchar', { name: 'latest' })
+    latest: string; // 最近的两条子评论
 
     @Column('int', { name: 'comment_count' })
     commentCount: number;

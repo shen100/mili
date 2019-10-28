@@ -148,6 +148,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    position: relative;
 }
 
 .comments .comment .sub-tool-group a {
@@ -473,6 +474,10 @@
 
 .sub-content-box .user-popover-box a.be-replied {
     color: #406599;
+}
+
+.sub-content-box .user-popover-box a.be-replied:hover {
+    text-decoration: none;
 }
 
 .no-border-bottom {

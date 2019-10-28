@@ -27,10 +27,16 @@ export const commentRoot = async function (connection) {
             });
             let latestSubComments = [  ] ;
             if (subComments[0]) {
-                latestSubComments.push(subComments[0].id);
+                latestSubComments.push({
+                    id: subComments[0].id,
+                    pid: subComments[0].parent_id,
+                });
             }
             if (subComments[1]) {
-                latestSubComments.push(subComments[1].id);
+                latestSubComments.push({
+                    id: subComments[1].id,
+                    pid: subComments[1].parent_id,
+                });
             }
             if (comment.id == 223) {
                 console.log();
@@ -38,10 +44,10 @@ export const commentRoot = async function (connection) {
             if (subComments.length) {
                 const subCommentIDs = subComments.map(item => item.id);
                 await connection.manager.query(`update comments set root_id = ? where id in (?)`, [comment.id, subCommentIDs]);
-                await connection.manager.query(`update comments set comment_count = ?, sub_ids = ? where id = ?`,
-                    [subComments.length, `[${latestSubComments.join(',')}]`, comment.id]);
+                await connection.manager.query(`update comments set comment_count = ?, latest = ? where id = ?`,
+                    [subComments.length, `${JSON.stringify(latestSubComments)}`, comment.id]);
             } else {
-                await connection.manager.query(`update comments set sub_ids = ? where id = ?`,
+                await connection.manager.query(`update comments set latest = ? where id = ?`,
                     ['[]', comment.id]);
             }
         }
