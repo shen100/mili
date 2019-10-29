@@ -53,11 +53,6 @@ export class PeriodConstants {
     static readonly THREE_MONTHS: number = 3; // 三月内
 }
 
-export class CommentConstants {
-    static readonly CommentTypeArticle: string = 'article';
-    static readonly CommentTypeChapter: string = 'chapter';
-}
-
 export class HandbookConstants {
     static readonly MAX_PRICE: number = 100000000;
 

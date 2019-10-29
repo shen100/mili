@@ -150,7 +150,7 @@ export default {
             const url = '/users/signin';
             myHTTP.post(url, reqData).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    location.href = '/';
+                    location.href = window.loginReferer;
                     return;
                 }
                 this.errorVisible = true;

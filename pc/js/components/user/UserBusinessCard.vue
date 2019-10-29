@@ -73,7 +73,7 @@
 <script>
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
-import { eventEmitter, EVENTS } from '~/js/utils/event.js';
+import { globalEventEmitter, EVENTS } from '~/js/utils/event.js';
 import { isInViewport, getBoundingClientRect } from '~/js/utils/dom.js';
 import FollowBtn from '~/js/components/user/FollowBtn.vue';
 
@@ -113,7 +113,6 @@ export default {
                 height: '30px',
                 'font-size': '13px'
             },
-            changeUserFollowProxy: null,
         };
     },
     mounted() {
@@ -130,15 +129,13 @@ export default {
             });
             this.adjustCoordinate();
         }, this.delay || 100);
-
-        this.changeUserFollowProxy = this.changeUserFollow.bind(this);
-        eventEmitter.on(EVENTS.USER_FOLLOW_CHANGE, this.changeUserFollowProxy);
+        globalEventEmitter.on(EVENTS.USER_FOLLOW_CHANGE, this.changeUserFollow, this);
     },
     beforeDestroy() {
         if (this.timeoutID) {
             clearTimeout(this.timeoutID);
         }
-        eventEmitter.remove(EVENTS.USER_FOLLOW_CHANGE, this.changeUserFollowProxy);
+        globalEventEmitter.remove(EVENTS.USER_FOLLOW_CHANGE, this.changeUserFollow);
     },
     methods: {
         adjustCoordinate() {

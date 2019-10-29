@@ -58,7 +58,7 @@ export class UserController {
         });
     }
 
-    @Get('/signup.html')
+    @Get('/signup')
     async signupHTML(@CurUser() user, @Res() res) {
         // 如果已登录，那么跳到首页
         if (user) {
@@ -68,14 +68,16 @@ export class UserController {
         return res.render('pages/signup');
     }
 
-    @Get('/signin.html')
-    async signinHTML(@CurUser() user, @Res() res) {
+    @Get('/signin')
+    async signinHTML(@CurUser() user, @Query() query, @Res() res) {
         // 如果已登录，那么跳到首页
         if (user) {
             res.redirect('/');
             return;
         }
-        return res.render('pages/signin');
+        let ref = query.ref || '/';
+        ref = decodeURIComponent(ref);
+        return res.render('pages/signin', { loginReferer: ref });
     }
 
     @Get('/users/signin/github.html')

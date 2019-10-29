@@ -53,6 +53,8 @@ export default {
             'pc/js/components/boilingpoint/Share.vue',
             'pc/js/components/book/BookLoading.vue',
             'pc/js/components/book/BookItem.vue',
+            'pc/js/components/comment/ReplyIcon.vue',
+            'pc/js/components/comment/ZanIcon.vue',
             'pc/js/components/common/More.vue',
             'pc/js/components/common/Paging.vue',
             'pc/js/components/handbook/HandBookComment.vue',

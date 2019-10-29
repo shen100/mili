@@ -12,9 +12,6 @@ export const commentRun = async function (connection) {
         await connection.manager.query(`CREATE TABLE like_article_comments (
             comment_id int(11) unsigned NOT NULL,
             user_id int(11) unsigned NOT NULL,
-            parent_id int(11) unsigned NOT NULL,
-            root_id int(11) unsigned NOT NULL,
-            article_id int(11) unsigned NOT NULL,
             created_at datetime NOT NULL,
             PRIMARY KEY (comment_id, user_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
