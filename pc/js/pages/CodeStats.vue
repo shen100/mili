@@ -112,6 +112,7 @@ export default {
             'src/cms/tag.controller.ts',
             'src/cms/tag.service.ts',
             'src/cms/index.controller.ts',
+            'src/entity/comment.entity.ts',
             'src/stats/codestats.controller.ts',
             'src/user/dto/update-avatar.dto.ts',
             'views/component/article/articles.njk',

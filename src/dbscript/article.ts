@@ -8,7 +8,7 @@ export const updateRootCommentCount = async function (connection) {
         for (let i = 0; i < ids.length; i++) {
             let articleID = ids[i].id;
             const c = await connection.manager.query(`select count(*) as count
-                from comments where parent_id = 0 and article_id = ?`, [articleID]);
+                from article_comments where parent_id = 0 and article_id = ?`, [articleID]);
             let count = 0;
             if (c && c[0] && c[0].count) {
                 count = parseInt(c[0].count);

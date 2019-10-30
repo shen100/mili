@@ -2,7 +2,7 @@ import { createConnection } from 'typeorm';
 import { ConfigService } from '../config/config.service';
 
 async function getSubComments(connection, id) {
-    let comments = await connection.manager.query(`select * from comments where parent_id = ?`, [id]);
+    let comments = await connection.manager.query(`select * from article_comments where parent_id = ?`, [id]);
     comments = comments || [];
     const length = comments.length;
     for (let i = 0; i < length; i++) {
@@ -14,8 +14,8 @@ async function getSubComments(connection, id) {
 
 export const commentRoot = async function (connection) {
     try {
-        await connection.manager.query('update comments set comment_count = 0');
-        const rootComments = await connection.manager.query(`select * from comments where parent_id = 0`);
+        await connection.manager.query('update article_comments set comment_count = 0');
+        const rootComments = await connection.manager.query(`select * from article_comments where parent_id = 0`);
         for (let i = 0; i < rootComments.length; i++) {
             let comment = rootComments[i];
             let subComments = await getSubComments(connection, comment.id) || [];
@@ -43,11 +43,11 @@ export const commentRoot = async function (connection) {
             }
             if (subComments.length) {
                 const subCommentIDs = subComments.map(item => item.id);
-                await connection.manager.query(`update comments set root_id = ? where id in (?)`, [comment.id, subCommentIDs]);
-                await connection.manager.query(`update comments set comment_count = ?, latest = ? where id = ?`,
+                await connection.manager.query(`update article_comments set root_id = ? where id in (?)`, [comment.id, subCommentIDs]);
+                await connection.manager.query(`update article_comments set comment_count = ?, latest = ? where id = ?`,
                     [subComments.length, `${JSON.stringify(latestSubComments)}`, comment.id]);
             } else {
-                await connection.manager.query(`update comments set latest = ? where id = ?`,
+                await connection.manager.query(`update article_comments set latest = ? where id = ?`,
                     ['[]', comment.id]);
             }
         }

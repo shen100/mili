@@ -1,10 +1,14 @@
 import * as marked from 'marked';
 import * as bluebird from 'bluebird';
-import { CommentContentType, TempComment, VoteComment } from '../entity/comment.entity';
+// import { VoteComment } from '../entity/comment.entity';
+
+const CommentContentType = {
+    Markdown: 1,
+    HTML: 2,
+};
 
 export const commentRun = async function (connection) {
-    const commentRepository = connection.getRepository(TempComment);
-    const voteRepository = connection.getRepository(VoteComment);
+    // const voteRepository = connection.getRepository(VoteComment);
 
     try {
         // todo: 增加id作为主键
@@ -16,7 +20,8 @@ export const commentRun = async function (connection) {
             PRIMARY KEY (comment_id, user_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
-        await connection.manager.query(`alter table comments add column root_id int(11) NOT NULL DEFAULT '0'`);
+        await connection.manager.query(`rename table comments to article_comments`);
+        await connection.manager.query(`alter table article_comments add column root_id int(11) NOT NULL DEFAULT '0'`);
 
         await connection.manager.query(`CREATE TABLE votecomments (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -34,7 +39,7 @@ export const commentRun = async function (connection) {
             PRIMARY KEY (id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
-        const comments = await connection.manager.query(`select * from comments`);
+        const comments = await connection.manager.query(`select * from article_comments`);
         const voteComments = [];
 
         const allCommentMap = {};
@@ -82,25 +87,24 @@ export const commentRun = async function (connection) {
                 });
             }
             return await bluebird.all([
-                commentRepository.update({
-                    id: comment.id,
-                }, {
-                    htmlContent,
-                    contentType: CommentContentType.HTML,
-                }),
-                connection.manager.query(`update comments set root_id = ${comment.root_id} where id = ${comment.id}`),
+                connection.manager.query(`update article_comments set html_content = ${htmlContent},
+                    content_type = ${CommentContentType.HTML} where id = ${comment.id}`),
+                connection.manager.query(`update article_comments set root_id = ${comment.root_id} where id = ${comment.id}`),
             ]);
         });
 
-        await voteRepository.insert(voteComments);
+        // await voteRepository.insert(voteComments);
 
-        await connection.manager.query(`delete from comments where source_name = "vote"`);
-        await connection.manager.query(`alter table comments change source_id article_id int`);
-        await connection.manager.query(`alter table comments drop column source_name;`);
-        await connection.manager.query(`alter table comments drop column ups;`);
-        await connection.manager.query(`alter table comments add column comment_count int(11) NOT NULL DEFAULT '0'`);
-        await connection.manager.query(`alter table comments add column liked_count int(11) NOT NULL DEFAULT '0'`);
-        await connection.manager.query(`alter table comments add column latest varchar(100)`);
+        await connection.manager.query(`delete from article_comments where source_name = "vote"`);
+        await connection.manager.query(`alter table article_comments drop column content;`);
+        await connection.manager.query(`alter table article_comments drop column content_type;`);
+        await connection.manager.query(`alter table article_comments change html_content varchar(2000)`);
+
+        await connection.manager.query(`alter table article_comments drop column source_name;`);
+        await connection.manager.query(`alter table article_comments drop column ups;`);
+        await connection.manager.query(`alter table article_comments add column comment_count int(11) NOT NULL DEFAULT '0'`);
+        await connection.manager.query(`alter table article_comments add column liked_count int(11) NOT NULL DEFAULT '0'`);
+        await connection.manager.query(`alter table article_comments add column latest varchar(100)`);
 
         // tslint:disable-next-line:no-console
         console.log('comments.length:', comments.length);

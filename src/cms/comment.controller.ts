@@ -1,5 +1,5 @@
 import {
-    Controller, Post, Body, UseGuards, Get, Query, Param, Delete,
+    Controller, Post, UseGuards, Get, Param, Delete, Query,
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { ArticleService } from './article.service';
@@ -14,47 +14,54 @@ import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 import { APIPrefix } from '../constants/constants';
 import { BookService } from './book.service';
-import { Comment } from '../entity/comment.entity';
+import { ChapterComment, BoilingPointComment, ArticleComment } from '../entity/comment.entity';
+import { clampNumber } from '../utils/common';
 
 @Controller()
 export class CommentController {
     constructor(
-        private readonly articleService: ArticleService,
-        private readonly bookService: BookService,
         private readonly commentService: CommentService,
     ) {}
 
-    private isValidCommentType(commentType: string) {
-        return ['article', 'chapter'].indexOf(commentType) >= 0;
-    }
-
-    @Get(`${APIPrefix}/comments/article/:articleID`)
-    async articleComments(@CurUser() user, @Param('articleID', MustIntPipe) articleID: number) {
-        const limit: number = 6;
+    /**
+     * 一级评论列表
+     */
+    @Get(`${APIPrefix}/comments/:source/:sourceID/:lastCommentID?`)
+    async comments(@CurUser() user, @Param('source') source: string, @Param('sourceID', MustIntPipe) sourceID: number,
+                   @Param('lastCommentID', ShouldIntPipe) lastCommentID: number,
+                   @Query('limit', ShouldIntPipe) limit: number) {
+        limit = clampNumber(limit, 1, 100);
         const userID: number = user && user.id || undefined;
-        const comments = await this.commentService.articleComments(userID, articleID, 0, limit);
+        const CommentClass = this.getCommentClass(source);
+        if (!CommentClass) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '无效的source',
+            });
+        }
+        const comments = await this.commentService.comments(CommentClass, sourceID, lastCommentID, userID, limit);
         return {
             list: comments,
         };
     }
 
-    @Get(`${APIPrefix}/comments/article/:articleID/:lastCommentID`)
-    async articleComments2(@CurUser() user, @Param('articleID', MustIntPipe) articleID: number,
-                           @Param('lastCommentID', MustIntPipe) lastCommentID: number) {
-        const limit: number = 20;
+    /**
+     * 子评论列表
+     */
+    @Get(`${APIPrefix}/comments/:source/comment/:commentID/:lastSubCommentID`)
+    async subComments(@CurUser() user, @Param('source') source: string, @Param('commentID', MustIntPipe) commentID: number,
+                      @Param('lastSubCommentID', MustIntPipe) lastSubCommentID: number,
+                      @Query('limit', ShouldIntPipe) limit: number) {
+        limit = clampNumber(limit, 1, 100);
         const userID: number = user && user.id || undefined;
-        const subComments = await this.commentService.articleComments(userID, articleID, lastCommentID, limit);
-        return {
-            list: subComments,
-        };
-    }
-
-    @Get(`${APIPrefix}/comments/article/comment/:commentID/:lastSubCommentID`)
-    async subComments(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number,
-                      @Param('lastSubCommentID', MustIntPipe) lastSubCommentID: number) {
-        const limit: number = 5;
-        const userID: number = user && user.id || undefined;
-        const subComments = await this.commentService.articleSubComments(userID, commentID, lastSubCommentID, limit);
+        const CommentClass = this.getCommentClass(source);
+        if (!CommentClass) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '无效的source',
+            });
+        }
+        const subComments = await this.commentService.subComments(CommentClass, commentID, lastSubCommentID, userID, limit);
         return {
             list: subComments,
         };
@@ -115,17 +122,37 @@ export class CommentController {
     //     };
     // }
 
-    @Post(`${APIPrefix}/comments/article/comment/:commentID/like`)
+    /**
+     * 点赞
+     */
+    @Post(`${APIPrefix}/comments/:source/comment/:commentID/like`)
     @UseGuards(ActiveGuard)
-    async like(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number) {
-        await this.commentService.like(Comment, commentID, user.id);
+    async like(@CurUser() user, @Param('source') source: string, @Param('commentID', MustIntPipe) commentID: number) {
+        const CommentClass = this.getCommentClass(source);
+        if (!CommentClass) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '无效的source',
+            });
+        }
+        await this.commentService.like(CommentClass, commentID, user.id);
         return {};
     }
 
-    @Delete(`${APIPrefix}/comments/article/comment/:commentID/like`)
+    /**
+     * 取消点赞
+     */
+    @Delete(`${APIPrefix}/comments/:source/comment/:commentID/like`)
     @UseGuards(ActiveGuard)
-    async deleteLike(@CurUser() user, @Param('commentID', MustIntPipe) commentID: number) {
-        await this.commentService.deleteLike(Comment, commentID, user.id);
+    async deleteLike(@CurUser() user, @Param('source') source: string, @Param('commentID', MustIntPipe) commentID: number) {
+        const CommentClass = this.getCommentClass(source);
+        if (!CommentClass) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '无效的source',
+            });
+        }
+        await this.commentService.deleteLike(CommentClass, commentID, user.id);
         return {};
     }
 
@@ -140,4 +167,17 @@ export class CommentController {
     //     await this.commentService.delete(commentType, commentID, user.id);
     //     return {};
     // }
+
+    private getCommentClass(source: string) {
+        if (source === 'article') {
+            return ArticleComment;
+        }
+        if (source === 'chapter') {
+            return ChapterComment;
+        }
+        if (source === 'boilingpoint') {
+            return BoilingPointComment;
+        }
+        return null;
+    }
 }

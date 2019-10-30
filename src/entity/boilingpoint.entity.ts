@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { User } from './user.entity';
+import { BoilingPointComment } from './comment.entity';
 
 @Entity({name: 'boilingpoint_topics'})
 export class BoilingPointTopic {
@@ -61,6 +62,9 @@ export class BoilingPoint {
     @ManyToOne(type => User)
     @JoinColumn({ name: 'user_id' })
     user: User;
+
+    @OneToMany(type => BoilingPointComment, comment => comment.boilingPoint)
+    comments: BoilingPointComment[];
 }
 
 export const ReportReasons: number[] = [

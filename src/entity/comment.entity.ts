@@ -7,6 +7,8 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Article } from './article.entity';
+import { BoilingPoint } from './boilingpoint.entity';
+import { BookChapter } from './book.entity';
 
 export enum CommentStatus {
 	Verifying = 1, // 审核中
@@ -14,12 +16,6 @@ export enum CommentStatus {
 	VerifyFail = 3, // 审核未通过
 }
 
-export enum CommentContentType {
-	Markdown = 1,
-	HTML = 2,
-}
-
-@Entity({name: 'comments'})
 export class Comment {
     @PrimaryGeneratedColumn()
     id: number;
@@ -33,14 +29,8 @@ export class Comment {
     @Column('datetime', { name: 'deleted_at', nullable: true, default: null })
     deletedAt: Date;
 
-    @Column('text', { nullable: true, default: null })
-    content: string;
-
-    @Column('text', { name: 'html_content', nullable: true, default: null })
+    @Column('varchar', { name: 'html_content', length: 2000 })
     htmlContent: string;
-
-    @Column('int', { name: 'content_type' })
-    contentType: CommentContentType;
 
     @Column('int')
     status: CommentStatus;
@@ -53,91 +43,44 @@ export class Comment {
     user: User;
 
     @Column('int', { name: 'parent_id' })
-    parentID: number;
+    parentID: number; // 直接父评论
 
     @Column('int', { name: 'root_id' })
-    rootID: number;
+    rootID: number; // 一级评论
 
-    @Column('varchar', { name: 'latest' })
+    @Column('varchar', { name: 'latest', length: 100 })
     latest: string; // 最近的两条子评论
 
     @Column('int', { name: 'comment_count' })
-    commentCount: number;
+    commentCount: number; // 子评论数
 
     @Column('int', { name: 'liked_count' })
-    likedCount: number;
-
-    @Column('int', { name: 'article_id' })
-    articleID: number;
-
-    @ManyToOne(type => Article, article => article.comments)
-    @JoinColumn({name: 'article_id'})
-    article: Article;
-}
-
-@Entity({name: 'comments'})
-export class TempComment {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column('text', { nullable: true, default: null })
-    content: string;
-
-    @Column('text', { name: 'html_content', nullable: true, default: null })
-    htmlContent: string;
-
-    @Column('int', { name: 'content_type' })
-    contentType: CommentContentType;
+    likedCount: number; // 点赞数
 
     @Column('int', { name: 'source_id' })
-    articleID: number;
+    sourceID: number;
 }
 
-@Entity({name: 'votecomments'})
-export class VoteComment {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column('datetime', { name: 'created_at' })
-    createdAt: Date;
-
-    @Column('datetime', { name: 'updated_at' })
-    updatedAt: Date;
-
-    @Column('datetime', { name: 'deleted_at', nullable: true, default: null })
-    deletedAt: Date;
-
-    @Column('text', { nullable: true, default: null })
-    content: string;
-
-    @Column('text', { name: 'html_content', nullable: true, default: null })
-    htmlContent: string;
-
-    @Column('int', { name: 'content_type' })
-    contentType: CommentContentType;
-
-    @Column('int')
-    status: CommentStatus;
-
-    @Column('int', { name: 'user_id' })
-    userID: number;
-
-    @ManyToOne(type => User)
-    @JoinColumn({ name: 'user_id' })
-    user: User;
-
-    @Column('int', { name: 'parent_id' })
-    parentID: number;
-
-    @Column('int', { name: 'comment_count' })
-    commentCount: number;
-
-    @Column('int', { name: 'vote_id' })
-    voteID: number;
+@Entity({name: 'article_comments'})
+export class ArticleComment extends Comment {
+    @ManyToOne(type => Article, article => article.comments)
+    @JoinColumn({name: 'source_id'})
+    article: Article;
 }
 
 @Entity({name: 'chapter_comments'})
 export class ChapterComment extends Comment {
     @Column('int', { name: 'book_id' })
     bookID: number;
+
+    @ManyToOne(type => BookChapter, chapter => chapter.comments)
+    @JoinColumn({name: 'source_id'})
+    chapter: BookChapter;
+}
+
+@Entity({name: 'boilingpoint_comments'})
+export class BoilingPointComment extends Comment {
+    @ManyToOne(type => BoilingPoint, boilingPoint => boilingPoint.comments)
+    @JoinColumn({name: 'source_id'})
+    boilingPoint: BoilingPoint;
 }

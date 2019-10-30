@@ -13,7 +13,7 @@ import { CreateBookStarDto } from './dto/create-book-star.dto';
 import { ActiveGuard } from '../core/guards/active.guard';
 import { ConfigService } from '../config/config.service';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
-import { clampPage } from '../utils/common';
+import { clampNumber } from '../utils/common';
 
 @Controller()
 export class BookController {
@@ -135,7 +135,7 @@ export class BookController {
     async stars(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number,
                 @Query('pageSize', ShouldIntPipe) pageSize: number) {
         pageSize = pageSize || 20;
-        pageSize = clampPage(pageSize, 1, 20);
+        pageSize = clampNumber(pageSize, 1, 20);
         const listResult = await this.bookService.starList(bookID, page, pageSize);
         return listResult;
     }
@@ -144,7 +144,7 @@ export class BookController {
     async comments(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number,
                    @Query('pageSize', ShouldIntPipe) pageSize: number) {
         pageSize = pageSize || 20;
-        pageSize = clampPage(pageSize, 1, 20);
+        pageSize = clampNumber(pageSize, 1, 20);
         const listResult = await this.bookService.commentList(bookID, page, pageSize);
         return listResult;
     }

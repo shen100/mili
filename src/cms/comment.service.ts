@@ -5,9 +5,10 @@ import { Injectable } from '@nestjs/common';
 import { Repository, Not, In, LessThan } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment,
-    CommentContentType,
     CommentStatus,
     ChapterComment,
+    ArticleComment,
+    BoilingPointComment,
 } from '../entity/comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { NO_PARENT } from '../constants/constants';
@@ -22,8 +23,10 @@ import {
 const {
     LikeArticleCommentTable,
     LikeChapterCommentTable,
+    LikeBoilingPointCommentTable,
     ArticleCommentTable,
     ChapterCommentTable,
+    BoilingPointCommentTable,
 } = CommentConstants;
 
 const commentListSelect = {
@@ -47,11 +50,14 @@ const commentListSelect = {
 @Injectable()
 export class CommentService {
     constructor(
-        @InjectRepository(Comment)
-        private readonly commentRepository: Repository<Comment>,
+        @InjectRepository(ArticleComment)
+        private readonly articleCommentRepository: Repository<ArticleComment>,
 
         @InjectRepository(ChapterComment)
         private readonly chapterCommentRepository: Repository<ChapterComment>,
+
+        @InjectRepository(BoilingPointComment)
+        private readonly boilingPointCommentRepository: Repository<BoilingPointComment>,
     ) {}
 
     // async findOne(commentType: string, commentID: number, select) {
@@ -89,34 +95,45 @@ export class CommentService {
     //     });
     // }
 
-    async articleComments(userID: number, articleID: number, lastCommentID: number, limit: number) {
-        let comments: Comment[] = await this.commentRepository.find({
+    /**
+     * 一级评论列表
+     */
+    async comments(c: new () => Comment, sourceID: number, lastCommentID: number, userID: number, limit: number) {
+        const commentRepository = this.getCommentRepository(c);
+        const comments = await (commentRepository as any).find({
             select: commentListSelect,
             relations: ['user'],
             where: lastCommentID ? {
-                articleID,
-                parentID: NO_PARENT,
+                sourceID,
+                parentID: NO_PARENT, // 只查一级评论
                 id: LessThan(lastCommentID),
             } : {
-                articleID,
+                sourceID,
                 parentID: NO_PARENT,
             },
             order: { id: 'DESC' },
             take: limit,
-        });
-        comments = comments || [];
-        let allCommentIDs = [];
+        }) || [];
+
+        // 一级评论id及子评论id
+        const allCommentIDs = [];
+        // 子评论的父评论id
         const parentIDArr: number[] = [];
+        // 子评论id
+        const subCommentIDArr: number[] = [];
+        // 子评论id的map
         const subIDMap = {};
         // 一级评论
-        const parentComments = comments.map(comment => {
+        const rootComments = comments.map(comment => {
             allCommentIDs.push(comment.id);
             const latest = JSON.parse(comment.latest);
             const tempSubIDs = [];
             latest.forEach(data => {
+                allCommentIDs.push(data.id);
+                subCommentIDArr.push(data.id);
                 subIDMap[data.id] = data.id;
-                tempSubIDs.push(data.id);
                 parentIDArr.push(data.pid);
+                tempSubIDs.push(data.id);
             });
             return {
                 ...comment,
@@ -126,12 +143,9 @@ export class CommentService {
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
             };
         });
-        let subCommentIDArr = [];
-        parentComments.map(pComment => subCommentIDArr = subCommentIDArr.concat(pComment.subIDs));
-        allCommentIDs = allCommentIDs.concat(subCommentIDArr);
         const [subAndParentComments, likeComments] = await Promise.all([
-            this.articleSubCommentByIDs(subCommentIDArr.concat(parentIDArr)),
-            userID ? this.commentsFilterByUserLiked(allCommentIDs, userID) : Promise.resolve([]),
+            this.commentsByIDs(c, subCommentIDArr.concat(parentIDArr)),
+            userID ? this.commentsFilterByUserLiked(c, allCommentIDs, userID) : Promise.resolve([]),
         ]);
         const subAndParentCommentMap = {};
         subAndParentComments.map(s => {
@@ -143,26 +157,29 @@ export class CommentService {
             }
         });
         const userLikeCommentMap = {};
-        likeComments.map(c => userLikeCommentMap[c.commentID] = true);
-        parentComments.map(comment => {
+        likeComments.map(likeComment => userLikeCommentMap[likeComment.commentID] = true);
+        rootComments.map(comment => {
             comment.userLiked = !!userLikeCommentMap[comment.id];
             comment.comments = comment.subIDs.map(id => subAndParentCommentMap[id]);
             comment.comments.map(subC => subC.userLiked = !!userLikeCommentMap[subC.id]);
         });
-        return parentComments;
+        return rootComments;
     }
 
-    async articleSubComments(userID: number, commentID: number, lastSubCommentID: number, limit: number) {
-        let comments = await this.commentRepository.find({
+    /**
+     * 子评论列表
+     */
+    async subComments(c: new () => Comment, commentID: number, lastSubCommentID: number, userID: number, limit: number) {
+        const commentRepository = this.getCommentRepository(c);
+        const comments = await (commentRepository as any).find({
             select: commentListSelect,
             relations: ['user'],
-            where: { rootID: commentID, id: LessThan(lastSubCommentID) },
+            where: lastSubCommentID ? { rootID: commentID, id: LessThan(lastSubCommentID) } : { rootID: commentID },
             order: { id: 'DESC' },
             take: limit,
-        });
-        comments = comments || [];
+        }) || [];
         const subCommentIDs = [];
-        const tempComments = comments.map(comment => {
+        const theComments = comments.map(comment => {
             subCommentIDs.push(comment.id);
             return {
                 ...comment,
@@ -170,23 +187,26 @@ export class CommentService {
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
             };
         });
-        const likeComments = await (userID ? this.commentsFilterByUserLiked(subCommentIDs, userID) : Promise.resolve([]));
+        const likeComments = await (userID ? this.commentsFilterByUserLiked(c, subCommentIDs, userID) : Promise.resolve([]));
         const userLikeCommentMap = {};
-        likeComments.map(c => userLikeCommentMap[c.commentID] = true);
-        tempComments.map(comment => {
+        likeComments.map(likeC => userLikeCommentMap[likeC.commentID] = true);
+        theComments.map(comment => {
             comment.userLiked = !!userLikeCommentMap[comment.id];
         });
-        return tempComments;
+        return theComments;
     }
 
-    async articleSubCommentByIDs(ids: number[]) {
-        let comments = await this.commentRepository.find({
+    /**
+     * 根据给定的一组评论id来查询评论
+     */
+    async commentsByIDs(c: new () => Comment, ids: number[]) {
+        const commentRepository = this.getCommentRepository(c);
+        const comments = await (commentRepository as any).find({
             select: commentListSelect,
             relations: ['user'],
             where: { id: In(ids) },
             order: { id: 'DESC' },
-        });
-        comments = comments || [];
+        }) || [];
         const result = comments.map(comment => {
             return {
                 ...comment,
@@ -269,33 +289,27 @@ export class CommentService {
     /**
      * 点赞
      */
-    async like(c: new () => Comment | ChapterComment, commentID: number, userID: number) {
-        let userLikeTable: string;
-        let commentTable: string;
-        let commentRepository: Repository<Comment> | Repository<ChapterComment>;
-
-        if (c === Comment) {
-            userLikeTable = LikeArticleCommentTable;
-            commentTable = ArticleCommentTable;
-            commentRepository = this.commentRepository;
-        } else if (c === ChapterComment) {
-            userLikeTable = LikeChapterCommentTable;
-            commentTable = ChapterCommentTable;
-            commentRepository = this.chapterCommentRepository;
-        }
+    async like(c: new () => Comment, commentID: number, userID: number) {
+        const userLikeTable: string = this.getUserLikeTable(c);
+        const commentTable: string = this.getCommentTable(c);
+        const commentRepository = this.getCommentRepository(c);
 
         const sql1 = `SELECT id FROM ${commentTable} WHERE id = ?`;
-        const commentData = await commentRepository.manager.query(sql1, [commentID]) || [];
+        const sql2 = `SELECT comment_id, user_id FROM ${userLikeTable}
+            WHERE comment_id = ? AND user_id = ?`;
+
+        let [commentData, userLikedData] = await Promise.all([
+            commentRepository.manager.query(sql1, [commentID]),
+            commentRepository.manager.query(sql2, [commentID, userID]),
+        ]);
+        commentData = commentData || [];
+        userLikedData = userLikedData || [];
         if (commentData.length <= 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
             });
         }
-
-        const sql2 = `SELECT comment_id, user_id FROM ${userLikeTable}
-            WHERE comment_id = ? AND user_id = ?`;
-        const result = await commentRepository.manager.query(sql2, [commentID, userID]) || [];
-        if (result.length) {
+        if (userLikedData.length) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
                 message: '已经赞过此评论',
@@ -312,19 +326,11 @@ export class CommentService {
     /**
      * 取消点赞
      */
-    async deleteLike(c: new () => Comment | ChapterComment, commentID: number, userID: number) {
-        let userLikeTable: string;
-        let commentTable: string;
-        let commentRepository: Repository<Comment> | Repository<ChapterComment>;
-        if (c === Comment) {
-            userLikeTable = LikeArticleCommentTable;
-            commentTable = ArticleCommentTable;
-            commentRepository = this.commentRepository;
-        } else if (c === ChapterComment) {
-            userLikeTable = LikeChapterCommentTable;
-            commentTable = ChapterCommentTable;
-            commentRepository = this.chapterCommentRepository;
-        }
+    async deleteLike(c: new () => Comment, commentID: number, userID: number) {
+        const userLikeTable: string = this.getUserLikeTable(c);
+        const commentTable: string = this.getCommentTable(c);
+        const commentRepository = this.getCommentRepository(c);
+
         const sql = `SELECT comment_id, user_id FROM ${userLikeTable}
                 WHERE comment_id = ? AND user_id = ?`;
         const likeData = await commentRepository.manager.query(sql, [commentID, userID]) || [];
@@ -345,12 +351,50 @@ export class CommentService {
     /**
      * 给定一组评论id，根据 userID 来过滤被用户赞过的的评论
      */
-    async commentsFilterByUserLiked(commentIDs: number[], userID: number) {
+    async commentsFilterByUserLiked(c: new () => Comment, commentIDs: number[], userID: number) {
         if (!commentIDs || commentIDs.length <= 0) {
             return [];
         }
-        const sql = `SELECT user_id as userID, comment_id as commentID FROM like_article_comments
+        const userLikeTable: string = this.getUserLikeTable(c);
+        const commentRepository = this.getCommentRepository(c);
+        const sql = `SELECT user_id as userID, comment_id as commentID FROM ${userLikeTable}
             WHERE user_id = ? AND comment_id IN (?)`;
-        return await this.commentRepository.manager.query(sql, [userID, commentIDs]);
+        return await commentRepository.manager.query(sql, [userID, commentIDs]);
+    }
+
+    private getCommentRepository(c: new () => Comment): Repository<ArticleComment> | Repository<ChapterComment> | Repository<BoilingPointComment> {
+        let commentRepository: Repository<ArticleComment> | Repository<ChapterComment> | Repository<BoilingPointComment>;
+        if (c === ArticleComment) {
+            commentRepository = this.articleCommentRepository;
+        } else if (c === ChapterComment) {
+            commentRepository = this.chapterCommentRepository;
+        } else if (c === BoilingPointComment) {
+            commentRepository = this.boilingPointCommentRepository;
+        }
+        return commentRepository;
+    }
+
+    private getCommentTable(c: new () => Comment): string {
+        let userLikeTable: string;
+        if (c === ArticleComment) {
+            userLikeTable = ArticleCommentTable;
+        } else if (c === ChapterComment) {
+            userLikeTable = ChapterCommentTable;
+        } else if (c === BoilingPointComment) {
+            userLikeTable = BoilingPointCommentTable;
+        }
+        return userLikeTable;
+    }
+
+    private getUserLikeTable(c: new () => Comment): string {
+        let userLikeTable: string;
+        if (c === ArticleComment) {
+            userLikeTable = LikeArticleCommentTable;
+        } else if (c === ChapterComment) {
+            userLikeTable = LikeChapterCommentTable;
+        } else if (c === BoilingPointComment) {
+            userLikeTable = LikeBoilingPointCommentTable;
+        }
+        return userLikeTable;
     }
 }

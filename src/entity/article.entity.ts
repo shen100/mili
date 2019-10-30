@@ -9,7 +9,7 @@ import {
     JoinColumn,
 } from 'typeorm';
 import { Category } from './category.entity';
-import { Comment } from './comment.entity';
+import { Comment, ArticleComment } from './comment.entity';
 import { User } from './user.entity';
 import { Collection } from './collection.entity';
 import { Tag } from './tag.entity';
@@ -123,8 +123,8 @@ export class Article {
     })
     collections: Collection[];
 
-    @OneToMany(type => Comment, comment => comment.article)
-    comments: Comment[];
+    @OneToMany(type => ArticleComment, comment => comment.article)
+    comments: ArticleComment[];
 
     @Column('int', { name: 'user_id' })
     userID: number;

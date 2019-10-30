@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ArticleContentType } from './article.entity';
 import { User } from './user.entity';
+import { ChapterComment } from './comment.entity';
 
 @Entity({name: 'book_categories'})
 export class BookCategory {
@@ -184,6 +185,9 @@ export class BookChapter {
     @ManyToOne(type => Book)
     @JoinColumn({ name: 'book_id' })
     book: Book;
+
+    @OneToMany(type => ChapterComment, comment => comment.chapter)
+    comments: ChapterComment[];
 }
 
 export enum BookStarStatus {
