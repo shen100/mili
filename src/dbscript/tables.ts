@@ -36,7 +36,36 @@ export const tablesRun = async function (connection) {
             PRIMARY KEY (user_id, category_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
-        let sql = `CREATE TABLE handbooks (
+        let sql = `CREATE TABLE boilingpoint_comments (
+          id int(11) unsigned NOT NULL AUTO_INCREMENT,
+          content text,
+          html_content text,
+          content_type int(11) NOT NULL,
+          parent_id int(11) NOT NULL DEFAULT '0',
+          status int(11) NOT NULL,
+          source_id int(11) DEFAULT NULL,
+          book_id int(11) NOT NULL,
+          user_id int(11) unsigned NOT NULL,
+          created_at datetime NOT NULL,
+          updated_at datetime NOT NULL,
+          deleted_at datetime DEFAULT NULL,
+          root_id int(11) NOT NULL DEFAULT '0',
+          liked_count int(11) NOT NULL DEFAULT '0',
+          comment_count int(11) NOT NULL DEFAULT '0',
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
+
+        sql = `CREATE TABLE like_boiling_comments (
+          comment_id int(11) unsigned NOT NULL,
+          user_id int(11) unsigned NOT NULL,
+          created_at datetime NOT NULL,
+          PRIMARY KEY (comment_id, user_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`;
+        await connection.manager.query(sql);
+
+        await connection.manager.query(sql);
+
+        sql = `CREATE TABLE handbooks (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             created_at datetime NOT NULL,
             updated_at datetime NOT NULL,
@@ -64,7 +93,7 @@ export const tablesRun = async function (connection) {
             content_type int(11) NOT NULL,
             parent_id int(11) NOT NULL DEFAULT '0',
             status int(11) NOT NULL,
-            article_id int(11) DEFAULT NULL,
+            source_id int(11) DEFAULT NULL,
             book_id int(11) NOT NULL,
             user_id int(11) unsigned NOT NULL,
             created_at datetime NOT NULL,

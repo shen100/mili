@@ -21,7 +21,7 @@ import { Settings } from '../entity/settings.entity';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { PostMsg } from '../entity/postmsg.entity';
-import { Comment, ChapterComment } from '../entity/comment.entity';
+import { Comment, ChapterComment, BoilingPointComment, ArticleComment } from '../entity/comment.entity';
 import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
 import { HandBookController } from './handBook.controller';
@@ -45,7 +45,8 @@ import { Image } from '../entity/image.entity';
             User,
             Settings,
             Article,
-            Comment,
+            BoilingPointComment,
+            ArticleComment,
             ChapterComment,
             Collection,
             Category,
