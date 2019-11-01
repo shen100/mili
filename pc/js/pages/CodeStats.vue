@@ -105,6 +105,7 @@ export default {
             'pc/styles/tag/tagDetail.scss',
             'pc/styles/user/user.scss',
             'src/cms/dto/create-book-star.dto.ts',
+            'src/cms/dto/create-comment.dto.ts',
             'src/cms/dto/create-tag.dto.ts',
             'src/cms/dto/update-tag.dto.ts',
             'src/cms/book.controller.ts',

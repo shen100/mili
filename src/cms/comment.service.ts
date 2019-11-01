@@ -6,7 +6,7 @@ import { Repository, Not, In, LessThan } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment,
     CommentStatus,
-    ChapterComment,
+    BookChapterComment,
     ArticleComment,
     BoilingPointComment,
 } from '../entity/comment.entity';
@@ -21,12 +21,16 @@ import {
 } from '../constants/comment';
 
 const {
+    ArticleTable,
+    BoilingPointTable,
+    BookChapterTable,
     LikeArticleCommentTable,
-    LikeChapterCommentTable,
+    LikeBookChapterCommentTable,
     LikeBoilingPointCommentTable,
     ArticleCommentTable,
-    ChapterCommentTable,
+    BookChapterCommentTable,
     BoilingPointCommentTable,
+    BookTable,
 } = CommentConstants;
 
 const commentListSelect = {
@@ -53,8 +57,8 @@ export class CommentService {
         @InjectRepository(ArticleComment)
         private readonly articleCommentRepository: Repository<ArticleComment>,
 
-        @InjectRepository(ChapterComment)
-        private readonly chapterCommentRepository: Repository<ChapterComment>,
+        @InjectRepository(BookChapterComment)
+        private readonly bookChapterCommentRepository: Repository<BookChapterComment>,
 
         @InjectRepository(BoilingPointComment)
         private readonly boilingPointCommentRepository: Repository<BoilingPointComment>,
@@ -78,22 +82,15 @@ export class CommentService {
     //     return comment;
     // }
 
-    // async getParent(commentType: string, id: number, fields = []) {
-    //     if (commentType === CommentTypeArticle) {
-    //         return await this.commentRepository.findOne({
-    //             select: fields,
-    //             where: {
-    //                 id,
-    //             },
-    //         });
-    //     }
-    //     return await this.chapterCommentRepository.findOne({
-    //         select: fields,
-    //         where: {
-    //             id,
-    //         },
-    //     });
-    // }
+    async getParent(c: new () => Comment, id: number, fields: string[] = []) {
+        const commentRepository = this.getCommentRepository(c);
+        return await await (commentRepository as any).findOne({
+            select: fields,
+            where: {
+                id,
+            },
+        });
+    }
 
     /**
      * 一级评论列表
@@ -216,45 +213,44 @@ export class CommentService {
         return result;
     }
 
-    // async create(commentType: string, createCommentDto: CreateCommentDto, userID: number) {
-    //     let comment: Comment;
-    //     if (commentType === CommentTypeArticle) {
-    //         comment = new Comment();
-    //     } else if (commentType === CommentTypeChapter) {
-    //         comment = new ChapterComment();
-    //     }
-    //     comment.articleID = createCommentDto.commentTo;
-    //     comment.contentType = CommentContentType.HTML;
-    //     comment.htmlContent = createCommentDto.content;
-    //     comment.parentID = createCommentDto.parentID || NO_PARENT;
-    //     comment.rootID = createCommentDto.rootID || NO_PARENT;
-    //     comment.status = CommentStatus.Verifying;
-    //     comment.userID = userID;
-    //     comment.createdAt = new Date();
-    //     comment.updatedAt = comment.createdAt;
-    //     comment.commentCount = 0;
+    async create(c: new () => Comment, createCommentDto: CreateCommentDto, userID: number) {
+        const collectionTable = this.getCollectionTable(c);
+        const sourceTable: string = this.getSourceTable(c);
+        const commentTable = this.getCommentTable(c);
+        const commentRepository = this.getCommentRepository(c);
+        let id;
 
-    //     await this.commentRepository.manager.connection.transaction(async manager => {
-    //         let sql = `UPDATE articles SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
-    //         if (commentType === CommentTypeChapter) {
-    //             sql = `UPDATE book_chapters SET comment_count = comment_count + 1 WHERE id = ${comment.articleID}`;
-    //         }
-    //         let commentRepository: any = manager.getRepository(Comment);
-    //         if (commentType === CommentTypeChapter) {
-    //             commentRepository = manager.getRepository(ChapterComment);
-    //         }
-    //         const commentData: any = { ...comment };
-    //         if (commentType === CommentTypeChapter) {
-    //             commentData.bookID = createCommentDto.bookID;
-    //         }
-    //         await commentRepository.save(commentData);
-    //         await manager.query(sql);
-    //         if (commentType === CommentTypeChapter) {
-    //             await manager.query('UPDATE books SET comment_count = comment_count + 1 WHERE id = ?', [createCommentDto.bookID]);
-    //         }
-    //     });
-    //     return comment;
-    // }
+        await commentRepository.manager.connection.transaction(async manager => {
+            const now = new Date();
+            const commentSQL = `INSERT INTO ${commentTable} (source_id, html_content, parent_id, root_id,
+                status, user_id, created_at, updated_at, comment_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+            const commentSQL2 = `INSERT INTO ${commentTable} (source_id, html_content, parent_id, root_id,
+                    status, user_id, created_at, updated_at, comment_count, collection_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            const commentSQLData = [
+                createCommentDto.sourceID,
+                createCommentDto.htmlContent,
+                createCommentDto.parentID || NO_PARENT,
+                createCommentDto.rootID || NO_PARENT,
+                CommentStatus.VerifySuccess,
+                userID,
+                now,
+                now,
+                0,
+            ];
+            let sql = commentSQL;
+            if (c === BookChapterComment) {
+                sql = commentSQL2;
+                commentSQLData.push(createCommentDto.collectionID);
+            }
+            const sql2 = `UPDATE ${sourceTable} SET comment_count = comment_count + 1 WHERE id = ${createCommentDto.sourceID}`;
+            await manager.query(sql);
+            await manager.query(sql2);
+            if (c === BookChapterComment) {
+                await manager.query(`UPDATE ${collectionTable} SET comment_count = comment_count + 1 WHERE id = ?`, [createCommentDto.collectionID]);
+            }
+        });
+        return id;
+    }
 
     // async delete(commentType: string, commentID: number, userID: number) {
     //     const userLikeTable = userLikeTableMap[commentType];
@@ -362,24 +358,45 @@ export class CommentService {
         return await commentRepository.manager.query(sql, [userID, commentIDs]);
     }
 
-    private getCommentRepository(c: new () => Comment): Repository<ArticleComment> | Repository<ChapterComment> | Repository<BoilingPointComment> {
-        let commentRepository: Repository<ArticleComment> | Repository<ChapterComment> | Repository<BoilingPointComment>;
+    private getCommentRepository(c: new () => Comment): Repository<ArticleComment> |
+            Repository<BookChapterComment> | Repository<BoilingPointComment> {
+        let commentRepository: Repository<ArticleComment> | Repository<BookChapterComment> | Repository<BoilingPointComment>;
         if (c === ArticleComment) {
             commentRepository = this.articleCommentRepository;
-        } else if (c === ChapterComment) {
-            commentRepository = this.chapterCommentRepository;
+        } else if (c === BookChapterComment) {
+            commentRepository = this.bookChapterCommentRepository;
         } else if (c === BoilingPointComment) {
             commentRepository = this.boilingPointCommentRepository;
         }
         return commentRepository;
     }
 
+    private getCollectionTable(c: new () => Comment): string {
+        let collectionTable: string = '';
+        if (c === BookChapterComment) {
+            collectionTable = BookTable;
+        }
+        return collectionTable;
+    }
+
+    private getSourceTable(c: new () => Comment): string {
+        let sourceTable: string;
+        if (c === ArticleComment) {
+            sourceTable = ArticleTable;
+        } else if (c === BookChapterComment) {
+            sourceTable = BookChapterTable;
+        } else if (c === BoilingPointComment) {
+            sourceTable = BoilingPointTable;
+        }
+        return sourceTable;
+    }
+
     private getCommentTable(c: new () => Comment): string {
         let userLikeTable: string;
         if (c === ArticleComment) {
             userLikeTable = ArticleCommentTable;
-        } else if (c === ChapterComment) {
-            userLikeTable = ChapterCommentTable;
+        } else if (c === BookChapterComment) {
+            userLikeTable = BookChapterCommentTable;
         } else if (c === BoilingPointComment) {
             userLikeTable = BoilingPointCommentTable;
         }
@@ -390,8 +407,8 @@ export class CommentService {
         let userLikeTable: string;
         if (c === ArticleComment) {
             userLikeTable = LikeArticleCommentTable;
-        } else if (c === ChapterComment) {
-            userLikeTable = LikeChapterCommentTable;
+        } else if (c === BookChapterComment) {
+            userLikeTable = LikeBookChapterCommentTable;
         } else if (c === BoilingPointComment) {
             userLikeTable = LikeBoilingPointCommentTable;
         }

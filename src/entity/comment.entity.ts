@@ -68,10 +68,10 @@ export class ArticleComment extends Comment {
     article: Article;
 }
 
-@Entity({name: 'chapter_comments'})
-export class ChapterComment extends Comment {
-    @Column('int', { name: 'book_id' })
-    bookID: number;
+@Entity({name: 'book_chapter_comments'})
+export class BookChapterComment extends Comment {
+    @Column('int', { name: 'collection_id' })
+    collectionID: number;
 
     @ManyToOne(type => BookChapter, chapter => chapter.comments)
     @JoinColumn({name: 'source_id'})

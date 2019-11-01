@@ -32,6 +32,15 @@ export class BoilingPointService {
         private readonly configService: ConfigService,
     ) {}
 
+    async isExist(id: number): Promise<boolean> {
+        const boilingPoint = await this.boilingPointRepository.findOne({
+            id,
+        }, {
+            select: ['id'],
+        });
+        return boilingPoint !== null;
+    }
+
     async findOne(options): Promise<BoilingPoint> {
         return await this.boilingPointRepository.findOne({
             where: options.where,

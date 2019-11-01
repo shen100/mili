@@ -6,7 +6,7 @@ import { ListResult } from '../entity/listresult.entity';
 import { CreateBookStarDto } from './dto/create-book-star.dto';
 import { parseCountResult } from '../utils/query';
 import { User } from '../entity/user.entity';
-import { ChapterComment } from '../entity/comment.entity';
+import { BookChapterComment } from '../entity/comment.entity';
 
 @Injectable()
 export class BookService {
@@ -24,8 +24,8 @@ export class BookService {
         @InjectRepository(BookStar)
         private readonly bookStarRepository: Repository<BookStar>,
 
-        @InjectRepository(ChapterComment)
-        private readonly chapterCommentRepository: Repository<ChapterComment>,
+        @InjectRepository(BookChapterComment)
+        private readonly chapterCommentRepository: Repository<BookChapterComment>,
     ) {}
 
     async allCategories() {
@@ -282,7 +282,7 @@ export class BookService {
     /**
      * 章节下的评论，在图书下显示时，不区分父评论，子评论
      */
-    async commentList(bookID: number, page: number, pageSize: number): Promise<ListResult<ChapterComment>> {
+    async commentList(bookID: number, page: number, pageSize: number): Promise<ListResult<BookChapterComment>> {
         const [list, count] = await this.chapterCommentRepository.findAndCount({
             select: {
                 id: true,
@@ -296,7 +296,7 @@ export class BookService {
             },
             relations: ['user'],
             where: {
-                bookID,
+                collectionID: bookID,
             },
             order: {
                 createdAt: 'DESC',

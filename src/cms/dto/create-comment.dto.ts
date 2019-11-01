@@ -3,23 +3,23 @@ import {
     IsInt,
     MinLength,
     MaxLength,
-    IsEnum,
     ValidateIf,
 } from 'class-validator';
+import { CommentConstants } from '../../constants/comment';
 
 export class CreateCommentDto {
     @ValidateIf(obj => {
-        return obj && typeof obj.bookID !== 'undefined';
+        return obj && typeof obj.collectionID !== 'undefined';
     })
     @IsInt({
-        message: '无效的bookID',
+        message: '无效的collectionID',
     })
-    readonly bookID: number;
+    readonly collectionID: number;
 
     @IsInt({
         message: '无效的commentTo',
     })
-    readonly commentTo: number;
+    readonly sourceID: number;
 
     @ValidateIf(o => o.parentID !== undefined)
     @IsInt({
@@ -33,12 +33,12 @@ export class CreateCommentDto {
     })
     readonly rootID: number;
 
-    @MinLength(1, {
-        message: '评论内容不能为空',
+    @MinLength(CommentConstants.MinContentLength, {
+        message: '评论内容过少哦',
     })
-    @MaxLength(500, {
+    @MaxLength(CommentConstants.MaxContentLength, {
         message: '内容不能超过 $constraint1 个字符',
     })
     @IsString()
-    readonly content: string;
+    readonly htmlContent: string;
 }

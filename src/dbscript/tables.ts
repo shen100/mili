@@ -86,7 +86,7 @@ export const tablesRun = async function (connection) {
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);
 
-        sql = `CREATE TABLE chapter_comments (
+        sql = `CREATE TABLE book_chapter_comments (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
             content text,
             html_content text,
@@ -94,7 +94,7 @@ export const tablesRun = async function (connection) {
             parent_id int(11) NOT NULL DEFAULT '0',
             status int(11) NOT NULL,
             source_id int(11) DEFAULT NULL,
-            book_id int(11) NOT NULL,
+            collection_id int(11) NOT NULL,
             user_id int(11) unsigned NOT NULL,
             created_at datetime NOT NULL,
             updated_at datetime NOT NULL,

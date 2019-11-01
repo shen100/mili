@@ -1,5 +1,5 @@
 import {
-    Controller, Post, UseGuards, Get, Param, Delete, Query,
+    Controller, Post, UseGuards, Get, Param, Delete, Query, Body,
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { ArticleService } from './article.service';
@@ -14,13 +14,17 @@ import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 import { APIPrefix } from '../constants/constants';
 import { BookService } from './book.service';
-import { ChapterComment, BoilingPointComment, ArticleComment } from '../entity/comment.entity';
+import { BookChapterComment, BoilingPointComment, ArticleComment } from '../entity/comment.entity';
 import { clampNumber } from '../utils/common';
+import { BoilingPointService } from '../boilingpoint/boilingpoint.service';
 
 @Controller()
 export class CommentController {
     constructor(
         private readonly commentService: CommentService,
+        private readonly articleService: ArticleService,
+        private readonly bookService: BookService,
+        private readonly boilingPointService: BoilingPointService,
     ) {}
 
     /**
@@ -67,60 +71,68 @@ export class CommentController {
         };
     }
 
-    // @Post(`${APIPrefix}/comments`)
-    // @UseGuards(ActiveGuard)
-    // async create(@CurUser() user, @Query('commentType') commentType: string, @Body() createCommentDto: CreateCommentDto) {
-    //     if (!this.isValidCommentType(commentType)) {
-    //         throw new MyHttpException({
-    //             errorCode: ErrorCode.NotFound.CODE,
-    //         });
-    //     }
-    //     if (createCommentDto.parentID) {
-    //         const parentComment = await this.commentService.getParent(commentType, createCommentDto.parentID, ['id', 'articleID', 'rootID']);
-    //         if (!parentComment) {
-    //             throw new MyHttpException({
-    //                 errorCode: ErrorCode.ParamsError.CODE,
-    //                 message: '无效的parentID',
-    //             });
-    //         }
-    //         if (createCommentDto.commentTo !== parentComment.articleID) {
-    //             throw new MyHttpException({
-    //                 errorCode: ErrorCode.ParamsError.CODE,
-    //                 message: '无效的articleID',
-    //             });
-    //         }
-    //         if (parentComment.rootID && createCommentDto.rootID !== parentComment.rootID) {
-    //             throw new MyHttpException({
-    //                 errorCode: ErrorCode.ParamsError.CODE,
-    //                 message: '无效的rootID',
-    //             });
-    //         }
-    //         if (!parentComment.rootID && createCommentDto.rootID !== parentComment.id) {
-    //             throw new MyHttpException({
-    //                 errorCode: ErrorCode.ParamsError.CODE,
-    //                 message: '无效的rootID',
-    //             });
-    //         }
-    //     } else {
-    //         const { CommentTypeArticle, CommentTypeChapter } = CommentConstants;
-    //         let isArticleExist = false;
-    //         if (commentType === CommentTypeArticle) {
-    //             isArticleExist = await this.articleService.isExist(createCommentDto.commentTo);
-    //         } else if (commentType === CommentTypeChapter) {
-    //             isArticleExist = await this.bookService.isChapterExist(createCommentDto.commentTo);
-    //         }
-    //         if (!isArticleExist) {
-    //             throw new MyHttpException({
-    //                 errorCode: ErrorCode.ParamsError.CODE,
-    //                 message: '无效的articleID',
-    //             });
-    //         }
-    //     }
-    //     const comment = await this.commentService.create(commentType, createCommentDto, user.id);
-    //     return {
-    //         comment,
-    //     };
-    // }
+    @Post(`${APIPrefix}/comments/:source`)
+    @UseGuards(ActiveGuard)
+    async create(@CurUser() user, @Param('source') source: string, @Body() createCommentDto: CreateCommentDto) {
+        if (['article', 'boilingpoint', 'bookchapter'].indexOf(source) < 0) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        const CommentClass = this.getCommentClass(source);
+        let isSourceExistPromise: Promise<boolean>;
+        if (source === 'article') {
+            isSourceExistPromise = this.articleService.isExist(createCommentDto.commentTo);
+        } else if (source === 'boilingpoint') {
+            isSourceExistPromise = this.boilingPointService.isExist(createCommentDto.commentTo);
+        } else if (source === 'bookchapter') {
+            isSourceExistPromise = this.bookService.isChapterExist(createCommentDto.commentTo);
+        }
+
+        const [isSourceExist, parent] = await Promise.all([
+            isSourceExistPromise,
+            createCommentDto.parentID ? this.commentService.getParent(CommentClass, createCommentDto.parentID) : Promise.resolve(null),
+        ]);
+
+        if (!isSourceExist) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '无效的sourceID',
+            });
+        }
+
+        if (createCommentDto.parentID) {
+            if (!parent) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.ParamsError.CODE,
+                    message: '无效的parentID',
+                });
+            }
+            if (createCommentDto.commentTo !== parent.sourceID) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.ParamsError.CODE,
+                    message: '无效的sourceID',
+                });
+            }
+            if (parent.rootID && createCommentDto.rootID !== parent.rootID) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.ParamsError.CODE,
+                    message: '无效的rootID',
+                });
+            }
+            if (!parent.rootID && createCommentDto.rootID !== parent.id) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.ParamsError.CODE,
+                    message: '无效的rootID',
+                });
+            }
+        }
+
+        const comment = await this.commentService.create(CommentClass, createCommentDto, user.id);
+        return {
+            comment,
+        };
+    }
 
     /**
      * 点赞
@@ -172,8 +184,8 @@ export class CommentController {
         if (source === 'article') {
             return ArticleComment;
         }
-        if (source === 'chapter') {
-            return ChapterComment;
+        if (source === 'bookchapter') {
+            return BookChapterComment;
         }
         if (source === 'boilingpoint') {
             return BoilingPointComment;
