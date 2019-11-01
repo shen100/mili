@@ -223,9 +223,11 @@ export class CommentService {
         await commentRepository.manager.connection.transaction(async manager => {
             const now = new Date();
             const commentSQL = `INSERT INTO ${commentTable} (source_id, html_content, parent_id, root_id,
-                status, user_id, created_at, updated_at, comment_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+                status, user_id, created_at, updated_at, comment_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            // commentSQL2 只是比 commentSQL 多增加个 collection_id 字段
             const commentSQL2 = `INSERT INTO ${commentTable} (source_id, html_content, parent_id, root_id,
-                    status, user_id, created_at, updated_at, comment_count, collection_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                status, user_id, created_at, updated_at, comment_count, collection_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
             const commentSQLData = [
                 createCommentDto.sourceID,
                 createCommentDto.htmlContent,
@@ -238,14 +240,15 @@ export class CommentService {
                 0,
             ];
             let sql = commentSQL;
-            if (c === BookChapterComment) {
+            if (createCommentDto.collectionID) {
                 sql = commentSQL2;
                 commentSQLData.push(createCommentDto.collectionID);
             }
             const sql2 = `UPDATE ${sourceTable} SET comment_count = comment_count + 1 WHERE id = ${createCommentDto.sourceID}`;
-            await manager.query(sql);
+            const result = await manager.query(sql);
+            console.log();
             await manager.query(sql2);
-            if (c === BookChapterComment) {
+            if (createCommentDto.collectionID) {
                 await manager.query(`UPDATE ${collectionTable} SET comment_count = comment_count + 1 WHERE id = ?`, [createCommentDto.collectionID]);
             }
         });

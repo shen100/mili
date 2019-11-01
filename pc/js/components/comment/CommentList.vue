@@ -15,9 +15,9 @@
             </form>
             <!-- 评论列表 -->
             <div class="comments">
-                <CommentRichEditor v-if="userID" ref="commentRichEditor" :bookID="bookID" :articleID="articleID" 
+                <CommentRichEditor v-if="userID" ref="commentRichEditor" :collectionID="collectionID" :articleID="articleID" 
                     emptyPlaceholder="写下你的评论" @success="addCommentSuccess" @error="addCommentError" 
-                    :sendDefVisible="false" :commentType="commentType" />
+                    :sendDefVisible="false" :source="source" />
                 <div v-for="comment in comments" class="comment lastchild-flag" 
                     :key="`comment-${comment.id}`" :id="`comment-${comment.id}`">
                     <div class="comment-avatar-area v-tooltip-container"
@@ -62,12 +62,12 @@
                         </div>
 
                         <!-- 回复评论 -->
-                        <CommentRichEditor v-if="userID && comment.editorToggled" :bookID="bookID" :articleID="articleID" 
+                        <CommentRichEditor v-if="userID && comment.editorToggled" :collectionID="collectionID" :articleID="articleID" 
                             :emptyPlaceholder="`回复${comment.user.username}`"
                             :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
                             @error="addCommentError" :parentID="comment.id" 
                             @cancel="onCancelComment(comment)"
-                            :commentType="commentType" />
+                            :source="source" />
                         
                         <!-- 子评论 -->
                         <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
@@ -129,10 +129,10 @@
                                     </div>
 
                                     <CommentRichEditor v-if="userID && subcomment.editorToggled" :emptyPlaceholder="`回复${subcomment.user.username}`"
-                                        :bookID="bookID" :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" 
+                                        :collectionID="collectionID" :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" 
                                         :parentID="subcomment.id" @success="addCommentSuccess" @error="addCommentError"
                                         @cancel="onCancelComment(subcomment)" 
-                                        :commentType="commentType" />
+                                        :source="source" />
                                 </div>
                             </div>
                             <!-- 一级评论的子评论未加载完时的加载按钮 -->
@@ -167,10 +167,10 @@ import { jobCompany, levelImgURL } from '~/js/common/filters.js';
 export default {
     name: 'CommentList',
     props: [
-        'commentType', // article, boilingpoint
+        'source', // article, boilingpoint, bookchapter
         'rootCommentCount', // 一级评论数
-        'bookID',
-        'articleID', // 文章id, 如果是图书的话，那就是 chapterID
+        'collectionID', // 如果是图书章节的评论，那么collectionID就是 图书id
+        'sourceID', // 如果是文章的评论，那么是文章id, 如果是图书章节的评论，那么是 章节id
         'authorID',
         'userID',
         'username',
@@ -206,7 +206,7 @@ export default {
             }
             this.isLoading = true;
             const lastCommentID = this.comments.length ? this.comments[this.comments.length - 1].id : '';
-            let url = `/comments/${this.commentType}/${this.articleID}/${lastCommentID}`;
+            let url = `/comments/${this.source}/${this.articleID}/${lastCommentID}`;
             myHTTP.get(url).then((res) => {
                 this.isLoading = false;
                 const comments = res.data.data.list || [];
@@ -248,7 +248,7 @@ export default {
             }
             this.subCommentLoadStatusMap[parentComment.id] = true;
             const lastID = parentComment.comments[parentComment.comments.length - 1].id;
-            let url = `/comments/${this.commentType}/comment/${parentComment.id}/${lastID}`;
+            let url = `/comments/${this.source}/comment/${parentComment.id}/${lastID}`;
             myHTTP.get(url).then((res) => {
                 this.subCommentLoadStatusMap[parentComment.id] = false;
                 const commentMap = this.commentMap;

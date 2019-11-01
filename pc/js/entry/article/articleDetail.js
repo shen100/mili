@@ -51,8 +51,8 @@ registerDirective(Vue);
     new Vue({
         render: h => h(CommentList, {
             props: {
-                commentType: 'article',
-                articleID: window.articleID,
+                source: 'article',
+                sourceID: window.articleID,
                 userID: window.userID,
                 username: window.username,
                 avatarURL: window.avatarURL,

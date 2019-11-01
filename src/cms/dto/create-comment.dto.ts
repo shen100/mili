@@ -12,12 +12,12 @@ export class CreateCommentDto {
         return obj && typeof obj.collectionID !== 'undefined';
     })
     @IsInt({
-        message: '无效的collectionID',
+        message: '无效的collectionID', // 如果是图书章节的评论，那么collectionID就是 图书id
     })
     readonly collectionID: number;
 
     @IsInt({
-        message: '无效的commentTo',
+        message: '无效的sourceID',
     })
     readonly sourceID: number;
 
@@ -37,7 +37,7 @@ export class CreateCommentDto {
         message: '评论内容过少哦',
     })
     @MaxLength(CommentConstants.MaxContentLength, {
-        message: '内容不能超过 $constraint1 个字符',
+        message: '评论不能超过 $constraint1 个字符',
     })
     @IsString()
     readonly htmlContent: string;

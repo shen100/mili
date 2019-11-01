@@ -15,4 +15,8 @@ export class CommentConstants {
 
     static readonly MinContentLength: number = 1;
     static readonly MaxContentLength: number = 500;
+
+    static readonly SourceArticle = 'article';
+    static readonly SourceBoilingPoint = 'boilingpoint';
+    static readonly SourceBookChapter = 'bookchapter';
 }

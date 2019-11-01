@@ -17,6 +17,13 @@ import { BookService } from './book.service';
 import { BookChapterComment, BoilingPointComment, ArticleComment } from '../entity/comment.entity';
 import { clampNumber } from '../utils/common';
 import { BoilingPointService } from '../boilingpoint/boilingpoint.service';
+import { CommentConstants } from '../constants/comment';
+
+const {
+    SourceArticle,
+    SourceBookChapter,
+    SourceBoilingPoint,
+} = CommentConstants;
 
 @Controller()
 export class CommentController {
@@ -74,19 +81,19 @@ export class CommentController {
     @Post(`${APIPrefix}/comments/:source`)
     @UseGuards(ActiveGuard)
     async create(@CurUser() user, @Param('source') source: string, @Body() createCommentDto: CreateCommentDto) {
-        if (['article', 'boilingpoint', 'bookchapter'].indexOf(source) < 0) {
+        if (!this.isValidSource(source)) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
             });
         }
         const CommentClass = this.getCommentClass(source);
         let isSourceExistPromise: Promise<boolean>;
-        if (source === 'article') {
-            isSourceExistPromise = this.articleService.isExist(createCommentDto.commentTo);
-        } else if (source === 'boilingpoint') {
-            isSourceExistPromise = this.boilingPointService.isExist(createCommentDto.commentTo);
-        } else if (source === 'bookchapter') {
-            isSourceExistPromise = this.bookService.isChapterExist(createCommentDto.commentTo);
+        if (source === SourceArticle) {
+            isSourceExistPromise = this.articleService.isExist(createCommentDto.sourceID);
+        } else if (source === SourceBoilingPoint) {
+            isSourceExistPromise = this.boilingPointService.isExist(createCommentDto.sourceID);
+        } else if (source === SourceBookChapter) {
+            isSourceExistPromise = this.bookService.isChapterExist(createCommentDto.sourceID);
         }
 
         const [isSourceExist, parent] = await Promise.all([
@@ -108,7 +115,7 @@ export class CommentController {
                     message: '无效的parentID',
                 });
             }
-            if (createCommentDto.commentTo !== parent.sourceID) {
+            if (createCommentDto.sourceID !== parent.sourceID) {
                 throw new MyHttpException({
                     errorCode: ErrorCode.ParamsError.CODE,
                     message: '无效的sourceID',
@@ -180,14 +187,21 @@ export class CommentController {
     //     return {};
     // }
 
+    private isValidSource(source: string) {
+        if ([SourceArticle, SourceBookChapter, SourceBoilingPoint].indexOf(source) >= 0) {
+            return true;
+        }
+        return false;
+    }
+
     private getCommentClass(source: string) {
-        if (source === 'article') {
+        if (source === SourceArticle) {
             return ArticleComment;
         }
-        if (source === 'bookchapter') {
+        if (source === SourceBookChapter) {
             return BookChapterComment;
         }
-        if (source === 'boilingpoint') {
+        if (source === SourceBoilingPoint) {
             return BoilingPointComment;
         }
         return null;
