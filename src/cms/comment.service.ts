@@ -140,8 +140,9 @@ export class CommentService {
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
             };
         });
+        const subAndParentCommentIDArr = subCommentIDArr.concat(parentIDArr);
         const [subAndParentComments, likeComments] = await Promise.all([
-            this.commentsByIDs(c, subCommentIDArr.concat(parentIDArr)),
+            subAndParentCommentIDArr.length ? this.commentsByIDs(c, subAndParentCommentIDArr) : Promise.resolve([]),
             userID ? this.commentsFilterByUserLiked(c, allCommentIDs, userID) : Promise.resolve([]),
         ]);
         const subAndParentCommentMap = {};

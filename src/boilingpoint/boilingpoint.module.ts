@@ -32,5 +32,6 @@ import { TopicAdminController } from './topic.admin.controller';
         BoilingPointService,
         TopicService,
     ],
+    exports: [BoilingPointService],
 })
 export class BoilingPointModule {}

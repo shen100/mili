@@ -38,6 +38,7 @@ import { TagController } from './tag.controller';
 import { OSSService } from '../common/oss.service';
 import { CommonModule } from '../common/common.module';
 import { Image } from '../entity/image.entity';
+import { BoilingPointModule } from '../boilingpoint/boilingpoint.module';
 
 @Module({
     imports: [
@@ -63,6 +64,7 @@ import { Image } from '../entity/image.entity';
         ]),
         UserModule,
         CommonModule,
+        BoilingPointModule,
     ],
     controllers: [
         BookController,

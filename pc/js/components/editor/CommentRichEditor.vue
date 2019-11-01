@@ -2,9 +2,9 @@
     <div v-clickoutside="onClickOutside" class="comment-editor-box">
         <div @keyup.meta.enter="onEnterSubmit" @keyup.ctrl.enter="onEnterSubmit" 
             class="comment-editor-cbox"
-            :class="{'comment-editor-cbox-boilingpoint': commentType === 'boilingpoint', 'comment-editor-focus': isFocus}">
+            :class="{'comment-editor-cbox-boilingpoint': source === 'boilingpoint', 'comment-editor-focus': isFocus}">
             <editor-content class="mili-editor-content" :editor="editor" />
-            <div @click="onFocusAreaClick" class="editor-focus-area"></div>
+            <div v-if="source === 'boilingpoint'" @click="onFocusAreaClick" class="editor-focus-area"></div>
         </div>
         <slot name="upload-list"></slot>
         <div v-if="sendVisible" class="write-function-block">
@@ -15,14 +15,13 @@
                     @topicSelected="onTopicSelected"
                     :editor="editor" />
             </div>
-            <template v-if="commentType !== 'boilingpoint'">
+            <template v-if="source !== 'boilingpoint'">
                 <div class="hint">Ctrl or ⌘ + Enter 发表</div>
-                <a @click="onEnterSubmit" class="btn btn-send">发送</a>
-                <a @click="onCancelComment" class="cancel">取消</a>
+                <a @click="onEnterSubmit" class="btn btn-send" :class="{disabled: contentIsEmpty}">评论</a>
             </template>
-            <template>
+            <template v-if="source === 'boilingpoint'">
                 <button @click="onEnterSubmit" class="btn btn-send-boilingpoint" :class="{active: boilingpointSubmitEnable}">发布</button>
-                <div v-if="commentType === 'boilingpoint'" class="hint-boilingpoint">Ctrl or ⌘ + Enter</div>
+                <div class="hint-boilingpoint">Ctrl or ⌘ + Enter</div>
             </template>
         </div>
     </div>
@@ -49,9 +48,9 @@ export default {
     name: 'CommentRichEditor',
     props: [
         'uploadAllowed', // 是否允许上传图片
-        'commentType',
+        'source',
         'bookID',
-        'articleID',
+        'sourceID',
         'parentID',
         'rootID',
         'sendDefVisible', // 初始化编辑器时，是否默认显示发送按钮
@@ -163,7 +162,7 @@ export default {
             this.$emit('cancel');
         },
         onEnterSubmit() {
-            if (this.commentType === 'boilingpoint') {
+            if (this.source === 'boilingpoint') {
                 this.onBoilingpointSubmit();
             } else {
                 this.onComment();
@@ -179,9 +178,9 @@ export default {
                 this.$emit('error', '回复内容不能为空');
                 return;
             }
-            const url = `/comments?commentType=${this.commentType}`;
+            const url = `/comments?source=${this.source}`;
             const reqData = {
-                commentTo: this.articleID,
+                commentTo: this.sourceID,
                 content: content,
                 bookID: this.bookID,
             };
@@ -228,22 +227,18 @@ export default {
 </script>
 
 <style>
-.comment-editor-box {
-    margin-top: 20px;
-}
-
 .comment-editor-cbox {
-    min-height: 80px;
-    padding: 10px 15px;
+    min-height: 0;
+    padding: 7px 12px;
     border: 1px solid #dcdcdc;
-    border-radius: 4px;
-    background-color: hsla(0, 0%, 71%, .1);
+    border-radius: 2px;
+    background-color: #fff;
 }
 
 .comment-editor-cbox-boilingpoint {
+    min-height: 80px;
     background-color: #f9fafb;
     border-bottom: 0;
-    border-radius: 2px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
@@ -289,10 +284,6 @@ export default {
     font-size: 14px;
 }
 
-.comment-editor-box .write-function-block {
-    height: 50px;
-}
-
 .comment-editor-box .emoji-modal-wrap {
     position: relative;
 }
@@ -334,18 +325,25 @@ export default {
 .comment-editor-box .btn-send, .comment-editor-box .btn-send-boilingpoint {
     box-sizing: border-box;
     float: right;
-    width: 78px;
+    width: 62px;
+    height: 32px;
+    line-height: 32px;
     margin: 10px 0;
     margin-bottom: 0;
-    padding: 8px 18px;
+    padding: 0;
     font-size: 16px;
     border: none;
-    border-radius: 20px;
+    border-radius: 2px;
     color: #fff!important;
-    background-color: #42c02e;
+    background-color: #ea6f5a;
     cursor: pointer;
     outline: none;
     display: block;
+}
+
+.comment-editor-box .btn-send.disabled {
+    cursor: default;
+    opacity: .4;
 }
 
 .btn-send-boilingpoint.active {

@@ -15,9 +15,16 @@
             </form>
             <!-- 评论列表 -->
             <div class="comments">
-                <CommentRichEditor v-if="userID" ref="commentRichEditor" :collectionID="collectionID" :articleID="articleID" 
-                    emptyPlaceholder="写下你的评论" @success="addCommentSuccess" @error="addCommentError" 
-                    :sendDefVisible="false" :source="source" />
+                <div class="comment-source-box">
+                    <div class="avatar-box">
+                        <div class="avatar" :style="{'background-image': `url(${avatarURL})`}"></div>
+                    </div>
+                    <div class="comment-source-box-wrap">
+                        <CommentRichEditor v-if="userID" ref="commentRichEditor" :collectionID="collectionID" :sourceID="sourceID" 
+                            emptyPlaceholder="写下你的评论" @success="addCommentSuccess" @error="addCommentError" 
+                            :sendDefVisible="false" :source="source" />
+                    </div>
+                </div>                
                 <div v-for="comment in comments" class="comment lastchild-flag" 
                     :key="`comment-${comment.id}`" :id="`comment-${comment.id}`">
                     <div class="comment-avatar-area v-tooltip-container"
@@ -62,12 +69,16 @@
                         </div>
 
                         <!-- 回复评论 -->
-                        <CommentRichEditor v-if="userID && comment.editorToggled" :collectionID="collectionID" :articleID="articleID" 
-                            :emptyPlaceholder="`回复${comment.user.username}`"
-                            :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
-                            @error="addCommentError" :parentID="comment.id" 
-                            @cancel="onCancelComment(comment)"
-                            :source="source" />
+                        <div class="comment-root-box">
+                            <div class="comment-source-box-wrap">
+                                <CommentRichEditor v-if="userID && comment.editorToggled" :collectionID="collectionID" :sourceID="sourceID" 
+                                    :emptyPlaceholder="`回复${comment.user.username}`"
+                                    :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
+                                    @error="addCommentError" :parentID="comment.id" 
+                                    @cancel="onCancelComment(comment)"
+                                    :source="source" />
+                            </div>
+                        </div>
                         
                         <!-- 子评论 -->
                         <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
@@ -129,7 +140,7 @@
                                     </div>
 
                                     <CommentRichEditor v-if="userID && subcomment.editorToggled" :emptyPlaceholder="`回复${subcomment.user.username}`"
-                                        :collectionID="collectionID" :articleID="articleID" :sendDefVisible="true" :rootID="comment.id" 
+                                        :collectionID="collectionID" :sourceID="sourceID" :sendDefVisible="true" :rootID="comment.id" 
                                         :parentID="subcomment.id" @success="addCommentSuccess" @error="addCommentError"
                                         @cancel="onCancelComment(subcomment)" 
                                         :source="source" />
@@ -205,8 +216,9 @@ export default {
                 return;
             }
             this.isLoading = true;
+            const limit = this.isFirstRequest ? 6 : 20;
             const lastCommentID = this.comments.length ? this.comments[this.comments.length - 1].id : '';
-            let url = `/comments/${this.source}/${this.articleID}/${lastCommentID}`;
+            let url = `/comments/${this.source}/${this.sourceID}/${lastCommentID}?limit=${limit}`;
             myHTTP.get(url).then((res) => {
                 this.isLoading = false;
                 const comments = res.data.data.list || [];
@@ -341,6 +353,43 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.comment-source-box {
+    display: flex;
+    background-color: #fafbfc;
+    padding: 12px 16px;
+}
+
+.avatar-box {
+    flex: 0 0 auto;
+    margin-right: 12px;
+}
+
+.avatar-box .avatar {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    position: relative;
+    background-position: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #eee;
+}
+
+.comment-source-box-wrap {
+    flex: 1 1 auto;
+}
+
+.comment-root-box {
+    display: flex;
+    background-color: #fafbfc;
+    padding: 12px 16px;
+}
+
+.comment-sub-box {
+    background-color: #fff;
+    padding: 12px 16px;
+}
+
 .comments .comment {
     display: flex;
     padding: 15px 0 0;
