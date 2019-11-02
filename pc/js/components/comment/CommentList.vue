@@ -15,14 +15,15 @@
             </form>
             <!-- 评论列表 -->
             <div class="comments">
-                <div class="comment-source-box">
+                <div v-clickoutside="onClickOutsideCommentEditor" :data-commentid="0" class="comment-source-box">
                     <div class="avatar-box">
                         <div class="avatar" :style="{'background-image': `url(${user.avatarURL})`}"></div>
                     </div>
                     <div class="comment-source-box-wrap">
                         <CommentRichEditor v-if="user" :collectionID="collectionID" :sourceID="sourceID" 
                             emptyPlaceholder="写下你的评论" @success="addCommentSuccess" @error="addCommentError" 
-                            :source="source" :sendDefVisible="false" />
+                            :source="source" :sendDefVisible="false" :disableInputBlur="true" 
+                            ref="commentEditor-0" />
                     </div>
                 </div>                
                 <div v-for="comment in comments" class="comment lastchild-flag" 
@@ -61,7 +62,7 @@
                                     <ZanIcon :active="comment.userLiked" />
                                     <span class="action-title">{{comment.likedCount || ''}}</span>
                                 </div>
-                                <div class="comment-reply" @click="onAddComment(comment)">
+                                <div class="comment-reply" @click.stop.prevent="onAddComment(comment)">
                                     <ReplyIcon />
                                     <span class="action-title">回复</span>
                                 </div>
@@ -69,14 +70,14 @@
                         </div>
 
                         <!-- 回复评论 -->
-                        <div v-if="user && comment.editorToggled" class="comment-root-box">
+                        <div v-if="user && comment.editorToggled" v-clickoutside="onClickOutsideCommentEditor" :data-commentid="comment.id" class="comment-root-box">
                             <div class="comment-source-box-wrap">
                                 <CommentRichEditor :collectionID="collectionID" :sourceID="sourceID" 
                                     :emptyPlaceholder="`回复${comment.user.username}`"
                                     :rootID="comment.id" @success="addCommentSuccess"
                                     @error="addCommentError" :parentID="comment.id" 
                                     @cancel="onCancelComment(comment)"
-                                    :source="source" />
+                                    :source="source" :disableInputBlur="true" :ref="`commentEditor-${comment.id}`" />
                             </div>
                         </div>
                         
@@ -132,20 +133,20 @@
                                                 <ZanIcon :active="subcomment.userLiked" />
                                                 <span class="action-title">{{subcomment.likedCount || ''}}</span>
                                             </div>
-                                            <div class="comment-reply" @click="onAddComment(subcomment)">
+                                            <div class="comment-reply" @click.stop.prevent="onAddComment(subcomment)">
                                                 <ReplyIcon />
                                                 <span class="action-title">回复</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div v-if="user && subcomment.editorToggled" class="comment-sub-box">
+                                    <div v-if="user && subcomment.editorToggled" v-clickoutside="onClickOutsideCommentEditor" :data-commentid="subcomment.id" class="comment-sub-box">
                                         <div class="comment-source-box-wrap">
                                             <CommentRichEditor :emptyPlaceholder="`回复${subcomment.user.username}`"
                                                 :collectionID="collectionID" :sourceID="sourceID" :rootID="comment.id" 
                                                 :parentID="subcomment.id" @success="addCommentSuccess" @error="addCommentError"
                                                 @cancel="onCancelComment(subcomment)" 
-                                                :source="source" />
+                                                :source="source" :disableInputBlur="true" :ref="`commentEditor-${subcomment.id}`" />
                                         </div>
                                     </div>
                                 </div>
@@ -288,6 +289,11 @@ export default {
             });
         },
         onAddComment(comment) {
+            const commentEditor = this.getCommentEditor(0);
+            if (commentEditor) {
+                commentEditor.hideSendBtn();
+                commentEditor.blur();
+            }
             comment.editorToggled = !comment.editorToggled;
             if (comment.editorToggled) {
                 if (this.willReplySubComment) {
@@ -296,6 +302,14 @@ export default {
                 this.willReplySubComment = comment;
             } else {
                 this.willReplySubComment = null;
+            }
+            if (comment.editorToggled) {
+                this.$nextTick(() => {
+                    const theCommentEditor = this.getCommentEditor(comment.id);
+                    if (theCommentEditor) {
+                        theCommentEditor.focus();
+                    }
+                });
             }
         },
         addCommentSuccess(comment) {
@@ -344,6 +358,25 @@ export default {
                 });
             }
         },
+        onClickOutsideCommentEditor(event, dataset) {
+            let commentEditor = this.getCommentEditor(dataset.commentid);
+            if (commentEditor) {
+                commentEditor.hideSendBtn();
+                commentEditor.blur();
+                // dataset.commentid 为 0 的话，是直接发表一级评论，此时 this.commentMap[dataset.commentid]为 undefined
+                if (this.commentMap[dataset.commentid]) {
+                    this.commentMap[dataset.commentid].editorToggled = false;
+                    this.willReplySubComment = null;
+                }
+            }
+        },
+        getCommentEditor(id) {
+            let commentEditor = this.$refs[`commentEditor-${id}`];
+            if (commentEditor && commentEditor.length && commentEditor[0]) {
+                commentEditor = commentEditor[0];
+            }
+            return commentEditor;
+        }
     },
     filters: {
         jobCompany,

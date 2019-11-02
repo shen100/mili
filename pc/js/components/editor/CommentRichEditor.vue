@@ -1,5 +1,5 @@
 <template>
-    <div v-clickoutside="onClickOutside" class="comment-editor-box">
+    <div class="comment-editor-box">
         <div @keyup.meta.enter="onEnterSubmit" @keyup.ctrl.enter="onEnterSubmit" 
             class="comment-editor-cbox"
             :class="{'comment-editor-cbox-boilingpoint': source === 'createboilingpoint', 'comment-editor-focus': isFocus}">
@@ -59,6 +59,7 @@ export default {
         'emptyPlaceholder',
         'maxWords',
         'sendDefVisible', // 初始化编辑器时，是否显示发送按钮
+        'disableInputBlur', // 为 true 时， 输入框blur事件时，不设置 isFocus
     ],
     data () {
         return {
@@ -136,11 +137,11 @@ export default {
         focus() {
             this.isFocus = true;
             this.editor.focus();
-            setTimeout(() => {
-                // 下面这行代码不能去掉，onClickOutside 也会调用,
-                // 将this.sendVisible 设为 false了
-                this.sendVisible = true;
-            }, 100);
+            this.sendVisible = true;
+        },
+        blur() {
+            this.isFocus = false;
+            this.editor.blur();
         },
         onEditorFocus() {
             this.sendVisible = true;
@@ -148,14 +149,17 @@ export default {
             this.$emit('focus');
         },
         onEditorBlur() {
+            if (this.disableInputBlur) {
+                return;
+            }
             this.isFocus = false;
             this.$emit('blur');
         },
-        onClickOutside() {
-            // this.sendDefVisible 为 undefined 的话，初始化编辑器时 也显示发送按钮
-            if (!this.sendDefVisible && typeof this.sendDefVisible !== 'undefined') {
-                this.sendVisible = false;
-            }
+        showSendBtn() {
+            this.sendVisible = true;
+        },
+        hideSendBtn() {
+            this.sendVisible = false;
         },
         onCancelComment() {
             this.$emit('cancel');
