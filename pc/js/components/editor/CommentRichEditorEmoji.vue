@@ -11,7 +11,7 @@
                     <i class="iconfont ic-comment-emotions"></i>
                     <div class="label">表情</div>
                 </a>
-                <a v-if="source === 'boilingpoint'" class="up-img" :class="{'not-allowed': !uploadAllowed}">
+                <a v-if="source === 'createboilingpoint'" class="up-img" :class="{'not-allowed': !uploadAllowed}">
                     <Uploader v-if="uploadAllowed" @uploading="onImgUploading" @success="onImgUploadSuccess" 
                         @error="onImgUploadFail">
                         <template>
@@ -24,7 +24,7 @@
                         <div class="label">图片</div>  
                     </template>
                 </a>
-                <a v-if="source === 'boilingpoint'" @click="onTopicClick" v-clickoutside="onCloseTopicPopup"
+                <a v-if="source === 'createboilingpoint'" @click="onTopicClick" v-clickoutside="onCloseTopicPopup"
                     class="topic" style="margin-left: 20px;">
                     <div class="label">#</div>
                     <div class="label" style="position: relative;">话题<BoilingPointTopicPopup @topicSelected="onTopicSelected" @close="onCloseTopicPopup" v-if="topicPopupVisible" /></div>

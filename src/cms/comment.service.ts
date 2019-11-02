@@ -229,14 +229,28 @@ export class CommentService {
         const commentTable = this.getCommentTable(c);
         const commentRepository = this.getCommentRepository(c);
         let id;
+        let rootComment;
+
+        if (createCommentDto.rootID) {
+            rootComment = await (commentRepository as any).findOne({
+                select: ['id', 'latest'],
+                where: { id: createCommentDto.rootID },
+            });
+        }
 
         await commentRepository.manager.connection.transaction(async manager => {
             const now = new Date();
-            const commentSQL = `INSERT INTO ${commentTable} (source_id, html_content, parent_id, root_id,
-                status, user_id, created_at, updated_at, comment_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            // commentSQL2 只是比 commentSQL 多增加个 collection_id 字段
-            const commentSQL2 = `INSERT INTO ${commentTable} (source_id, html_content, parent_id, root_id,
-                status, user_id, created_at, updated_at, comment_count, collection_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let commentSQL = `INSERT INTO ${commentTable} (latest, source_id, html_content, parent_id, root_id,
+                status, user_id, created_at, updated_at, comment_count {collection_id} )
+                VALUES ('[]', ?, ?, ?, ?, ?, ?, ?, ?, ? collection_id? )`;
+
+            if (createCommentDto.collectionID) {
+                commentSQL = commentSQL.replace('{collection_id}', ' ,collection_id');
+                commentSQL = commentSQL.replace('collection_id?', ' ,?');
+            } else {
+                commentSQL = commentSQL.replace('{collection_id}', '');
+                commentSQL = commentSQL.replace('collection_id?', '');
+            }
 
             const commentSQLData = [
                 createCommentDto.sourceID,
@@ -249,20 +263,33 @@ export class CommentService {
                 now,
                 0,
             ];
-            let sql = commentSQL;
             if (createCommentDto.collectionID) {
-                sql = commentSQL2;
                 commentSQLData.push(createCommentDto.collectionID);
             }
             const sql2 = `UPDATE ${sourceTable} SET comment_count = comment_count + 1 WHERE id = ${createCommentDto.sourceID}`;
-            const result = await manager.query(sql);
-            console.log();
+            const result = await manager.query(commentSQL, commentSQLData);
+            id = result.insertId;
             await manager.query(sql2);
             if (createCommentDto.collectionID) {
                 await manager.query(`UPDATE ${collectionTable} SET comment_count = comment_count + 1 WHERE id = ?`, [createCommentDto.collectionID]);
             }
+            if (createCommentDto.rootID) {
+                let latestArr = JSON.parse(rootComment.latest);
+                latestArr.unshift({id, pid: createCommentDto.parentID});
+                latestArr = latestArr.slice(0, 2); // 一级评论的 latest 只保留最新的两条子评论
+                // 只是更新了一级评论的 comment_count, 直接父评论的 comment_count 暂时没用到，没有更新
+                await manager.query(`UPDATE ${commentTable} SET comment_count = comment_count + 1,
+                    latest = ? where id = ?`, [JSON.stringify(latestArr), createCommentDto.rootID]);
+            }
         });
-        return id;
+        return {
+            id,
+            htmlContent: createCommentDto.htmlContent,
+            parentID: createCommentDto.parentID,
+            rootID: createCommentDto.rootID,
+            collectionID: createCommentDto.collectionID,
+            sourceID: createCommentDto.sourceID,
+        };
     }
 
     // async delete(commentType: string, commentID: number, userID: number) {

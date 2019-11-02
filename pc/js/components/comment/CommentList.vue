@@ -4,7 +4,7 @@
         <ErrorTip ref="errorTip" />
         <div id="comments">
             <!-- 未登录时显示登录form -->
-            <form v-if="!userID" class="new-comment" style="margin-top: 15px;">
+            <form v-if="!user" class="new-comment" style="margin-top: 15px;">
                 <a href="javascript:void(0);" class="avatar" style="cursor: default;">
                     <img style="cursor: default;" src="../../../images/avatar_default.png">
                 </a>
@@ -17,12 +17,12 @@
             <div class="comments">
                 <div class="comment-source-box">
                     <div class="avatar-box">
-                        <div class="avatar" :style="{'background-image': `url(${avatarURL})`}"></div>
+                        <div class="avatar" :style="{'background-image': `url(${user.avatarURL})`}"></div>
                     </div>
                     <div class="comment-source-box-wrap">
-                        <CommentRichEditor v-if="userID" ref="commentRichEditor" :collectionID="collectionID" :sourceID="sourceID" 
+                        <CommentRichEditor v-if="user" :collectionID="collectionID" :sourceID="sourceID" 
                             emptyPlaceholder="写下你的评论" @success="addCommentSuccess" @error="addCommentError" 
-                            :sendDefVisible="false" :source="source" />
+                            :source="source" :sendDefVisible="false" />
                     </div>
                 </div>                
                 <div v-for="comment in comments" class="comment lastchild-flag" 
@@ -69,11 +69,11 @@
                         </div>
 
                         <!-- 回复评论 -->
-                        <div v-if="userID && comment.editorToggled" class="comment-root-box">
+                        <div v-if="user && comment.editorToggled" class="comment-root-box">
                             <div class="comment-source-box-wrap">
                                 <CommentRichEditor :collectionID="collectionID" :sourceID="sourceID" 
                                     :emptyPlaceholder="`回复${comment.user.username}`"
-                                    :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
+                                    :rootID="comment.id" @success="addCommentSuccess"
                                     @error="addCommentError" :parentID="comment.id" 
                                     @cancel="onCancelComment(comment)"
                                     :source="source" />
@@ -139,10 +139,10 @@
                                         </div>
                                     </div>
 
-                                    <div v-if="userID && subcomment.editorToggled" class="comment-sub-box">
+                                    <div v-if="user && subcomment.editorToggled" class="comment-sub-box">
                                         <div class="comment-source-box-wrap">
                                             <CommentRichEditor :emptyPlaceholder="`回复${subcomment.user.username}`"
-                                                :collectionID="collectionID" :sourceID="sourceID" :sendDefVisible="true" :rootID="comment.id" 
+                                                :collectionID="collectionID" :sourceID="sourceID" :rootID="comment.id" 
                                                 :parentID="subcomment.id" @success="addCommentSuccess" @error="addCommentError"
                                                 @cancel="onCancelComment(subcomment)" 
                                                 :source="source" />
@@ -159,7 +159,7 @@
                 </div>
             </div>
             <!-- 一级评论未加载完时的加载按钮 -->
-            <div v-if="comments.length < rootCommentCount" @click="onLoadMore" 
+            <div v-if="comments.length < theRootCommentCount" @click="onLoadMore" 
                 class="fetch-more-comment">{{isLoading ? '正在加载...' : '查看更多 >'}}</div>
             <div v-else style="height: 24px;"></div>
         </div>
@@ -182,18 +182,18 @@ import { jobCompany, levelImgURL } from '~/js/common/filters.js';
 export default {
     name: 'CommentList',
     props: [
-        'source', // article, boilingpoint, bookchapter
+        // article: 文章的评论;  bookchapter: 开源图书章节的评论; createboilingpoint: 创建沸点; boilingpoint: 沸点的评论
+        'source',
         'rootCommentCount', // 一级评论数
         'collectionID', // 如果是图书章节的评论，那么collectionID就是 图书id
         'sourceID', // 如果是文章的评论，那么是文章id, 如果是图书章节的评论，那么是 章节id
         'authorID',
-        'userID',
-        'username',
-        'avatarURL',
+        'user',
     ],
     data: function() {
         return {
             signinURL: '/signin?ref=' + encodeURIComponent(location.href),
+            theRootCommentCount: rootCommentCount,
             commentMap: {}, // 所有的评论, key 是 评论id, value 是 评论
             subCommentLoadStatusMap: {}, // key 是父评论id, value 是 是否正在加载子评论
             comments: [],
@@ -204,6 +204,11 @@ export default {
             userLevelChapterURL: window.userLevelChapterURL,
             willReplySubComment: null, // 将对此子评论进行评论
         };
+    },
+    computed: {
+        userID: function() {
+            return this.user && this.user.id || undefined;
+        }
     },
     mounted: function() {
         this.onLoadMore();
@@ -240,7 +245,6 @@ export default {
                     subComments.forEach(subComment => {
                         subComment.editorToggled = false;
                         subComment.htmlContent = trim(subComment.htmlContent);
-                        subComment.rootComment = comment;
                         commentMap[subComment.id] = subComment;
                     });
                 });
@@ -267,7 +271,7 @@ export default {
             }
             this.subCommentLoadStatusMap[parentComment.id] = true;
             const lastID = parentComment.comments[parentComment.comments.length - 1].id;
-            let url = `/comments/${this.source}/comment/${parentComment.id}/${lastID}`;
+            let url = `/comments/${this.source}/comment/${parentComment.id}/${lastID}?limit=5`;
             myHTTP.get(url).then((res) => {
                 this.subCommentLoadStatusMap[parentComment.id] = false;
                 const commentMap = this.commentMap;
@@ -275,7 +279,6 @@ export default {
                 subComments.forEach(subComment => {
                     subComment.editorToggled = false;
                     subComment.htmlContent = trim(subComment.htmlContent);
-                    subComment.rootComment = commentMap[subComment.rootID];
                     commentMap[subComment.id] = subComment;
                 });
                 parentComment.comments = parentComment.comments.concat(subComments);
@@ -285,16 +288,7 @@ export default {
             });
         },
         onAddComment(comment) {
-            let subComments;
-            const editorToggled = comment.editorToggled;
-            if (comment.rootComment) {
-                comment.rootComment.editorToggled = false;
-                subComments = comment.rootComment.comments;
-            } else {
-                subComments = comment.comments;
-            }
-            subComments.forEach(comment => comment.editorToggled = false);
-            comment.editorToggled = !editorToggled;
+            comment.editorToggled = !comment.editorToggled;
             if (comment.editorToggled) {
                 if (this.willReplySubComment) {
                     this.willReplySubComment.editorToggled = false;
@@ -306,26 +300,25 @@ export default {
         },
         addCommentSuccess(comment) {
             this.$refs.successTip.show('回复成功');
-            comment.user = {
-                id: this.userID,
-                username: this.username,
-                avatarURL: this.avatarURL,
-            };
+            comment.user = this.user;
             comment.editorToggled = false;
             comment.userLiked = false;
             comment.likedCount = 0;
+            comment.commentCount = 0;
             comment.comments = [];
             this.commentMap[comment.id] = comment;
             if (comment.parentID) {
                 comment.parent = this.commentMap[comment.parentID];
-                comment.rootComment = this.commentMap[comment.rootID];
                 comment.parent.editorToggled = false;
             }
             if (comment.rootID) {
-                this.commentMap[comment.rootID].comments.push(comment);
+                this.commentMap[comment.rootID].comments.unshift(comment);
+                this.commentMap[comment.rootID].commentCount++;
             } else {
-                this.comments.push(comment);
+                this.comments.unshift(comment);
+                this.theRootCommentCount++;
             }
+            this.willReplySubComment = null;
         },
         addCommentError(message) {
             this.$refs.errorTip.show(message);

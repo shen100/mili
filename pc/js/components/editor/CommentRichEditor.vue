@@ -2,24 +2,25 @@
     <div v-clickoutside="onClickOutside" class="comment-editor-box">
         <div @keyup.meta.enter="onEnterSubmit" @keyup.ctrl.enter="onEnterSubmit" 
             class="comment-editor-cbox"
-            :class="{'comment-editor-cbox-boilingpoint': source === 'boilingpoint', 'comment-editor-focus': isFocus}">
+            :class="{'comment-editor-cbox-boilingpoint': source === 'createboilingpoint', 'comment-editor-focus': isFocus}">
             <editor-content class="mili-editor-content" :editor="editor" />
-            <div v-if="source === 'boilingpoint'" @click="onFocusAreaClick" class="editor-focus-area"></div>
+            <div v-if="source === 'createboilingpoint'" @click="onFocusAreaClick" class="editor-focus-area"></div>
         </div>
         <slot name="upload-list"></slot>
-        <div v-if="sendVisible" class="write-function-block">
+        <div v-if="sendVisible" class="write-function-block" :style="{height: source === 'createboilingpoint' ? '50px' : '0'}">
             <div class="emoji-modal-wrap">
-                <CommentRichEditorEmoji :uploadAllowed="uploadAllowed" 
+                <CommentRichEditorEmoji :source="source"
+                    :uploadAllowed="uploadAllowed" 
                     @imgUploadSuccess="onImgUploadSuccess" 
                     @topicClick="onTopicClick"
                     @topicSelected="onTopicSelected"
                     :editor="editor" />
             </div>
-            <template v-if="source !== 'boilingpoint'">
-                <div class="hint">Ctrl or ⌘ + Enter 发表</div>
+            <template v-if="source !== 'createboilingpoint'">
                 <a @click="onEnterSubmit" class="btn btn-send" :class="{disabled: contentIsEmpty}">评论</a>
+                <div class="hint">Ctrl or ⌘ + Enter 发表</div>
             </template>
-            <template v-if="source === 'boilingpoint'">
+            <template v-if="source === 'createboilingpoint'">
                 <button @click="onEnterSubmit" class="btn btn-send-boilingpoint" :class="{active: boilingpointSubmitEnable}">发布</button>
                 <div class="hint-boilingpoint">Ctrl or ⌘ + Enter</div>
             </template>
@@ -48,18 +49,20 @@ export default {
     name: 'CommentRichEditor',
     props: [
         'uploadAllowed', // 是否允许上传图片
+        // article: 文章的评论;  bookchapter: 开源图书章节的评论; createboilingpoint: 创建沸点; boilingpoint: 沸点的评论
         'source',
-        'bookID',
+        'collectionID', // 如果是图书章节的评论，那么collectionID就是 图书id
         'sourceID',
         'parentID',
         'rootID',
-        'sendDefVisible', // 初始化编辑器时，是否默认显示发送按钮
         'content',
         'emptyPlaceholder',
         'maxWords',
+        'sendDefVisible', // 初始化编辑器时，是否显示发送按钮
     ],
     data () {
         return {
+            sendVisible: typeof this.sendDefVisible === 'undefined' ? true : this.sendDefVisible,
             editor: new Editor({
                 extensions: [
                     new Image(),
@@ -74,9 +77,8 @@ export default {
                 onBlur: this.onEditorBlur,
                 onUpdate: this.onContentUpdate
             }),
-            sendVisible: this.sendDefVisible,
             isSaving: false,
-            contentIsEmpty: true,
+            contentIsEmpty: true, // 输入了文本，或表情时，contentIsEmpty为false, 否则为true
             isFocus: false,
             maxWordCount: this.maxWords || 1000,
             remainingWords: this.maxWords || 1000,
@@ -84,6 +86,7 @@ export default {
     },
     computed: {
         boilingpointSubmitEnable() {
+            // 输入了文本，或表情，且输入的文本没有超过 maxWordCount
             return !this.contentIsEmpty && this.remainingWords >= 0;
         }
     },
@@ -94,7 +97,6 @@ export default {
     },
     methods: {
         onContentUpdate() {
-            console.log('????? onContentUpdate');
             let content = trim(this.editor.getHTML() || '');
             const txt = trim(striptags(content)) || '';
             this.remainingWords = this.maxWordCount - txt.length;
@@ -123,11 +125,10 @@ export default {
             } else {
                 this.contentIsEmpty = false;
             }
-            setTimeout(() => {
-                console.log('this.remainingWords,', this.remainingWords,);
-            }, 1000);
         },
         onFocusAreaClick() {
+            // fix Editor method `focus()` doesn't work
+            // https://github.com/scrumpy/tiptap/issues/389
             this.$nextTick(() => {
                 this.editor.view.dom.focus();
             });
@@ -151,18 +152,16 @@ export default {
             this.$emit('blur');
         },
         onClickOutside() {
-            if (!this.sendDefVisible) {
+            // this.sendDefVisible 为 undefined 的话，初始化编辑器时 也显示发送按钮
+            if (!this.sendDefVisible && typeof this.sendDefVisible !== 'undefined') {
                 this.sendVisible = false;
             }
         },
         onCancelComment() {
-            if (!this.sendDefVisible) {
-                this.sendVisible = false;
-            }
             this.$emit('cancel');
         },
         onEnterSubmit() {
-            if (this.source === 'boilingpoint') {
+            if (this.source === 'createboilingpoint') {
                 this.onBoilingpointSubmit();
             } else {
                 this.onComment();
@@ -175,15 +174,17 @@ export default {
             }
             let content = trim(this.editor.getHTML() || '');
             if (isContentEmpty(content, 'rich')) {
-                this.$emit('error', '回复内容不能为空');
+                this.$emit('error', '内容不能为空');
                 return;
             }
-            const url = `/comments?source=${this.source}`;
+            const url = `/comments/${this.source}`;
             const reqData = {
-                commentTo: this.sourceID,
-                content: content,
-                bookID: this.bookID,
+                sourceID: this.sourceID,
+                htmlContent: content,
             };
+            if (this.collectionID) {
+                reqData.collectionID = this.collectionID;
+            }
             if (this.parentID) {
                 reqData.parentID = this.parentID;
             }
@@ -311,8 +312,8 @@ export default {
 }
 
 .comment-editor-box .hint, .comment-editor-box .hint-boilingpoint {
-    float: left;
-    margin: 20px 0 0 20px;
+    float: right;
+    margin: 18px 8px 0 20px;
     font-size: 13px;
     color: #969696;
 }
@@ -341,18 +342,19 @@ export default {
     display: block;
 }
 
-.comment-editor-box .btn-send.disabled {
-    cursor: default;
-    opacity: .4;
-}
-
 .btn-send-boilingpoint.active {
     cursor: pointer!important;
     opacity: 1!important;
 }
 
 .comment-editor-box .btn-send:hover {
-    background-color: #3db922;
+    background-color: #ec6149;
+}
+
+.comment-editor-box .btn-send.disabled {
+    cursor: default;
+    opacity: .4;
+    background-color: #ea6f5a!important;
 }
 
 .comment-editor-box .btn-send-boilingpoint {

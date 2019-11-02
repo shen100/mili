@@ -400,11 +400,12 @@ export class UserService {
     async getUser(id: number): Promise<User> {
         let user: User = await this.redisService.getUser(id);
         if (!user) {
+            // TODO: users 表增加 level 字段， 然后查出 level
             user = await this.userRepository.findOne({
                 select: [
                     'id', 'status', 'createdAt', 'username', 'articleCount', 'collectionCount',
                     'commentCount', 'followCount', 'followerCount', 'boilingPointCount',
-                    'introduce', 'role', 'avatarURL', 'sex',
+                    'introduce', 'role', 'avatarURL', 'sex', 'job', 'company',
                 ] as any,
                 where: {
                     id,

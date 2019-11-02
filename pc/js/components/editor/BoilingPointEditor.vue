@@ -1,13 +1,12 @@
 <template>
     <CommentRichEditor ref="richEditor"
-        editorType="boilingpoint"
+        source="createboilingpoint"
         :maxWords="maxWords"
         :uploadAllowed="uploadAllowed"
         :emptyPlaceholder="placeholder || '发布沸点'" @success="onSuccess"
         @error="onError" @imgUploadSuccess="onImgUploadSuccess"
         @topicSelected="onTopicSelected"
-        @focus="onFocus" @blur="onBlur" @update="onUpdate"
-        :sendDefVisible="true">
+        @focus="onFocus" @blur="onBlur" @update="onUpdate">
         <div class="custom-box" :class="{'custom-box-focus': isFocus}" slot="upload-list">
             <UploaderList v-if="imgCount" :uploadAllowed="uploadAllowed" ref="upList" @success="onImgUploadSuccess2" @remove="onImgRemove"></UploaderList>
             <div class="cur-topic">

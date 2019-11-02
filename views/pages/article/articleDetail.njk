@@ -168,9 +168,7 @@
   var articleCommentCount = {{ article.commentCount }}; {# 总评论数 #}
   var rootCommentCount = {{ article.rootCommentCount }}; {# 一级评论数 #}
   {# 当前登录用户 #}
-  var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
-  var username = '{% if user %}{{user.username}}{% else %}{% endif %}';
-  var avatarURL = '{% if user %}{{user.avatarURL}}{% else %}{% endif %}';
+  var user = {% if user %} {{user | dump | safe}} {% else %}null{% endif %};
   {# 文章作者 #}
   var authorID = {{ article.user.id }};
 

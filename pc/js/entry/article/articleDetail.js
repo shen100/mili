@@ -53,9 +53,7 @@ registerDirective(Vue);
             props: {
                 source: 'article',
                 sourceID: window.articleID,
-                userID: window.userID,
-                username: window.username,
-                avatarURL: window.avatarURL,
+                user: window.user,
                 authorID: window.authorID,
                 rootCommentCount: window.rootCommentCount,
             },
