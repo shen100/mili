@@ -69,9 +69,9 @@
                         </div>
 
                         <!-- 回复评论 -->
-                        <div class="comment-root-box">
+                        <div v-if="userID && comment.editorToggled" class="comment-root-box">
                             <div class="comment-source-box-wrap">
-                                <CommentRichEditor v-if="userID && comment.editorToggled" :collectionID="collectionID" :sourceID="sourceID" 
+                                <CommentRichEditor :collectionID="collectionID" :sourceID="sourceID" 
                                     :emptyPlaceholder="`回复${comment.user.username}`"
                                     :sendDefVisible="true" :rootID="comment.id" @success="addCommentSuccess"
                                     @error="addCommentError" :parentID="comment.id" 
@@ -139,11 +139,15 @@
                                         </div>
                                     </div>
 
-                                    <CommentRichEditor v-if="userID && subcomment.editorToggled" :emptyPlaceholder="`回复${subcomment.user.username}`"
-                                        :collectionID="collectionID" :sourceID="sourceID" :sendDefVisible="true" :rootID="comment.id" 
-                                        :parentID="subcomment.id" @success="addCommentSuccess" @error="addCommentError"
-                                        @cancel="onCancelComment(subcomment)" 
-                                        :source="source" />
+                                    <div v-if="userID && subcomment.editorToggled" class="comment-sub-box">
+                                        <div class="comment-source-box-wrap">
+                                            <CommentRichEditor :emptyPlaceholder="`回复${subcomment.user.username}`"
+                                                :collectionID="collectionID" :sourceID="sourceID" :sendDefVisible="true" :rootID="comment.id" 
+                                                :parentID="subcomment.id" @success="addCommentSuccess" @error="addCommentError"
+                                                @cancel="onCancelComment(subcomment)" 
+                                                :source="source" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- 一级评论的子评论未加载完时的加载按钮 -->
@@ -198,6 +202,7 @@ export default {
             mouseenterCommentTarget: '',
             isFirstRequest: true, // 请求评论列表，发出的第一个请求（浏览器地址栏中有#comments的话，滚动到评论区)
             userLevelChapterURL: window.userLevelChapterURL,
+            willReplySubComment: null, // 将对此子评论进行评论
         };
     },
     mounted: function() {
@@ -211,6 +216,7 @@ export default {
         onMouseLeaveUser() {
             this.mouseenterCommentID = undefined;
         },
+        // 加载一级评论
         onLoadMore() {
             if (this.isLoading) {
                 return;
@@ -253,6 +259,7 @@ export default {
                 this.isLoading = false;
             });
         },
+        // 加载子评论
         onLoadSub(parentComment) {
             // 已在加载一级评论的子评论时，就直接返回
             if (this.subCommentLoadStatusMap[parentComment.id]) {
@@ -288,6 +295,14 @@ export default {
             }
             subComments.forEach(comment => comment.editorToggled = false);
             comment.editorToggled = !editorToggled;
+            if (comment.editorToggled) {
+                if (this.willReplySubComment) {
+                    this.willReplySubComment.editorToggled = false;
+                }
+                this.willReplySubComment = comment;
+            } else {
+                this.willReplySubComment = null;
+            }
         },
         addCommentSuccess(comment) {
             this.$refs.successTip.show('回复成功');
@@ -383,9 +398,12 @@ export default {
     display: flex;
     background-color: #fafbfc;
     padding: 12px 16px;
+    margin-bottom: 12px;
 }
 
 .comment-sub-box {
+    margin-top: 12px;
+    display: flex;
     background-color: #fff;
     padding: 12px 16px;
 }

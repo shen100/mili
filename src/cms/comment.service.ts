@@ -177,18 +177,27 @@ export class CommentService {
             take: limit,
         }) || [];
         const subCommentIDs = [];
+        const parentIDs = []; // 子评论的直接父评论
         const theComments = comments.map(comment => {
             subCommentIDs.push(comment.id);
+            parentIDs.push(comment.parentID);
             return {
                 ...comment,
+                parent: null,
                 userLiked: false,
                 createdAtLabel: recentTime(comment.createdAt, 'YYYY.MM.DD'),
             };
         });
-        const likeComments = await (userID ? this.commentsFilterByUserLiked(c, subCommentIDs, userID) : Promise.resolve([]));
+        const [likeComments, parentComments] = await Promise.all([
+            (userID ? this.commentsFilterByUserLiked(c, subCommentIDs, userID) : Promise.resolve([])),
+            this.commentsByIDs(c, parentIDs),
+        ]);
+        const parentCommentsMap = {};
         const userLikeCommentMap = {};
-        likeComments.map(likeC => userLikeCommentMap[likeC.commentID] = true);
-        theComments.map(comment => {
+        parentComments.forEach(parentC => parentCommentsMap[parentC.id] = parentC);
+        likeComments.forEach(likeC => userLikeCommentMap[likeC.commentID] = true);
+        theComments.forEach(comment => {
+            comment.parent = parentCommentsMap[comment.parentID];
             comment.userLiked = !!userLikeCommentMap[comment.id];
         });
         return theComments;
