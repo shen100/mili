@@ -18,7 +18,7 @@
             </div>
             <template v-if="source !== 'createboilingpoint'">
                 <a @click="onEnterSubmit" class="btn btn-send" :class="{disabled: contentIsEmpty}">评论</a>
-                <div class="hint">Ctrl or ⌘ + Enter 发表</div>
+                <div class="hint">Ctrl or ⌘ + Enter</div>
             </template>
             <template v-if="source === 'createboilingpoint'">
                 <button @click="onEnterSubmit" class="btn btn-send-boilingpoint" :class="{active: boilingpointSubmitEnable}">发布</button>
@@ -55,7 +55,6 @@ export default {
         'sourceID',
         'parentID',
         'rootID',
-        'content',
         'emptyPlaceholder',
         'maxWords',
         'sendDefVisible', // 初始化编辑器时，是否显示发送按钮
@@ -205,6 +204,7 @@ export default {
                     this.$emit('success', comment);
                 }
             }).catch((err) => {
+                console.log(err);
                 this.isSaving = false;
             });
         },
@@ -215,7 +215,8 @@ export default {
             if (!this.boilingpointSubmitEnable) {
                 return;
             }
-            this.$emit('success');
+            // 抛出事件，由 BoilingPointEditor.vue 中处理发布沸点
+            this.$emit('submit');
         },
         onTopicClick() {
             this.$emit('topicClick');

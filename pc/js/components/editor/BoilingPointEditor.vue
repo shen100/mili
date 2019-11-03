@@ -3,7 +3,7 @@
         source="createboilingpoint"
         :maxWords="maxWords"
         :uploadAllowed="uploadAllowed"
-        :emptyPlaceholder="placeholder || '发布沸点'" @success="onSuccess"
+        :emptyPlaceholder="placeholder || '发布沸点'" @submit="onSubmit"
         @error="onError" @imgUploadSuccess="onImgUploadSuccess"
         @topicSelected="onTopicSelected"
         @focus="onFocus" @blur="onBlur" @update="onUpdate">
@@ -82,7 +82,7 @@ export default {
             this.$emit('error', message);
         },
         // 沸点发布
-        onSuccess() {
+        onSubmit() {
             if (this.isSaving) {
                 return;
             }

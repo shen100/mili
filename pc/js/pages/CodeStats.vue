@@ -58,6 +58,7 @@ export default {
             'pc/js/components/comment/ZanIcon.vue',
             'pc/js/components/common/More.vue',
             'pc/js/components/common/Paging.vue',
+            'pc/js/components/editor/CommentRichEditor.vue',
             'pc/js/components/handbook/HandBookComment.vue',
             'pc/js/components/handbook/StarModal.vue',
             'pc/js/components/handbook/UserList.vue',
