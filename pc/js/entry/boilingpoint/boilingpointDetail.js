@@ -1,9 +1,11 @@
 /**
- * 沸点列表，沸点详情页面都用的这个js
+ * 沸点详情，此文件和 boilingpoint.js 一样，唯一的区别是增加了
+ * boilingpointDetail.scss 这个样式文件
  */
 import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
 import '~/styles/boilingpoint/boilingpoint.scss';
+import '~/styles/boilingpoint/boilingpointDetail.scss';
 import '~/styles/comment/commentDisplay.scss';
 import '~/js/common/default.js';
 import Vue from 'vue';

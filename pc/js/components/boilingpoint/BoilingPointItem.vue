@@ -163,7 +163,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="commentsVisible" class="boilingpoint-comments-box">
+            <div v-if="iSCommentsVisible" class="boilingpoint-comments-box">
                 <CommentList source="boilingpoint" :sourceID="boilingData.id" :user="user" 
                     :authorID="boilingData.user.id" :rootCommentCount="boilingData.rootCommentCount" />
             </div>
@@ -195,7 +195,8 @@ export default {
         'boilingData', // 沸点数据
         'userID', // 当前登录用户的id
         'user', // 当前登录用户
-        'maxMiddleImgWidth'
+        'maxMiddleImgWidth',
+        'commentsVisible'
     ],
     data () {
         const imgs = this.boilingData.imgs;
@@ -273,7 +274,7 @@ export default {
                 width: '70px', 
                 height: '26px'
             },
-            commentsVisible: false,
+            iSCommentsVisible: !!this.commentsVisible,
         };
     },
     computed: {
@@ -498,7 +499,7 @@ export default {
             this.$emit('report');  
         },
         onClickReply() {
-            this.commentsVisible = !this.commentsVisible;
+            this.iSCommentsVisible = !this.iSCommentsVisible;
         }
     },
     filters: {

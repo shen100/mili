@@ -29,7 +29,7 @@
                 <BoilingPointItem @bigImageChange="onBrowseBigImg"
                     :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
                     :userID="userID" :user="user" :boilingData="item" @userFollowChange="onFollowChange"
-                    @report="onReport(item.id)" />
+                    @report="onReport(item.id)" :commentsVisible="commentsVisible"/>
             </ul>
         </div>
         <template v-if="bigImgURL">
@@ -76,7 +76,8 @@ export default {
         'user', // 当前登录用户
         'boilingPoint', // boilingPoint 不为空的话，那就是具体的沸点页面，否则是沸点列表
         'loadingStyle',
-        'maxMiddleImgWidth'
+        'maxMiddleImgWidth',
+        'commentsVisible'
     ],
     data() {
         return {

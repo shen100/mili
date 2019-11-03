@@ -38,6 +38,7 @@
     var boilingPoint = {{ boilingPoint | dump | safe }};
     // 阿里云oss的 policy
     var uploadPolicy = {{ uploadPolicy | dump | safe }};
+    var commentsVisible = true; // 是否默认显示评论
 </script>
 {% endblock %}
 
@@ -45,5 +46,5 @@
 {% endblock %}
 
 {% block devjs %}
-    {{ loadjs('entry/boilingpoint/boilingpoint.js') }}
+    {{ loadjs('entry/boilingpoint/boilingpointDetail.js') }}
 {% endblock %}

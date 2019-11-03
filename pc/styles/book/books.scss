@@ -192,7 +192,9 @@ body {
 }
 
 .side-box {
-    float: right;
+    position: fixed;
+    margin-left: 686px;
+    top: 124px;
 }
 
 .recommended-books, .recommended-authors {

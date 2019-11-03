@@ -69,3 +69,4 @@ registerDirective(Vue);
         }),
     }).$mount('#articleSuspendedPanel');
 }());
+

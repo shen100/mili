@@ -14,6 +14,7 @@ module.exports = {
     entry: {
         'entry/index': './js/entry/index.js',
         'entry/boilingpoint/boilingpoint': './js/entry/boilingpoint/boilingpoint.js',
+        'entry/boilingpoint/boilingpointDetail': './js/entry/boilingpoint/boilingpointDetail.js',
         'entry/codeStats': './js/entry/codeStats.js',
         'entry/signin': './js/entry/signin.js',
         'entry/signup': './js/entry/signup.js',
