@@ -1,6 +1,7 @@
 import '~/styles/main.scss';
 import '~/styles/article/articleDisplay.scss';
 import '~/styles/article/articleDetail.scss';
+import '~/styles/comment/commentDisplay.scss';
 import '~/js/common/default.js';
 import {
     getWindowSize
@@ -70,22 +71,4 @@ registerDirective(Vue);
             },
         }),
     }).$mount('#articleSuspendedPanel');
-}());
-
-// 右侧悬浮
-(function() {
-    function setArticleSidebarPosition() {
-        const articleSidebar = document.getElementsByClassName('article-sidebar')[0];
-        const winWidth = getWindowSize().width;
-        articleSidebar.style.position = 'fixed';
-        articleSidebar.style.top = '75px';
-        articleSidebar.style.left = ((winWidth - 960) / 2 + 700 + 20) + 'px';
-    }
-
-    window.addEventListener('scroll', function() {
-        setArticleSidebarPosition();
-    });
-    window.addEventListener('resize', function() {
-        setArticleSidebarPosition();
-    });
 }());

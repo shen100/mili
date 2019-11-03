@@ -3,10 +3,18 @@ body {
 }
 
 .article-sidebar {
-    position: absolute;
+    position: fixed;
     top: 75px;
-    right: 0;
     width: 240px;
+    margin-left: 720px;
+}
+
+.comment-title-sep {
+    color: #8a9aa9;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    padding: 20px 0 5px;
 }
 
 .sidebar-block {

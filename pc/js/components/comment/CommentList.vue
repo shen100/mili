@@ -331,6 +331,11 @@ export default {
             } else {
                 this.comments.unshift(comment);
                 this.theRootCommentCount++;
+                const commentEditor = this.getCommentEditor(0);
+                if (commentEditor) {
+                    commentEditor.hideSendBtn();
+                    commentEditor.blur();
+                }
             }
             this.willReplySubComment = null;
         },
@@ -341,7 +346,7 @@ export default {
             comment.editorToggled = false;
         },
         onLikeOrNot(comment) {
-            let url = `/comments/${this.commentType}/comment/${comment.id}/like`;
+            let url = `/comments/${this.source}/comment/${comment.id}/like`;
             if (!comment.userLiked) {
                 myHTTP.post(url).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
@@ -436,7 +441,7 @@ export default {
 
 .comments .comment {
     display: flex;
-    padding: 15px 0 0;
+    padding: 15px 12px 0 62px;
 }
 
 .comment-content-area {
@@ -926,8 +931,8 @@ export default {
 
 .comments .avatar {
     margin-right: 0!important;
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     vertical-align: middle;
     display: inline-block;
     border: 1px solid #ddd;
