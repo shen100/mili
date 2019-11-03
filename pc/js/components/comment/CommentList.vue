@@ -162,7 +162,7 @@
             <!-- 一级评论未加载完时的加载按钮 -->
             <div v-if="comments.length < theRootCommentCount" @click="onLoadMore" 
                 class="fetch-more-comment">{{isLoading ? '正在加载...' : '查看更多 >'}}</div>
-            <div v-else style="height: 24px;"></div>
+            <div v-else-if="source !== 'boilingpoint'" style="height: 24px;"></div>
         </div>
     </div>
 </template>
@@ -194,7 +194,7 @@ export default {
     data: function() {
         return {
             signinURL: '/signin?ref=' + encodeURIComponent(location.href),
-            theRootCommentCount: rootCommentCount,
+            theRootCommentCount: this.rootCommentCount,
             commentMap: {}, // 所有的评论, key 是 评论id, value 是 评论
             subCommentLoadStatusMap: {}, // key 是父评论id, value 是 是否正在加载子评论
             comments: [],

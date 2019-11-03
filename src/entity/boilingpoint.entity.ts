@@ -37,6 +37,9 @@ export class BoilingPoint {
     @Column('int', { name: 'comment_count' })
     commentCount: number;
 
+    @Column('int', { name: 'root_comment_count' })
+    rootCommentCount: number; // 一级评论数
+
     @Column('int', { name: 'liked_count' })
     likedCount: number;
 

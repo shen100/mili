@@ -136,7 +136,7 @@
                             <span class="action-title" :style="{color: boilingData.userLiked ? '#37c700' : '#8a93a0'}">{{boilingData.likedCount ? boilingData.likedCount : '赞'}}</span>
                         </div>
                     </div>
-                    <div class="comment-action action">
+                    <div @click="onClickReply" class="comment-action action">
                         <div class="action-title-box">
                             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" class="icon comment-icon">
                                 <g fill="none" fill-rule="evenodd">
@@ -163,8 +163,10 @@
                     </div>
                 </div>
             </div>
-            <CommentList source="boilingpoint" :sourceID="boilingData.id" :user="user" 
-                :authorID="boilingData.user.id" :rootCommentCount="boilingData.rootCommentCount" />
+            <div v-if="commentsVisible" class="boilingpoint-comments-box">
+                <CommentList source="boilingpoint" :sourceID="boilingData.id" :user="user" 
+                    :authorID="boilingData.user.id" :rootCommentCount="boilingData.rootCommentCount" />
+            </div>
         </div>
     </li>
 </template>
@@ -178,6 +180,7 @@ import UserBusinessCard from '~/js/components/user/UserBusinessCard.vue';
 import More from '~/js/components/common/More.vue';
 import Share from '~/js/components/boilingpoint/Share.vue';
 import FollowBtn from '~/js/components/user/FollowBtn.vue';
+import CommentList from '~/js/components/comment/CommentList.vue';
 
 const defMaxMiddleImgWidth = 446;
 const gridTotalWidth = 336;// 9宫格总宽度
@@ -270,6 +273,7 @@ export default {
                 width: '70px', 
                 height: '26px'
             },
+            commentsVisible: false,
         };
     },
     computed: {
@@ -492,6 +496,9 @@ export default {
         },
         onShowReportAlert() {
             this.$emit('report');  
+        },
+        onClickReply() {
+            this.commentsVisible = !this.commentsVisible;
         }
     },
     filters: {
@@ -502,6 +509,7 @@ export default {
         More,
         Share,
         FollowBtn,
+        CommentList,
     }
 }
 </script>
@@ -1002,5 +1010,10 @@ svg:not(:root) {
     color: #ea6f5a;
     cursor: pointer;
     user-select: none;
+}
+
+.boilingpoint-comments-box {
+    padding: 16px 12px;
+    border-top: 1px solid #ebebeb;
 }
 </style>

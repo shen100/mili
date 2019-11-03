@@ -3,9 +3,6 @@ import '~/styles/article/articleDisplay.scss';
 import '~/styles/article/articleDetail.scss';
 import '~/styles/comment/commentDisplay.scss';
 import '~/js/common/default.js';
-import {
-    getWindowSize
-} from '~/js/utils/dom.js';
 
 import Vue from 'vue';
 import FollowBtn from '~/js/components/user/FollowBtn.vue';

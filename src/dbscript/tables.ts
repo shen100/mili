@@ -40,7 +40,6 @@ export const tablesRun = async function (connection) {
           id int(11) unsigned NOT NULL AUTO_INCREMENT,
           content text,
           html_content text,
-          content_type int(11) NOT NULL,
           parent_id int(11) NOT NULL DEFAULT '0',
           status int(11) NOT NULL,
           source_id int(11) DEFAULT NULL,
@@ -52,6 +51,7 @@ export const tablesRun = async function (connection) {
           root_id int(11) NOT NULL DEFAULT '0',
           liked_count int(11) NOT NULL DEFAULT '0',
           comment_count int(11) NOT NULL DEFAULT '0',
+          latest varchar(100),
           PRIMARY KEY (id)
         ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
 
@@ -309,6 +309,7 @@ export const tablesRun = async function (connection) {
           topic_id int(11) unsigned,
           browse_count int(11) unsigned NOT NULL DEFAULT 0,
           comment_count int(11) unsigned NOT NULL DEFAULT 0,
+          root_comment_count int(11) NOT NULL DEFAULT 0,
           liked_count int(11) unsigned NOT NULL DEFAULT 0,
           PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;

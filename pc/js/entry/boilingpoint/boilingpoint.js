@@ -4,6 +4,7 @@
 import 'iview/dist/styles/iview.css';
 import '~/styles/main.scss';
 import '~/styles/boilingpoint/boilingpoint.scss';
+import '~/styles/comment/commentDisplay.scss';
 import '~/js/common/default.js';
 import Vue from 'vue';
 import BoilingPoint from '~/js/pages/boilingpoint/BoilingPoint.vue';
