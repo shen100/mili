@@ -119,7 +119,7 @@ export class BoilingPointController {
     }
 
     @Get('/boilings/:type')
-    async boilingTypeView(@Param('type') type: string, @Res() res) {
+    async boilingTypeView(@CurUser() user, @Param('type') type: string, @Res() res) {
         if (['recommend', 'hot', 'followed'].indexOf(type) < 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
@@ -157,6 +157,7 @@ export class BoilingPointController {
             };
         });
         res.render('pages/boilingpoint/boilingpoint', {
+            user,
             uploadPolicy,
             topics,
             topicID: undefined,

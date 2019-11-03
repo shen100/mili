@@ -189,7 +189,7 @@ export default {
         'collectionID', // 如果是图书章节的评论，那么collectionID就是 图书id
         'sourceID', // 如果是文章的评论，那么是文章id, 如果是图书章节的评论，那么是 章节id
         'authorID',
-        'user',
+        'user', // 当前登录用户
     ],
     data: function() {
         return {

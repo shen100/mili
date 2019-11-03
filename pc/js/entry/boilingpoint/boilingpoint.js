@@ -29,7 +29,8 @@ new Vue({
         props: {
             url: `/boilingpoints/${window.boilingPointType}`,
             topicID: window.topicID,
-            userID: window.userID,
+            userID: window.user && window.user.id || undefined,
+            user: window.user, // 当前登录用户
             boilingPoint: window.boilingPoint,
         }   
     }),

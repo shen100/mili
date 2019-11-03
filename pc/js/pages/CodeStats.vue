@@ -98,6 +98,7 @@ export default {
             'pc/js/utils/event.js',
             'pc/js/utils/vue.js',
             'pc/styles/article/articleDetail.scss',
+            'pc/styles/comment/commentDisplay.scss',
             'pc/styles/book/books.scss',
             'pc/styles/book/bookDetail.scss',
             'pc/styles/book/chapter.scss',

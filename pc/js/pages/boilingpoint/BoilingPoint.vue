@@ -16,7 +16,7 @@
                         <ul class="boilingpoint-list" :style="{'margin-top': hasEditor ? '8px' : '0'}">
                             <BoilingPointItem :maxMiddleImgWidth="maxMiddleImgWidth" @bigImageChange="onBrowseBigImg" 
                                 :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
-                                :userID="userID" :boilingData="item" @userFollowChange="onFollowChange"
+                                :userID="userID" :user="user" :boilingData="item" @userFollowChange="onFollowChange"
                                 @report="onReport(item.id)" />
                         </ul>
                     </div>
@@ -28,7 +28,7 @@
             <ul class="boilingpoint-list" style="margin-top: 0;">
                 <BoilingPointItem @bigImageChange="onBrowseBigImg"
                     :key="item.id" v-for="item in boilingPoints" @copyLink="onCopyLink"
-                    :userID="userID" :boilingData="item" @userFollowChange="onFollowChange"
+                    :userID="userID" :user="user" :boilingData="item" @userFollowChange="onFollowChange"
                     @report="onReport(item.id)" />
             </ul>
         </div>
@@ -73,6 +73,7 @@ export default {
         'editorEnable', // 是否创建沸点编辑器
         'topicID', // 有topicID时，那么是话题下的沸点列表
         'userID', // 当前登录用户的id
+        'user', // 当前登录用户
         'boilingPoint', // boilingPoint 不为空的话，那就是具体的沸点页面，否则是沸点列表
         'loadingStyle',
         'maxMiddleImgWidth'

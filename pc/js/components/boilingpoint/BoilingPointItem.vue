@@ -163,6 +163,8 @@
                     </div>
                 </div>
             </div>
+            <CommentList source="boilingpoint" :sourceID="boilingData.id" :user="user" 
+                :authorID="boilingData.user.id" :rootCommentCount="boilingData.rootCommentCount" />
         </div>
     </li>
 </template>
@@ -189,6 +191,7 @@ export default {
     props: [
         'boilingData', // 沸点数据
         'userID', // 当前登录用户的id
+        'user', // 当前登录用户
         'maxMiddleImgWidth'
     ],
     data () {

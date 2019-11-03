@@ -86,8 +86,8 @@
 <script>
     // 当页面是推荐、热门、关注时，topicID为''
     var topicID = {% if topicID %}{{topicID}}{% else %}undefined{% endif %};
-    // 当前登录用户, 如果没有登录的话, userID为undefined
-    var userID = {% if user %}{{user.id}}{% else %}undefined{% endif %};
+    {# 当前登录用户 #}
+    var user = {% if user %} {{user | dump | safe}} {% else %}null{% endif %};
     // boilingPointType的值为 recommend、hot、followed 其中之一
     var boilingPointType = '{{ boilingPointType }}';
     // 阿里云oss的 policy
