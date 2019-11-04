@@ -28,7 +28,8 @@
                 </div>                
                 <div v-for="comment in comments" class="comment lastchild-flag" 
                     :key="`comment-${comment.id}`" :id="`comment-${comment.id}`">
-                    <div class="comment-avatar-area v-tooltip-container"
+                    <div class="comment-avatar-area v-tooltip-container" 
+                        :style="{'z-index': comment.id === mouseenterCommentID && mouseenterCommentTarget === 'avatar' ? visibleZIndex : defaultZIndex}"
                         @mouseenter="onMouseEnterUser(comment.id, 'avatar')"
                         @mouseleave="onMouseLeaveUser">
                         <div class="v-tooltip-content">
@@ -39,7 +40,9 @@
                     </div>
                     <div class="comment-content-area">
                         <div class="meta-box">
-                            <div class="user-popover-box" @mouseenter="onMouseEnterUser(comment.id, 'username')"
+                            <div class="user-popover-box" 
+                                    :style="{'z-index': comment.id === mouseenterCommentID && mouseenterCommentTarget === 'username' ? visibleZIndex : defaultZIndex}"
+                                    @mouseenter="onMouseEnterUser(comment.id, 'username')"
                                     @mouseleave="onMouseLeaveUser">
                                 <a :href="`/uc/${comment.user.id}`" target="_blank" class="username">
                                     {{comment.user.username}}
@@ -85,7 +88,8 @@
                         <div v-if="comment.comments && comment.comments.length" class="sub-comment-list">
                             <div :id="`comment-${subcomment.id}`" :key="`comment-${subcomment.id}`" 
                                 v-for="(subcomment, i) in comment.comments" class="sub-comment" :style="{'padding-top': i === 0 ? '14px' : '12px'}">
-                                <div class="v-tooltip-container">
+                                <div class="v-tooltip-container"
+                                    :style="{'z-index': subcomment.id === mouseenterCommentID && mouseenterCommentTarget === 'avatar' ? visibleZIndex : defaultZIndex}">
                                     <div class="v-tooltip-content" @mouseenter="onMouseEnterUser(subcomment.id, 'avatar')"
                                             @mouseleave="onMouseLeaveUser">
                                         <a :href="`/uc/${subcomment.user.id}`" target="_blank" class="avatar"><img :src="subcomment.user.avatarURL"></a>
@@ -96,7 +100,8 @@
                                 <div class="subcomment-content-area">
                                     <div class="meta-box">
                                         <div class="user-popover-box" @mouseenter="onMouseEnterUser(subcomment.id, 'username')"
-                                                @mouseleave="onMouseLeaveUser">
+                                                @mouseleave="onMouseLeaveUser"
+                                                :style="{'z-index': subcomment.id === mouseenterCommentID && mouseenterCommentTarget === 'username' ? visibleZIndex : defaultZIndex}">
                                             <a :href="`/uc/${subcomment.user.id}`" target="_blank" class="username">
                                                 {{subcomment.user.username}}
                                                 <a :href="userLevelChapterURL" target="_blank" class="rank">
@@ -113,7 +118,8 @@
                                     <div class="sub-content-box">
                                         <span> 回复 </span>
                                         <div class="user-popover-box" @mouseenter="onMouseEnterUser(subcomment.id, 'parent_username')"
-                                                @mouseleave="onMouseLeaveUser">
+                                                @mouseleave="onMouseLeaveUser"
+                                                :style="{'z-index': subcomment.id === mouseenterCommentID && mouseenterCommentTarget === 'parent_username' ? visibleZIndex : defaultZIndex}">
                                             <a :href="`/uc/${subcomment.parent.user.id}`" target="_blank" class="username be-replied">{{subcomment.parent.user.username}}
                                                 <a :href="userLevelChapterURL" target="_blank" class="rank">
                                                     <img :src="subcomment.parent.user.level | levelImgURL">
@@ -204,6 +210,8 @@ export default {
             isFirstRequest: true, // 请求评论列表，发出的第一个请求（浏览器地址栏中有#comments的话，滚动到评论区)
             userLevelChapterURL: window.userLevelChapterURL,
             willReplySubComment: null, // 将对此子评论进行评论
+            visibleZIndex: 999,
+            defaultZIndex: 1,
         };
     },
     computed: {
