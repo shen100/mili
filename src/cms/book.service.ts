@@ -173,6 +173,8 @@ export class BookService {
                 id: true,
                 name: true,
                 htmlContent: true,
+                commentCount: true,
+                rootCommentCount: true,
                 user: {
                     id: true,
                     username: true,

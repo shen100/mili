@@ -266,10 +266,10 @@ export class CommentService {
             if (createCommentDto.collectionID) {
                 commentSQLData.push(createCommentDto.collectionID);
             }
-            const sql2 = `UPDATE ${sourceTable} SET comment_count = comment_count + 1 WHERE id = ${createCommentDto.sourceID}`;
+            const sql2 = `UPDATE ${sourceTable} SET comment_count = comment_count + 1 WHERE id = ?`;
             const result = await manager.query(commentSQL, commentSQLData);
             id = result.insertId;
-            await manager.query(sql2);
+            await manager.query(sql2, [createCommentDto.sourceID]);
             if (createCommentDto.collectionID) {
                 await manager.query(`UPDATE ${collectionTable} SET comment_count = comment_count + 1 WHERE id = ?`, [createCommentDto.collectionID]);
             }
@@ -280,6 +280,9 @@ export class CommentService {
                 // 只是更新了一级评论的 comment_count, 直接父评论的 comment_count 暂时没用到，没有更新
                 await manager.query(`UPDATE ${commentTable} SET comment_count = comment_count + 1,
                     latest = ? where id = ?`, [JSON.stringify(latestArr), createCommentDto.rootID]);
+            } else {
+                const rootCommentSQL = `UPDATE ${sourceTable} SET root_comment_count = root_comment_count + 1 WHERE id = ?`;
+                await manager.query(rootCommentSQL, [createCommentDto.sourceID]);
             }
         });
         return {
