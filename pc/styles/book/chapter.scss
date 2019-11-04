@@ -325,6 +325,11 @@
     transform: translateX(-50%);
     display: flex;
     justify-content: center;
+    pointer-events: none;
+}
+
+.book-handle a {
+    pointer-events: all;
 }
 
 .book-handle .step-btn {
@@ -380,4 +385,12 @@
 
 .book-chapter.fold-pc .book-content .book-direction {
     margin-left: 0;
+}
+
+.comment-title-sep {
+    color: #8a9aa9;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    padding: 40px 0 5px;
 }

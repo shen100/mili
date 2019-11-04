@@ -3,10 +3,15 @@
         <div v-if="chapter" class="section-page book-section-view">
             <h1 id="article-content-h1">{{chapter.name}}</h1>
             <div class="mili-editor" v-html="chapter.htmlContent"></div>
-            <div>
-                <CommentList :bookID="chapter.bookID" :articleID="chapter.id" :userID="userID" 
-                    :commentType="'chapter'" :username="username" :avatarURL="avatarURL" 
-                    :authorID="chapter.user.id" />
+            <div class="comment-scroll-to"></div>
+            <div v-if="chapter">
+                <div>
+                    <div class="comment-title-sep">评论</div>
+                    <div id="comment-list" class="comment-list">
+                        <CommentList ref="commentList" :collectionID="chapter.book.id" source="bookchapter" :sourceID="chapter.id" 
+                            :user="user" :authorID="chapter.user.id" :rootCommentCount="chapter.rootCommentCount" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -20,11 +25,10 @@ import CommentList from '~/js/components/comment/CommentList.vue';
 export default {
     data () {
         return {
-            userID: window.user && window.user.id || undefined,
-            username: window.user && window.user.username || '',
-            avatarURL: window.user && window.user.avatarURL || '',
+            user: window.user,
             chapterID: window.chapterID, 
             chapter: null,
+            isFirstRequest: true,
         };
     },
     beforeRouteUpdate (to, from, next) {
@@ -47,12 +51,18 @@ export default {
             myHTTP.get(url).then((result) => {
                 if (result.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.chapter = result.data.data;
+                    if (!this.isFirstRequest) {
+                        this.$nextTick(() => {
+                            this.$refs.commentList.reset();
+                        });
+                    }
+                    this.isFirstRequest = false;
                 }
             });
         }
     },
     components: {
-        CommentsOfArticle,
+        CommentList,
     }
 }
 </script>

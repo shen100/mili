@@ -1,6 +1,7 @@
 import '~/styles/main.scss';
 import '~/styles/article/articleDisplay.scss';
 import '~/styles/book/chapter.scss';
+import '~/styles/comment/commentDisplay.scss';
 import '~/js/common/default.js';
 import Vue from 'vue';
 import VueRouter from 'vue-router';

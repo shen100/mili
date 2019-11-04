@@ -54,7 +54,7 @@ export default {
         onCommentClick() {
             location.href = `/p/${this.articleID}#comments`;
             // 视图滚动到评论
-            document.getElementsByClassName('article-banner')[0].scrollIntoView();
+            document.getElementsByClassName('comment-scroll-to')[0].scrollIntoView();
         },
         onWeixinShareClick() {
             this.$refs.qrCodePopup.show();

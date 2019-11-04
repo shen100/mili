@@ -158,16 +158,13 @@ export class BookChapter {
     browseCount: number;
 
     @Column('int', { name: 'comment_count' })
-    commentCount: number;
+    commentCount: number; // 总评论数
 
-    @Column('text', { nullable: true, default: null })
-    content: string;
+    @Column('int', { name: 'root_comment_count' })
+    rootCommentCount: number; // 一级评论数
 
     @Column('text', { name: 'html_content', nullable: true, default: null })
     htmlContent: string;
-
-    @Column('int', { name: 'content_type' })
-    contentType: ArticleContentType;
 
     @Column('int', { name: 'user_id' })
     userID: number;

@@ -17,7 +17,7 @@
             <div class="comments">
                 <div v-clickoutside="onClickOutsideCommentEditor" :data-commentid="0" class="comment-source-box">
                     <div class="avatar-box">
-                        <div class="avatar" :style="{'background-image': `url(${user.avatarURL})`}"></div>
+                        <div class="avatar" style="cursor: default;" :style="{'background-image': `url(${user.avatarURL})`}"></div>
                     </div>
                     <div class="comment-source-box-wrap">
                         <CommentRichEditor v-if="user" :collectionID="collectionID" :sourceID="sourceID" 
@@ -215,6 +215,18 @@ export default {
         this.onLoadMore();
     },
     methods: {
+        reset() {
+            this.signinURL = '/signin?ref=' + encodeURIComponent(location.href);
+            this.theRootCommentCount = this.rootCommentCount;
+            this.commentMap = {};
+            this.subCommentLoadStatusMap = {};
+            this.comments = [];
+            this.isLoading = false;
+            this.mouseenterCommentID = undefined;
+            this.mouseenterCommentTarget = '';
+            this.willReplySubComment = null;
+            this.onLoadMore();
+        },
         onMouseEnterUser(commentID, mouseenterCommentTarget) {
             this.mouseenterCommentID = commentID;
             this.mouseenterCommentTarget = mouseenterCommentTarget;
@@ -255,7 +267,7 @@ export default {
                 if (this.isFirstRequest && location.hash && location.hash.indexOf('#comments') === 0) {
                     setTimeout(() => {
                         // 滚动到评论区
-                        document.getElementsByClassName('article-banner')[0].scrollIntoView();
+                        document.getElementsByClassName('comment-scroll-to')[0].scrollIntoView();
                     }, 50);
                 }
                 this.isFirstRequest = false;

@@ -13,6 +13,9 @@ export const tablesRun = async function (connection) {
         await connection.manager.query(`alter table books add column star_user_count int default 0`);
 
         await connection.manager.query(`alter table book_chapters add column word_count int default 0`);
+        await connection.manager.query(`alter table book_chapters add column root_comment_count int default 0`);
+        await connection.manager.query(`alter table book_chapters drop column content_type`);
+        await connection.manager.query(`alter table book_chapters drop column content`);
 
         await connection.manager.query(`alter table book_categories add column pathname varchar(50)`);
 
@@ -102,6 +105,7 @@ export const tablesRun = async function (connection) {
             root_id int(11) NOT NULL DEFAULT '0',
             liked_count int(11) NOT NULL DEFAULT '0',
             comment_count int(11) NOT NULL DEFAULT '0',
+            latest varchar(100),
             PRIMARY KEY (id)
           ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
 
