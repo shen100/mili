@@ -1,7 +1,6 @@
 import {
     Controller, Post, UseGuards, Get, Param, Delete, Query, Body,
 } from '@nestjs/common';
-import * as _ from 'lodash';
 import { ArticleService } from './article.service';
 import { ErrorCode } from '../constants/error';
 import { MyHttpException } from '../core/exception/my-http.exception';
@@ -11,7 +10,6 @@ import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
-import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 import { APIPrefix } from '../constants/constants';
 import { BookService } from './book.service';
 import { BookChapterComment, BoilingPointComment, ArticleComment } from '../entity/comment.entity';
@@ -78,6 +76,9 @@ export class CommentController {
         };
     }
 
+    /**
+     * 创建评论
+     */
     @Post(`${APIPrefix}/comments/:source`)
     @UseGuards(ActiveGuard)
     async create(@CurUser() user, @Param('source') source: string, @Body() createCommentDto: CreateCommentDto) {
@@ -175,18 +176,9 @@ export class CommentController {
         return {};
     }
 
-    // @Delete(`${APIPrefix}/comments/:commentID`)
-    // @UseGuards(ActiveGuard)
-    // async delete(@CurUser() user, @Query('commentType') commentType: string, @Param('commentID', MustIntPipe) commentID: number) {
-    //     if (!this.isValidCommentType(commentType)) {
-    //         throw new MyHttpException({
-    //             errorCode: ErrorCode.NotFound.CODE,
-    //         });
-    //     }
-    //     await this.commentService.delete(commentType, commentID, user.id);
-    //     return {};
-    // }
-
+    /**
+     * 是否是有效的评论源
+     */
     private isValidSource(source: string) {
         if ([SourceArticle, SourceBookChapter, SourceBoilingPoint].indexOf(source) >= 0) {
             return true;
@@ -194,6 +186,9 @@ export class CommentController {
         return false;
     }
 
+    /**
+     * 得到评论实体类
+     */
     private getCommentClass(source: string) {
         if (source === SourceArticle) {
             return ArticleComment;

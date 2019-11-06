@@ -113,6 +113,8 @@ export default {
             'src/cms/dto/update-tag.dto.ts',
             'src/cms/book.controller.ts',
             'src/cms/book.service.ts',
+            'src/cms/comment.controller.ts',
+            'src/cms/comment.service.ts',
             'src/cms/tag.controller.ts',
             'src/cms/tag.service.ts',
             'src/cms/index.controller.ts',

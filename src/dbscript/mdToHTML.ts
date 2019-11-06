@@ -43,15 +43,18 @@ export const mdToHTML = async function (connection) {
             updateData.wordCount = summary.length;
             summary = summary.substr(0, summaryStripLenth);
             updateData.summary = summary;
+
             await articleRepository.update({
                 id: article.id,
             }, updateData);
-
-            // tslint:disable-next-line:no-console
-            console.log('articles.length:', articles.length);
-            // tslint:disable-next-line:no-console
-            console.log('errCount', errCount);
         });
+
+        // tslint:disable-next-line:no-console
+        console.log('articles.length:', articles.length);
+        // tslint:disable-next-line:no-console
+        console.log('errCount', errCount);
+        // tslint:disable-next-line:no-console
+        console.log('mdToHTML done');
     } catch (error) {
         errCount++;
         // tslint:disable-next-line:no-console

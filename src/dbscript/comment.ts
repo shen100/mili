@@ -12,7 +12,6 @@ export const commentRun = async function (connection) {
 
     try {
         // todo: 增加id作为主键
-        console.log('???????????????????????????????????');
         await connection.manager.query(`CREATE TABLE like_article_comments (
             comment_id int(11) unsigned NOT NULL,
             user_id int(11) unsigned NOT NULL,
@@ -23,11 +22,9 @@ export const commentRun = async function (connection) {
         await connection.manager.query(`rename table comments to article_comments`);
         await connection.manager.query(`alter table article_comments add column root_id int(11) NOT NULL DEFAULT '0'`);
 
-        await connection.manager.query(`CREATE TABLE votecomments (
+        await connection.manager.query(`CREATE TABLE vote_comments (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            content text,
             html_content text,
-            content_type int(11) NOT NULL,
             parent_id int(11) NOT NULL DEFAULT '0',
             status int(11) NOT NULL,
             vote_id int(11) unsigned NOT NULL,
@@ -63,6 +60,8 @@ export const commentRun = async function (connection) {
             comment.root_id = root.id;
         });
 
+        let maxHtmlLength = 0;
+
         await bluebird.map(comments, async (comment: any, i) => {
             let htmlContent;
             if (comment.content_type === CommentContentType.Markdown) {
@@ -70,25 +69,24 @@ export const commentRun = async function (connection) {
             } else {
                 htmlContent = comment.html_content;
             }
+            maxHtmlLength = Math.max(maxHtmlLength, htmlContent.length);
             if (comment.source_name === 'vote') {
                 voteComments.push({
                     id: comment.id,
-                    createdAt: comment.created_at,
-                    updatedAt: comment.updated_at,
-                    deletedAt: comment.deleted_at,
-                    content: comment.content,
-                    htmlContent,
-                    contentType: CommentContentType.HTML,
+                    created_at: comment.created_at,
+                    updated_at: comment.updated_at,
+                    deleted_at: comment.deleted_at,
+                    html_content: htmlContent,
                     status: comment.status,
-                    userID: comment.user_id,
-                    parentID: comment.parent_id,
-                    commentCount: 0,
-                    voteID: comment.source_id,
+                    user_id: comment.user_id,
+                    parent_id: comment.parent_id,
+                    comment_count: 0,
+                    source_id: comment.source_id,
                 });
             }
             return await bluebird.all([
-                connection.manager.query(`update article_comments set html_content = ${htmlContent},
-                    content_type = ${CommentContentType.HTML} where id = ${comment.id}`),
+                connection.manager.query(`update article_comments set html_content = ?,
+                    content_type = ${CommentContentType.HTML} where id = ${comment.id}`, [htmlContent]),
                 connection.manager.query(`update article_comments set root_id = ${comment.root_id} where id = ${comment.id}`),
             ]);
         });
@@ -98,7 +96,7 @@ export const commentRun = async function (connection) {
         await connection.manager.query(`delete from article_comments where source_name = "vote"`);
         await connection.manager.query(`alter table article_comments drop column content;`);
         await connection.manager.query(`alter table article_comments drop column content_type;`);
-        await connection.manager.query(`alter table article_comments change html_content varchar(2000)`);
+        await connection.manager.query(`alter table article_comments change html_content html_content varchar(5000)`);
 
         await connection.manager.query(`alter table article_comments drop column source_name;`);
         await connection.manager.query(`alter table article_comments drop column ups;`);
@@ -106,10 +104,11 @@ export const commentRun = async function (connection) {
         await connection.manager.query(`alter table article_comments add column liked_count int(11) NOT NULL DEFAULT '0'`);
         await connection.manager.query(`alter table article_comments add column latest varchar(100)`);
 
+        console.log('max comment HtmlLength', maxHtmlLength);
         // tslint:disable-next-line:no-console
         console.log('comments.length:', comments.length);
         // tslint:disable-next-line:no-console
-        console.log('done');
+        console.log('comments done');
     } catch (error) {
         // tslint:disable-next-line:no-console
         console.log('Error: ', error);

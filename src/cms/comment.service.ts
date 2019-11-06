@@ -1,8 +1,6 @@
 import * as _ from 'lodash';
-import * as marked from 'marked';
-import * as moment from 'moment';
 import { Injectable } from '@nestjs/common';
-import { Repository, Not, In, LessThan } from 'typeorm';
+import { Repository, In, LessThan } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment,
     CommentStatus,
@@ -30,9 +28,10 @@ const {
     ArticleCommentTable,
     BookChapterCommentTable,
     BoilingPointCommentTable,
-    BookTable,
+    BookChapterCollectionTable,
 } = CommentConstants;
 
+// 查评论列表时，每个评论的字段
 const commentListSelect = {
     id: true,
     createdAt: true,
@@ -64,27 +63,9 @@ export class CommentService {
         private readonly boilingPointCommentRepository: Repository<BoilingPointComment>,
     ) {}
 
-    // async findOne(commentType: string, commentID: number, select) {
-    //     let comment;
-    //     if (commentType === CommentTypeArticle) {
-    //         comment = await this.commentRepository.findOne({
-    //             id: commentID,
-    //         }, {
-    //             select,
-    //         });
-    //     } else if (commentType === CommentTypeChapter) {
-    //         comment = await this.chapterCommentRepository.findOne({
-    //             id: commentID,
-    //         }, {
-    //             select,
-    //         });
-    //     }
-    //     return comment;
-    // }
-
     async getParent(c: new () => Comment, id: number, fields: string[] = []) {
         const commentRepository = this.getCommentRepository(c);
-        return await await (commentRepository as any).findOne({
+        return await (commentRepository as any).findOne({
             select: fields,
             where: {
                 id,
@@ -223,6 +204,9 @@ export class CommentService {
         return result;
     }
 
+    /**
+     * 创建评论
+     */
     async create(c: new () => Comment, createCommentDto: CreateCommentDto, userID: number) {
         const collectionTable = this.getCollectionTable(c);
         const sourceTable: string = this.getSourceTable(c);
@@ -295,36 +279,6 @@ export class CommentService {
         };
     }
 
-    // async delete(commentType: string, commentID: number, userID: number) {
-    //     const userLikeTable = userLikeTableMap[commentType];
-    //     const commentTable = commentTableMap[commentType];
-    //     const articleTable = articleTableMap[commentType];
-
-    //     const comment = await this.findOne(commentType, commentID, ['id', 'articleID', 'parentID', 'rootID']);
-    //     if (!comment) {
-    //         throw new MyHttpException({
-    //             errorCode: ErrorCode.ParamsError.CODE,
-    //         });
-    //     }
-    //     if (comment.userID !== userID) {
-    //         throw new MyHttpException({
-    //             errorCode: ErrorCode.Forbidden.CODE,
-    //         });
-    //     }
-    //     await this.commentRepository.manager.connection.transaction(async manager => {
-    //         let sql1 = `DELETE FROM ${commentTable} WHERE id = ${commentID}`;
-    //         let sql2 = `DELETE FROM ${userLikeTable} WHERE comment_id = ${commentID}`;
-    //         if (!comment.parentID) {
-    //             sql1 = `DELETE FROM ${commentTable} WHERE id = ${commentID} or root_id = ${commentID}`;
-    //             sql2 = `DELETE FROM ${userLikeTable} WHERE comment_id = ${commentID} or root_id = ${commentID}`;
-    //         }
-    //         const deleteResult = await manager.query(sql1);
-    //         await manager.query(sql2);
-    //         const sql3 = `UPDATE ${articleTable} SET comment_count = comment_count - ${deleteResult.affectedRows} WHERE id = ${comment.articleID}`;
-    //         await manager.query(sql3);
-    //     });
-    // }
-
     /**
      * 点赞
      */
@@ -388,7 +342,7 @@ export class CommentService {
     }
 
     /**
-     * 给定一组评论id，根据 userID 来过滤被用户赞过的的评论
+     * 给定一组评论id，根据 userID 来过滤被用户赞过的评论
      */
     async commentsFilterByUserLiked(c: new () => Comment, commentIDs: number[], userID: number) {
         if (!commentIDs || commentIDs.length <= 0) {
@@ -414,14 +368,20 @@ export class CommentService {
         return commentRepository;
     }
 
+    /**
+     * 评论源的集合表，图书章节的话，就是图书表
+     */
     private getCollectionTable(c: new () => Comment): string {
         let collectionTable: string = '';
         if (c === BookChapterComment) {
-            collectionTable = BookTable;
+            collectionTable = BookChapterCollectionTable;
         }
         return collectionTable;
     }
 
+    /**
+     * 评论源表
+     */
     private getSourceTable(c: new () => Comment): string {
         let sourceTable: string;
         if (c === ArticleComment) {
@@ -434,6 +394,9 @@ export class CommentService {
         return sourceTable;
     }
 
+    /**
+     * 评论表
+     */
     private getCommentTable(c: new () => Comment): string {
         let userLikeTable: string;
         if (c === ArticleComment) {
@@ -446,6 +409,9 @@ export class CommentService {
         return userLikeTable;
     }
 
+    /**
+     * 用户的评论点赞关联表
+     */
     private getUserLikeTable(c: new () => Comment): string {
         let userLikeTable: string;
         if (c === ArticleComment) {

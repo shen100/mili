@@ -5,17 +5,10 @@ export const tablesRun = async function (connection) {
         await connection.manager.query(`alter table images add column size int(11)`);
         await connection.manager.query(`alter table images add column format varchar(50)`);
 
-        await connection.manager.query(`alter table books drop column status`);
-        await connection.manager.query(`alter table books add column status int`);
-        await connection.manager.query(`alter table books add column summary varchar(500)`);
-        await connection.manager.query(`alter table books add column word_count int default 0`);
-        await connection.manager.query(`alter table books add column study_user_count int default 0`);
-        await connection.manager.query(`alter table books add column star_user_count int default 0`);
 
-        await connection.manager.query(`alter table book_chapters add column word_count int default 0`);
-        await connection.manager.query(`alter table book_chapters add column root_comment_count int default 0`);
-        await connection.manager.query(`alter table book_chapters drop column content_type`);
-        await connection.manager.query(`alter table book_chapters drop column content`);
+
+
+
 
         await connection.manager.query(`alter table book_categories add column pathname varchar(50)`);
 
@@ -58,13 +51,14 @@ export const tablesRun = async function (connection) {
           PRIMARY KEY (id)
         ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
 
+        await connection.manager.query(sql);
+
         sql = `CREATE TABLE like_boiling_comments (
           comment_id int(11) unsigned NOT NULL,
           user_id int(11) unsigned NOT NULL,
           created_at datetime NOT NULL,
           PRIMARY KEY (comment_id, user_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`;
-        await connection.manager.query(sql);
 
         await connection.manager.query(sql);
 
@@ -88,6 +82,8 @@ export const tablesRun = async function (connection) {
             PRIMARY KEY (id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);
+
+        await connection.manager.query('drop table book_chapter_comments');
 
         sql = `CREATE TABLE book_chapter_comments (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -337,7 +333,7 @@ export const tablesRun = async function (connection) {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         // tslint:disable-next-line:no-console
-        console.log('done');
+        console.log('tables done');
     } catch (error) {
         // tslint:disable-next-line:no-console
         console.log('Error: ', error);

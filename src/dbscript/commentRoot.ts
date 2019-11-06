@@ -1,6 +1,3 @@
-import { createConnection } from 'typeorm';
-import { ConfigService } from '../config/config.service';
-
 async function getSubComments(connection, id) {
     let comments = await connection.manager.query(`select * from article_comments where parent_id = ?`, [id]);
     comments = comments || [];
@@ -18,6 +15,7 @@ export const commentRoot = async function (connection) {
         const rootComments = await connection.manager.query(`select * from article_comments where parent_id = 0`);
         for (let i = 0; i < rootComments.length; i++) {
             let comment = rootComments[i];
+            // 得到子评论 及 子子评论
             let subComments = await getSubComments(connection, comment.id) || [];
             if (subComments.length) {
                 console.log();
@@ -38,9 +36,7 @@ export const commentRoot = async function (connection) {
                     pid: subComments[1].parent_id,
                 });
             }
-            if (comment.id == 223) {
-                console.log();
-            }
+
             if (subComments.length) {
                 const subCommentIDs = subComments.map(item => item.id);
                 await connection.manager.query(`update article_comments set root_id = ? where id in (?)`, [comment.id, subCommentIDs]);
@@ -61,9 +57,9 @@ export const commentRoot = async function (connection) {
 };
 
 if (require.main) {
-    (async function run() {
-        const config = new ConfigService();
-        const connection = await createConnection(config.db);
-        await commentRoot(connection);
-    }());
+    // (async function run() {
+    //     const config = new ConfigService();
+    //     const connection = await createConnection(config.db);
+    //     await commentRoot(connection);
+    // }());
 }
