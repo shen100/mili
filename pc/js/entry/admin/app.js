@@ -18,6 +18,8 @@ import {
     MenuItem,
     Message,
     Modal,
+    Option,
+    Select,
     Submenu,
     Table,
 } from 'iview';
@@ -40,6 +42,8 @@ Vue.component('Menu', Menu);
 Vue.component('MenuGroup', MenuGroup);
 Vue.component('MenuItem', MenuItem);
 Vue.component('Modal', Modal);
+Vue.component('Option', Option);
+Vue.component('Select', Select);
 Vue.component('Submenu', Submenu);
 Vue.component('Table', Table);
 

@@ -561,7 +561,9 @@ export class ArticleService {
             await manager.query(`DELETE FROM article_category WHERE article_id = ${article.id}`);
             await manager.query(`DELETE FROM article_tag WHERE article_id = ${article.id}`);
             await manager.query(`UPDATE categories SET article_count = article_count - 1 WHERE id IN (${oldCategoryIDs.join(',')})`);
-            await manager.query(`UPDATE tags SET article_count = article_count - 1 WHERE id IN (${oldTagIDs.join(',')})`);
+            if (oldTagIDs.length) {
+                await manager.query(`UPDATE tags SET article_count = article_count - 1 WHERE id IN (${oldTagIDs.join(',')})`);
+            }
             await manager.query(`UPDATE categories SET article_count = article_count + 1 WHERE id IN (${categoryIDs.join(',')})`);
             await manager.query(`UPDATE tags SET article_count = article_count + 1 WHERE id IN (${tagIDs.join(',')})`);
             await manager.query(`INSERT INTO article_category (article_id, category_id) VALUES ${insertCategories.join(',')}`);
