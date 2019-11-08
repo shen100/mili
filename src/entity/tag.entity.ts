@@ -3,8 +3,10 @@ import {
     Column,
     PrimaryGeneratedColumn,
     ManyToMany,
+    JoinTable,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Category } from './category.entity';
 
 @Entity({name: 'tags'})
 export class Tag {
@@ -31,4 +33,18 @@ export class Tag {
 
     @ManyToMany(type => User, user => user.followedTags)
     followers: User[];
+
+    @ManyToMany(type => Category)
+    @JoinTable({
+        name: 'tag_category',
+        joinColumn: {
+            name: 'tag_id',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'category_id',
+            referencedColumnName: 'id',
+        },
+    })
+    categories: Category[];
 }

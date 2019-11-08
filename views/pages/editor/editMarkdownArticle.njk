@@ -1,14 +1,13 @@
 {# 创建草稿、编辑草稿、编辑文章都是用的这个页面(markdown格式) #}
 
+{% extends '../../layout/empty.njk' %}
+
 {% block libcss %}
 <link charset="utf-8" href="{{cssPath}}/libs/simplemde.min.css" rel="stylesheet">
 {% endblock %}
 
-{% extends '../../layout/empty.njk' %}
-
 {% block main %}
-<div id="app">
-</div>
+<div id="app"></div>
 {% endblock %}
 
 {% block pageData %}

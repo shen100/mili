@@ -23,9 +23,6 @@ export class Category {
     @Column('varchar', { length: 200 })
     name: string;
 
-    @Column('varchar', { name: 'cover_url', length: 500 })
-    coverURL: string; // 封面
-
     @Column('int')
     sequence: number;
 

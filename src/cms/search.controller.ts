@@ -109,7 +109,6 @@ export class SearchController {
                 });
                 result.list.forEach((categoryData: any) => {
                     categoryData.isFollowed = !!categoryMap[categoryData.id];
-                    categoryData.coverURL = 'https://img.golang123.com/upload/img/2018/02/d5efec9d-e8ff-4331-8f2c-70a1f7156be3.jpg';
                 });
             }
             return result;
@@ -142,7 +141,6 @@ export class SearchController {
         if (keyword) {
             category = await this.categoryService.searchCategoryByName(keyword);
             if (category) {
-                category.coverURL = 'https://img.golang123.com/upload/img/2018/02/d5efec9d-e8ff-4331-8f2c-70a1f7156be3.jpg';
                 const categories = [category.id];
                 const followedCategories = await this.categoryService.findCategoriesFilterByFollowerID(user.id, categories);
                 if (followedCategories.length) {
