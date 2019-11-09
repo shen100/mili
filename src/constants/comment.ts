@@ -9,7 +9,7 @@ export class CommentConstants {
     static readonly BookChapterCollectionTable: string = 'books';
 
     static readonly LikeArticleCommentTable: string = 'like_article_comments';
-    static readonly LikeBookChapterCommentTable: string = 'userlikechapter_comments';
+    static readonly LikeBookChapterCommentTable: string = 'like_bookchapter_comments';
     static readonly LikeBoilingPointCommentTable: string = 'like_boiling_comments';
 
     static readonly ArticleCommentTable: string = 'article_comments';

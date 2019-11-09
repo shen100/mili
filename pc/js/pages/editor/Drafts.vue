@@ -5,7 +5,7 @@
         <nav class="top-nav">
             <div class="width-limit">
                 <a class="logo" href="/">
-                    <img :src="`${imgPath}/logo.png`">
+                    <img src="../../../images/logo.png">
                 </a>
                 <UserDropdown :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
                 <a class="btn write-btn" href="/editor/drafts/new" target="_blank">
@@ -19,7 +19,7 @@
             </li>
             <li :key="draft.id" v-for="(draft, i) in list">
                 <div class="draft-item">
-                    <a :href="`/editor/drafts/${draft.id}.html`" class="title">{{draft.name || '无标题'}}</a>
+                    <a :href="`/editor/drafts/${draft.id}`" class="title">{{draft.name || '无标题'}}</a>
                     <div class="info-box">
                         <img v-if="draft.isMarkdown" class="markdown-icon" src="../../../images/editor/markdown.svg">
                         <div class="word-count">{{draft.wordCount || 0}} 字</div>
@@ -51,7 +51,6 @@ export default {
         return {
             userID: window.userID,
             avatarURL: window.avatarURL,
-            imgPath: window.globalConfig.imgPath,
             list: [],
             count: undefined,
             listToggled: [],
@@ -60,7 +59,7 @@ export default {
     },
     methods: {
         onEditDraft(id) {
-            location.href = `/editor/drafts/${id}.html`;
+            location.href = `/editor/drafts/${id}`;
         },
         onDeleteDraft(id) {
             this.deleteDraftID = id;
@@ -73,7 +72,7 @@ export default {
                     this.count--;
                 }
             }).catch((err) => {
-
+                console.log(err);
             });  
         },
         onDeleteDraftCancel() {

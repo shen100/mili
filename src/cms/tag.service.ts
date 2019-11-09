@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
@@ -5,6 +6,7 @@ import { Tag } from '../entity/tag.entity';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { ListResult } from '../entity/listresult.entity';
 import { UpdateTagDto } from './dto/update-tag.dto';
+import { Category } from '../entity/category.entity';
 
 @Injectable()
 export class TagService {
@@ -14,22 +16,41 @@ export class TagService {
     ) {}
 
     async create(createTagDto: CreateTagDto) {
+        const categoryIDArr: number[] = Array.from(new Set(createTagDto.categories));
+        const categories: Category[] = categoryIDArr.map(cID => {
+            const category = new Category();
+            category.id = cID;
+            return category;
+        });
+
         const tag: Tag = new Tag();
         tag.name = createTagDto.name;
         tag.iconURL = createTagDto.iconURL;
         tag.followerCount = 0;
         tag.articleCount = 0;
+        tag.categories = categories;
         tag.createdAt = new Date();
         tag.updatedAt = tag.createdAt;
         return await this.tagRepository.save(tag);
     }
 
     async update(updateTagDto: UpdateTagDto) {
-        return await this.tagRepository.update({
-            id: updateTagDto.id,
-        }, {
-            name: updateTagDto.name,
-            iconURL: updateTagDto.iconURL,
+        const categoryIDArr: number[] = Array.from(new Set(updateTagDto.categories));
+        const insertCategories = [];
+
+        categoryIDArr.map(cID => {
+            insertCategories.push(`(${updateTagDto.id}, ${cID})`);
+        });
+
+        await this.tagRepository.manager.connection.transaction(async manager => {
+            await manager.update(Tag, {
+                id: updateTagDto.id,
+            }, {
+                name: updateTagDto.name,
+                iconURL: updateTagDto.iconURL,
+            });
+            await manager.query(`DELETE FROM tag_category WHERE tag_id = ?`, [updateTagDto.id]);
+            await manager.query(`INSERT INTO tag_category (tag_id, category_id) VALUES ${insertCategories.join(', ')}`);
         });
     }
 
@@ -63,6 +84,48 @@ export class TagService {
             page,
             pageSize,
         };
+    }
+
+    async listWithCategories(page: number, pageSize: number): Promise<ListResult<Tag>> {
+        const [list, count] = await this.tagRepository.findAndCount({
+            select: {
+                id: true,
+                name: true,
+                articleCount: true,
+                followerCount: true,
+                iconURL: true,
+                createdAt: true,
+                updatedAt: true,
+                categories: true,
+            },
+            relations: ['categories'],
+            order: { updatedAt: 'DESC' },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
+    }
+
+    async listInCategory(categoryID: number) {
+        return await this.tagRepository.createQueryBuilder('t')
+            .select(['t.id', 't.name'])
+            .leftJoin('t.categories', 'c')
+            .where('c.id = :cID', { cID: categoryID})
+            .getMany();
+    }
+
+    async searchInCategory(categoryID: number, q: string) {
+        return await this.tagRepository.createQueryBuilder('t')
+            .select(['t.id', 't.name'])
+            .leftJoin('t.categories', 'c')
+            .where('c.id = :cID', { cID: categoryID})
+            .andWhere('t.name like :q', { q: `%${q}%` })
+            .getMany();
     }
 
     async search(keyword: string, page: number, pageSize: number, sort: string): Promise<ListResult<Tag>> {

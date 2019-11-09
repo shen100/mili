@@ -14,24 +14,25 @@
                     <i v-if="!publishToggled" class="fa fa-caret-down"></i>
                     <i v-else class="fa fa-caret-up"></i>
                 </div>
-                <div v-if="publishToggled" class="panel">
+                <div v-if="publishToggled && this.categories.length" class="panel">
                     <div class="title">{{isEditArticle ? '更新': '发布'}}文章</div>
                     <div class="category-box">
                         <div class="sub-title">分类</div>
                         <div class="category-list">
-                            <div @click="onSelectCategory(c.id)" :key="c.id" v-for="c in categories" :class="{active: categoryID === c.id}" class="item">{{c.name}}</div>
+                            <div @click="onSelectCategory(c)" :key="c.id" v-for="c in categories" 
+                                :class="{active: curCategory && curCategory.id === c.id}" class="item">{{c.name}}</div>
                         </div>
                     </div>
                     <div class="tag-box category-box">
-                        <div class="sub-title" :style="{'margin-bottom': curSelectTag ? '10px' : '2px'}">标签</div>
-                        <div v-show="curSelectTag" class="user-category-list">
-                            <div @click="onCancelSelectTag" class="item">{{curSelectTag && curSelectTag.name}}</div>
+                        <div class="sub-title" :style="{'margin-bottom': curTag ? '10px' : '2px'}">标签</div>
+                        <div v-show="curTag" class="user-category-list">
+                            <div @click="onCancelSelectTag" class="item">{{curTag && curTag.name}}</div>
                         </div>
-                        <div v-show="!curSelectTag" class="tag-input tag-input">
-                            <Select @on-change="onSelectTagChange" v-model="tagID" placeholder="添加1个标签"
-                                filterable remote :remote-method="requestTags" :loading="isLoadingTag">
-                                <Option v-for="t in tags" :value="t.id" :key="t.id">{{t.name}}</Option>
-                            </Select>
+                        <div v-show="!curTag" class="tag-input tag-input">
+                            <input @input="onSearchTagChange" v-model="searchTagText" type="text" placeholder="选择分类中标签"/>
+                            <ul v-if="!isSearchTagTextEmpty && tags.length" class="suggested-tag-list">
+                                <li @click.stop="onSelectTagChange(t)" :key="t.id" v-for="t in tags">{{t.name}}</li>
+                            </ul>
                         </div>
                     </div>
                     <button @click="onPublish" class="publish-btn">确定并{{isEditArticle ? '更新' : '发布'}}</button>
@@ -78,7 +79,7 @@ import { isContentEmpty } from '~/js/utils/dom.js';
 
 export default {
     props: [
-        'isRich',
+        'isRich', // 是否使用的是富文本编辑器
         'logoBoxWidth',
         'userID',
         'avatarURL',
@@ -89,34 +90,32 @@ export default {
         'getEditorMarkdown',
         'draftID',
         'articleID',
-        'initialCategories',
-        'initialTags'
+        'initialCategories', // 数组，每个元素是对象
+        'initialTags' // 数组，每个元素是对象
     ],
     data () {
         return {
             isEditDraft: !!this.draftID, // 有draftID时，是编辑草稿(draftID 和 articleID 不会同时存在)
             isEditArticle: !!this.articleID, // 有articleID时，是编辑文章(draftID 和 articleID 不会同时存在)
-            articleTitle: !this.isRich ? this.title : '',
+            articleTitle: !this.isRich ? this.title : '', // Markdown 编辑器时，才在 header 中显示标题
             coverURL: '',
             isCoverUploading: false, // 是否正在上传文章封面图片
             coverToggled: false,
             publishToggled: false,
             markdownToggled: false,
-            // 如果是编辑文章，或编辑草稿，那么会传分类、标签(initialCategories、initialTags)，用户选择分类、标签后,
-            // 再使用用户选择的分类、标签，而不使用 initialCategories、initialTags
-            notUseInitialCategories: false,
-            notUseInitialTags: false,
-            categoryID: undefined,
-            categories: [],
-            tagID: undefined,
-            tags: [],
-            isLoadingTag: false,
+            curCategory: null, // 当前选中的分类
+            categories: [], // 所有的分类， 每个元素是对象
+            curTag: null, // 当前选中的标签
+            tags: [], // 搜索出的标签, 每个元素是对象
+            searchTagText: '',
+            lastLoadTagsTime: 0, // 上一次搜索标签，发请求时的时间
             switchEditorAlertVisible: false,
             switchEditorAlertText: '切换编辑器后，当前内容不会迁移，但会自动保存为草稿。',
-            lastQueryText: '',
             autoSaveDraftTip: '文章将自动保存至草稿',
-            defaultAutoSaveTime: window.env === 'development' ? 10 : 5 * 60,
-            autoSaveTimeArr: window.env === 'development' ? [10] : [10, 30, 60, 3 * 60, 5 * 60],
+            // 先使用 autoSaveTimeArr 中的时间点自动保存，如果时间太长，autoSaveTimeArr中的时间点用完了，
+            // 这时，再使用 defaultAutoSaveTime 时间间隔来保存
+            autoSaveTimeArr: window.env === 'development' ? [2] : [10, 30, 60, 2 * 60, 3 * 60],
+            defaultAutoSaveTime: window.env === 'development' ? 2 : 3 * 60,
             isDraftSaving: false, // 是否正在保存文章草稿
             autoSaveDraftTimeoutID: 0,
             autoSaveCount: 0, // 第几次自动保存
@@ -124,45 +123,40 @@ export default {
             lastSaveDraftContent: '',
             lastSaveCategoryID: undefined,
             lastSaveTagID: undefined,
-            lastSaveCoverURL: ''
-        }
+            lastSaveCoverURL: '',
+        };
     },
     mounted() {
         if (this.isEditArticle || this.isEditDraft) {
             if (this.initialCategories && this.initialCategories.length) {
                 // 目前只支持选择一个分类
-                this.categoryID = this.initialCategories[0].id;
+                this.curCategory = this.initialCategories[0];
             }
             if (this.initialTags && this.initialTags.length) {
                 // 目前只支持选择一个标签
-                this.tagID = this.initialTags[0].id;
+                this.curTag = this.initialTags[0];
             }
         }
+
+        // 请求所有的分类
         const url = '/categories';
         myHTTP.get(url).then((result) => {
             this.categories = result.data.data || [];
         });
+
         this.autoSaveDraftTimeoutID = setTimeout(this.autoSaveDraft, 1000 * this.getAutoSaveTime());
     },
     computed: {
-        curSelectTag: function() {
-            if (!this.tagID) {
-                return null;
-            }
-            // 编辑文章或编辑草稿时，会传initialTags
-            if (!this.notUseInitialTags && this.initialTags && this.initialTags.length) {
-                // 目前只支持添加一个标签
-                return this.initialTags[0];
-            }
-            for (let i = 0; i < this.tags.length; i++) {
-                if (this.tags[i].id === this.tagID) {
-                    return this.tags[i];
-                }
-            }
-            return null;
-        }
+        isSearchTagTextEmpty() {
+            return !!trim(this.searchTagText);
+        },
     },
     methods: {
+        autoSaveDraft() {
+            this.autoSaveCount++;
+            this.saveDraft();
+            this.autoSaveDraftTimeoutID = setTimeout(this.autoSaveDraft, 1000 * this.getAutoSaveTime());
+        },
         getAutoSaveTime() {
             return this.autoSaveTimeArr[this.autoSaveCount] || this.defaultAutoSaveTime;
         },
@@ -172,8 +166,8 @@ export default {
             }
             const articleTitle = trim(this.getTitle()) || '';
             const articleContent = this.getContent() || '';
-            const cID = this.categoryID || undefined;
-            const tagID = this.tagID || undefined;
+            const cID = this.curCategory && this.curCategory.id || undefined;
+            const tagID = this.curTag && this.curTag.id || undefined;
             const coverURL = this.coverURL || '';
             if (!articleTitle && isContentEmpty(articleContent, this.isRich ? 'rich' : 'md')) {
                 return;
@@ -211,11 +205,6 @@ export default {
                 this.isDraftSaving = false;
             });
         },
-        autoSaveDraft() {
-            this.saveDraft();
-            this.autoSaveCount++;
-            this.autoSaveDraftTimeoutID = setTimeout(this.autoSaveDraft, 1000 * this.getAutoSaveTime());
-        },
         getTitle() {
             if (this.isRich) {
                 return this.getArticleTitle();
@@ -240,12 +229,12 @@ export default {
                 this.$refs.errorTip.show('请输入正文');
                 return;
             }
-            if (!this.categoryID) {
+            if (!this.curCategory) {
                 this.$refs.errorTip.show('请选择分类');
                 return;
             }
-            if (!this.tagID) {
-                this.$refs.errorTip.show('请添加标签');
+            if (!this.curTag) {
+                this.$refs.errorTip.show('请选择标签');
                 return;
             }
             let url = '/articles';
@@ -254,12 +243,14 @@ export default {
                 name: this.articleTitle,
                 content: this.articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
-                categories: [ { id: this.categoryID } ],
-                tags: [ { id: this.tagID } ],
+                categories: [ { id: this.curCategory.id } ],
+                tags: [ { id: this.curTag.id } ],
             };
             if (this.coverURL) {
                 reqData.coverURL = this.coverURL;
             }
+            // 创建文章、编辑草稿 最后都会跳到 文章发布成功的页面
+            // 编辑文章，跳到文章详情页面
             if (this.isEditArticle) {
                 reqMethod = myHTTP.put;
                 reqData.id = this.articleID;
@@ -272,40 +263,46 @@ export default {
                 }
                 clearTimeout(this.autoSaveDraftTimeoutID);
                 if (this.isEditArticle) {
-                    location.href = `/p/${this.articleID}.html`;
+                    location.href = `/p/${this.articleID}`;
                     return;
                 }
-                // 非编辑文章，那么就是直接创建文章，或编辑草稿后点击发布，同样也会创建文章
-                location.href = `/editor/published.html`;
+                location.href = `/editor/published`;
             });
         },
-        onSelectCategory(id) {
-            this.notUseInitialCategories = true;
-            this.categoryID = id;
+        onSelectCategory(category) {
+            if (!this.curCategory || category.id !== this.curCategory.id) {
+                this.curTag = null;
+                this.tags = [];
+            }
+            this.curCategory = category;
         },
-        onSelectTagChange() {
-            this.notUseInitialTags = true;
+        onSelectTagChange(tag) {
+            this.curTag = tag;
+            this.tags = [];
+            this.searchTagText = '';
         },
         onCancelSelectTag() {
-            this.notUseInitialTags = true;
-            this.tagID = undefined;
+            this.curTag = null;
         },
-        requestTags(queryText) {
-            queryText = trim(queryText);
-            if (this.lastQueryText === queryText) {
-                return;
-            }
-            this.lastQueryText = queryText;
-            if (!queryText) {
-                return;
-            }
-            this.isLoadingTag = true;
-            const url = `/tags/search?q=${encodeURIComponent(queryText)}`;
-            myHTTP.get(url).then((result) => {
-                this.tags = result.data.data || [];
-                this.isLoadingTag = false;
-            }).catch((err) => {
-                this.isLoadingTag = false;
+        onSearchTagChange() {
+            this.$nextTick(() => {
+                const queryText = trim(this.searchTagText);
+                if (!queryText) {
+                    return;
+                }
+                const lastLoadTagsTime = new Date().getTime();
+                this.lastLoadTagsTime = lastLoadTagsTime;
+                const url = `/tags/category/${this.curCategory.id}/search?q=` + encodeURIComponent(queryText);
+                myHTTP.get(url).then((res) => {
+                    if (lastLoadTagsTime < this.lastLoadTagsTime) {
+                        return;
+                    }
+                    if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                        this.tags = res.data.data;
+                    }
+                }).catch(err => {
+                    console.log(err);
+                });
             });
         },
         switchEditor() {
@@ -321,8 +318,8 @@ export default {
                 name: articleTitle,
                 content: articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
-                categories: this.categoryID ? [ { id: this.categoryID } ] : null,
-                tags: this.tagID ? [ { id: this.tagID } ] : null,
+                categories: this.curCategory ? [ { id: this.curCategory.id } ] : null,
+                tags: this.curTag ? [ { id: this.curTag.id } ] : null,
                 editorType: this.isRich ? ArticleContentType.Markdown : ArticleContentType.HTML,
             };
             if (coverURL) {
@@ -330,7 +327,7 @@ export default {
             }
             myHTTP.post(url, reqData).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    location.href = '/editor/drafts/new.html';
+                    location.href = '/editor/drafts/new';
                 }
             }).catch((err) => {
 

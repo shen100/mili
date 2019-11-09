@@ -1,6 +1,6 @@
 import * as util from 'util';
 import {
-    Controller, Post, Body, UseGuards, Get, Query, Param, Render, Res, Delete,
+    Controller, Post, Body, UseGuards, Get, Query, Param, Res, Delete,
 } from '@nestjs/common';
 import moment = require('moment');
 import { ArticleService } from './article.service';
@@ -32,15 +32,15 @@ export class EditorController {
         private readonly collectionService: CollectionService,
     ) {}
 
-    @Get('/editor/drafts.html')
+    @Get('/editor/drafts')
     @UseGuards(ActiveGuard)
     async listView(@Res() res) {
         res.render('pages/editor/drafts', {});
     }
 
-    @Get('/editor/drafts/new.html')
+    @Get('/editor/drafts/new')
     @UseGuards(ActiveGuard)
-    async createDraft(@CurUser() user, @Query() query, @Res() res) {
+    async createDraftView(@CurUser() user, @Res() res) {
         const [settings, uploadPolicy] = await Promise.all([
             this.userService.findSettings(user.id),
             this.ossService.requestPolicy(),
@@ -58,7 +58,7 @@ export class EditorController {
         });
     }
 
-    @Get('/editor/drafts/:id.html')
+    @Get('/editor/drafts/:id')
     @UseGuards(ActiveGuard)
     async editDraftView(@Param('id', MustIntPipe) id: number, @CurUser() user, @Res() res) {
         const [draft, uploadPolicy] = await Promise.all([

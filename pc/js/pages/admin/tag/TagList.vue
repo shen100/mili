@@ -13,6 +13,11 @@
                     <div class="item-icon" :style="{'background-image': `url(${row.iconURL})`}" />
                 </div>
             </template>
+            <template slot-scope="{ row }" slot="categories">
+                <ul>
+                    <li :key="c.id" v-for="c in row.categories">{{c.name}}</li>
+                </ul>
+            </template>
             <template slot-scope="{ row }" slot="action">
                 <Button type="primary" size="small" @click="onEdit(row)">编辑</Button>
             </template>
@@ -29,6 +34,11 @@
                 <FormItem prop="iconURL" label="图标">
                     <SimpleUploader ref="simpleUploader" v-if="uploadPolicy" :uploadPolicy="uploadPolicy" 
                         @success="onImgUploadSuccess" @remove="onImgRemove" :img="formData.iconURL"/>
+                </FormItem>
+                <FormItem prop="categories" label="分类">
+                    <Select v-model="formData.categories" multiple>
+                        <Option v-for="item in allCategories" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                    </Select>
                 </FormItem>
             </Form>
             <div class="admin-modal-footer">
@@ -54,6 +64,7 @@ export default {
             formData: {
                 name: '',
                 iconURL: '',
+                categories: [], // 选中的分类
             },
             rules: {
                 name: [
@@ -66,6 +77,19 @@ export default {
                         validator: (rule, value, callback) => {
                             // 直接回调callback, 由后台来验证
                             callback()
+                        }
+                    }
+                ],
+                categories: [
+                    {
+                        required: true,
+                        trigger: 'change', 
+                        validator: (rule, value, callback) => {
+                            if (!(value && value.length)) {
+                                callback(new Error('请选择分类'));
+                                return;
+                            }
+                            callback();
                         }
                     }
                 ]
@@ -82,6 +106,10 @@ export default {
                 {
                     title: '图标',
                     slot: 'iconURL'
+                },
+                {
+                    title: '所属分类',
+                    slot: 'categories'
                 },
                 {
                     title: '文章数量',
@@ -104,11 +132,13 @@ export default {
                     slot: 'action'
                 },
             ],
-            tags: []
+            tags: [],
+            allCategories: [], // 所有的分类
         };
     },
     mounted() {
         this.reqList();
+        this.reqAllCategories();
         this.reqPolicy();
     },
     methods: {
@@ -127,6 +157,7 @@ export default {
             this.tagID = row.id;
             this.formData.name = row.name;
             this.formData.iconURL = row.iconURL;
+            this.formData.categories = row.categories.map(c => c.id);
             this.modalVisible = true;
             this.$nextTick(() => {
                 this.$refs.simpleUploader.setImgURL(row.iconURL);
@@ -142,6 +173,7 @@ export default {
                 const data = {
                     name: this.formData.name,
                     iconURL: this.formData.iconURL,
+                    categories: this.formData.categories,
                 };
                 if (this.tagID) {
                     reqMethod = myHTTP.put;
@@ -168,7 +200,7 @@ export default {
             this.modalVisible = false;
         },
         reqList() {
-            myHTTP.get('/tags').then((res) => {
+            myHTTP.get('/tags/with_categories').then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     let tags = res.data.data.list;
                     tags = tags.map(tag => {
@@ -179,6 +211,13 @@ export default {
                         };
                     });
                     this.tags = tags;
+                }
+            });
+        },
+        reqAllCategories() {
+            myHTTP.get('/categories').then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.allCategories = res.data.data;
                 }
             });
         },

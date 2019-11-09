@@ -437,4 +437,45 @@ html, body, #app, #editorBox {
 
 .tag-input {
     padding-bottom: 10px;
+    position: relative;
+}
+
+.tag-input input {
+    padding: 2px 0;
+    padding-top: 8px;
+    width: 100%;
+    font-size: 12px;
+    border: none;
+    border-bottom: 1px solid #f1f1f1;
+    border-radius: 0;
+    outline: none;
+}
+
+.tag-input input::-webkit-input-placeholder {
+    color: #bbb;
+}
+
+.suggested-tag-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin: 0;
+    padding: 7px 0;
+    width: 192px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    list-style: none;
+    z-index: 500;
+}
+
+.suggested-tag-list li {
+    padding: 7px 12px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.suggested-tag-list li:hover {
+    color: #ea6f5a;
 }

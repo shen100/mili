@@ -70,7 +70,6 @@ export class CategoryService {
                     name: true,
                     followerCount: true,
                     articleCount: true,
-                    coverURL: true,
                 },
                 skip: (page - 1) * pageSize,
                 take: pageSize,
@@ -117,7 +116,6 @@ export class CategoryService {
             select: {
                 id: true,
                 name: true,
-                coverURL: true,
             },
             where: {
                 name: keyword,

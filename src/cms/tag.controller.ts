@@ -75,7 +75,7 @@ export class TagController {
     }
 
     /**
-     * 全部标签
+     * 标签列表(不带分类)
      */
     @Get(`${APIPrefix}/tags`)
     async list(@CurUser() user, @Query('sort') sort: string, @Query('page', ParsePagePipe) page: number) {
@@ -89,6 +89,33 @@ export class TagController {
             return listResult;
         }
         return this.addPropertyIsFollowed(listResult, user.id);
+    }
+
+    /**
+     * 标签列表(带分类)
+     */
+    @Get(`${APIPrefix}/tags/with_categories`)
+    async listWithCategories(@Query('page', ParsePagePipe) page: number) {
+        const pageSize = 20;
+        const listResult: ListResult<Tag> = await this.tagService.listWithCategories(page, pageSize);
+        return listResult;
+    }
+
+    /**
+     * 分类下的标签
+     */
+    @Get(`${APIPrefix}/tags/category/:categoryID`)
+    async listInCategory(@Param('categoryID', MustIntPipe) categoryID: number) {
+        return await this.tagService.listInCategory(categoryID);
+    }
+
+    /**
+     * 搜索分类下的标签
+     */
+    @Get(`${APIPrefix}/tags/category/:categoryID/search`)
+    async searchInCategory(@Param('categoryID', MustIntPipe) categoryID: number, @Query('q') q: string) {
+        q = decodeURIComponent(q || '');
+        return await this.tagService.searchInCategory(categoryID, q);
     }
 
     /**

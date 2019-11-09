@@ -5,11 +5,6 @@ export const tablesRun = async function (connection) {
         await connection.manager.query(`alter table images add column size int(11)`);
         await connection.manager.query(`alter table images add column format varchar(50)`);
 
-
-
-
-
-
         await connection.manager.query(`alter table book_categories add column pathname varchar(50)`);
 
         await connection.manager.query(`CREATE TABLE book_user_study (
@@ -22,34 +17,24 @@ export const tablesRun = async function (connection) {
 
         await connection.manager.query(`alter table categories add column follower_count int default 0`);
         await connection.manager.query(`alter table categories add column article_count int default 0`);
-        await connection.manager.query(`alter table categories add column cover_url varchar(500)`);
         await connection.manager.query(`alter table categories add column pathname varchar(50)`);
-
-        await connection.manager.query(`CREATE TABLE follower_category (
-            user_id int(11) unsigned NOT NULL,
-            category_id int(11) unsigned NOT NULL,
-            date datetime,
-            PRIMARY KEY (user_id, category_id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         let sql = `CREATE TABLE boilingpoint_comments (
           id int(11) unsigned NOT NULL AUTO_INCREMENT,
-          content text,
           html_content text,
           parent_id int(11) NOT NULL DEFAULT '0',
+          root_id int(11) NOT NULL DEFAULT '0',
           status int(11) NOT NULL,
           source_id int(11) DEFAULT NULL,
-          book_id int(11) NOT NULL,
           user_id int(11) unsigned NOT NULL,
           created_at datetime NOT NULL,
           updated_at datetime NOT NULL,
           deleted_at datetime DEFAULT NULL,
-          root_id int(11) NOT NULL DEFAULT '0',
           liked_count int(11) NOT NULL DEFAULT '0',
           comment_count int(11) NOT NULL DEFAULT '0',
           latest varchar(100),
           PRIMARY KEY (id)
-        ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
 
         await connection.manager.query(sql);
 
@@ -87,10 +72,9 @@ export const tablesRun = async function (connection) {
 
         sql = `CREATE TABLE book_chapter_comments (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            content text,
             html_content text,
-            content_type int(11) NOT NULL,
             parent_id int(11) NOT NULL DEFAULT '0',
+            root_id int(11) NOT NULL DEFAULT '0',
             status int(11) NOT NULL,
             source_id int(11) DEFAULT NULL,
             collection_id int(11) NOT NULL,
@@ -98,12 +82,11 @@ export const tablesRun = async function (connection) {
             created_at datetime NOT NULL,
             updated_at datetime NOT NULL,
             deleted_at datetime DEFAULT NULL,
-            root_id int(11) NOT NULL DEFAULT '0',
             liked_count int(11) NOT NULL DEFAULT '0',
             comment_count int(11) NOT NULL DEFAULT '0',
             latest varchar(100),
             PRIMARY KEY (id)
-          ) ENGINE=InnoDB AUTO_INCREMENT=453 DEFAULT CHARSET=utf8mb4;`;
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
 
         await connection.manager.query(sql);
 
@@ -114,7 +97,7 @@ export const tablesRun = async function (connection) {
           name varchar(200) NOT NULL DEFAULT '',
           browse_count int(11) unsigned NOT NULL,
           comment_count int(11) unsigned NOT NULL,
-          content text,
+          root_comment_count int(11) unsigned NOT NULL,
           html_content text,
           word_count int(11) DEFAULT '0',
           try_read tinyint(1) DEFAULT '0',
@@ -148,6 +131,13 @@ export const tablesRun = async function (connection) {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);
 
+        sql = `CREATE TABLE tag_category (
+          tag_id int(11) unsigned NOT NULL,
+          category_id int(11) unsigned NOT NULL,
+          PRIMARY KEY (tag_id, category_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        await connection.manager.query(sql);
+
         sql = `CREATE TABLE user_subscribed_tag (
           user_id int(11) unsigned NOT NULL,
           tag_id int(11) unsigned NOT NULL,
@@ -170,31 +160,26 @@ export const tablesRun = async function (connection) {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);
 
-        sql = `CREATE TABLE userlikechapter_comments (
+        sql = `CREATE TABLE like_bookchapter_comments (
           comment_id int(11) unsigned NOT NULL,
           user_id int(11) unsigned NOT NULL,
-          parent_id int(11) unsigned NOT NULL,
-          root_id int(11) unsigned NOT NULL,
-          article_id int(11) unsigned NOT NULL,
           created_at datetime NOT NULL,
           PRIMARY KEY (comment_id, user_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`;
         await connection.manager.query(sql);
 
         await connection.manager.query(`CREATE TABLE user_like_articles (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
             user_id int(11) unsigned NOT NULL,
             article_id int(11) unsigned NOT NULL,
             created_at datetime NOT NULL,
-            PRIMARY KEY (id)
+            PRIMARY KEY (user_id, article_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         await connection.manager.query(`CREATE TABLE user_follower (
-            id int(11) unsigned NOT NULL AUTO_INCREMENT,
             user_id int(11) unsigned NOT NULL,
             follower_id int(11) unsigned NOT NULL,
             created_at datetime NOT NULL,
-            PRIMARY KEY (id)
+            PRIMARY KEY (user_id, follower_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         sql = `CREATE TABLE settings (
@@ -316,11 +301,10 @@ export const tablesRun = async function (connection) {
         await connection.manager.query(sql);
 
         await connection.manager.query(`CREATE TABLE user_like_boilingpoints (
-          id int(11) unsigned NOT NULL AUTO_INCREMENT,
           user_id int(11) unsigned NOT NULL,
           boilingpoint_id int(11) unsigned NOT NULL,
           created_at datetime NOT NULL,
-          PRIMARY KEY (id)
+          PRIMARY KEY (user_id, boilingpoint_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
         await connection.manager.query(`CREATE TABLE boilingpoint_reports (
