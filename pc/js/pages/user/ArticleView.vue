@@ -3,8 +3,8 @@
         <div class="sub-header">
             <div class="sub-header-title">文章</div>
             <div class="sub-type-box">
-                <a @click.prevent.stop="changeRoute(`/users/${author.id}/articles?sort=popular`, 'popular')" class="sub-type" :class="{active: sort === 'popular'}">热门</a>
-                <a @click.prevent.stop="changeRoute(`/users/${author.id}/articles?sort=newest`, 'newest')" class="sub-type" :class="{active: sort === 'newest'}">最新</a>
+                <a @click.prevent.stop="changeRoute(`/uc/${author.id}?sort=popular`, 'popular')" class="sub-type" :class="{active: sort === 'popular'}">热门</a>
+                <a @click.prevent.stop="changeRoute(`/uc/${author.id}?sort=newest`, 'newest')" class="sub-type" :class="{active: sort === 'newest'}">最新</a>
             </div>
         </div>
         <Pinterest ref="articlePinterest" :url="`/articles/users/${author.id}`" :query="{sort: sort}" @load="onLoad">
@@ -43,7 +43,6 @@ export default {
         };
     },
     mounted() {
-        console.log('=========================');
         if (this.$route.query.sort === 'newest') {
             this.sort = 'newest';
         } else if (this.$route.query.sort === 'popular') {
@@ -51,7 +50,6 @@ export default {
         } else {
             this.sort = 'newest';
         }
-        console.log(this.sort);
     },
     methods: {
         onLoad(result) {
