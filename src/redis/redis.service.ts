@@ -67,7 +67,7 @@ export class RedisService {
 
     async setPublishArticle(userID: number, article) {
         const cacheKey = util.format(this.cacheKeys.publishArticle, userID);
-        return await this.client.setAsync(cacheKey, JSON.stringify(article), 'EX', 60);
+        return await this.client.setAsync(cacheKey, JSON.stringify(article), 'EX', 60 * 60);
     }
 
     async getCategories(): Promise<Category[]> {

@@ -20,6 +20,8 @@ import { Draft } from '../entity/draft.entity';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { CollectionService } from './collection.service';
 import { RedisService } from '../redis/redis.service';
+import { SocialConstants } from '../constants/social';
+import { getShareURL } from '../utils/social';
 
 @Controller()
 export class EditorController {
@@ -107,7 +109,7 @@ export class EditorController {
         });
     }
 
-    @Get('/editor/published.html')
+    @Get('/editor/published')
     @UseGuards(ActiveGuard)
     async publishedView(@CurUser() user, @Res() res) {
         const publishArticleKey: string = util.format(this.redisService.cacheKeys.publishArticle, user.id);
@@ -124,14 +126,22 @@ export class EditorController {
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
-        await this.redisService.delCache(publishArticleKey);
+        // await this.redisService.delCache(publishArticleKey);
         const articleObj = JSON.parse(article);
+        const shareData = {
+            title: articleObj.name,
+            imageURL: articleObj.coverURL,
+            url: '',
+        };
         res.render('pages/editor/published', {
             user,
             article: articleObj,
             collections: collections || [],
             recommendCollections: recommendCollections || [],
             contributeCollections: contributeCollections || [],
+            weiboShareURL: getShareURL({ ...shareData, platform: SocialConstants.WEIBO }),
+            qqShareURL: getShareURL({ ...shareData, platform: SocialConstants.QQ }),
+            weixinShareURL: getShareURL({ ...shareData, platform: SocialConstants.WEIXIN }),
         });
     }
 
