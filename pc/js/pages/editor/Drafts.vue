@@ -35,6 +35,10 @@
                     </div>
                 </div>
             </li>
+            <div v-if="isEmpty" class="empty-box">
+                <img src="../../../images/user/emptybox.svg" />
+                <div class="empty-text">这里什么都没有</div>
+            </div>
         </ul>
     </div>
 </template>
@@ -54,7 +58,8 @@ export default {
             list: [],
             count: undefined,
             listToggled: [],
-            deleteDraftID: undefined
+            deleteDraftID: undefined,
+            isEmpty: false,
         };
     },
     methods: {
@@ -70,6 +75,9 @@ export default {
             myHTTP.delete(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     this.count--;
+                    if (this.count <= 0) {
+                        this.isEmpty = true;
+                    }
                 }
             }).catch((err) => {
                 console.log(err);
@@ -94,6 +102,9 @@ export default {
                 item.isMarkdown = item.contentType === ArticleContentType.Markdown;
                 this.listToggled.push({toggled: false});
             });
+            if (this.list.length <= 0) {
+                this.isEmpty = true;
+            }
         });
     },
     components: {

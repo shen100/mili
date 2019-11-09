@@ -62,7 +62,7 @@
                             <router-link :to="`/uc/${author.id}/follows`" class="nav-item" :class="{active: isFollowPage}">
                                 <div class="item-title">关注</div>
                             </router-link>
-                            <router-link :to="`/uc/${author.id}/handbooks`" class="nav-item" active-class="active">
+                            <router-link :to="`/uc/${author.id}/writehandbooks`" class="nav-item" :class="{active: isHandbookPage}">
                                 <div class="item-title">小册</div>
                             </router-link>
                             <router-link :to="`/uc/${author.id}/collections`" class="nav-item" active-class="active">
@@ -174,6 +174,7 @@ export default {
             isArticlePage: false, // 当前浏览器中的url是否是文章页面url
             isLikePage: false, // 当前浏览器中的url是否是赞页面url
             isFollowPage: false, // 当前浏览器中的url是否是关注页面url
+            isHandbookPage: false, // 当前浏览器中的url是否是小册页面url
         };
     },
     mounted() {
@@ -182,6 +183,7 @@ export default {
                 this.isArticlePage = false;
                 this.isLikePage = false;
                 this.isFollowPage = false;
+                this.isHandbookPage = false;
                 if (to.path.match(/\/uc\/[0-9]+\/?$/)) {
                     this.isArticlePage = true;
                 } else if (to.path.match(/\/uc\/[0-9]+\/like\/articles/)) {
@@ -194,6 +196,10 @@ export default {
                     this.isFollowPage = true;
                 } else if (to.path.match(/\/uc\/[0-9]+\/followtags/)) {
                     this.isFollowPage = true;
+                } else if (to.path.match(/\/uc\/[0-9]+\/writehandbooks/)) {
+                    this.isHandbookPage = true;
+                } else if (to.path.match(/\/uc\/[0-9]+\/buyhandbooks/)) {
+                    this.isHandbookPage = true;
                 }
             });
         });

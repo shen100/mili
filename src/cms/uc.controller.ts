@@ -24,9 +24,14 @@ export class UCController {
         private readonly collectionService: CollectionService,
     ) {}
 
+    private readonly ucPages = [
+        'articles', 'boilings', 'follows', 'followers',
+        'followtags', 'buyhandbooks', 'writehandbooks', 'collections',
+    ];
+
     @Get('/uc/:authorID/:page?')
     async userCenter(@Param('authorID', MustIntPipe) authorID: number, @Param('page') page: string, @CurUser() user, @Res() res) {
-        if (page && ['articles', 'boilings', 'follows', 'followers', 'followtags', 'handbooks', 'collections'].indexOf(page) < 0) {
+        if (page && this.ucPages.indexOf(page) < 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,
             });

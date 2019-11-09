@@ -13,9 +13,9 @@
                 <li class="dropdown-menu-sep"></li>
                 <li><a :href="`/uc/${userID}`"><i class="iconfont ic-navigation-profile"></i><span>我的主页</span></a></li>
                 <li><a :href="`/uc/${userID}/like/articles`"><i class="fa fa-thumbs-up" aria-hidden="true"></i><span>我赞过的</span></a> </li>
-                <li><a :href="`/uc/${userID}/handbooks/wrote`"><i class="fa fa-sticky-note" aria-hidden="true"></i><span>我的小册</span></a></li>
+                <li><a :href="`/uc/${userID}/writehandbooks`"><i class="fa fa-sticky-note" aria-hidden="true"></i><span>我的小册</span></a></li>
                 <li><a :href="`/uc/${userID}/collections`"><i class="fa fa-star" aria-hidden="true"></i><span>我的收藏集</span></a></li>
-                <li><a :href="`/uc/${userID}/handbooks/bought`"><i class="iconfont ic-navigation-wallet"></i><span>已购</span></a></li>
+                <li><a :href="`/uc/${userID}/buyhandbooks`"><i class="iconfont ic-navigation-wallet"></i><span>已购</span></a></li>
                 <li class="dropdown-menu-sep"></li>
                 <li><a href="/tags"><i class="fa fa-tags" aria-hidden="true"></i><span>标签管理</span></a></li>
                 <li><a href="/settings/profile"><i class="iconfont ic-navigation-settings"></i><span>设置</span></a></li>

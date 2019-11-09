@@ -97,3 +97,29 @@ body {
 .menu .menu-list .item:hover {
     background-color: #f8f9fa;
 }
+
+.empty-box {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    padding: 48px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #b2bac2;
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #fff;
+    padding-bottom: 100px;
+}
+
+.empty-text {
+    margin-top: 14px;
+}

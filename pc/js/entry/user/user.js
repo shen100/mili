@@ -32,7 +32,8 @@ const routes = [
     { path: '/uc/:id/follows', component: () => import('~/js/pages/user/FollowView.vue') },
     { path: '/uc/:id/followers', component: () => import('~/js/pages/user/FollowerView.vue') },
     { path: '/uc/:id/followtags', component: () => import('~/js/pages/user/FollowTagView.vue') },
-    { path: '/uc/:id/handbooks', component: () => import('~/js/pages/user/HandBookView.vue') },
+    { path: '/uc/:id/buyhandbooks', component: () => import('~/js/pages/user/BuyHandBookView.vue') },
+    { path: '/uc/:id/writehandbooks', component: () => import('~/js/pages/user/WriteHandBookView.vue') },
     { path: '/uc/:id/collections', component: () => import('~/js/pages/user/CollectionView.vue') },
 ];
 
