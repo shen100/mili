@@ -8,7 +8,7 @@
             </div>
             <ul class="dropdown-menu" :style="menuStyle[menuAlign]">
                 <li><a href="/editor/drafts/new"><i class="fa fa-pencil"></i><span>写文章</span></a></li>
-                <li><a href="/handbooks/new"><i class="fa fa-book" aria-hidden="true"></i><span>写小册</span></a></li>
+                <li v-if="userID === 44"><a href="/handbooks/new"><i class="fa fa-book" aria-hidden="true"></i><span>写小册</span></a></li>
                 <li><a href="/editor/drafts"><i class="fa fa-file-text" aria-hidden="true"></i><span>草稿</span></a></li>
                 <li class="dropdown-menu-sep"></li>
                 <li><a :href="`/uc/${userID}`"><i class="iconfont ic-navigation-profile"></i><span>我的主页</span></a></li>
