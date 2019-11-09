@@ -142,13 +142,17 @@ export default {
         const url = '/categories';
         myHTTP.get(url).then((result) => {
             this.categories = result.data.data || [];
+            // 如果是新建文章的话，默认选中第一个分类
+            if (!this.isEditArticle && !this.isEditDraft) {
+                this.curCategory = this.categories[0];
+            }
         });
 
         this.autoSaveDraftTimeoutID = setTimeout(this.autoSaveDraft, 1000 * this.getAutoSaveTime());
     },
     computed: {
         isSearchTagTextEmpty() {
-            return !!trim(this.searchTagText);
+            return !trim(this.searchTagText);
         },
     },
     methods: {

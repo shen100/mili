@@ -52,30 +52,15 @@ import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import { trim } from '~/js/utils/utils.js';
 
+marked.setOptions({
+    breaks: true,
+});
+
 export default {
     props: [
         'content',
     ],
     data () {
-        const os = 'mac';
-        const shortcut = {
-            mac: {
-                h1: 'Ctrl / ⌘ + Shift + K',
-                h2: 'Ctrl / ⌘ + Shift + K',
-                b: 'Ctrl / ⌘ + Shift + K',
-                a: 'Ctrl / ⌘ + Shift + K',
-                code: 'Ctrl / ⌘ + Shift + K',
-                blockcode: 'Ctrl / ⌘ + Shift + K',
-                img: 'Ctrl / ⌘ + Shift + K',
-                ul: 'Ctrl / ⌘ + Shift + K' 
-            },
-            win: {
-
-            },
-            linux: {
-
-            }
-        };
         return {
             SimpleMDE: null,
             simplemde: null,
@@ -83,14 +68,14 @@ export default {
             isSideBySide: true,     
             wordCount: 0,
             shotcutArr: [
-                [ '# 标题', 'H1', shortcut[os].h1 ],
-                [ '## 标题', 'H2', shortcut[os].h2 ],
-                [ '**文本**', '<b>粗体</b>', shortcut[os].b ],
-                [ '[描述](http://)', '<a href="javascript:void(0);">链接</a>', shortcut[os].a ],
-                [ '`code`', '<code>Inline Code</pre>', shortcut[os].blockcode ],
-                [ '```code```', '<code>Code</pre>', shortcut[os].code ],
-                [ '![alt](http://)', '图片', shortcut[os].img ],
-                [ '* item', '列表', shortcut[os].ul ],
+                [ '# 标题', 'H1', 'Ctrl / ⌘ + H' ],
+                [ '## 标题', 'H2', 'Ctrl / ⌘ + H' ],
+                [ '**文本**', '<b>粗体</b>', 'Ctrl / ⌘ + B' ],
+                [ '[描述](http://)', '<a href="javascript:void(0);">链接</a>', 'Ctrl / ⌘ + K' ],
+                [ '`code`', '<code>Inline Code</pre>', "Ctrl / ⌘ + '" ],
+                [ '```code```', '<code>Code</pre>', 'Ctrl / ⌘ + Alt-C' ],
+                [ '![alt](http://)', '图片', 'Ctrl / ⌘ + Alt-I' ],
+                [ '* item', '列表', 'Ctrl / ⌘ + L' ],
             ],
             initialContent: this.content || '',
             mdContent: '',

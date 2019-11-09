@@ -5,7 +5,7 @@
             <BreadcrumbItem>标签</BreadcrumbItem>
         </Breadcrumb>
         <div>
-            <Button type="primary" @click="onNewTag">创建标签</Button>
+            <Button type="primary" @click="onNew">创建标签</Button>
         </div>
         <Table :columns="columns" :data="tags">
             <template slot-scope="{ row }" slot="iconURL">
@@ -221,7 +221,7 @@ export default {
                 }
             });
         },
-        onNewTag() {
+        onNew() {
             this.tagID = undefined;
             this.formData.name = '';
             this.formData.iconURL = '';

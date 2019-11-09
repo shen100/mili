@@ -5,6 +5,8 @@ import { Repository, Like } from 'typeorm';
 import { Category } from '../entity/category.entity';
 import { Article } from '../entity/article.entity';
 import { RedisService, cacheKeys } from '../redis/redis.service';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -23,6 +25,10 @@ export class CategoryService {
                     id: true,
                     name: true,
                     pathname: true,
+                    sequence: true,
+                    articleCount: true,
+                    createdAt: true,
+                    updatedAt: true,
                 },
             });
             await this.redisService.setCategories(categories);
@@ -36,6 +42,27 @@ export class CategoryService {
             where: { id },
         });
         return !!category;
+    }
+
+    async create(createCategoryDto: CreateCategoryDto) {
+        const category = new Category();
+        category.name = createCategoryDto.name;
+        category.sequence = createCategoryDto.sequence;
+        category.pathname = createCategoryDto.pathname;
+        category.createdAt = new Date();
+        category.updatedAt = category.createdAt;
+        category.articleCount = 0;
+        return await this.categoryRepository.save(category);
+    }
+
+    async update(updateCategoryDto: UpdateCategoryDto) {
+        return await this.categoryRepository.update({
+            id: updateCategoryDto.id,
+        }, {
+            name: updateCategoryDto.name,
+            sequence: updateCategoryDto.sequence,
+            pathname: updateCategoryDto.pathname,
+        });
     }
 
     async addFollower(collectionID: number, userID: number) {

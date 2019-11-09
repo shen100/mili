@@ -1,7 +1,7 @@
 <template>
     <div>
         <SuccessTip ref="successTip" :width="200" />
-        <ArticleShareQRCode ref="qrCodePopup" :articleID="article.id"/>
+        <ArticleShareQRCode ref="qrCodePopup" :url="weixinShareURL"/>
         <div class="done-header">
             <div class="done-title">
                 <a :href="`/p/${article.id}.html`" class="main-title">{{article.name}}</a><br>
@@ -9,46 +9,13 @@
             </div>
             <ul class="article-share">
                 <li class="weibo">
-                    <a :href="`${shareURL}&platform=weibo`" target="_blank"><i class="fa fa-weibo"></i>微博</a>
+                    <a :href="weiboShareURL" target="_blank"><i class="fa fa-weibo"></i>微博</a>
                 </li>
                 <li @click="showQRCodePopup" class="weixin"><i class="fa fa-wechat"></i>微信</li>
-                <li class="link" :data-clipboard-text="`${url}/p/${article.id}.html`" @click="onCopyLink"><i class="fa fa-link"></i>复制链接</li>
-                <li @mouseleave="onMoreShareMouseLeave" @mouseenter="onMoreShareMouseEnter" class="more">
-                    <span class="more">更多分享
-                        <div v-if="sharePopupVisible" class="popup">
-                            <ul>
-                                <li @click="showQRCodePopup" style="padding: 4px 12px;">
-                                    <span class="social-item"><i class="social-icon-weixin"></i><span class="social-title">微信</span></span>
-                                </li>
-                                <li>
-                                    <a :href="`${shareURL}&platform=qzone`" target="_blank">
-                                        <span class="social-item"><i class="social-icon-zone"></i><span class="social-title">QQ空间</span></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a :href="`${shareURL}&platform=douban`" target="_blank">
-                                        <span class="social-item"><i class="social-icon-douban"></i><span class="social-title">豆瓣</span></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a :href="`${shareURL}&platform=facebook`" target="_blank">
-                                        <span class="social-item"><i class="social-icon-facebook"></i><span class="social-title">Facebook</span></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a :href="`${shareURL}&platform=twitter`" target="_blank">
-                                        <span class="social-item"><i class="social-icon-twitter"></i><span class="social-title">Twitter</span></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a :href="`${shareURL}&platform=google`" target="_blank">
-                                        <span class="social-item"><i class="social-icon-google"></i><span class="social-title">Google+</span></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </span>
+                <li class="qq">
+                    <a :href="qqShareURL" target="_blank">&nbsp;&nbsp;&nbsp;&nbsp;QQ</a>
                 </li>
+                <li class="link" :data-clipboard-text="`${url}/p/${article.id}`" @click="onCopyLink"><i class="fa fa-link"></i>复制链接</li>
             </ul>
         </div>
         <div class="done-header-sep"></div>
@@ -58,7 +25,7 @@
                     <i class="fa fa-search fa-2x"></i>
                     <input v-model="searchCollectionName" @input="onSearchInput" @keyup.enter="onSearchCollection" type="text" placeholder="搜索专题">
                 </div>
-                <div class="done-search-label">向专题投稿，让文章被更多人发现</div>
+                <div class="done-search-label">收录到专栏，让文章被更多人发现</div>
             </div>
             <div v-if="isSearch">
                 <div class="search-collection-box">
@@ -163,6 +130,9 @@ export default {
         const shareURL = `${url}/share?title=${title}&content=${summary}&imgurl=${coverURL}`;
         return {
             url: window.globalConfig.url,
+            weiboShareURL: window.weiboShareURL,
+            qqShareURL: window.qqShareURL,
+            weixinShareURL: window.weixinShareURL,
             article: article,
             sharePopupVisible: false,
             shareURL: shareURL,
@@ -388,12 +358,22 @@ export default {
         background-color: #07b225;
     }
 
+    .article-share li.qq {
+        background-color: #3194d0;
+    }
+
+    .article-share li.qq a {
+        background-image: url(../../../images/article/social_qq2.svg);
+        background-position: 36%;
+        background-repeat: no-repeat;
+    }
+
     .article-share li.sina {
         background-color: #e05244;
     }
 
     .article-share li.link {
-        background-color: #3194d0;
+        background-color: #a7a7a7;
     }
 
     .article-share li.more {

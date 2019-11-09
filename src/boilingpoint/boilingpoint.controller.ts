@@ -247,6 +247,13 @@ export class BoilingPointController {
     @Get(`${APIPrefix}/boilingpoints/recommend`)
     async recommend(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
         const boilingPoints = await this.boilingPointService.recommend(page);
+        if (!boilingPoints.list || boilingPoints.list.length <= 0) {
+            return {
+                list: [],
+                page,
+                pageSize: 20,
+            };
+        }
         const boilingpointIDs: number[] = [];
         const topicIDMap = {};
         const topicIDs: number[] = [];
