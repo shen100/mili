@@ -1,5 +1,5 @@
 import {
-    Controller, Get, Res, Query, Param, Next, Post, Body, UseGuards,
+    Controller, Get, Res, Query, Param, Next, Post, Body, UseGuards, Put,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
@@ -8,12 +8,17 @@ import { BookStatus, BookCategory } from '../entity/book.entity';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { CurUser } from '../core/decorators/user.decorator';
-import { APIPrefix } from '../constants/constants';
+import { APIPrefix, AdminAPIPrefix } from '../constants/constants';
 import { CreateBookStarDto } from './dto/create-book-star.dto';
 import { ActiveGuard } from '../core/guards/active.guard';
 import { ConfigService } from '../config/config.service';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 import { clampNumber } from '../utils/common';
+import { RolesGuard } from '../core/guards/roles.guard';
+import { Roles } from '../core/decorators/roles.decorator';
+import { UserRole } from '../entity/user.entity';
+import { CreateBookCategoryDto } from './dto/create-bookcategory.dto';
+import { UpdateBookCategoryDto } from './dto/update-category.dto';
 
 @Controller()
 export class BookController {
@@ -23,7 +28,7 @@ export class BookController {
     ) {}
 
     /**
-     * 全部图书或分类下的图书
+     * 全部图书或分类下的图书(页面)
      */
     @Get('/books/:categoryPathName?')
     async booksView(@Param('categoryPathName') categoryPathName: string, @Query('page', ParsePagePipe) page: number, @Res() res, @Next() next) {
@@ -114,6 +119,9 @@ export class BookController {
         });
     }
 
+    /**
+     * 章节详情
+     */
     @Get(`${APIPrefix}/books/chapters/:chapterID`)
     async chapter(@Param('chapterID', MustIntPipe) chapterID: number) {
         const chapter  = await this.bookService.chapterDetail(chapterID);
@@ -125,12 +133,18 @@ export class BookController {
         return chapter;
     }
 
+    /**
+     * 学习过此图书的用户
+     */
     @Get(`${APIPrefix}/books/:bookID/studyusers`)
     async bookStudyUsers(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number) {
         const listResult = await this.bookService.bookStudyUsers(bookID, page, 20);
         return listResult;
     }
 
+    /**
+     * 图书的评价
+     */
     @Get(`${APIPrefix}/books/:bookID/stars`)
     async stars(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number,
                 @Query('pageSize', ShouldIntPipe) pageSize: number) {
@@ -140,9 +154,11 @@ export class BookController {
         return listResult;
     }
 
+    /**
+     * 图书列表, 查询全部图书时，categoryPathName 传 all
+     */
     @Get(`${APIPrefix}/books/:categoryPathName`)
     async list(@Param('categoryPathName') categoryPathName: string, @Query('page', ParsePagePipe) page: number) {
-        // 查询全部图书时，categoryPathName 传 all
         const categories = await this.bookService.allCategories();
         const category = categories.find(c => c.pathname === categoryPathName);
         if (!category && categoryPathName !== 'all') {
@@ -170,10 +186,31 @@ export class BookController {
         return await this.bookService.allCategories();
     }
 
+    /**
+     * 创建图书分类
+     */
+    @Post(`${AdminAPIPrefix}/books/categories`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Editor, UserRole.Admin, UserRole.SuperAdmin)
+    async createCategory(@Body() createBookCategoryDto: CreateBookCategoryDto) {
+        const createResult = await this.bookService.createCategory(createBookCategoryDto);
+        return {
+            id: createResult.id,
+        };
+    }
+
     @Post(`${APIPrefix}/books/star`)
     @UseGuards(ActiveGuard)
     async commitStar(@CurUser() user, @Body() createBookStarDto: CreateBookStarDto) {
         await this.bookService.createStar(createBookStarDto, user.id);
+        return {};
+    }
+
+    @Put(`${AdminAPIPrefix}/books/categories/:categoryID`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Editor, UserRole.Admin, UserRole.SuperAdmin)
+    async updateCategory(@Body() updateBookCategoryDto: UpdateBookCategoryDto) {
+        await this.bookService.updateCategory(updateBookCategoryDto);
         return {};
     }
 }

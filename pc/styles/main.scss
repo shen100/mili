@@ -562,6 +562,12 @@ nav .width-limit {
     line-height: 20px;
 }
 
+.dropdown-menu .dropdown-menu-sep {
+    height: 1px;
+    line-height: 1px;
+    background: #f2f2f2;
+}
+
 .dropdown-menu>li>a {
     display: block;
     padding: 3px 20px;
@@ -578,7 +584,7 @@ nav .width-limit {
 }
 
 .navbar-user .user .dropdown-menu a {
-    padding: 10px 20px;
+    padding: 6px 20px;
     line-height: 30px;
 }
 

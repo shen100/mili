@@ -7,15 +7,22 @@
                 </a>
             </div>
             <ul class="dropdown-menu" :style="menuStyle[menuAlign]">
-                <li><a :href="`/users/${userID}.html`"><i class="iconfont ic-navigation-profile"></i><span>我的主页</span></a></li>
-                <li><a href="/bookmarks"><i class="iconfont ic-navigation-mark"></i><span>收藏的文章</span></a> </li>
-                <li><a href="/"><i class="iconfont ic-navigation-like"></i><span>喜欢的文章</span></a> </li>
-                <li><a href="/my/paid_notes"><i class="iconfont ic-paid"></i><span>已购内容</span></a> </li>
-                <li><a href="/wallet"><i class="iconfont ic-navigation-wallet"></i><span>我的钱包</span></a> </li>
-                <li><a href="/settings"><i class="iconfont ic-navigation-settings"></i><span>设置</span></a> </li>
-                <li><a href="/faqs"><i class="iconfont ic-navigation-feedback"></i><span>帮助与反馈</span></a> </li>
-                <li><a rel="nofollow" data-method="delete" href="/sign_out"><i class="iconfont ic-navigation-signout"></i><span>退出</span></a> </li>
+                <li><a href="/editor/drafts/new"><i class="fa fa-pencil"></i><span>写文章</span></a></li>
+                <li><a href="/handbooks/new"><i class="fa fa-book" aria-hidden="true"></i><span>写小册</span></a></li>
+                <li><a href="/editor/drafts"><i class="fa fa-file-text" aria-hidden="true"></i><span>草稿</span></a></li>
+                <li class="dropdown-menu-sep"></li>
+                <li><a :href="`/uc/${userID}`"><i class="iconfont ic-navigation-profile"></i><span>我的主页</span></a></li>
+                <li><a :href="`/uc/${userID}/like/articles`"><i class="fa fa-thumbs-up" aria-hidden="true"></i><span>我赞过的</span></a> </li>
+                <li><a :href="`/uc/${userID}/handbooks/wrote`"><i class="fa fa-sticky-note" aria-hidden="true"></i><span>我的小册</span></a></li>
+                <li><a :href="`/uc/${userID}/collections`"><i class="fa fa-star" aria-hidden="true"></i><span>我的收藏集</span></a></li>
+                <li><a :href="`/uc/${userID}/handbooks/bought`"><i class="iconfont ic-navigation-wallet"></i><span>已购</span></a></li>
+                <li class="dropdown-menu-sep"></li>
+                <li><a href="/tags"><i class="fa fa-tags" aria-hidden="true"></i><span>标签管理</span></a></li>
+                <li><a href="/settings/profile"><i class="iconfont ic-navigation-settings"></i><span>设置</span></a></li>
+                <li class="dropdown-menu-sep"></li>
+                <li><a @click="onSignout"><i class="iconfont ic-navigation-signout"></i><span>退出</span></a></li>
             </ul>
+            
         </div>
     </div>
 </template>
@@ -27,6 +34,8 @@ import {
     removeClass,
     hasClass,
 } from '~/js/utils/dom.js';
+import { myHTTP } from '~/js/common/net.js';
+import { ErrorCode } from '~/js/constants/error.js';
 
 export default {
     props: [
@@ -43,6 +52,13 @@ export default {
         }
     },
     methods: {
+        onSignout() {
+            myHTTP.delete('/signout').then((result) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    location.reload();
+                }
+            });
+        }
     },
     mounted() {
         this.$nextTick(() => {

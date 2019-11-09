@@ -148,7 +148,7 @@ export default {
                     return;
                 }
                 let reqMethod;
-                let url = '/admin/categories';
+                let url = '/admin/books/categories';
                 const data = {
                     name: this.formData.name,
                     sequence: this.formData.sequence,

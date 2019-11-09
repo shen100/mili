@@ -6,6 +6,8 @@ import { ListResult } from '../entity/listresult.entity';
 import { CreateBookStarDto } from './dto/create-book-star.dto';
 import { parseCountResult } from '../utils/query';
 import { User } from '../entity/user.entity';
+import { CreateBookCategoryDto } from './dto/create-bookcategory.dto';
+import { UpdateBookCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class BookService {
@@ -292,5 +294,25 @@ export class BookService {
             },
         });
         return !!result;
+    }
+
+    async createCategory(createBookCategoryDto: CreateBookCategoryDto) {
+        const category = new BookCategory();
+        category.name = createBookCategoryDto.name;
+        category.sequence = createBookCategoryDto.sequence;
+        category.pathname = createBookCategoryDto.pathname;
+        category.createdAt = new Date();
+        category.updatedAt = category.createdAt;
+        return await this.bookCategoryRepository.save(category);
+    }
+
+    async updateCategory(updateBookCategoryDto: UpdateBookCategoryDto) {
+        return await this.bookCategoryRepository.update({
+            id: updateBookCategoryDto.id,
+        }, {
+            name: updateBookCategoryDto.name,
+            sequence: updateBookCategoryDto.sequence,
+            pathname: updateBookCategoryDto.pathname,
+        });
     }
 }

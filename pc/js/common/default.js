@@ -1,9 +1,7 @@
 import Vue from 'vue';
 import TopNavSearch from '~/js/components/TopNavSearch.vue';
+import UserDropdown from '~/js/components/common/UserDropdown.vue';
 import {
-    addClass,
-    removeClass,
-    hasClass,
     getScrollPos,
 } from '~/js/utils/dom.js';
 
@@ -16,28 +14,15 @@ registerDirective(Vue);
 const navbarUser = document.getElementsByClassName('navbar-user')[0];
 
 if (navbarUser) {
-    document.addEventListener('click', (event) => {
-        if (navbarUser.contains(event.target)) {
-            return;
-        }
-        const userDropdownBox = document.getElementById('userDropdownBox');
-        if (!userDropdownBox) {
-            return;
-        }
-        removeClass(userDropdownBox, 'open');
-    });
-
-    navbarUser.addEventListener('click', () => {
-        const userDropdownBox = document.getElementById('userDropdownBox');
-        if (!userDropdownBox) {
-            return;
-        }
-        if (hasClass(userDropdownBox, 'open')) {
-            removeClass(userDropdownBox, 'open');
-        } else {
-            addClass(userDropdownBox, 'open');
-        }
-    });
+    new Vue({
+        render: h => h(UserDropdown, {
+            props: {
+                userID: window.user.id,
+                avatarURL: window.user.avatarURL,
+                menuAlign: 'right'
+            },
+        }),
+    }).$mount('.navbar-user');
 }
 
 if (document.getElementById('topnavsearch')) {
