@@ -108,8 +108,9 @@ body {
 
 .home-sidebar {
     width: 240px;
-    float: right;
     font-size: 0;
+    position: fixed;
+    margin-left: 720px;
 }
 
 .home-sidebar li {

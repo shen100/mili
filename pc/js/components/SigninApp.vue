@@ -7,9 +7,9 @@
         </transition>
         <h4 class="title">
             <div class="normal-title">
-                <a class="active" href="/signin.html">登录</a>
+                <a class="active" href="/signin">登录</a>
                 <b>·</b>
-                <a id="js-sign-up-btn" href="/signup.html">注册</a>
+                <a id="js-sign-up-btn" href="/signup">注册</a>
             </div>
         </h4>
         <div class="js-sign-in-container">
