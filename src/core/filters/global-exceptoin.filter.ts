@@ -53,7 +53,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         const apiPrefix = this.configService.server.apiPrefix;
         if (errorCode === ErrorCode.LoginTimeout.CODE && request.originalUrl.indexOf(apiPrefix) !== 0) {
             const redirectURL = encodeURIComponent(request.originalUrl);
-            let url = '/signin.html';
+            let url = '/signin';
             if (redirectURL) {
                 url = `${url}?redirectURL=${redirectURL}`;
             }

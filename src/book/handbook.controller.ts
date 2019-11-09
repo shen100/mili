@@ -58,6 +58,18 @@ export class HandBookController {
         res.render('pages/handbook/handbooks.njk', data);
     }
 
+    @Get('/handbooks/new')
+    @UseGuards(ActiveGuard)
+    async create(@CurUser() user, @Query() query, @Res() res) {
+        if (user.username !== 'shen100') {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        const handBook = await this.handBookService.create(user.id);
+        res.redirect(`/handbooks/${handBook.id}/chapter/introduce/edit`);
+    }
+
     @Get('/handbooks/:id')
     async detail(@CurUser() user, @Res() res) {
         res.render('pages/handbook/handbookDetail.njk', {
@@ -68,13 +80,6 @@ export class HandBookController {
                 {},
             ],
         });
-    }
-
-    @Get('/handbooks/new')
-    @UseGuards(ActiveGuard)
-    async create(@CurUser() user, @Query() query, @Res() res) {
-        const handBook = await this.handBookService.create(user.id);
-        res.redirect(`/handbooks/${handBook.id}/chapter/introduce/edit`);
     }
 
     @Get('/handbooks/:handbookID/chapter/:chapterID/edit')

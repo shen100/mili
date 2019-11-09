@@ -17,7 +17,12 @@
       </li>
     </ul>
 
-    <div class="navbar-user"></div>
+    <div class="navbar-user">
+        {% if not user %}
+        <a href="/signin" class="btn navbar-signin">登录</a>
+        <a href="/signup" class="btn navbar-signup">注册</a>
+        {% endif %}
+    </div>
 
     <a class="btn write-btn" href="/editor/drafts/new" target="_blank">
       <i class="iconfont ic-write"></i>写文章

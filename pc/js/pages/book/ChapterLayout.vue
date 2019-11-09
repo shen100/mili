@@ -34,6 +34,7 @@
                     <div class="title">
                         <a :href="`/${isHandbook ? 'handbooks' : 'books'}/${book.id}`">{{book.name}}</a>
                     </div>
+                    <UserDropdown v-if="userID" :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
                 </div>
                 <div class="book-body transition--next">
                     <div class="section-view book-section-content">
@@ -65,6 +66,7 @@
 import SuccessTip from '~/js/components/common/SuccessTip.vue';
 import { myHTTP } from '~/js/common/net.js';
 import { parseTree, getTreeNode, getPrevNode, getNextNode, tree2Array } from '~/js/utils/tree';
+import UserDropdown from '~/js/components/common/UserDropdown.vue';
 import StarModal from '~/js/components/handbook/StarModal.vue';
 
 export default {
@@ -167,6 +169,7 @@ export default {
     components: {
         StarModal,
         SuccessTip,
+        UserDropdown,
     }
 }
 </script>

@@ -348,23 +348,6 @@ export class UserController {
         return {};
     }
 
-    @Delete(`${APIPrefix}/users/:userID/follow`)
-    @UseGuards(ActiveGuard)
-    async cancelFollow(@CurUser() user, @Param('userID', MustIntPipe) userID: number) {
-        const isUserExist: boolean = await this.userService.isExist(userID);
-        if (!isUserExist) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.ParamsError.CODE,
-            });
-        }
-        await this.userService.followOrCancelFollow(user.id, userID);
-        await Promise.all([
-            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
-            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, userID)),
-        ]);
-        return {};
-    }
-
     /**
      * 更新用户信息(头像、职位、公司、个人介绍、个人主页)
      */
@@ -383,6 +366,35 @@ export class UserController {
         await this.userService.updatePassword(user.id, updatePasswordDto.oldPass, updatePasswordDto.pass);
         const cacheKey = util.format(this.redisService.cacheKeys.user, user.id);
         this.redisService.delCache(cacheKey);
+        return {};
+    }
+
+    @Delete(`${APIPrefix}/users/:userID/follow`)
+    @UseGuards(ActiveGuard)
+    async cancelFollow(@CurUser() user, @Param('userID', MustIntPipe) userID: number) {
+        const isUserExist: boolean = await this.userService.isExist(userID);
+        if (!isUserExist) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        await this.userService.followOrCancelFollow(user.id, userID);
+        await Promise.all([
+            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
+            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, userID)),
+        ]);
+        return {};
+    }
+
+    @Delete(`${APIPrefix}/users/signout`)
+    async signout(@CurUser() user) {
+        if (!user) {
+            return {};
+        }
+        await Promise.all([
+            await this.redisService.delCache(util.format(this.redisService.cacheKeys.userToken, user.id)),
+            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
+        ]);
         return {};
     }
 }

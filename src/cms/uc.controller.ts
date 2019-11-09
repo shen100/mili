@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Param, Query, Res,
+  Controller, Get, Param, Query, Res, UseGuards,
 } from '@nestjs/common';
 import * as moment from 'moment';
 import * as bluebird from 'bluebird';
@@ -14,6 +14,7 @@ import { MyHttpException } from '../core/exception/my-http.exception';
 import { CollectionService } from './collection.service';
 import { Collection } from '../entity/collection.entity';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
+import { ActiveGuard } from '../core/guards/active.guard';
 
 @Controller()
 export class UCController {
@@ -30,6 +31,7 @@ export class UCController {
     ];
 
     @Get('/uc/:authorID/:page?')
+    @UseGuards(ActiveGuard)
     async userCenter(@Param('authorID', MustIntPipe) authorID: number, @Param('page') page: string, @CurUser() user, @Res() res) {
         if (page && this.ucPages.indexOf(page) < 0) {
             throw new MyHttpException({

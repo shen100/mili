@@ -2,12 +2,17 @@ import '~/styles/main.scss';
 import '~/styles/article/articleDisplay.scss';
 import '~/styles/book/chapter.scss';
 import '~/styles/comment/commentDisplay.scss';
-import '~/js/common/default.js';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import ChapterLayout from '~/js/pages/book/ChapterLayout.vue';
 
 Vue.use(VueRouter);
+
+import {
+    registerDirective,
+} from '~/js/utils/vue.js';
+
+registerDirective(Vue);
 
 const routes = [
     { path: '/books/:bookID/chapters/:chapterID', component: () => import('~/js/pages/book/Chapter.vue') },

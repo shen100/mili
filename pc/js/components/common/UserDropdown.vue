@@ -1,6 +1,6 @@
 <template>
-    <div class="navbar-user">
-        <div id="userDropdownBox" class="user">
+    <div class="navbar-user" @click="onClick" v-clickoutside="clickOutside">
+        <div id="userDropdownBox" class="user" :class="{open: !isOutside}">
             <div data-hover="dropdown">
                 <a class="avatar" href="javascript:void(0);">
                     <img :src="avatarURL">
@@ -22,7 +22,6 @@
                 <li class="dropdown-menu-sep"></li>
                 <li><a @click="onSignout"><i class="iconfont ic-navigation-signout"></i><span>退出</span></a></li>
             </ul>
-            
         </div>
     </div>
 </template>
@@ -48,39 +47,26 @@ export default {
             menuStyle: {
                 left: { left: 0 },
                 right: { right: 0 }
-            }
+            },
+            isOutside: true,
         }
     },
     methods: {
         onSignout() {
-            myHTTP.delete('/signout').then((result) => {
+            myHTTP.delete('/users/signout').then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     location.reload();
                 }
             });
+        },
+        onClick() {
+            this.isOutside = false;
+        },
+        clickOutside() {
+            this.isOutside = true;
         }
     },
     mounted() {
-        this.$nextTick(() => {
-            const navbarUser = document.getElementsByClassName('navbar-user')[0];
-
-            document.addEventListener('click', (event) => {
-                if (navbarUser.contains(event.target)) {
-                    return;
-                }
-                const userDropdownBox = document.getElementById('userDropdownBox');
-                removeClass(userDropdownBox, 'open');
-            });
-
-            navbarUser.addEventListener('click', () => {
-                const userDropdownBox = document.getElementById('userDropdownBox');
-                if (hasClass(userDropdownBox, 'open')) {
-                    removeClass(userDropdownBox, 'open');
-                } else {
-                    addClass(userDropdownBox, 'open');
-                }
-            });
-        });
     }
 }
 </script>

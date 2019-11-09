@@ -11,19 +11,23 @@ import {
 
 registerDirective(Vue);
 
-const navbarUser = document.getElementsByClassName('navbar-user')[0];
-
-if (navbarUser) {
-    new Vue({
-        render: h => h(UserDropdown, {
-            props: {
-                userID: window.user.id,
-                avatarURL: window.user.avatarURL,
-                menuAlign: 'right'
-            },
-        }),
-    }).$mount('.navbar-user');
-}
+(function() {
+    if (window.user) {
+        const navbarUserArr = document.getElementsByClassName('navbar-user');
+        if (!navbarUserArr || !navbarUserArr[0]) {
+            return;
+        }
+        new Vue({
+            render: h => h(UserDropdown, {
+                props: {
+                    userID: window.user.id,
+                    avatarURL: window.user.avatarURL,
+                    menuAlign: 'right'
+                },
+            }),
+        }).$mount('.navbar-user');
+    }
+}());
 
 if (document.getElementById('topnavsearch')) {
     new Vue({
