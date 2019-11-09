@@ -32,7 +32,7 @@ export default {
     ],
     data() {
         return {
-            imgCount: 0,
+            imgCount: 0, // 已上传的图片个数
             topic: null,
             isFocus: false,
             maxWords: 1000,
@@ -48,14 +48,9 @@ export default {
     methods: {
         // CommentRichEditor 中上传的图片
         onImgUploadSuccess(imgURL, imgData) {
-            if (this.imgCount) {
-                this.imgCount++;
-                this.$refs.upList.addImg(imgData);
-                return;
-            }
-            this.imgCount++;
-            // 一张图片没上传时，UploaderList不在dom中，这时上传第一张图片后，设个延时, 再访问this.$refs.upList
+            // 一张图片没上传时，UploaderList不在dom中，设个延时, 再访问 this.$refs.upList
             this.$nextTick(() => {
+                this.imgCount++;
                 this.$refs.upList.addImg(imgData);
             });
         },
@@ -101,7 +96,7 @@ export default {
                     this.clear();
                 }
             }).catch((err) => {
-                this.isSaving = false;    
+                this.isSaving = false;
             });
         },
         clear() {
