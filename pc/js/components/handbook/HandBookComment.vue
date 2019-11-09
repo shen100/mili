@@ -66,7 +66,7 @@ export default {
             if (this.type == 'star') {
                 url = `/books/${this.bookID}/stars?page=${this.page}&pageSize=5`;
             } else if (this.type == 'comment') {
-                url = `/books/${this.bookID}/comments?page=${this.page}&pageSize=5`;
+                url = `/comments/collection/book/${this.bookID}?page=${this.page}&pageSize=5`;
             }
             myHTTP.get(url).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {

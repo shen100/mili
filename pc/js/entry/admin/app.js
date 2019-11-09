@@ -53,6 +53,7 @@ const routes = [
     { path: '/', component: () => import('~/js/pages/admin/index.vue') },
     { path: '/article/category', component: () => import('~/js/pages/admin/article/CategoryList.vue') },
     { path: '/article/tag', component: () => import('~/js/pages/admin/article/TagList.vue') },
+    { path: '/book', component: () => import('~/js/pages/admin/book/BookList.vue') },
     { path: '/boilingpoint/topic', component: () => import('~/js/pages/admin/boilingpoint/Topic.vue') },
     { path: '*', component: () => import('~/js/pages/admin/404.vue') }
 ];

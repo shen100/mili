@@ -162,6 +162,14 @@ export class BookController {
         return listResult;
     }
 
+    /**
+     * 全部图书分类
+     */
+    @Get(`${APIPrefix}/books/categories/all`)
+    async categories() {
+        return await this.bookService.allCategories();
+    }
+
     @Post(`${APIPrefix}/books/star`)
     @UseGuards(ActiveGuard)
     async commitStar(@CurUser() user, @Body() createBookStarDto: CreateBookStarDto) {

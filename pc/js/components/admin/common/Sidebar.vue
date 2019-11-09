@@ -26,7 +26,7 @@
             </router-link>
         </Submenu>
 
-        <Submenu name="reply">
+        <Submenu name="boilingpoint">
             <template slot="title">
                 <Icon type="chatboxes"></Icon>
                 沸点管理
@@ -39,6 +39,16 @@
             </router-link>
         </Submenu>
 
+        <Submenu name="book">
+            <template slot="title">
+                <Icon type="ios-paper"></Icon>
+                图书管理
+            </template>
+            <router-link to="/book">
+                <MenuItem name="/book">开源图书</MenuItem>
+            </router-link>
+        </Submenu>
+
     </Menu>
 </template>
 
@@ -48,7 +58,7 @@ export default {
 
     data () {
         return {
-            openNames: ['overview', 'article', 'reply', 'user', 'craler']
+            openNames: ['overview', 'article', 'boilingpoint', 'book']
         }
     }
 }

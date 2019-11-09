@@ -29,7 +29,10 @@ export class BookService {
             select: {
                 id: true,
                 name: true,
+                sequence: true,
                 pathname: true,
+                createdAt: true,
+                updatedAt: true,
             },
         });
     }

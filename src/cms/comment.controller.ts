@@ -37,7 +37,7 @@ export class CommentController {
     /**
      * 开源图书 或 小册 下的评论，
      */
-    @Get(`${APIPrefix}/comments/collection/:collectionName/:collectionID/comments`)
+    @Get(`${APIPrefix}/comments/collection/:collectionName/:collectionID`)
     async collectionComments(@Param('collectionName') collectionName: string,
                              @Param('collectionID', MustIntPipe) collectionID: number,
                              @Query('page', ParsePagePipe) page: number,

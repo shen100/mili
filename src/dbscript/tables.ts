@@ -90,6 +90,27 @@ export const tablesRun = async function (connection) {
 
         await connection.manager.query(sql);
 
+
+        sql = `CREATE TABLE handbook_chapter_comments (
+          id int(11) unsigned NOT NULL AUTO_INCREMENT,
+          html_content text,
+          parent_id int(11) NOT NULL DEFAULT '0',
+          root_id int(11) NOT NULL DEFAULT '0',
+          status int(11) NOT NULL,
+          source_id int(11) DEFAULT NULL,
+          collection_id int(11) NOT NULL,
+          user_id int(11) unsigned NOT NULL,
+          created_at datetime NOT NULL,
+          updated_at datetime NOT NULL,
+          deleted_at datetime DEFAULT NULL,
+          liked_count int(11) NOT NULL DEFAULT '0',
+          comment_count int(11) NOT NULL DEFAULT '0',
+          latest varchar(100),
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+
+        await connection.manager.query(sql);
+
         sql = `CREATE TABLE handbook_chapters (
           id int(11) unsigned NOT NULL AUTO_INCREMENT,
           created_at datetime NOT NULL,
