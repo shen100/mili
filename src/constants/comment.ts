@@ -19,4 +19,5 @@ export class CommentConstants {
     static readonly SourceArticle = 'article';
     static readonly SourceBoilingPoint = 'boilingpoint';
     static readonly SourceBookChapter = 'bookchapter';
+    static readonly SourceHankBookChapter = 'handbookchapter';
 }

@@ -4,8 +4,10 @@ import {
     PrimaryGeneratedColumn,
     ManyToOne,
     JoinColumn,
+    OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
+import { HandBookChapterComment } from './comment.entity';
 
 @Entity({name: 'handbooks'})
 export class HandBook {
@@ -107,4 +109,7 @@ export class HandBookChapter {
     @ManyToOne(type => HandBook)
     @JoinColumn({ name: 'book_id' })
     book: HandBook;
+
+    @OneToMany(type => HandBookChapterComment, comment => comment.chapter)
+    comments: HandBookChapterComment[];
 }

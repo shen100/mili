@@ -3,11 +3,11 @@ import {
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CategoryService } from './category.service';
-import { BookService } from './book.service';
 import { UserService } from '../user/user.service';
 import { ConfigService } from '../config/config.service';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
+import { BookService } from '../book/book.service';
 
 @Controller()
 export class IndexController {

@@ -15,10 +15,10 @@ import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { recentTime } from '../utils/viewfilter';
 import { CategoryService } from './category.service';
-import { BookService } from './book.service';
 import { getShareURL } from '../utils/social';
 import { SocialConstants } from '../constants/social';
 import { ConfigService } from '../config/config.service';
+import { BookService } from '../book/book.service';
 
 @Controller()
 export class ArticleController {

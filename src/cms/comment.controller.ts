@@ -11,15 +11,17 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 import { APIPrefix } from '../constants/constants';
-import { BookService } from './book.service';
-import { BookChapterComment, BoilingPointComment, ArticleComment } from '../entity/comment.entity';
+import { BookChapterComment, BoilingPointComment, ArticleComment, HandBookChapterComment } from '../entity/comment.entity';
 import { clampNumber } from '../utils/common';
 import { BoilingPointService } from '../boilingpoint/boilingpoint.service';
 import { CommentConstants } from '../constants/comment';
+import { BookService } from '../book/book.service';
+import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 
 const {
     SourceArticle,
     SourceBookChapter,
+    SourceHankBookChapter,
     SourceBoilingPoint,
 } = CommentConstants;
 
@@ -31,6 +33,33 @@ export class CommentController {
         private readonly bookService: BookService,
         private readonly boilingPointService: BoilingPointService,
     ) {}
+
+    /**
+     * 开源图书 或 小册 下的评论，
+     */
+    @Get(`${APIPrefix}/comments/collection/:collectionName/:collectionID/comments`)
+    async collectionComments(@Param('collectionName') collectionName: string,
+                             @Param('collectionID', MustIntPipe) collectionID: number,
+                             @Query('page', ParsePagePipe) page: number,
+                             @Query('pageSize', ShouldIntPipe) pageSize: number) {
+        pageSize = pageSize || 20;
+        pageSize = clampNumber(pageSize, 1, 20);
+        let source = '';
+        if (collectionName === 'book') {
+            source = SourceBookChapter;
+        } else if (collectionName === 'handbook') {
+            source = SourceHankBookChapter;
+        }
+        const CommentClass = this.getCommentClass(source);
+        if (!CommentClass) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '无效的source',
+            });
+        }
+        const listResult = await this.commentService.collectionComments(CommentClass, collectionID, page, pageSize);
+        return listResult;
+    }
 
     /**
      * 一级评论列表
@@ -195,6 +224,9 @@ export class CommentController {
         }
         if (source === SourceBookChapter) {
             return BookChapterComment;
+        }
+        if (source === SourceHankBookChapter) {
+            return HandBookChapterComment;
         }
         if (source === SourceBoilingPoint) {
             return BoilingPointComment;

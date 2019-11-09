@@ -140,15 +140,6 @@ export class BookController {
         return listResult;
     }
 
-    @Get(`${APIPrefix}/books/:bookID/comments`)
-    async comments(@Param('bookID', MustIntPipe) bookID: number, @Query('page', ParsePagePipe) page: number,
-                   @Query('pageSize', ShouldIntPipe) pageSize: number) {
-        pageSize = pageSize || 20;
-        pageSize = clampNumber(pageSize, 1, 20);
-        const listResult = await this.bookService.commentList(bookID, page, pageSize);
-        return listResult;
-    }
-
     @Get(`${APIPrefix}/books/:categoryPathName`)
     async list(@Param('categoryPathName') categoryPathName: string, @Query('page', ParsePagePipe) page: number) {
         // 查询全部图书时，categoryPathName 传 all

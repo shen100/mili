@@ -24,14 +24,10 @@ import { PostMsg } from '../entity/postmsg.entity';
 import { BookChapterComment, BoilingPointComment, ArticleComment } from '../entity/comment.entity';
 import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
-import { HandBookController } from './handBook.controller';
 import { SearchService } from './search.service';
 import { RecommendController } from './recommend.controller';
-import { BookController } from './book.controller';
-import { BookService } from './book.service';
 import { Book, BookCategory, BookChapter, BookStar } from '../entity/book.entity';
 import { HandBook, HandBookChapter } from '../entity/handbook.entity';
-import { HandBookService } from './handbook.service';
 import { Tag } from '../entity/tag.entity';
 import { TagService } from './tag.service';
 import { TagController } from './tag.controller';
@@ -39,6 +35,7 @@ import { OSSService } from '../common/oss.service';
 import { CommonModule } from '../common/common.module';
 import { Image } from '../entity/image.entity';
 import { BoilingPointModule } from '../boilingpoint/boilingpoint.module';
+import { BookModule } from '../book/book.module';
 
 @Module({
     imports: [
@@ -64,15 +61,14 @@ import { BoilingPointModule } from '../boilingpoint/boilingpoint.module';
         ]),
         UserModule,
         CommonModule,
+        BookModule,
         BoilingPointModule,
     ],
     controllers: [
-        BookController,
         IndexController,
         ArticleController,
         CategoryController,
         CommentController,
-        HandBookController,
         UCController,
         CollectionController,
         EditorController,
@@ -83,11 +79,9 @@ import { BoilingPointModule } from '../boilingpoint/boilingpoint.module';
     ],
     providers: [
         ArticleService,
-        BookService,
         CommentService,
         DraftService,
         CategoryService,
-        HandBookService,
         MessageService,
         CollectionService,
         OSSService,

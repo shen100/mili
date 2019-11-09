@@ -74,6 +74,40 @@ export class CommentService {
     }
 
     /**
+     * 查图书下的评论时，直接查章节的评论，不区分父评论，子评论
+     */
+    async collectionComments(c: new () => Comment, collectionID: number, page: number, pageSize: number) {
+        const commentRepository = this.getCommentRepository(c);
+        const [list, count] = await (commentRepository as any).findAndCount({
+            select: {
+                id: true,
+                createdAt: true,
+                htmlContent: true,
+                user: {
+                    id: true,
+                    username: true,
+                    avatarURL: true,
+                },
+            },
+            relations: ['user'],
+            where: {
+                collectionID,
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            take: pageSize,
+            skip: (page - 1) * pageSize,
+        });
+        return {
+            list,
+            page,
+            pageSize,
+            count,
+        };
+    }
+
+    /**
      * 一级评论列表
      */
     async comments(c: new () => Comment, sourceID: number, lastCommentID: number, userID: number, limit: number) {

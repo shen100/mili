@@ -9,6 +9,7 @@ import { User } from './user.entity';
 import { Article } from './article.entity';
 import { BoilingPoint } from './boilingpoint.entity';
 import { BookChapter } from './book.entity';
+import { HandBookChapter } from './handbook.entity';
 
 export enum CommentStatus {
 	Verifying = 1, // 审核中
@@ -76,6 +77,16 @@ export class BookChapterComment extends Comment {
     @ManyToOne(type => BookChapter, chapter => chapter.comments)
     @JoinColumn({name: 'source_id'})
     chapter: BookChapter;
+}
+
+@Entity({name: 'hankbook_chapter_comments'})
+export class HandBookChapterComment extends Comment {
+    @Column('int', { name: 'collection_id' })
+    collectionID: number;
+
+    @ManyToOne(type => HandBookChapter, chapter => chapter.comments)
+    @JoinColumn({name: 'source_id'})
+    chapter: HandBookChapter;
 }
 
 @Entity({name: 'boilingpoint_comments'})

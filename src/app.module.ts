@@ -13,6 +13,7 @@ import * as csurf from 'csurf';
 import { PreRequestMiddleware } from './core/middleware/prereq.middleware';
 import { BoilingPointModule } from './boilingpoint/boilingpoint.module';
 import { AdminModule } from './admin/admin.module';
+import { BookModule } from './book/book.module';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { AdminModule } from './admin/admin.module';
         CommonModule,
         UserModule,
         CMSModule,
+        BookModule,
         BoilingPointModule,
         StatsModule,
         AdminModule,
