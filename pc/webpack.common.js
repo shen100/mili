@@ -1,49 +1,40 @@
 const path = require('path');
-// const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const stylesPath = path.join(__dirname, 'public', 'styles');
-const jsPath = path.join(__dirname, 'public', 'js');
-
 const publicPath = process.env.PUBLIC_PATH || 'http://dev.golang123.com/';
 
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+function getEntries(entryPath, entryObj) {
+	const files = fs.readdirSync(entryPath);
+	files.forEach(function(filePath) {
+        const fullpath = `${entryPath}/${filePath}`;
+        const info = fs.statSync(fullpath);
+		if (info.isDirectory()) {
+			getEntries(fullpath, entryObj);
+		} else {
+            let key = fullpath.replace('./js/', '');
+            key = key.replace('.js', '');
+            entryObj[key] = fullpath;
+        }
+    });
+    return entryObj;
+}
+
+/**
+ * {
+ *     'entry/admin/app': './js/entry/admin/app.js',
+ *     'entry/article/articleDetail': './js/entry/article/articleDetail.js',
+ * }
+ */
+const entries = getEntries('./js/entry', {});
 
 // https://vue-loader.vuejs.org/zh/
 module.exports = {
     mode: 'development',
-    entry: {
-        'entry/index': './js/entry/index.js',
-        'entry/boilingpoint/boilingpoint': './js/entry/boilingpoint/boilingpoint.js',
-        'entry/boilingpoint/boilingpointDetail': './js/entry/boilingpoint/boilingpointDetail.js',
-        'entry/codeStats': './js/entry/codeStats.js',
-        'entry/signin': './js/entry/signin.js',
-        'entry/signup': './js/entry/signup.js',
-        'entry/user/user': './js/entry/user/user.js',
-        'entry/messages': './js/entry/messages.js',
-        'entry/article/articleDetail': './js/entry/article/articleDetail.js',
-        'entry/tag/tag': './js/entry/tag/tag.js',
-        'entry/tag/tagDetail': './js/entry/tag/tagDetail.js',
-        'entry/collection/collection': './js/entry/collection/collection.js',
-        'entry/collection/edit': './js/entry/collection/edit.js',
-        'entry/editor/editMarkdownDraft': './js/entry/editor/editMarkdownDraft.js',
-        'entry/editor/editRichDraft': './js/entry/editor/editRichDraft.js',
-        'entry/editor/published': './js/entry/editor/published.js',
-        'entry/editor/drafts': './js/entry/editor/drafts.js',
-        'entry/book/books': './js/entry/book/books.js',
-        'entry/book/bookDetail': './js/entry/book/bookDetail.js',
-        'entry/book/chapter': './js/entry/book/chapter.js',
-        'entry/handbook/handbooks': './js/entry/handbook/handbooks.js',
-        'entry/handbook/handbookDetail': './js/entry/handbook/handbookDetail.js',
-        'entry/handbook/editHandbook': './js/entry/handbook/editHandbook.js',
-        'entry/search/search': './js/entry/search/search.js',
-        'entry/recommendations/authors': './js/entry/recommendations/authors.js',
-        'entry/settings/settings': './js/entry/settings/settings.js',
-        'entry/admin/app': './js/entry/admin/app.js',
-    },
+    entry: entries,
     output: {
         filename: 'js/[name].js',
         chunkFilename: 'js/[name].js',
-        path: path.join(__dirname, 'dist', 'public'),
+        path: path.join(__dirname, 'dist'),
         publicPath: publicPath,
     },
     module: {
@@ -153,7 +144,6 @@ module.exports = {
         extensions: ['.js', '.vue', '.css', '.scss']
     },
     externals: {
-        jquery: 'jQuery',
     },
     plugins: [
     ],
