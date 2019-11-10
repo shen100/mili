@@ -32,6 +32,7 @@ export class TopicService {
 
     async list() {
         return await this.topicRepository.find({
+            select: ['id', 'name', 'sequence', 'icon', 'createdAt', 'updatedAt'],
             order: {
                 sequence: 'ASC',
             },

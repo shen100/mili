@@ -4,7 +4,7 @@
             <div class="pin-header-row">
                 <div class="account-group">
                     <div class="user-popover-box" @mouseenter="onMouseEnterUser1" @mouseleave="onMouseLeaveUser1">
-                        <a :href="`/users/${boilingData.user.id}`" target="_blank" class="user-link">
+                        <a :href="`/uc/${boilingData.user.id}`" target="_blank" class="user-link">
                             <div class="lazy avatar loaded" :style="{'background-image': `url(${boilingData.user.avatarURL})`}"></div>
                         </a>
                         <UserBusinessCard v-if="userCardVisible1" :userID="boilingData.user.id" 
@@ -12,7 +12,7 @@
                     </div>
                     <div class="pin-header-content">
                         <div class="user-popover-box" @mouseenter="onMouseEnterUser2" @mouseleave="onMouseLeaveUser2">
-                            <a :href="`/users/${boilingData.user.id}`" target="_blank" class="username">{{boilingData.user.username}}</a>
+                            <a :href="`/uc/${boilingData.user.id}`" target="_blank" class="username">{{boilingData.user.username}}</a>
                             <UserBusinessCard v-if="userCardVisible2" :userID="boilingData.user.id" 
                                 :followerID="userID" @userFollowChange="onFollowChange" />
                         </div>

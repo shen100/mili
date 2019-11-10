@@ -111,6 +111,13 @@ export class OSSService {
         return this.configService.static.uploadImgURL + name;
     }
 
+    getImageURL(path: string) {
+        if (path.indexOf('https://') === 0) {
+            return path;
+        }
+        return this.configService.static.uploadImgURL + path;
+    }
+
     async getImageInfo(path: string) {
         if (path.charAt(0) !== '/') {
             path = '/' + path;

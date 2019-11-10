@@ -108,14 +108,42 @@ export class BoilingPointService {
         };
     }
 
-    async globalRecommends(): Promise<BoilingPoint[]> {
-        return await this.boilingPointRepository.find({
+    async globalRecommends() {
+        const boilingPoints = await this.boilingPointRepository.find({
             order: {
                 createdAt: 'DESC',
             },
             skip: 0,
             take: 3,
         });
+
+        const imgIDArr: number[] = [];
+        const imageMap = {};
+        boilingPoints.map(r => {
+            if (r.imgs) {
+                const ids = r.imgs.split(',');
+                imgIDArr.push(...ids.map(idStr => parseInt(idStr, 10)));
+            }
+        });
+        const images: Image[] = await (imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]));
+        images.map(img => imageMap[img.id] = img);
+        const theGlobalRecommends = boilingPoints.map(bp => {
+            let imgs: any[] = [];
+            if (bp.imgs) {
+                const ids = bp.imgs.split(',');
+                imgs = ids.map(imgID => {
+                    return {
+                        ...imageMap[imgID],
+                        url: this.configService.static.uploadImgURL + imageMap[imgID].url,
+                    };
+                });
+            }
+            return {
+                ...bp,
+                imgs,
+            };
+        });
+        return theGlobalRecommends;
     }
 
     async recommendsInTopic(): Promise<BoilingPoint[]> {

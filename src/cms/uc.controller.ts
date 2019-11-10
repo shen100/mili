@@ -31,8 +31,7 @@ export class UCController {
     ];
 
     @Get('/uc/:authorID/:page?')
-    @UseGuards(ActiveGuard)
-    async userCenter(@Param('authorID', MustIntPipe) authorID: number, @Param('page') page: string, @CurUser() user, @Res() res) {
+    async userCenter(@CurUser() user, @Param('authorID', MustIntPipe) authorID: number, @Param('page') page: string, @Res() res) {
         if (page && this.ucPages.indexOf(page) < 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.NotFound.CODE,

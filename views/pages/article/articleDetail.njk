@@ -5,11 +5,11 @@
     <div class="article-box">
         <div class="article">
             <div class="author-info-block">
-                <a href="/uc/{{user.id}}" target="_blank" class="avatar-link">
+                <a href="/uc/{{article.user.id}}" target="_blank" class="avatar-link">
                     <div class="author-avatar" style="background-image: url({{article.user.avatarURL}});"></div>
                 </a>
                 <div class="author-info-box">
-                    <a href="/uc/{{user.id}}" target="_blank" class="username-ellipsis">{{article.user.username}}</a>
+                    <a href="/uc/{{article.user.id}}" target="_blank" class="username-ellipsis">{{article.user.username}}</a>
                     <a href="{{userLevelChapterURL}}" target="_blank" class="rank levelimg">
                         <img src="{{imgPath | levelImgURL(article.user.level)}}" style="margin-top: 2px;">
                     </a>

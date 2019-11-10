@@ -31,7 +31,7 @@ export default {
         'placeholder'
     ],
     data() {
-        return {
+        return { 
             imgCount: 0, // 已上传的图片个数
             topic: null,
             isFocus: false,
@@ -48,9 +48,14 @@ export default {
     methods: {
         // CommentRichEditor 中上传的图片
         onImgUploadSuccess(imgURL, imgData) {
-            // 一张图片没上传时，UploaderList不在dom中，设个延时, 再访问 this.$refs.upList
-            this.$nextTick(() => {
+            if (this.imgCount) {
                 this.imgCount++;
+                this.$refs.upList.addImg(imgData);
+                return;
+            }
+            this.imgCount++;
+            // 一张图片没上传时，UploaderList不在dom中，这时上传第一张图片后，设个延时, 再访问this.$refs.upList
+            this.$nextTick(() => {
                 this.$refs.upList.addImg(imgData);
             });
         },
