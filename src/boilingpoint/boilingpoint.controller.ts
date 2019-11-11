@@ -6,7 +6,7 @@ import {
 import { BoilingPointService } from './boilingpoint.service';
 import { TopicService } from './topic.service';
 import { OSSService } from '../common/oss.service';
-import { BoilingPointTopic, BoilingPoint, ReportReasons } from '../entity/boilingpoint.entity';
+import { BoilingPointTopic, BoilingPoint } from '../entity/boilingpoint.entity';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ErrorCode } from '../constants/error';
 import { EditBoilingPointDto } from './dto/edit-boilingpoint.dto';
@@ -20,6 +20,7 @@ import { recentTime } from '../utils/viewfilter';
 import { Image } from '../entity/image.entity';
 import { User } from '../entity/user.entity';
 import { RedisService } from '../redis/redis.service';
+import { BoilingPointConstants } from '../constants/boilingpoint';
 
 @Controller()
 export class BoilingPointController {
@@ -97,7 +98,7 @@ export class BoilingPointController {
                     company: true,
                 },
             }),
-            user ? this.boilingPointService.userLikeBoilingPointIDs([ boilingPoint.id ], user.id) : Promise.resolve([]),
+            user ? this.boilingPointService.filterUserLikeBoilingPointIDs([ boilingPoint.id ], user.id) : Promise.resolve([]),
             imgIDArr.length ? this.ossService.findImages(imgIDArr) : Promise.resolve([]),
             this.boilingPointService.globalRecommends(),
             (user ? this.userService.usersFilterByFollowerID([boilingPoint.userID], user.id) : Promise.resolve([])),
@@ -153,7 +154,8 @@ export class BoilingPointController {
      */
     @Get(`${APIPrefix}/boilingpoints/recommend`)
     async recommend(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
-        const boilingPoints = await this.boilingPointService.recommend(page);
+        const pageSize = 20;
+        const boilingPoints = await this.boilingPointService.recommend(page, pageSize);
         const list = await this.boilingPointService.fillBoilingPointsRelativeData(boilingPoints.list, user ? user.id : undefined);
         return {
             ...boilingPoints,
@@ -166,7 +168,8 @@ export class BoilingPointController {
      */
     @Get(`${APIPrefix}/boilingpoints/hot`)
     async hot(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
-        const boilingPoints = await this.boilingPointService.hot(page);
+        const pageSize = 20;
+        const boilingPoints = await this.boilingPointService.hot(page, pageSize);
         const list = await this.boilingPointService.fillBoilingPointsRelativeData(boilingPoints.list, user ? user.id : undefined);
         return {
             ...boilingPoints,
@@ -175,12 +178,13 @@ export class BoilingPointController {
     }
 
     /**
-     * 关注的沸点
+     * 关注的用户的沸点
      */
     @Get(`${APIPrefix}/boilingpoints/followed`)
     @UseGuards(ActiveGuard)
     async followed(@CurUser() user, @Query('page', ParsePagePipe) page: number) {
-        const boilingPoints = await this.boilingPointService.followed(page);
+        const pageSize = 20;
+        const boilingPoints = await this.boilingPointService.followed(user.id, page, pageSize);
         const list = await this.boilingPointService.fillBoilingPointsRelativeData(boilingPoints.list, user ? user.id : undefined);
         return {
             ...boilingPoints,
@@ -193,9 +197,10 @@ export class BoilingPointController {
      */
     @Get(`${APIPrefix}/boilingpoints/topic`)
     async listByTopic(@CurUser() user, @Query('topicID', MustIntPipe) topicID: number, @Query('page', ParsePagePipe) page: number) {
+        const pageSize = 20;
         const [topic, boilingPoints] = await Promise.all([
             this.topicService.basic(topicID),
-            this.boilingPointService.listByTopic(topicID, page),
+            this.boilingPointService.listInTopic(topicID, page, pageSize),
         ]);
         if (!topic) {
             throw new MyHttpException({
@@ -290,7 +295,7 @@ export class BoilingPointController {
     }
 
     /**
-     * 点赞
+     * 给沸点点赞
      */
     @Post(`${APIPrefix}/boilingpoints/:id/like`)
     @UseGuards(ActiveGuard)
@@ -305,7 +310,7 @@ export class BoilingPointController {
     @Post(`${APIPrefix}/boilingpoints/:id/report`)
     @UseGuards(ActiveGuard)
     async report(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body('reason') reason: number) {
-        if (ReportReasons.indexOf(reason) < 0) {
+        if (BoilingPointConstants.ReportReasons.indexOf(reason) < 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
             });
@@ -324,7 +329,7 @@ export class BoilingPointController {
     }
 
     /**
-     * 取消点赞
+     * 取消沸点的点赞
      */
     @Delete(`${APIPrefix}/boilingpoints/:id/like`)
     @UseGuards(ActiveGuard)

@@ -70,13 +70,6 @@ export class BoilingPoint {
     comments: BoilingPointComment[];
 }
 
-export const ReportReasons: number[] = [
-    0, // 其它
-    1, // 和话题不符
-    2, // 恶意攻击谩骂
-    3, // 广告营销
-];
-
 @Entity({name: 'boilingpoint_reports'})
 export class BoilingPointReport {
     @PrimaryGeneratedColumn()
