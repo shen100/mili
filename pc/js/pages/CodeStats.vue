@@ -133,6 +133,7 @@ export default {
             'pc/webpack.dev.js',
             'pc/webpack.prod.js',
             'src/boilingpoint/boilingpoint.controller.ts',
+            'src/boilingpoint/boilingpoint.service.ts',
             'src/book/book.controller.ts',
             'src/book/book.service.ts',
             'src/cms/dto/create-book-star.dto.ts',
