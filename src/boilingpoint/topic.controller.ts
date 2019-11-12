@@ -10,6 +10,9 @@ export class TopicController {
         private readonly topicService: TopicService,
     ) {}
 
+    /**
+     * 所有的沸点话题
+     */
     @Get(`${APIPrefix}/boilingpoint/topics`)
     async list() {
         const topics = await this.topicService.list();

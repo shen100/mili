@@ -41,6 +41,7 @@ export class TopicService {
 
     async listInIDs(ids: number[]): Promise<BoilingPointTopic[]> {
         return await this.topicRepository.find({
+            select: ['id', 'name'],
             where: { id: In(ids) },
         });
     }

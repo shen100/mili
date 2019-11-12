@@ -165,7 +165,7 @@ export default {
             this.modalVisible = false;
         },
         reqList() {
-            myHTTP.get('/admin/boilingpoint/topics').then((res) => {
+            myHTTP.get('/boilingpoint/topics').then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     let topics = res.data.data.topics;
                     topics = topics.map(topic => {
