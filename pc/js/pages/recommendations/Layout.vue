@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="category-nav-box">
+        <!-- <div class="category-nav-box">
             <div class="category-nav">
                 <ul class="category-list">
                     <li>
@@ -11,8 +11,9 @@
                     </li>
                 </ul>
             </div>
-        </div>
-        <router-view></router-view>
+        </div> -->
+        <!-- <router-view></router-view> -->
+        <h2 class="deving">开发中，敬请期待</h2>
     </div>
 </template>
 
@@ -26,3 +27,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.deving {
+    margin-top: 200px;
+    text-align: center;
+    font-size: 24px;
+}
+</style>

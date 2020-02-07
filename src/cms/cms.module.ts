@@ -36,6 +36,9 @@ import { CommonModule } from '../common/common.module';
 import { Image } from '../entity/image.entity';
 import { BoilingPointModule } from '../boilingpoint/boilingpoint.module';
 import { BookModule } from '../book/book.module';
+import { CrawlerAdminController } from './crawler.admin.controller';
+import { CrawlerService } from './crawler.service';
+import { CrawlerArticle } from '../entity/crawler.entity';
 
 @Module({
     imports: [
@@ -48,6 +51,7 @@ import { BookModule } from '../book/book.module';
             BookChapterComment,
             Collection,
             Category,
+            CrawlerArticle,
             Draft,
             PostMsg,
             Book,
@@ -69,6 +73,7 @@ import { BookModule } from '../book/book.module';
         ArticleController,
         CategoryController,
         CommentController,
+        CrawlerAdminController,
         UCController,
         CollectionController,
         EditorController,
@@ -82,6 +87,7 @@ import { BookModule } from '../book/book.module';
         CommentService,
         DraftService,
         CategoryService,
+        CrawlerService,
         MessageService,
         CollectionService,
         OSSService,

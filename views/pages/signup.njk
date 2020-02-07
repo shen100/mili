@@ -3,8 +3,9 @@
 {% block main %}
 <div class="sign">
   <div class="logo">
-    <a href="/">
-      <img src="{{imgPath}}/logo_f1.jpg" alt="Logo">
+    <a class="logo-home-link" href="/">
+        <img src="{{imgPath}}/logo.png" alt="Logo">
+        <span class="logo-name">米粒</span>
     </a>
   </div>
   <div id="app" class="main">
@@ -60,7 +61,8 @@
 {% endblock %}
 
 {% block libjs %}
-<script src="{{jsPath}}/libs/geetest.js"></script>
+    {{ super() }}
+    <script src="{{jsPath}}/libs/geetest.js"></script>
 {% endblock %}
 
 {% block devjs %}

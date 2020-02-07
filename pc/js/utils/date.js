@@ -16,6 +16,5 @@ export const formatYMDHMS = (date, sep1, sep2) => {
     sep1 = sep1 || '-';
     sep2 = sep2 || ':';
     let str = `${year}${sep1}${month}${sep1}${d} ${h}${sep2}${m}${sep2}${s}`;
-    console.log(str);
     return str;
 };

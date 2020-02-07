@@ -16,7 +16,7 @@
             <template v-slot:content>
                 <div>
                     <div class="article-list">
-                        <ArticleItem :key="article.id" v-for="article in articles" :article="article" />
+                        <ArticleItem :moreBtnVisible="isAuthorSelf" @delete="onArticleDelete" :key="article.id" v-for="article in articles" :article="article" />
                     </div>
                 </div>
             </template>
@@ -40,6 +40,7 @@ export default {
             articles: [],
             sort: 'newest',
             isEmpty: false,
+            isAuthorSelf: window.userID === window.author.id, // 是否是作者本人
         };
     },
     mounted() {
@@ -56,6 +57,14 @@ export default {
             this.articles = this.articles.concat(result.data.data.list);
             if (!result.data.data.count) {
                 this.isEmpty = true;
+            }
+        },
+        onArticleDelete(id) {
+            for (let i = this.articles.length - 1; i >= 0; i--) {
+                if (this.articles[i].id === id) {
+                    this.articles.splice(i, 1);
+                    break;
+                }
             }
         },
         changeRoute(location, sort) {

@@ -2,8 +2,10 @@ import {
     MinLength,
     IsString,
     IsMobilePhone,
+    Length,
 } from 'class-validator';
 import { ErrorCode } from '../../constants/error';
+import { UserConstants } from '../../constants/constants';
 
 export class SMSDto {
 
@@ -14,6 +16,20 @@ export class SMSDto {
         },
     })
     readonly phone: string;
+
+    @Length(UserConstants.USERNAME_MIN_LENGTH, UserConstants.USERNAME_MAX_LENGTH, {
+        message: ErrorCode.InvalidUserName.MESSAGE,
+        context: {
+            errorCode: ErrorCode.InvalidUserName.CODE,
+        },
+    })
+    @IsString({
+        message: ErrorCode.InvalidUserName.MESSAGE,
+        context: {
+            errorCode: ErrorCode.InvalidUserName.CODE,
+        },
+    })
+    readonly username: string;
 
     @MinLength(1, {
         message: 'geetest_challenge不能为空',

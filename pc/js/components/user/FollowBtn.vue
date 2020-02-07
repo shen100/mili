@@ -81,7 +81,7 @@ export default {
                         globalEventEmitter.emit(EVENTS.TAG_FOLLOW_CHANGE, id, this.isFollowed);
                     }
                 } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
-                    location.href = '/signin?ref=' + encodeURIComponent(location.href);
+                    location.href = '/signin?miliref=' + encodeURIComponent(location.href);
                 }
             });
         },

@@ -3,10 +3,10 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { Observable } from 'rxjs';
 import { map, throttleTime } from 'rxjs/operators';
 import { ConfigService } from '../../config/config.service';
-import { MyLoggerService } from '../../common/logger.service';
 import { ErrorCode } from '../../constants/error';
 import { StatsD } from 'hot-shots';
 import { MyRequest } from '../types/net';
+import { MyLoggerService } from '../../common/logger.service';
 
 let localStatsD: StatsD;
 
@@ -22,8 +22,22 @@ export class TransformResInterceptor<T> implements NestInterceptor {
         return next.handle().pipe(map(async (data) => {
             const req = context.switchToHttp().getRequest<MyRequest>();
             const reqEndTime = Date.now();
+            const responseTime = reqEndTime - req.reqStartTime;
+            this.logger.info({
+                data: {
+                    req: {
+                        method: 'GET',
+                        url: req.originalUrl,
+                        headers: {
+                            'user-agent': req.headers['user-agent'],
+                        },
+                    },
+                    ip: req.clientIp,
+                    responseTime,
+                },
+            });
             const statsD: StatsD = this.getStatsD();
-            statsD.timing(this.getStat(req), reqEndTime - req.reqStartTime, () => {
+            statsD.timing(this.getStat(req), responseTime, () => {
             });
 
             if (typeof data === 'undefined') {

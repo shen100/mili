@@ -39,6 +39,6 @@ export const myHTTP = {
             };
         }
         url = addURLPrefix(url);
-        return axios.delete(url, data, config);
+        return axios.delete(url, config); 
     }
 }

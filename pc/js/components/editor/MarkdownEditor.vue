@@ -1,5 +1,6 @@
 <template>
-    <div class="md-editor-body-box" :style="{'display': inited ? 'block' : 'none'}">
+    <div class="md-editor-body-box" :class="{'md-editor-no-padding-top': noPaddingTop}"
+        :style="{'display': inited ? 'block' : 'none'}">
         <ErrorTip ref="errorTip" />
         <div class="md-editor-body" :class="{'md-editor-expand': !isSideBySide}">
             <div class="mili-editor">
@@ -59,6 +60,7 @@ marked.setOptions({
 export default {
     props: [
         'content',
+        'noPaddingTop'
     ],
     data () {
         return {

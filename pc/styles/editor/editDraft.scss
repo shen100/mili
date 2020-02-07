@@ -456,6 +456,8 @@ html, body, #app, #editorBox {
 }
 
 .suggested-tag-list {
+    max-height: 400px;
+    overflow: auto;
     position: absolute;
     top: 100%;
     left: 0;

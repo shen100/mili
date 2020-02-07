@@ -1,3 +1,7 @@
+.logo-home-link:hover {
+    text-decoration: none;
+}
+
 .sign {
     height: 100%;
     min-height: 750px;
@@ -10,11 +14,19 @@
     position: absolute;
     top: 56px;
     margin-left: 50px;
+    width: 360px;
 }
 
 .sign .logo img {
-    width: 160px;
-    height: auto;
+    width: auto;
+    height: 56px;
+    margin-top: 2px;
+}
+
+.sign .logo .logo-name {
+    width: auto;
+    font-size: 42px;
+    line-height: 56px;
 }
 
 .sign .main {

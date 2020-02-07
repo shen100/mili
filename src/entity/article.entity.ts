@@ -9,20 +9,20 @@ import {
     JoinColumn,
 } from 'typeorm';
 import { Category } from './category.entity';
-import { Comment, ArticleComment } from './comment.entity';
+import { ArticleComment } from './comment.entity';
 import { User } from './user.entity';
 import { Collection } from './collection.entity';
 import { Tag } from './tag.entity';
 
 export enum ArticleStatus {
-	Verifying = 1, // 审核中
-	VerifySuccess = 2, // 审核通过
-	VerifyFail = 3, // 审核未通过
+    Verifying = 1, // 审核中
+    VerifySuccess = 2, // 审核通过
+    VerifyFail = 3, // 审核未通过
 }
 
 export enum ArticleContentType {
-	Markdown = 1,
-	HTML = 2,
+    Markdown = 1,
+    HTML = 2,
 }
 
 @Entity({name: 'articles'})

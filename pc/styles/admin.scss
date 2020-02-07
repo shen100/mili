@@ -1,5 +1,28 @@
 @import './reset.scss';
 
+html, body {
+    height: 100%;
+}
+
+body {
+    background: #f6f7f9;
+}
+
+.main-box {
+    width: 100%;
+    margin-top: 0;
+}
+
+.admin-body .ivu-modal-header {
+    border-bottom: 1px solid #e8eaec;
+    padding: 14px 16px;
+    line-height: 1;
+}
+
+.admin-body .ivu-modal-body {
+    padding: 16px;
+}
+
 .admin-modal-footer {
     padding-top: 10px;
     border-top: 1px solid #e8eaec;
@@ -8,4 +31,31 @@
 
 .admin-modal-footer .ok {
     margin-left: 10px;
+}
+
+.admin-logo img {
+    margin-top: 10px;
+    height: 36px;
+}
+
+.admin-logo-box {
+    height: 56px;
+    padding-left: 24px;
+    border-bottom: 1px #4d5468 solid;
+}
+
+.logo-name {
+    width: 60px;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 56px;
+    font-size: 24px;
+    color: #ea6f5a;
+    font-weight: 500;
+    font-family:-apple-system, "SF UI Text", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+}
+
+.collapsed-img {
+    text-align: center;
+    padding-left: 0;
 }

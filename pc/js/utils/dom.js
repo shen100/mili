@@ -136,3 +136,37 @@ export const elementScrollToTop = function(el, dt) {
         document.documentElement.scrollTop = top >= 0 ? top : 0;
     }
 }
+
+let isFullscreen = false;
+
+export const toggleFullScreen = () => {
+    let element = document.documentElement;
+    // 判断是否已经是全屏
+    // 如果是全屏，退出
+    if (isFullscreen) {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        console.log('已还原！');
+    } else {    // 否则，进入全屏
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+            // IE11
+            element.msRequestFullscreen();
+        }
+        console.log('已全屏！');
+    }
+    // 改变当前全屏状态
+    isFullscreen = !isFullscreen;
+};

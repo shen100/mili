@@ -1,3 +1,20 @@
 .sub-comment-wrap p {
     display: inline;
 }
+
+
+.comment-wrap img, .sub-comment-wrap img {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.comment-wrap p {
+    margin: 0;
+    margin-bottom: 2px;
+    line-height: 20px;
+    font-size: 13px;
+    word-break: break-word!important;
+    word-break: break-all;
+}

@@ -46,7 +46,7 @@ export class EditBoilingPointDto {
     @IsInt({
         each: true,
     })
-    readonly imgs: string[];
+    readonly imgs: number[];
 
     // 传了topicID字段的话，才检验topicID
     @ValidateIf(obj => {

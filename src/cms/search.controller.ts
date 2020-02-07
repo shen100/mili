@@ -2,7 +2,7 @@ import {
     Controller, Get, Query, Res,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { ArticleConstants, PeriodConstants } from '../constants/constants';
+import { PeriodConstants } from '../constants/constants';
 import { SearchService } from './search.service';
 import { recentTime } from '../utils/viewfilter';
 import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
@@ -11,6 +11,7 @@ import { UserService } from '../user/user.service';
 import { Category } from '../entity/category.entity';
 import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
 import { CurUser } from '../core/decorators/user.decorator';
+import { ArticleConstants } from '../constants/article';
 
 @Controller('/')
 export class SearchController {

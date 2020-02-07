@@ -1,9 +1,9 @@
 <template>
-    <div class="navbar-user" @click="onClick" v-clickoutside="clickOutside">
+    <div class="navbar-user" v-clickoutside="clickOutside">
         <div id="userDropdownBox" class="user" :class="{open: !isOutside}">
-            <div data-hover="dropdown">
+            <div @click="onAvatarClick">
                 <a class="avatar" href="javascript:void(0);">
-                    <img :src="avatarURL">
+                    <img :src="theAvatarURL">
                 </a>
             </div>
             <ul class="dropdown-menu" :style="menuStyle[menuAlign]">
@@ -26,7 +26,6 @@
     </div>
 </template>
 
-
 <script>
 import {
     addClass,
@@ -35,6 +34,7 @@ import {
 } from '~/js/utils/dom.js';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
+import { globalEventEmitter, EVENTS } from '~/js/utils/event.js';
 
 export default {
     props: [
@@ -44,6 +44,7 @@ export default {
     ],
     data () {
         return {
+            theAvatarURL: this.avatarURL,
             menuStyle: {
                 left: { left: 0 },
                 right: { right: 0 }
@@ -59,14 +60,18 @@ export default {
                 }
             });
         },
-        onClick() {
-            this.isOutside = false;
-        },
         clickOutside() {
             this.isOutside = true;
+        },
+        onAvatarClick() {
+            this.isOutside = !this.isOutside;
+        },
+        onAvatarChange(avatarURL) {
+            this.theAvatarURL = avatarURL;
         }
     },
     mounted() {
+        globalEventEmitter.on(EVENTS.USER_AVATAR_CHANGE, this.onAvatarChange, this);
     }
 }
 </script>

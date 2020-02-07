@@ -5,6 +5,8 @@ import { RedisService } from '../../redis/redis.service';
 import { ErrorCode } from '../../constants/error';
 import { User } from '../../entity/user.entity';
 import { UserService } from '../../user/user.service';
+import { MyLoggerService } from '../../common/logger.service';
+import { MyRequest } from '../types/net';
 
 @Injectable()
 export class UserMiddleware implements NestMiddleware {
@@ -12,11 +14,13 @@ export class UserMiddleware implements NestMiddleware {
         private readonly configService: ConfigService,
         private readonly redisService: RedisService,
         private readonly userService: UserService,
+        private readonly logger: MyLoggerService,
     ) {}
 
     use(request: Request, response: Response, next: any) {
         const req: any = request;
         const res: any = response;
+
         const tokenName: string = this.configService.server.tokenName;
         const tokenSecret: string = this.configService.server.tokenSecret;
         const token: string = req.cookies[tokenName] || '';
@@ -26,6 +30,7 @@ export class UserMiddleware implements NestMiddleware {
             next();
             return;
         }
+
         jwt.verify(token, tokenSecret, { algorithms: ['HS256'] }, async (err, payload) => {
             if (err) {
                 res.json({
@@ -37,11 +42,14 @@ export class UserMiddleware implements NestMiddleware {
             const userID = (payload as any).id;
             let userToken: string;
             let user: User;
+
             [userToken, user] = await Promise.all([
                 this.redisService.getUserToken(userID),
                 this.redisService.getUser(userID),
             ]);
+
             const isLogin = userToken && token === userToken;
+
             if (isLogin && !user) {
                 user = await this.userService.getUser(userID);
             }

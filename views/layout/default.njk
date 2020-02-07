@@ -5,7 +5,13 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <title>米粒网 - 和地鼠们分享你的知识、经验和见解</title>
 
+    {% block keyword %}
+    <meta name="keyword" content="golang,go,go语言,golang社区,go社区,golang中国,go中国,golang中文社区,go中文社区,go语言中文网,社区">
+    {% endblock %}
+
+    <meta name="description" content="米粒网 - 一个专业的Go语言技术社区，帮助你寻找答案，分享知识。">
     {# 直接加载第三方库的css时，放在libcss块中 #}
     {% block libcss %}
     {% endblock %}
@@ -53,6 +59,17 @@
 
     {# 直接加载第三方库的js时，放在libjs块中 #}
     {% block libjs %}
+        {% if env === 'production' %}
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?253a8e53710b29ed40e6e57965279933";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+        {% endif %}
     {% endblock %}
 
     {# 本地开发时，具体页面中的js #}

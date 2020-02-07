@@ -1,5 +1,6 @@
 <template>
     <div class="comment-editor-box">
+        <ErrorTip ref="errorTip" />
         <div @keyup.meta.enter="onEnterSubmit" @keyup.ctrl.enter="onEnterSubmit" 
             class="comment-editor-cbox"
             :class="{'comment-editor-cbox-boilingpoint': source === 'createboilingpoint', 'comment-editor-focus': isFocus}">
@@ -35,6 +36,7 @@
 
 import striptags from 'striptags';
 import { Editor, EditorContent } from 'tiptap';
+import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import { myHTTP } from '~/js/common/net.js';
 import { trim } from '~/js/utils/utils.js';
 import { ErrorCode } from '~/js/constants/error.js';
@@ -197,12 +199,14 @@ export default {
             this.isSaving = true;
             myHTTP.post(url, reqData).then((res) => {
                 this.isSaving = false;
-                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    this.editor.setContent('<p></p>');
-                    this.sendVisible = false;
-                    const comment = res.data.data.comment;
-                    this.$emit('success', comment);
+                if (res.data.errorCode !== ErrorCode.SUCCESS.CODE) {
+                    this.$refs.errorTip.show(res.data.message);
+                    return;
                 }
+                this.editor.setContent('<p></p>');
+                this.sendVisible = false;
+                const comment = res.data.data.comment;
+                this.$emit('success', comment);
             }).catch((err) => {
                 console.log(err);
                 this.isSaving = false;
@@ -226,6 +230,7 @@ export default {
         }
     },
     components: {
+        ErrorTip,
         EditorContent,
         CommentRichEditorEmoji,
     },
@@ -249,6 +254,10 @@ export default {
     border-bottom-right-radius: 0;
 }
 
+.comment-editor-cbox-boilingpoint p {
+    font-size: 15px!important;
+}
+
 .editor-focus-area {
     height: 30px;
     cursor: text;
@@ -259,18 +268,18 @@ export default {
 }
 
 .comment-editor-cbox p {
-    line-height: 24px!important;
+    line-height: 20px!important;
     margin-top: 0!important;
-    margin-bottom: 0!important;
+    margin-bottom: 2px!important;
+    font-size: 13px;
 }
 
 /* 设置emoji图片宽高 */
 .comment-editor-cbox img {
     display: inline-block;
     vertical-align: top;
-    margin-top: 4px;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
 
 .comment-editor-box * {

@@ -28,7 +28,7 @@
             {% if article.coverURL %}
             <div class="article-cover" style="background-image: url({{article.coverURL}})"></div>
             {% endif %}
-            <div class="article-title" style="margin-bottom: 20px;">{{article.name}}</div>
+            <div class="article-title" style="margin-bottom: 20px; font-size: 30px;">{{article.name}}</div>
 
             <div class="article-content">
                 <div class="mili-editor">
@@ -60,13 +60,15 @@
                         <a id="followUserBigBtn" href="javascript:void(0)"></a>
                     {% endif %}
                     <a class="title" href="/uc/{{article.user.id}}" target="_blank">{{article.user.username}}</a>
-                    <p>发布了 {{article.user.articleCount | defaultValue(0)}} 篇文章 · 获得点赞 {{article.user.likedCount | defaultValue(0)}} · 获得阅读 {{article.user.articleViewCount | defaultValue(0)}}</p>
+                    <p>发布了 {{article.user.articleCount | prettyCount}} 篇文章 · 获得点赞 
+                        {{article.user.likedCount | prettyCount}} · 获得阅读 
+                        {{article.user.articleViewCount | prettyCount}}</p>
                 </div>
             </div>
 
             <div class="article-banner comment-scroll-to">
                 <a class="banner-title" href="https://github.com/shen100/mili" target="_blank">下载{{siteName}}网源码</a>
-                <div class="banner-content">打开新标签页发现好内容，XX、GitHub、Dribbble、ProductHunt 获取高质量内容吧</div>
+                <div class="banner-content">米粒网是一个帮助开发者成长的开源社区，一起分享知识、寻找答案。</div>
             </div>
 
             <div>
@@ -181,7 +183,8 @@
 {% endblock %}
 
 {% block libjs %}
-<script src="{{jsPath}}/libs/qrcode.min.js" type="text/javascript"></script>
+    {{ super() }}
+    <script src="{{jsPath}}/libs/qrcode.min.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block devjs %}

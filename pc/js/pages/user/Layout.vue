@@ -427,7 +427,8 @@ export default {
     font-size: 16px;
     font-weight: 500;
     border-radius: 4px;
-    border-color: rgba(236, 97, 73, 0.7);
+    border: 2px solid rgba(236, 97, 73, 0.7);
+    background-color: #fff;
     transition: background-color .3s, color .3s;
 }
 

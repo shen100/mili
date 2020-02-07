@@ -4,19 +4,18 @@ import * as moment from 'moment';
 import * as striptags from 'striptags';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Article, ArticleStatus, ArticleContentType } from '../entity/article.entity';
-import { ArticleConstants } from '../constants/constants';
 import { Repository, Not, Like, In } from 'typeorm';
-import { CreateArticleDto } from './dto/create-article.dto';
+import { EditArticleDto } from './dto/edit-article.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../entity/category.entity';
-import { UpdateArticleDto } from './dto/update-article.dto';
-import { MyLoggerService } from '../common/logger.service';
 import { ConfigService } from '../config/config.service';
 import { UserRole, User } from '../entity/user.entity';
 import { ErrorCode } from '../constants/error';
 import { MyHttpException } from '../core/exception/my-http.exception';
 import { ListResult } from '../entity/listresult.entity';
 import { Tag } from '../entity/tag.entity';
+import { MyLoggerService } from '../common/logger.service';
+import { ArticleConstants } from '../constants/article';
 
 @Injectable()
 export class ArticleService {
@@ -41,50 +40,60 @@ export class ArticleService {
     }
 
     async detail(id: number) {
-        const [ article ] = await Promise.all([
-            this.articleRepository.findOne({
-                select: {
+        const article = await this.articleRepository.findOne({
+            select: {
+                id: true,
+                name: true,
+                coverURL: true,
+                createdAt: true,
+                wordCount: true,
+                browseCount: true,
+                commentCount: true,
+                rootCommentCount: true,
+                likedCount: true,
+                summary: true,
+                htmlContent: true,
+                user: {
                     id: true,
-                    name: true,
-                    coverURL: true,
-                    createdAt: true,
+                    username: true,
+                    avatarURL: true,
                     wordCount: true,
-                    browseCount: true,
-                    commentCount: true,
-                    rootCommentCount: true,
+                    job: true,
+                    company: true,
+                    articleCount: true,
+                    articleViewCount: true,
+                    followerCount: true,
                     likedCount: true,
-                    summary: true,
-                    htmlContent: true,
-                    user: {
-                        id: true,
-                        username: true,
-                        avatarURL: true,
-                        wordCount: true,
-                        job: true,
-                        company: true,
-                        followerCount: true,
-                        likedCount: true,
-                        introduce: true,
-                    },
+                    introduce: true,
                 },
-                relations: ['user', 'tags'],
-                where: {
-                    id,
-                    status: Not(ArticleStatus.VerifyFail),
-                },
-            }),
-            this.articleRepository.createQueryBuilder()
-                .update()
-                .set({
-                    browseCount: () => 'browse_count + 1',
-                })
-                .where('id = :id', { id })
-                .execute(),
-        ]);
-        if (article) {
-            article.browseCount++;
-        }
+                userID: true,
+            },
+            relations: ['user', 'tags'],
+            where: {
+                id,
+                status: Not(ArticleStatus.VerifyFail),
+            },
+        });
         return article;
+    }
+
+    async incArticleViewCount(articleID: number, authorID: number) {
+        await Promise.all([
+            this.articleRepository.createQueryBuilder()
+                    .update()
+                    .set({
+                        browseCount: () => 'browse_count + 1',
+                    })
+                    .where('id = :id', { id: articleID })
+                    .execute(),
+            this.userRepository.createQueryBuilder()
+                    .update()
+                    .set({
+                        articleViewCount: () => 'article_view_count + 1',
+                    })
+                    .where('id = :id', { id: authorID })
+                    .execute(),
+        ]);
     }
 
     async detailForEditor(id: number) {
@@ -111,7 +120,7 @@ export class ArticleService {
         });
     }
 
-    async list(page: number, pageSize: number): Promise<ListResult<Article>> {
+    async list(sort: string, order: 'DESC' | 'ASC', page: number, pageSize: number): Promise<ListResult<Article>> {
         const [list, count] = await this.articleRepository.findAndCount({
             select: {
                 id: true,
@@ -132,7 +141,7 @@ export class ArticleService {
                 status: Not(ArticleStatus.VerifyFail),
             },
             order: {
-                createdAt: 'DESC',
+                [sort]: order,
             },
             skip: (page - 1) * pageSize,
             take: pageSize,
@@ -151,10 +160,10 @@ export class ArticleService {
     async userLikeArticles(userID: number, page: number, pageSize: number): Promise<ListResult<Article>> {
         const sql = `SELECT articles.id as id, articles.name as name, articles.created_at as createdAt, articles.summary as summary,
                 articles.comment_count as commentCount, articles.liked_count as likedCount, articles.cover_url as coverURL
-            FROM user_like_articles, articles
-            WHERE user_like_articles.user_id = ? AND articles.id = user_like_articles.article_id 
-            ORDER BY user_like_articles.created_at DESC LIMIT ?, ?`;
-        const sql2 = `SELECT COUNT(*) as count FROM user_like_articles WHERE user_id = ?`;
+            FROM like_articles, articles
+            WHERE like_articles.user_id = ? AND articles.id = like_articles.article_id 
+            ORDER BY like_articles.created_at DESC LIMIT ?, ?`;
+        const sql2 = `SELECT COUNT(*) as count FROM like_articles WHERE user_id = ?`;
         const [articles, countResult] = await Promise.all([
             this.articleRepository.manager.query(sql, [userID, (page - 1) * pageSize, pageSize]),
             this.articleRepository.manager.query(sql2, [userID]),
@@ -167,7 +176,7 @@ export class ArticleService {
         };
     }
 
-    async listInCategory(categoryID: number, page: number, pageSize: number): Promise<ListResult<Article>> {
+    async listInCategory(categoryID: number, sort: string, order: 'DESC' | 'ASC', page: number, pageSize: number): Promise<ListResult<Article>> {
         const [list, count] = await this.articleRepository.createQueryBuilder('a')
             .select(['a.id', 'a.name', 'a.createdAt', 'a.summary', 'a.commentCount',
                 'a.coverURL', 'a.likedCount', 'user.id', 'user.username', 'user.avatarURL'])
@@ -177,6 +186,7 @@ export class ArticleService {
                 status: ArticleStatus.VerifyFail,
                 categoryID,
             })
+            .orderBy(sort, order)
             .skip((page - 1) * pageSize).take(pageSize)
             .orderBy({'a.createdAt': 'DESC'}).getManyAndCount();
         return {
@@ -228,6 +238,8 @@ export class ArticleService {
                 name: true,
                 summary: true,
                 coverURL: true,
+                createdAt: true,
+                updatedAt: true,
                 user: {
                     id: true,
                     username: true,
@@ -285,7 +297,7 @@ export class ArticleService {
     /**
      * 用户的文章
      */
-    async userArticles(userID: number, page: number, pageSize: number): Promise<ListResult<Article>> {
+    async userArticles(userID: number, sort: string, order: 'DESC' | 'ASC', page: number, pageSize: number): Promise<ListResult<Article>> {
         const [list, count] = await this.articleRepository.findAndCount({
             select: {
                 id: true,
@@ -306,6 +318,9 @@ export class ArticleService {
                 userID,
                 deletedAt: null,
                 status: Not(ArticleStatus.VerifyFail),
+            },
+            order: {
+                [sort]: order,
             },
             skip: (page - 1) * pageSize,
             take: pageSize,
@@ -437,23 +452,24 @@ export class ArticleService {
         return { summary, wordCount };
     }
 
-    async create(createArticleDto: CreateArticleDto, userID: number) {
-        const uniqCates = _.uniqBy(createArticleDto.categories, (c) => c.id);
-        const categoryIDs = [];
-        const categories: Category[] = uniqCates.map(cate => {
-            const c = new Category();
-            c.id = cate.id;
-            categoryIDs.push(cate.id);
-            return c;
-        });
-        const uniqTags = _.uniqBy(createArticleDto.tags, (t) => t.id);
-        const tagIDs = [];
-        const tags: Tag[] = uniqTags.map(t => {
+    async create(createArticleDto: EditArticleDto, userID: number) {
+        const tagIDs = _.uniq(createArticleDto.tags);
+        const tags: Tag[] = tagIDs.map(tagID => {
             const tag = new Tag();
-            tag.id = t.id;
-            tagIDs.push(t.id);
+            tag.id = tagID;
             return tag;
         });
+
+        const categoryIDs = [];
+        const tagCategorySQL = 'SELECT category_id FROM tag_category WHERE tag_id IN (?)';
+        const cates = await this.articleRepository.manager.query(tagCategorySQL, [tagIDs.join(',')]);
+        const categories: Category[] = cates.map(cate => {
+            const c = new Category();
+            c.id = cate.category_id;
+            categoryIDs.push(cate.category_id);
+            return c;
+        });
+
         const article = new Article();
         article.name = createArticleDto.name;
         article.categories = categories;
@@ -482,12 +498,13 @@ export class ArticleService {
             let articleResult;
             await this.articleRepository.manager.connection.transaction(async manager => {
                 articleResult = await manager.getRepository(Article).save(article);
+                await manager.query('UPDATE users SET article_count = article_count + 1 WHERE id = ?', [userID]);
                 await manager.query(`UPDATE categories SET article_count = article_count + 1 WHERE id IN (${categoryIDs.join(',')})`);
                 await manager.query(`UPDATE tags SET article_count = article_count + 1 WHERE id IN (${tagIDs.join(',')})`);
             });
             return articleResult;
         } catch (err) {
-            this.logger.error(err, '');
+            this.logger.error(err);
             throw new HttpException({
                 errNo: ErrorCode.ParamsError,
                 message: '无效的分类',
@@ -495,26 +512,27 @@ export class ArticleService {
         }
     }
 
-    async update(updateArticleDto: UpdateArticleDto, userID: number) {
+    async update(editArticleDto: EditArticleDto, articleID: number, userID: number) {
         const insertCategories = [];
         const categoryIDs = [];
         const insertTags = [];
-        const tagIDs = [];
-        const uniqCates = _.uniqBy(updateArticleDto.categories, (c) => c.id);
-        uniqCates.map(c => {
-            categoryIDs.push(c.id);
-            insertCategories.push(`(${updateArticleDto.id}, ${c.id})`);
+        const tagIDs = _.uniq(editArticleDto.tags);
+        tagIDs.map(tagID => {
+            insertTags.push(`(${articleID}, ${tagID})`);
         });
-        const uniqTags = _.uniqBy(updateArticleDto.tags, (t) => t.id);
-        uniqTags.map(t => {
-            tagIDs.push(t.id);
-            insertTags.push(`(${updateArticleDto.id}, ${t.id})`);
+
+        const tagCategorySQL = 'SELECT category_id FROM tag_category WHERE tag_id IN (?)';
+        const cates = await this.articleRepository.manager.query(tagCategorySQL, [tagIDs.join(',')]);
+        cates.map(c => {
+            categoryIDs.push(c.category_id);
+            insertCategories.push(`(${articleID}, ${c.category_id})`);
         });
+
         const article: Article = await this.articleRepository.createQueryBuilder('a')
             .select(['a.id', 'a.userID', 't.id', 'c.id'])
             .leftJoin('a.tags', 't')
             .leftJoin('a.categories', 'c')
-            .where({ id: updateArticleDto.id })
+            .where({ id: articleID })
             .getOne();
 
         if (!article) {
@@ -530,21 +548,21 @@ export class ArticleService {
             });
         }
         const updateData = {
-            name: updateArticleDto.name,
+            name: editArticleDto.name,
             contentType: ArticleContentType.Markdown,
-            coverURL: updateArticleDto.coverURL || '',
+            coverURL: editArticleDto.coverURL || '',
             content: '',
             htmlContent: '',
             summary: '',
             wordCount: 0,
         };
 
-        updateData.contentType = updateArticleDto.contentType;
-        if (updateArticleDto.contentType === ArticleContentType.Markdown) {
-            updateData.content = updateArticleDto.content;
-            updateData.htmlContent = marked(updateArticleDto.content);
+        updateData.contentType = editArticleDto.contentType;
+        if (editArticleDto.contentType === ArticleContentType.Markdown) {
+            updateData.content = editArticleDto.content;
+            updateData.htmlContent = marked(editArticleDto.content);
         } else {
-            updateData.htmlContent = updateArticleDto.content;
+            updateData.htmlContent = editArticleDto.content;
         }
 
         const { wordCount, summary } = this.htmlToSummary(article.htmlContent);
@@ -592,7 +610,7 @@ export class ArticleService {
                 status: ArticleStatus.VerifyFail,
             });
         } catch (err) {
-            this.logger.error(err, '');
+            this.logger.error(err);
             throw new HttpException({
                 errorCode: ErrorCode.ERROR,
             }, HttpStatus.OK);
@@ -600,29 +618,40 @@ export class ArticleService {
     }
 
     async likeOrCancelLike(articleID: number, userID: number) {
-        const sql = `DELETE FROM user_like_articles
-                WHERE article_id = ${articleID} AND user_id = ${userID}`;
-        const sql2 = `UPDATE articles SET liked_count = liked_count - 1 WHERE id = ${articleID}`;
+        const [ userLiked, article ] = await Promise.all([
+            this.isUserLiked(articleID, userID),
+            this.articleRepository.findOne({
+                select: ['id', 'userID'],
+                where: { id: articleID },
+            }),
+        ]);
 
-        const sql3 = `INSERT INTO user_like_articles (user_id, article_id, created_at)
-                VALUES (${userID}, ${articleID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}")`;
-        const sql4 = `UPDATE articles SET liked_count = liked_count + 1 WHERE id = ${articleID}`;
-
-        const userLiked = await this.isUserLiked(articleID, userID);
-
+        if (!article) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
         await this.articleRepository.manager.connection.transaction(async manager => {
             if (userLiked) {
-                await manager.query(sql);
-                await manager.query(sql2);
+                const cancelSQL1 = `DELETE FROM like_articles WHERE article_id = ? AND user_id = ?`;
+                const cancelSQL2 = `UPDATE articles SET liked_count = liked_count - 1 WHERE id = ?`;
+                const cancelSQL3 = `UPDATE users SET liked_count = liked_count - 1 WHERE id = ?`;
+                await manager.query(cancelSQL1, [ articleID, userID ]);
+                await manager.query(cancelSQL2, [ articleID ]);
+                await manager.query(cancelSQL3, [ article.userID ]);
                 return;
             }
-            await manager.query(sql3);
-            await manager.query(sql4);
+            const sql1 = `INSERT INTO like_articles (user_id, article_id, publisher, created_at) VALUES (?, ?, ?, ?)`;
+            const sql2 = `UPDATE articles SET liked_count = liked_count + 1 WHERE id = ${articleID}`;
+            const sql3 = `UPDATE users SET liked_count = liked_count + 1 WHERE id = ?`;
+            await manager.query(sql1, [ userID, articleID, article.userID, new Date() ]);
+            await manager.query(sql2, [ articleID ]);
+            await manager.query(sql3, [ article.userID ]);
         });
     }
 
     async isUserLiked(articleID: number, userID: number): Promise<boolean> {
-        const sql = `SELECT article_id, user_id FROM user_like_articles
+        const sql = `SELECT article_id, user_id FROM like_articles
             WHERE article_id = ${articleID} AND user_id = ${userID}`;
         let result = await this.articleRepository.manager.query(sql);
         result = result || [];
@@ -665,5 +694,45 @@ export class ArticleService {
             page,
             pageSize,
         };
+    }
+
+    async deleteArticle(id: number, userID: number) {
+        const article: Article = await this.articleRepository.createQueryBuilder('a')
+            .select(['a.id', 'a.userID', 't.id', 'c.id'])
+            .leftJoin('a.tags', 't')
+            .leftJoin('a.categories', 'c')
+            .where({ id })
+            .getOne();
+
+        if (!article) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+                message: '无效的id',
+            });
+        }
+
+        if (article.userID !== userID) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.Forbidden.CODE,
+            });
+        }
+
+        const oldCategoryIDs = article.categories.map(c => c.id);
+        const oldTagIDs = article.tags.map(t => t.id);
+
+        await this.articleRepository.manager.connection.transaction(async manager => {
+            await manager.delete(Article, {
+                id,
+                userID,
+            });
+
+            await manager.query('DELETE FROM article_category WHERE article_id = ?', [id]);
+            await manager.query('DELETE FROM article_tag WHERE article_id = ?', [id]);
+            await manager.query('UPDATE categories SET article_count = article_count - 1 WHERE id IN (?)', [oldCategoryIDs.join(',')]);
+            if (oldTagIDs.length) {
+                await manager.query('UPDATE tags SET article_count = article_count - 1 WHERE id IN (?)', [oldTagIDs.join(',')]);
+            }
+            await manager.query('UPDATE users SET article_count = article_count - 1 WHERE id = ?', [userID]);
+        });
     }
 }

@@ -178,11 +178,11 @@ export default {
                         "title": "worried"
                     },
                     {
-                        "src": `${this.imgPath}/emojis/+1.png`,
+                        "src": `${this.imgPath}/emojis/jia1.png`,
                         "title": "+1"
                     },
                     {
-                        "src": `${this.imgPath}/emojis/-1.png`,
+                        "src": `${this.imgPath}/emojis/jian1.png`,
                         "title": "-1"
                     },
                     {

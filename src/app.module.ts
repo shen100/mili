@@ -1,5 +1,4 @@
 import { Module, MiddlewareConsumer, NestModule, RequestMethod } from '@nestjs/common';
-import { CookieParserMiddleware } from '@nest-middlewares/cookie-parser';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { ConfigService } from './config/config.service';
@@ -9,11 +8,18 @@ import { CMSModule } from './cms/cms.module';
 import { UserMiddleware } from './core/middleware/user.middleware';
 import { CommonModule } from './common/common.module';
 import { StatsModule } from './stats/stats.module';
-import * as csurf from 'csurf';
-import { PreRequestMiddleware } from './core/middleware/prereq.middleware';
+import { LocalsMiddleware } from './core/middleware/locals.middleware';
 import { BoilingPointModule } from './boilingpoint/boilingpoint.module';
 import { AdminModule } from './admin/admin.module';
 import { BookModule } from './book/book.module';
+import { CorsMiddleware } from './core/middleware/cors.middleware';
+import { CSRFMiddleware } from './core/middleware/csrf.middleware';
+import { ExerciseModule } from './exercise/exercise.module';
+import { IpMiddleware } from './core/middleware/ip.middleware';
+import { HelmetMiddleware } from './core/middleware/helmet.middleware';
+import { RateLimitMiddleware } from './core/middleware/rate-limit.middleware';
+import { CompressionMiddleware } from './core/middleware/compression.middleware';
+import { CookieParserMiddleware } from './core/middleware/cookie-parser.middleware';
 
 @Module({
     imports: [
@@ -37,6 +43,7 @@ import { BookModule } from './book/book.module';
         CMSModule,
         BookModule,
         BoilingPointModule,
+        ExerciseModule,
         StatsModule,
         AdminModule,
     ],
@@ -45,22 +52,19 @@ export class AppModule implements NestModule {
     constructor(private readonly configService: ConfigService) {}
 
     configure(consumer: MiddlewareConsumer) {
-        CookieParserMiddleware.configure(this.configService.server.cookieSecret);
-        let localsMiddlewares: Array<any> = [
+        const middlewares = [
+            IpMiddleware,
             CookieParserMiddleware,
-        ];
-        if (this.configService.server.csrfProtect) {
-            localsMiddlewares.push(csurf({
-                cookie: true,
-                ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
-            }));
-        }
-        localsMiddlewares = localsMiddlewares.concat([
-            PreRequestMiddleware,
+            RateLimitMiddleware,
+            CorsMiddleware,
+            CSRFMiddleware,
+            HelmetMiddleware,
             UserMiddleware,
-        ]);
+            LocalsMiddleware,
+            CompressionMiddleware,
+        ];
         consumer
-            .apply(...localsMiddlewares)
+            .apply(...middlewares)
             .forRoutes({ path: '*', method: RequestMethod.ALL });
     }
 }

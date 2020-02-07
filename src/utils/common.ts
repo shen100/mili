@@ -31,3 +31,13 @@ export const clampNumber = (num: number, min: number, max: number) => {
     num = Math.max(num, min);
     return num;
 };
+
+export const getContentTypeFromHeaders = (headers): string => {
+    headers || {};
+    for (const key in headers) {
+        if (key.toLocaleLowerCase() === 'content-type') {
+            return headers[key];
+        }
+    }
+    return '';
+};

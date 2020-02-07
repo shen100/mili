@@ -27,6 +27,17 @@
         {% endblock %}
 
         {% block libjs %}
+            {% if env === 'production' %}
+            <script>
+                var _hmt = _hmt || [];
+                (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?253a8e53710b29ed40e6e57965279933";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+            {% endif %}
         {% endblock %}
 
         {% block devjs %}

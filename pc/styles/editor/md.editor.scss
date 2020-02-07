@@ -48,6 +48,10 @@ $noSideBySideWidth: 850px;
     box-sizing: border-box;
 }
 
+.md-editor-no-padding-top .md-editor-body {
+    padding-top: 0;
+}
+
 .md-editor-footer {
     position: fixed;
     z-index: 10;
@@ -134,6 +138,10 @@ $noSideBySideWidth: 850px;
 .CodeMirror-fullscreen, .editor-preview-side {
     top: 58px!important;
     bottom: 40px;
+}
+
+.md-editor-no-padding-top .CodeMirror-fullscreen, .md-editor-no-padding-top .editor-preview-side {
+    top: 2px!important;
 }
 
 .editor-preview-side {

@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import queryString from 'query-string';
 import SuccessTip from '~/js/components/common/SuccessTip.vue';
 import { myHTTP } from '~/js/common/net.js';
 import { parseTree, getTreeNode, getPrevNode, getNextNode, tree2Array } from '~/js/utils/tree';
@@ -114,6 +115,13 @@ export default {
     mounted() {
         this.$nextTick(() => {
             document.getElementById(`chapterLink-${this.chapterID}`).scrollIntoView();
+            if (this.starModalEnabled && this.isFinalChapter) {
+                const parsed = queryString.parse(location.search);
+                console.log(parsed);
+                if (parsed && parsed.star_modal_visible) {
+                    this.onStarModal();
+                }
+            }
         });
         this.$router.afterEach((to, from) => {
             const chapterID = parseInt(to.params.chapterID);

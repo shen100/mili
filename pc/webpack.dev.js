@@ -31,15 +31,6 @@ module.exports = smp.wrap(merge(common, {
         open: true,
         // openPage: '',
     },
-    optimization: {
-        runtimeChunk: 'single',
-        splitChunks: {
-            cacheGroups: {
-                default: false,
-                vendors: false,
-            },
-        },
-    },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new VueLoaderPlugin(),

@@ -104,7 +104,7 @@ export default {
     flex-direction: column;
     background: #fff;
     position: absolute;
-    z-index: 1;
+    z-index: 2000;
     top: 34px;
     bottom: 0;
     left: -158px;

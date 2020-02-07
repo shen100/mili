@@ -268,7 +268,7 @@ export class BoilingPointService {
         if (!userID) {
             return [];
         }
-        const sql = `SELECT boilingpoint_id as boilingpointID FROM user_like_boilingpoints
+        const sql = `SELECT boilingpoint_id as boilingpointID FROM like_boilingpoints
             WHERE boilingpoint_id IN (${boilingpointIDs.join(',')}) AND user_id = ?`;
         let result = await this.boilingPointRepository.manager.query(sql, [userID]);
         result = result || [];
@@ -283,10 +283,10 @@ export class BoilingPointService {
                 boilingpoints.imgs as imgs, boilingpoints.user_id as userID, boilingpoints.topic_id as topicID,
                 boilingpoints.browse_count as browseCount, boilingpoints.comment_count as commentCount,
                 boilingpoints.liked_count as likedCount, boilingpoints.summary as summary
-            FROM user_like_boilingpoints, boilingpoints
-            WHERE user_like_boilingpoints.user_id = ? AND user_like_boilingpoints.boilingpoint_id = boilingpoints.id
-            ORDER BY user_like_boilingpoints.created_at DESC LIMIT ?, ?`;
-        const sql2 = `SELECT COUNT(*) as count FROM user_like_boilingpoints WHERE user_like_boilingpoints.user_id = ?`;
+            FROM like_boilingpoints, boilingpoints
+            WHERE like_boilingpoints.user_id = ? AND like_boilingpoints.boilingpoint_id = boilingpoints.id
+            ORDER BY like_boilingpoints.created_at DESC LIMIT ?, ?`;
+        const sql2 = `SELECT COUNT(*) as count FROM like_boilingpoints WHERE like_boilingpoints.user_id = ?`;
         const [ boilingPoints, countResult ] = await Promise.all([
             this.boilingPointRepository.manager.query(sql, [ userID, (page - 1) * pageSize, pageSize ]),
             this.boilingPointRepository.manager.query(sql2, [ userID ]),
@@ -387,7 +387,7 @@ export class BoilingPointService {
      */
     async like(boilingpointID: number, userID: number) {
         const boilingPoint = await this.boilingPointRepository.findOne({
-            select: ['id'],
+            select: ['id', 'userID'],
             where: { id: boilingpointID },
         });
 
@@ -397,19 +397,20 @@ export class BoilingPointService {
             });
         }
 
-        const sql = `SELECT boilingpoint_id, user_id FROM user_like_boilingpoints
+        const sql = `SELECT boilingpoint_id, user_id FROM like_boilingpoints
             WHERE boilingpoint_id = ? AND user_id = ?`;
-        let result = await this.boilingPointRepository.manager.query(sql, [boilingpointID, userID]);
-        result = result || [];
-        if (result.length) {
+        const result = await this.boilingPointRepository.manager.query(sql, [ boilingpointID, userID ]);
+        if (result && result.length) {
             // 已经赞过此沸点
             return;
         }
         await this.boilingPointRepository.manager.connection.transaction(async manager => {
-            const sql2 = `INSERT INTO user_like_boilingpoints (boilingpoint_id, user_id, created_at) VALUES(?, ?, ?)`;
+            const sql2 = `INSERT INTO like_boilingpoints (boilingpoint_id, user_id, publisher, created_at) VALUES(?, ?, ?, ?)`;
             const sql3 = `UPDATE boilingpoints SET liked_count = liked_count + 1 WHERE id = ?`;
-            await manager.query(sql2, [boilingpointID, userID, new Date()]);
-            await manager.query(sql3, [boilingpointID]);
+            const sql4 = `UPDATE users SET liked_count = liked_count + 1 WHERE id = ?`;
+            await manager.query(sql2, [ boilingpointID, userID, boilingPoint.userID, new Date() ]);
+            await manager.query(sql3, [ boilingpointID ]);
+            await manager.query(sql4, [ boilingPoint.userID ]);
         });
     }
 
@@ -417,19 +418,31 @@ export class BoilingPointService {
      * 取消沸点的点赞
      */
     async deleteLike(boilingpointID: number, userID: number) {
-        const sql = `SELECT boilingpoint_id, user_id FROM user_like_boilingpoints
+        const boilingPoint = await this.boilingPointRepository.findOne({
+            select: ['id', 'userID'],
+            where: { id: boilingpointID },
+        });
+
+        if (!boilingPoint) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+
+        const sql = `SELECT boilingpoint_id, user_id FROM like_boilingpoints
             WHERE boilingpoint_id = ? AND user_id = ?`;
-        let result = await this.boilingPointRepository.manager.query(sql, [boilingpointID, userID]);
-        result = result || [];
-        if (result.length <= 0) {
+        const result = await this.boilingPointRepository.manager.query(sql, [ boilingpointID, userID ]);
+        if (!result || result.length <= 0) {
             // 还没有赞过此沸点
             return;
         }
         await this.boilingPointRepository.manager.connection.transaction(async manager => {
-            const sql2 = `DELETE FROM user_like_boilingpoints WHERE boilingpoint_id = ? AND user_id = ?`;
+            const sql2 = `DELETE FROM like_boilingpoints WHERE boilingpoint_id = ? AND user_id = ?`;
             const sql3 = `UPDATE boilingpoints SET liked_count = liked_count - 1 WHERE id = ?`;
-            await manager.query(sql2, [boilingpointID, userID]);
-            await manager.query(sql3, [boilingpointID]);
+            const sql4 = `UPDATE users SET liked_count = liked_count - 1 WHERE id = ?`;
+            await manager.query(sql2, [ boilingpointID, userID ]);
+            await manager.query(sql3, [ boilingpointID ]);
+            await manager.query(sql4, [ boilingPoint.userID ]);
         });
 
         return result;

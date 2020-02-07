@@ -85,24 +85,6 @@ export class Book {
     @Column('int', { name: 'star' })
     star: number;
 
-    @Column('int', { name: 'one_star_count' })
-    oneStarCount: number;
-
-    @Column('int', { name: 'two_star_count' })
-    twoStarCount: number;
-
-    @Column('int', { name: 'three_star_count' })
-    threeStarCount: number;
-
-    @Column('int', { name: 'four_star_count' })
-    fourStarCount: number;
-
-    @Column('int', { name: 'five_star_count' })
-    fiveStarCount: number;
-
-    @Column('int', { name: 'total_star_count' })
-    totalStarCount: number;
-
     @Column('text', { nullable: true, default: null })
     content: string;
 
@@ -163,8 +145,14 @@ export class BookChapter {
     @Column('int', { name: 'root_comment_count' })
     rootCommentCount: number; // 一级评论数
 
+    @Column('text', { nullable: true, default: null })
+    content: string;
+
     @Column('text', { name: 'html_content', nullable: true, default: null })
     htmlContent: string;
+
+    @Column('int', { name: 'content_type' })
+    contentType: ArticleContentType;
 
     @Column('int', { name: 'user_id' })
     userID: number;

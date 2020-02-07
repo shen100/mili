@@ -76,29 +76,6 @@ module.exports = () => {
                 maxEntrypointSize: 200000, // bytes
                 maxAssetSize: 200000 // bytes
             },
-            optimization: {
-                runtimeChunk: 'single',
-                splitChunks: {
-                    cacheGroups: {
-                        default: false,
-                        vendors: false,
-                        vendor: {
-                            name: 'vendor',
-                            test: /[\\/]node_modules[\\/]/,
-                            chunks: 'all',
-                            enforce: true,
-                            priority: 1
-                        },
-                        common: {
-                            name: 'common',
-                            chunks: 'all',
-                            minChunks: 2,
-                            enforce: true,
-                            priority: 0
-                        }
-                    }
-                }
-            },
             plugins: [
                 new BundleAnalyzerPlugin({
                     openAnalyzer: false,
@@ -134,7 +111,12 @@ module.exports = () => {
                     chunkFilename: 'styles/[name]-[contenthash:16].css',
                 }),
                 new OptimizeCssAssetsPlugin(),
+                
                 ...viewInjects
+
+                // new HtmlWebpackPlugin({
+                //     template: './index.html'
+                // })
             ]
         });
 

@@ -1,10 +1,51 @@
 {% if articles and articles.length %}
+<style>
+    .article-content-and-img {
+        display: flex;
+        margin-bottom: 8px;
+    }
+
+    .article-content-and-img .article-title {
+        margin-top: 0;
+    }
+
+    .article-title-summary {
+        flex: 1;
+    }
+
+    .article-meta {
+        display: flex;
+    }
+
+    .article-view-like {
+        flex: 1;
+    }
+
+    .article-content {
+        margin-bottom: 0;
+    }
+
+    .more-btn-box {
+        position: relative;
+    }
+</style>
+
 <div class="article-list">
     {% for article in articles %}
     <div class="article-list-item" {% if article.coverURL %} style="min-height: 145px;" {% endif %}>
-        <div class="article-content" {% if article.coverURL %} style="padding-right: 140px;" {% endif %}>
-            <a href="/p/{{article.id}}" target="_blank" class="article-title">{{article.name}}</a>
-            <p class="article-content">{{article.summary}}...</p>
+        <div class="article-content">
+            <div class="article-content-and-img">
+                <div class="article-title-summary">
+                    <a href="/p/{{article.id}}" target="_blank" class="article-title">{{article.name}}</a>
+                    <p class="article-content">{{article.summary}}...</p>
+                </div>
+                {% if article.coverURL %}
+                <a class="article-img" target="_blank" href="/p/{{article.id}}">
+                    <img src="{{article.coverURL}}" />
+                </a>
+                {% endif %}
+            </div>
+
             <div class="article-meta">
                 <a href="/p/{{article.id}}" target="_blank"><i class="iconfont ic-list-read"></i> {{article.browseCount  | defaultValue(0)}}</a>
                 {% if article.user and article.user.username %}
@@ -20,11 +61,6 @@
                 <span class="time">{{article.createdAt | recentTime('YYYY.MM.DD HH:mm')}}</span>
             </div>
         </div>
-        {% if article.coverURL %}
-        <a class="article-img" target="_blank" href="/p/{{article.id}}">
-            <img src="{{article.coverURL}}" />
-        </a>
-        {% endif %}
     </div>
     {% endfor %}
 </div>

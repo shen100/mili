@@ -1,40 +1,38 @@
 <template>
     <div>
-        <Breadcrumb>
-            <BreadcrumbItem to="/">首页</BreadcrumbItem>
-            <BreadcrumbItem>开源图书</BreadcrumbItem>
-        </Breadcrumb>
-        <div>
-            <Button type="primary" @click="onNew">创建分类</Button>
+        <div style="margin-bottom: 20px;">
+            <Card>
+                <Button size="large" type="primary" @click="onCreateClick">创建</Button>
+            </Card>
         </div>
-        <Table :columns="columns" :data="categories">
-            <template slot-scope="{ row }" slot="action">
-                <Button type="primary" size="small" @click="onEdit(row)">编辑</Button>
-            </template>
-        </Table>
-        <Modal
-            @on-visible-change="onModalVisibleChange"
-            :value="modalVisible"
-            :title="categoryID ? '编辑分类' : '创建分类'"
-            footer-hide>
-            <Form v-if="modalVisible" ref="formNode" :model="formData" :rules="rules" :label-width="80">
-                <FormItem prop="name" label="分类名称">
-                    <Input v-model="formData.name" placeholder="请输入分类名称" />
-                </FormItem>
-                <FormItem prop="sequence" label="顺序">
-                     <InputNumber placeholder="输入顺序" :step="1" :max="100" :min="0" v-model="formData.sequence"></InputNumber>
-                </FormItem>
-                <FormItem prop="pathname" label="路径">
-                    <div style="display: flex;">
-                        <span style="margin-right: 6px;">/</span><Input v-model="formData.pathname" placeholder="请输入路径" />
-                    </div>
-                </FormItem>
-            </Form>
-            <div class="admin-modal-footer">
-                <Button size="large" @click="onCancel">取消</Button>
-                <Button class="ok" size="large" type="primary" @click="onOk">确认</Button> 
-            </div>
-        </Modal>
+        <Card>
+            <Table :columns="columns" :data="books" :loading="isLoading">
+                <template slot-scope="{ row }" slot="contentType">
+                    <span>{{row.contentType === ArticleContentType.HTML ? '富文本' : 'markdown'}}</span>
+                </template>
+                <template slot-scope="{ row }" slot="status">
+                    <span>{{row.status === BookStatus.BookUnpublish ? '未发布' : '已发布'}}</span>
+                </template>
+                <template slot-scope="{ row }" slot="action">
+                    <Button v-if="row.status === BookStatus.BookUnpublish" type="primary" size="small" @click="publish(row)">发布</Button>
+                    <Button v-else type="error" size="small" @click="publish(row)">下架</Button>
+                    <router-link :to="`${adminPageURL}/book/${row.id}/edit`">
+                        <Button type="primary" size="small">编辑</Button>
+                    </router-link>
+                </template>
+            </Table>
+            <Row v-if="count" style="margin-top: 15px;" type="flex" justify="end">
+                <span class="ivu-page-total">共 {{count}} 条</span>
+                <Page
+                    class="common-page"
+                    :current="page"
+                    :page-size="pageSize"
+                    :total="count"
+                    @on-change="onPageChange"
+                    :show-elevator="true"/>
+            </Row>
+        </Card>
+        <CreateOrUpdateBookModal ref="createModal" />
     </div>
 </template>
 
@@ -42,10 +40,15 @@
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
 import { formatYMDHMS } from '~/js/utils/date';
+import { ArticleContentType } from '~/js/constants/article.js';
+import { BookStatus } from '~/js/constants/book.js';
+import CreateOrUpdateBookModal from '~/js/components/admin/book/CreateOrUpdateBookModal.vue';
 
 export default {
     data () {
         return {
+            isLoading: true,
+            adminPageURL: window.adminPageURL,
             columns: [
                 {
                     title: 'id',
@@ -56,12 +59,20 @@ export default {
                     key: 'name'
                 },
                 {
-                    title: '顺序',
-                    key: 'sequence'
+                    title: '章节数',
+                    key: 'chapterCount'
                 },
                 {
-                    title: '路径',
-                    key: 'pathname'
+                    title: '评价数',
+                    key: 'starUserCount'
+                },
+                {
+                    title: '编辑器',
+                    slot: 'contentType'
+                },
+                {
+                    title: '状态',
+                    slot: 'status'
                 },
                 {
                     title: '创建时间',
@@ -76,113 +87,58 @@ export default {
                     slot: 'action'
                 },
             ],
-            formData: {
-                name: '',
-                sequence: '',
-                pathname: '',
-            },
-            rules: {
-                name: [
-                    { required: true, message: '请输入分类名称', trigger: 'blur' }
-                ],
-                sequence: [
-                    { required: true, type: 'integer', message: '无效的顺序' },
-                ],
-                pathname: [
-                    {
-                        required: true,
-                        trigger: 'change',
-                        validator: (rule, value, callback) => {
-                            if (!value || value.charAt(0) === '/') {
-                                callback(new Error('无效的路径'));
-                                return;
-                            }
-                            callback();
-                        }
-                    }
-                ]
-            },
-            categories: [],
-            categoryID: undefined,
-            modalVisible: false,
+            books: [],
+            ArticleContentType,
+            BookStatus,
+            page: 1,
+            pageSize: 10,
+            count: 0,
         };
     },
     mounted() {
-        this.reqList();
+        this.reqList(1);
     },
     methods: {
-        onModalVisibleChange(visible) {
-            this.modalVisible = visible;
-        },
-        reqList() {
-            myHTTP.get('/books/categories/all').then((res) => {
+        reqList(page) {
+            myHTTP.get(`/admin/books?page=${page}&pageSize=${this.pageSize}`).then((res) => {
+                this.isLoading = false;
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                    const categories = res.data.data;
-                    this.categories = categories.map(c => {
+                    const books = res.data.data.list;
+                    this.page = res.data.data.page;
+                    this.count = res.data.data.count;
+                    this.books = books.map(b => {
                         return {
-                            ...c,
-                            createdAt: formatYMDHMS(c.createdAt),
-                            updatedAt: formatYMDHMS(c.updatedAt)
+                            ...b,
+                            createdAt: formatYMDHMS(b.createdAt),
+                            updatedAt: formatYMDHMS(b.updatedAt)
                         };
                     });
                 }
             });
         },
-        onNew() {
-            this.categoryID = undefined;
-            this.formData.name = '';
-            this.formData.sequence = 0;
-            this.formData.pathname = '';
-            this.modalVisible = true;
-        },
-        onEdit(row) {
-            this.categoryID = row.id;
-            this.formData.name = row.name;
-            this.formData.sequence = row.sequence;
-            this.formData.pathname = row.pathname;
-            this.modalVisible = true;
-        },
-        onOk() {
-            this.$refs['formNode'].validate((valid) => {
-                if (!valid) {
-                    return;
+        publish(book) {
+            let status = 'unpublish';
+            let msg = '已下架';
+            if (book.status === this.BookStatus.BookUnpublish) {
+                status = 'publish';
+                msg = '已发布';
+            }
+            myHTTP.put(`/admin/books/${book.id}/${status}`).then((res) => {
+                if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
+                    this.$Message.success(msg);
+                    this.reqList(1);
                 }
-                let reqMethod;
-                let url = '/admin/books/categories';
-                const data = {
-                    name: this.formData.name,
-                    sequence: this.formData.sequence,
-                    pathname: this.formData.pathname,
-                };
-                if (this.categoryID) {
-                    reqMethod = myHTTP.put;
-                    url += `/${this.categoryID}`;
-                    data.id = this.categoryID;
-                } else {
-                    reqMethod = myHTTP.post;
-                }
-                reqMethod(url, data).then((res) => {
-                    if (res.data.errorCode !== ErrorCode.SUCCESS.CODE) {
-                        this.$Message.error(res.data.message);
-                        return;
-                    }
-                    this.modalVisible = false;
-                    this.formData.name = '';
-                    this.reqList();
-                }).catch(err => {
-                    this.$Message.error(err.message);
-                });
-            });
-            return false;
+            }); 
         },
-        onCancel() {
-            this.modalVisible = false;
+        onPageChange(value) {
+            this.reqList(value);
         },
+        onCreateClick() {
+            this.$refs.createModal.show();
+        }
     },
     components: {
+        CreateOrUpdateBookModal,
     }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

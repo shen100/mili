@@ -5,7 +5,7 @@
             <a :href="`/tags/${tag.id}`" target="_blank" class="tag-link">
                 <div class="tag-thumb" :style="{'background-image': `url(${tag.iconURL})`}"></div>
                 <div class="title">{{tag.name}}</div>
-                <FollowBtn @tagFollowChange="onFollowChange" :tagID="tag.id" :followed="true"></FollowBtn>
+                <FollowBtn @tagFollowChange="onFollowChange" :tagID="tag.id" :followed="tag.isFollowed"></FollowBtn>
             </a>
         </div>
     </li>

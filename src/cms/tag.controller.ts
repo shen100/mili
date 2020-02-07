@@ -17,6 +17,8 @@ import { ListResult } from '../entity/listresult.entity';
 import { ArticleService } from './article.service';
 import { Tag } from '../entity/tag.entity';
 import { UpdateTagDto } from './dto/update-tag.dto';
+import { ShouldIntPipe } from '../core/pipes/should-int.pipe';
+import { clampNumber } from '../utils/common';
 
 @Controller()
 export class TagController {
@@ -78,8 +80,9 @@ export class TagController {
      * 标签列表(不带分类)
      */
     @Get(`${APIPrefix}/tags`)
-    async list(@CurUser() user, @Query('sort') sort: string, @Query('page', ParsePagePipe) page: number) {
-        const pageSize = 20;
+    async list(@CurUser() user, @Query('sort') sort: string, @Query('page', ParsePagePipe) page: number,
+               @Query('pageSize', ShouldIntPipe) pageSize: number) {
+        pageSize = clampNumber(pageSize, 20, 100);
         if (this.sortArr.indexOf(sort) < 0) {
             sort = this.sortArr[0];
         }
@@ -92,12 +95,22 @@ export class TagController {
     }
 
     /**
+     * 所有标签(不带分类)
+     */
+    @Get(`${APIPrefix}/tags/all`)
+    @UseGuards(ActiveGuard)
+    async all() {
+        return await this.tagService.all();
+    }
+
+    /**
      * 标签列表(带分类)
      */
     @Get(`${APIPrefix}/tags/with_categories`)
     async listWithCategories(@Query('page', ParsePagePipe) page: number) {
         const pageSize = 20;
         const listResult: ListResult<Tag> = await this.tagService.listWithCategories(page, pageSize);
+        console.log(JSON.stringify(listResult));
         return listResult;
     }
 

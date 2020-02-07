@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import queryString from 'query-string';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
@@ -84,6 +85,13 @@ export default {
             this.modalVisible = false;
         },
         show() {
+            if (!this.user) {
+                const parsed = queryString.parse(location.search);
+                const hasQuery = Object.keys(parsed || {}).length > 0;
+                let ref = location.href + (hasQuery ? '&star_modal_visible=true' : '?star_modal_visible=true');
+                location.href = '/signin?miliref=' + encodeURIComponent(ref);
+                return;
+            }
             this.modalVisible = true;  
         },
         onCommit() {

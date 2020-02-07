@@ -1,6 +1,6 @@
 <template>
     <div class="section-content">
-        <div v-if="chapter" class="section-page book-section-view">
+        <div v-if="chapter" class="section-page book-section-view article">
             <h1 id="article-content-h1">{{chapter.name}}</h1>
             <div class="mili-editor" v-html="chapter.htmlContent"></div>
             <div class="comment-scroll-to" style="height: 100px;"></div>

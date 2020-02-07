@@ -4,7 +4,6 @@
             <EditorHeader 
                 :draftID="draftID"
                 :articleID="articleID" 
-                :initialCategories="initialCategories"
                 :initialTags="initialTags"
                 :getArticleTitle="getArticleTitle"
                 :getEditorHTML="getEditorHTML" 
@@ -25,7 +24,6 @@ export default {
     data () {
         let initialTitle = '';
         let initialContent = '';
-        let initialCategories;
         let initialTags;
         let draftID;
         let articleID;
@@ -35,14 +33,12 @@ export default {
             draftID = window.draft.id;
             initialTitle = window.draft.name;
             initialContent = window.draft.htmlContent;
-            initialCategories = window.draft.categories || [];
             initialTags = window.draft.tags || [];
         }
         if (window.article) {
             initialTitle = window.article.name;
             initialContent = window.article.htmlContent;
             articleID = window.article.id;
-            initialCategories = window.article.categories || [];
             initialTags = window.article.tags || [];
         }
         return {
@@ -52,7 +48,6 @@ export default {
             initialContent,
             draftID,
             articleID,
-            initialCategories,
             initialTags,
         };
     },

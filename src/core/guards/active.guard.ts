@@ -12,6 +12,11 @@ export class ActiveGuard implements CanActivate {
 
     canActivate(context: ExecutionContext): boolean {
         const request = context.switchToHttp().getRequest();
+        console.log(JSON.stringify({
+            codeline: 'active.guard canActivate',
+            ip: request.clientIp,
+            timeLabel: new Date().toLocaleDateString(),
+        }));
         const user = request.user as User;
         if (!user) {
             throw new MyHttpException({

@@ -5,7 +5,6 @@
                 :draftID="draftID"
                 :articleID="articleID"
                 :title="initialTitle"
-                :initialCategories="initialCategories"
                 :initialTags="initialTags"
                 :getEditorMarkdown="getEditorMarkdown"
                 :isRich="false" 
@@ -30,7 +29,6 @@ export default {
     data () {
         let initialTitle = '';
         let initialContent = '';
-        let initialCategories;
         let initialTags;
         let draftID;
         let articleID;
@@ -40,14 +38,12 @@ export default {
             draftID = window.draft.id;
             initialTitle = window.draft.name;
             initialContent = window.draft.content;
-            initialCategories = window.draft.categories || [];
             initialTags = window.draft.tags || [];
         }
         if (window.article) {
             initialTitle = window.article.name;
             initialContent = window.article.content;
             articleID = window.article.id;
-            initialCategories = window.article.categories || [];
             initialTags = window.article.tags || [];
         }
         return {
@@ -58,7 +54,6 @@ export default {
             initialTitle,
             draftID,
             articleID,
-            initialCategories,
             initialTags,
         };
     },

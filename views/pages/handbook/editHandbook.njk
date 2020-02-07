@@ -24,7 +24,8 @@
 {% endblock %}
 
 {% block libjs %}
-<script src="{{jsPath}}/libs/simplemde.min.js"></script>
+    {{ super() }}
+    <script src="{{jsPath}}/libs/simplemde.min.js"></script>
 {% endblock %}
 
 {% block devjs %}

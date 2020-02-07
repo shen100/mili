@@ -16,7 +16,7 @@ import { UserRole } from '../entity/user.entity';
 import { CategoryConstants } from '../constants/category';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { RedisService, cacheKeys } from '../redis/redis.service';
+import { RedisService } from '../redis/redis.service';
 
 @Controller()
 export class CategoryController {
@@ -46,7 +46,7 @@ export class CategoryController {
     @Roles(UserRole.Editor, UserRole.Admin, UserRole.SuperAdmin)
     async create(@Body() createCategoryDto: CreateCategoryDto) {
         const createResult = await this.categoryService.create(createCategoryDto);
-        await this.redisService.delCache(cacheKeys.categories);
+        await this.redisService.delCache(this.redisService.cacheKeys.categories);
         return {
             id: createResult.id,
         };
@@ -70,7 +70,7 @@ export class CategoryController {
     @Roles(UserRole.Editor, UserRole.Admin, UserRole.SuperAdmin)
     async update(@Body() updateCategoryDto: UpdateCategoryDto) {
         await this.categoryService.update(updateCategoryDto);
-        await this.redisService.delCache(cacheKeys.categories);
+        await this.redisService.delCache(this.redisService.cacheKeys.categories);
         return {};
     }
 

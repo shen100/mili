@@ -34,7 +34,7 @@
                             </a>
                             <div class="detail">{{user | jobCompany}}</div>
                         </div>
-                        <FollowBtn :userID="user.id" :followed="true"></FollowBtn>
+                        <FollowBtn v-if="userID !== user.id" :userID="user.id" :followed="user.isFollowed"></FollowBtn>
                     </a>
                 </div>
             </template>
@@ -54,6 +54,7 @@ import FollowBtn from '~/js/components/user/FollowBtn.vue';
 export default {
     data () {
         return {
+            userID: window.userID,
             author: window.author,
             users: [],
             userLevelChapterURL: window.userLevelChapterURL,

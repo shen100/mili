@@ -14,23 +14,16 @@
                     <i v-if="!publishToggled" class="fa fa-caret-down"></i>
                     <i v-else class="fa fa-caret-up"></i>
                 </div>
-                <div v-if="publishToggled && this.categories.length" class="panel">
+                <div v-if="publishToggled" class="panel">
                     <div class="title">{{isEditArticle ? '更新': '发布'}}文章</div>
-                    <div class="category-box">
-                        <div class="sub-title">分类</div>
-                        <div class="category-list">
-                            <div @click="onSelectCategory(c)" :key="c.id" v-for="c in categories" 
-                                :class="{active: curCategory && curCategory.id === c.id}" class="item">{{c.name}}</div>
-                        </div>
-                    </div>
                     <div class="tag-box category-box">
                         <div class="sub-title" :style="{'margin-bottom': curTag ? '10px' : '2px'}">标签</div>
                         <div v-show="curTag" class="user-category-list">
                             <div @click="onCancelSelectTag" class="item">{{curTag && curTag.name}}</div>
                         </div>
-                        <div v-show="!curTag" class="tag-input tag-input">
-                            <input @input="onSearchTagChange" v-model="searchTagText" type="text" placeholder="选择分类中标签"/>
-                            <ul v-if="!isSearchTagTextEmpty && tags.length" class="suggested-tag-list">
+                        <div v-show="!curTag" v-clickoutside="onOutsideTagInput" class="tag-input tag-input">
+                            <input @focus="onFocusTagInput" @input="onSearchTagChange" v-model="searchTagText" type="text" placeholder="请选择标签"/>
+                            <ul v-if="tagListVisible && tags.length" class="suggested-tag-list">
                                 <li @click.stop="onSelectTagChange(t)" :key="t.id" v-for="t in tags">{{t.name}}</li>
                             </ul>
                         </div>
@@ -90,7 +83,6 @@ export default {
         'getEditorMarkdown',
         'draftID',
         'articleID',
-        'initialCategories', // 数组，每个元素是对象
         'initialTags' // 数组，每个元素是对象
     ],
     data () {
@@ -103,10 +95,10 @@ export default {
             coverToggled: false,
             publishToggled: false,
             markdownToggled: false,
-            curCategory: null, // 当前选中的分类
-            categories: [], // 所有的分类， 每个元素是对象
             curTag: null, // 当前选中的标签
+            allTags: [], // 所有的标签
             tags: [], // 搜索出的标签, 每个元素是对象
+            tagListVisible: false,
             searchTagText: '',
             lastLoadTagsTime: 0, // 上一次搜索标签，发请求时的时间
             switchEditorAlertVisible: false,
@@ -121,39 +113,26 @@ export default {
             autoSaveCount: 0, // 第几次自动保存
             lastSaveDraftTitle: '',
             lastSaveDraftContent: '',
-            lastSaveCategoryID: undefined,
             lastSaveTagID: undefined,
             lastSaveCoverURL: '',
         };
     },
     mounted() {
         if (this.isEditArticle || this.isEditDraft) {
-            if (this.initialCategories && this.initialCategories.length) {
-                // 目前只支持选择一个分类
-                this.curCategory = this.initialCategories[0];
-            }
             if (this.initialTags && this.initialTags.length) {
                 // 目前只支持选择一个标签
                 this.curTag = this.initialTags[0];
             }
         }
 
-        // 请求所有的分类
-        const url = '/categories';
+        // 请求所有的标签
+        const url = '/tags/all';
         myHTTP.get(url).then((result) => {
-            this.categories = result.data.data || [];
-            // 如果是新建文章的话，默认选中第一个分类
-            if (!this.isEditArticle && !this.isEditDraft) {
-                this.curCategory = this.categories[0];
-            }
+            this.allTags = result.data.data || [];
+            this.tags = this.allTags;
         });
 
         this.autoSaveDraftTimeoutID = setTimeout(this.autoSaveDraft, 1000 * this.getAutoSaveTime());
-    },
-    computed: {
-        isSearchTagTextEmpty() {
-            return !trim(this.searchTagText);
-        },
     },
     methods: {
         autoSaveDraft() {
@@ -170,14 +149,13 @@ export default {
             }
             const articleTitle = trim(this.getTitle()) || '';
             const articleContent = this.getContent() || '';
-            const cID = this.curCategory && this.curCategory.id || undefined;
             const tagID = this.curTag && this.curTag.id || undefined;
             const coverURL = this.coverURL || '';
             if (!articleTitle && isContentEmpty(articleContent, this.isRich ? 'rich' : 'md')) {
                 return;
             }
             if (this.lastSaveDraftTitle === articleTitle && this.lastSaveDraftContent === articleContent
-                && this.lastSaveCategoryID === cID && this.lastSaveTagID === tagID
+                && this.lastSaveTagID === tagID
                 && this.lastSaveCoverURL === coverURL) {
                 return;
             }
@@ -189,7 +167,6 @@ export default {
                 name: articleTitle,
                 content: articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
-                categories: cID ? [ { id: cID } ] : null,
                 tags: tagID ? [ { id: tagID } ] : null,
             };
             if (coverURL) {
@@ -201,7 +178,6 @@ export default {
                     this.autoSaveDraftTip = '已保存至草稿';
                     this.lastSaveDraftTitle = articleTitle;
                     this.lastSaveDraftContent = articleContent;
-                    this.lastSaveCategoryID = cID;
                     this.lastSaveTagID = tagID;
                     this.lastSaveCoverURL = coverURL;
                 }
@@ -233,10 +209,6 @@ export default {
                 this.$refs.errorTip.show('请输入正文');
                 return;
             }
-            if (!this.curCategory) {
-                this.$refs.errorTip.show('请选择分类');
-                return;
-            }
             if (!this.curTag) {
                 this.$refs.errorTip.show('请选择标签');
                 return;
@@ -247,8 +219,7 @@ export default {
                 name: this.articleTitle,
                 content: this.articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
-                categories: [ { id: this.curCategory.id } ],
-                tags: [ { id: this.curTag.id } ],
+                tags: [ this.curTag.id ],
             };
             if (this.coverURL) {
                 reqData.coverURL = this.coverURL;
@@ -256,8 +227,8 @@ export default {
             // 创建文章、编辑草稿 最后都会跳到 文章发布成功的页面
             // 编辑文章，跳到文章详情页面
             if (this.isEditArticle) {
+                url =  `/articles/${this.articleID}`;
                 reqMethod = myHTTP.put;
-                reqData.id = this.articleID;
             }
             reqMethod(url, reqData).then((res) => {
                 const result = res.data;
@@ -273,12 +244,12 @@ export default {
                 location.href = `/editor/published`;
             });
         },
-        onSelectCategory(category) {
-            if (!this.curCategory || category.id !== this.curCategory.id) {
-                this.curTag = null;
-                this.tags = [];
-            }
-            this.curCategory = category;
+        onFocusTagInput() {
+            this.tagListVisible = true;
+            this.tags = this.allTags;
+        },
+        onOutsideTagInput() {
+            this.tagListVisible = false;
         },
         onSelectTagChange(tag) {
             this.curTag = tag;
@@ -289,24 +260,14 @@ export default {
             this.curTag = null;
         },
         onSearchTagChange() {
-            this.$nextTick(() => {
-                const queryText = trim(this.searchTagText);
-                if (!queryText) {
-                    return;
-                }
-                const lastLoadTagsTime = new Date().getTime();
-                this.lastLoadTagsTime = lastLoadTagsTime;
-                const url = `/tags/category/${this.curCategory.id}/search?q=` + encodeURIComponent(queryText);
-                myHTTP.get(url).then((res) => {
-                    if (lastLoadTagsTime < this.lastLoadTagsTime) {
-                        return;
-                    }
-                    if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
-                        this.tags = res.data.data;
-                    }
-                }).catch(err => {
-                    console.log(err);
-                });
+            let queryText = trim(this.searchTagText);
+            if (!queryText) {
+                this.tags = this.allTags;
+            }
+            queryText = queryText.toUpperCase();
+            this.tags = this.allTags.filter(t => {
+                const name = t.name.toUpperCase();
+                return name.indexOf(queryText) >= 0;
             });
         },
         switchEditor() {
@@ -322,7 +283,6 @@ export default {
                 name: articleTitle,
                 content: articleContent,
                 contentType: this.isRich ? ArticleContentType.HTML : ArticleContentType.Markdown,
-                categories: this.curCategory ? [ { id: this.curCategory.id } ] : null,
                 tags: this.curTag ? [ { id: this.curTag.id } ] : null,
                 editorType: this.isRich ? ArticleContentType.Markdown : ArticleContentType.HTML,
             };

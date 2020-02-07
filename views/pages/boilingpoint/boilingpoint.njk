@@ -29,7 +29,7 @@
         {% if user %}
         <div class="boiling-profile-box">
             <div class="boiling-profile">
-                <a href="/users/{{user.id}}" target="_blank">
+                <a href="/uc/{{user.id}}" target="_blank">
                     <div class="boiling-avatar" style="background-image: url({{user.avatarURL}})"></div>
                 </a>
                 <div class="boiling-user-info">
@@ -38,15 +38,15 @@
                 </div>
             </div>
             <ul class="boiling-stat-list">
-                <a href="/users/{{user.id}}/boiling" target="_blank" class="boiling-item">
+                <a href="/uc/{{user.id}}/boilings" target="_blank" class="boiling-item">
                     <div class="boiling-title">沸点</div>
                     <div class="boiling-count">{{user.boilingPointCount | defaultValue(0)}}</div>
                 </a>
-                <a href="/users/{{user.id}}/follow" target="_blank" class="boiling-item">
+                <a href="/uc/{{user.id}}/follows" target="_blank" class="boiling-item">
                     <div class="boiling-title">关注</div>
                     <div class="boiling-count">{{user.followCount | defaultValue(0)}}</div>
                 </a>
-                <a href="/users/{{user.id}}/follower" target="_blank" class="boiling-item">
+                <a href="/uc/{{user.id}}/followers" target="_blank" class="boiling-item">
                     <div class="boiling-title">粉丝</div>
                     <div class="boiling-count">{{user.followerCount | defaultValue(0)}}</div>
                 </a>
@@ -94,9 +94,6 @@
     var uploadPolicy = {{ uploadPolicy | dump | safe }};
     var commentsVisible = false; // 是否默认显示评论
 </script>
-{% endblock %}
-
-{% block libjs %}
 {% endblock %}
 
 {% block devjs %}

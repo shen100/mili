@@ -4,7 +4,8 @@
         <ErrorTip ref="errorTip" />
         <div id="comments">
             <!-- 未登录时显示登录form -->
-            <form v-if="!user" class="new-comment" style="margin-top: 15px;">
+            <form v-if="!user" class="new-comment" style="margin-top: 15px;" 
+                :style="{'margin-left': source === 'boilingpoint' ? '56px' : '48px', 'padding-right': source === 'boilingpoint' ? '12px' : '0'}">
                 <a href="javascript:void(0);" class="avatar" style="cursor: default;">
                     <img style="cursor: default;" src="../../../images/avatar_default.png">
                 </a>
@@ -15,7 +16,7 @@
             </form>
             <!-- 评论列表 -->
             <div class="comments">
-                <div v-clickoutside="onClickOutsideCommentEditor" :data-commentid="0" class="comment-source-box">
+                <div v-if="user" v-clickoutside="onClickOutsideCommentEditor" :data-commentid="0" class="comment-source-box">
                     <div class="avatar-box">
                         <div class="avatar" style="cursor: default;" :style="{'background-image': `url(${user.avatarURL})`}"></div>
                     </div>
@@ -25,7 +26,8 @@
                             :source="source" :sendDefVisible="false" :disableInputBlur="true" 
                             ref="commentEditor-0" />
                     </div>
-                </div>                
+                </div>
+                <div v-else style="height: 20px;"></div>              
                 <div v-for="comment in comments" class="comment lastchild-flag" 
                     :key="`comment-${comment.id}`" :id="`comment-${comment.id}`">
                     <div class="comment-avatar-area v-tooltip-container" 
@@ -199,7 +201,7 @@ export default {
     ],
     data: function() {
         return {
-            signinURL: '/signin?ref=' + encodeURIComponent(location.href),
+            signinURL: '/signin?miliref=' + encodeURIComponent(location.href),
             theRootCommentCount: this.rootCommentCount,
             commentMap: {}, // 所有的评论, key 是 评论id, value 是 评论
             subCommentLoadStatusMap: {}, // key 是父评论id, value 是 是否正在加载子评论
@@ -224,7 +226,7 @@ export default {
     },
     methods: {
         reset() {
-            this.signinURL = '/signin?ref=' + encodeURIComponent(location.href);
+            this.signinURL = '/signin?miliref=' + encodeURIComponent(location.href);
             this.theRootCommentCount = this.rootCommentCount;
             this.commentMap = {};
             this.subCommentLoadStatusMap = {};
@@ -358,6 +360,7 @@ export default {
                 }
             }
             this.willReplySubComment = null;
+            this.$emit('comment-success');
         },
         addCommentError(message) {
             this.$refs.errorTip.show(message);
@@ -830,18 +833,6 @@ export default {
     overflow: auto;
 }
 
-.comment-wrap img {
-    max-width: 100%;
-}
-
-.comment-wrap p {
-    margin: 0;
-    line-height: 1.5;
-    font-size: 14px;
-    word-break: break-word!important;
-    word-break: break-all;
-}
-
 .comment-operate {
     display: flex;
     margin: 12px 0;
@@ -926,7 +917,7 @@ export default {
 
 .sub-content-box {
     margin-top: 6px;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .sub-comment-wrap, .sub-comment-wrap p {
@@ -993,5 +984,72 @@ export default {
 .comment-avatar-area {
     height: 40px;
     z-index: 1;
+}
+
+.article .comment-list {
+    padding-top: 0;
+    box-sizing: border-box;
+}
+
+.article .comment-list .normal-comment-list {
+    padding-top: 10px;
+}
+
+.article .comment-list .new-comment {
+    position: relative;
+    margin-left: 48px;
+}
+
+.article .comment-list .avatar {
+    margin-right: 5px;
+    width: 38px;
+    height: 38px;
+    vertical-align: middle;
+    display: inline-block;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+}
+
+.article .comment-list .new-comment .avatar {
+    position: absolute;
+    left: -48px;
+}
+
+.article .comment-list .new-comment .sign-container {
+    box-sizing: border-box;
+    text-align: center;
+    padding: 10px 15px;
+    width: 100%;
+    height: 80px;
+    font-size: 13px;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    background-color: hsla(0, 0%, 71%, .1);
+    resize: none;
+    display: inline-block;
+    vertical-align: top;
+    outline-style: none;
+}
+
+.article .comment-list .new-comment .btn-sign {
+    width: 78px;
+    margin: 11px 10px 0 0;
+    padding: 7px 18px;
+    font-size: 16px;
+    border: none;
+    border-radius: 20px;
+    color: #fff!important;
+    background-color: #3194d0;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.article .comment-list .new-comment span {
+    font-size: 14px;
+    vertical-align: -7px;
+}
+
+.article .comment-list .new-comment .btn-sign:hover {
+    background-color: #187cb7;
 }
 </style>

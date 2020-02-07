@@ -1,0 +1,114 @@
+.edit-book-area {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e8eaec;
+}
+
+.edit-book-area:hover {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    border-color: #eee;
+}
+
+.book-top-edit {
+    display: flex;
+    flex-direction: row;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-bottom: 1px solid #e8eaec;
+}
+
+.book-name {
+    font-size: 30px;
+    line-height: 60px;
+}
+
+.book-chapter-create {
+    margin-top: 12px;
+}
+
+.chapter-area {
+    flex: 1;
+    overflow: hidden;
+    padding: 16px;
+    padding-top: 10px;
+    display: flex;
+}
+
+.book-chapter-tree-box {
+    width: 320px;
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid #e8eaec;
+}
+
+.book-chapter-tree-box i {
+    color: #666;
+}
+
+.book-chapter-editor {
+    padding-top: 10px;
+    padding-left: 10px;
+    flex: 1;
+    position: relative; 
+    display: flex;
+    flex-direction: column;
+}
+
+.no-chapter {
+    text-align: center;
+    color: #c6c6c6;
+    font-size: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 100px;
+    line-height: 100px;
+    margin-left: -150px;
+    margin-top: -50px;
+}
+
+.edit-book-btn {
+    cursor: pointer;
+}
+
+.edit-book-btn i {
+    font-size: 30px;
+    color: #2d8cf0;
+    margin-top: 12px;
+    margin-left: 10px;
+}
+
+.md-editor-body-box-wrap {
+    flex: 1;
+    transform: scale3d(1, 1, 1);
+}
+
+.md-editor-body-box-wrap .md-editor-body {
+    padding-top: 0;
+}
+
+.rich-editor-body-box-wrap {
+    flex: 1;
+    transform: scale3d(1, 1, 1);
+}
+
+.curchapter-name-box {
+    height: 36px;
+    display: flex;
+    margin-top: 10px;
+}
+
+.curchapter-name {
+    line-height: 36px;
+    font-size: 16px;
+}
+
+.book-content-crawl-btn {
+    color: rgb(52, 142, 237);
+    line-height: 36px;
+    margin-right: 10px;
+    cursor: pointer;
+}

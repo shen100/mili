@@ -3,8 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { Category } from '../entity/category.entity';
-import { Article } from '../entity/article.entity';
-import { RedisService, cacheKeys } from '../redis/redis.service';
+import { RedisService } from '../redis/redis.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
@@ -29,6 +28,9 @@ export class CategoryService {
                     articleCount: true,
                     createdAt: true,
                     updatedAt: true,
+                },
+                order: {
+                    sequence: 'ASC',
                 },
             });
             await this.redisService.setCategories(categories);

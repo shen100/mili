@@ -1,9 +1,9 @@
 <template>
-    <div class="mili-editor">
-        <RichEditorMenubar :editor="editor" />
-        <textarea ref="titleDOM" @keydown.enter.stop.prevent="onTitleInputEnter" @input="onTitleInput($event)" 
+    <div class="mili-editor" :class="{'mili-admin-editor': mode === 'admin'}">
+        <RichEditorMenubar :editor="editor" :mode="mode" />
+        <textarea v-if="mode !== 'admin'" ref="titleDOM" @keydown.enter.stop.prevent="onTitleInputEnter" @input="onTitleInput($event)" 
             v-model="articleTitle" class="rich-title-input" type="text" placeholder="输入标题..." ></textarea>
-        <editor-content class="mili-editor-content" :editor="editor" />
+        <editor-content class="mili-editor-content" :editor="editor" :style="{height: contentHeight}" />
     </div>
 </template>
 
@@ -39,6 +39,7 @@ export default {
     props: [
         'title',
         'content',
+        'mode',
     ],
     data () {
         return {
@@ -67,7 +68,8 @@ export default {
                     }),
                 ],
                 content: ''
-            })
+            }),
+            contentHeight: 'auto'
         };
     },
     beforeDestroy() {
@@ -87,6 +89,12 @@ export default {
         },
         getHTML() {
             return this.editor.getHTML();
+        },
+        setHTML(html) {
+            this.editor.setContent(html);
+        },
+        setContentHeight(contentHeight) {
+            this.contentHeight = contentHeight + 'px';
         }
     },
     mounted() {

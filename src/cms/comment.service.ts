@@ -321,32 +321,36 @@ export class CommentService {
         const commentTable: string = this.getCommentTable(c);
         const commentRepository = this.getCommentRepository(c);
 
-        const sql1 = `SELECT id FROM ${commentTable} WHERE id = ?`;
+        const sql1 = `SELECT id, user_id FROM ${commentTable} WHERE id = ? LIMIT 1`;
         const sql2 = `SELECT comment_id, user_id FROM ${userLikeTable}
             WHERE comment_id = ? AND user_id = ?`;
 
-        let [commentData, userLikedData] = await Promise.all([
-            commentRepository.manager.query(sql1, [commentID]),
-            commentRepository.manager.query(sql2, [commentID, userID]),
+        const [ commentData, userLikedData ] = await Promise.all([
+            commentRepository.manager.query(sql1, [ commentID ]),
+            commentRepository.manager.query(sql2, [ commentID, userID ]),
         ]);
-        commentData = commentData || [];
-        userLikedData = userLikedData || [];
-        if (commentData.length <= 0) {
+        if (!commentData || commentData.length <= 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
             });
         }
-        if (userLikedData.length) {
+        if (userLikedData && userLikedData.length) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
                 message: '已经赞过此评论',
             });
         }
+        // 发表此评论的用户
+        const commentPublisher: number = commentData[0].user_id;
         await commentRepository.manager.connection.transaction(async manager => {
-            const sql3 = `INSERT INTO ${userLikeTable} (comment_id, user_id, created_at) VALUES (?, ?, ?)`;
+            const sql3 = `INSERT INTO ${userLikeTable} (comment_id, user_id, publisher, created_at) VALUES (?, ?, ?, ?)`;
+            // 评论的点赞数 +1
             const sql4 = `UPDATE ${commentTable} SET liked_count = liked_count + 1 WHERE id = ?`;
-            await manager.query(sql3, [commentID, userID, new Date()]);
-            await manager.query(sql4, [commentID]);
+            // 评论的发表者获得的点赞数 +1
+            const sql5 = `UPDATE users SET liked_count = liked_count + 1 WHERE id = ?`;
+            await manager.query(sql3, [ commentID, userID, commentPublisher, new Date() ]);
+            await manager.query(sql4, [ commentID ]);
+            await manager.query(sql5, [ commentPublisher ]);
         });
     }
 
@@ -358,20 +362,37 @@ export class CommentService {
         const commentTable: string = this.getCommentTable(c);
         const commentRepository = this.getCommentRepository(c);
 
-        const sql = `SELECT comment_id, user_id FROM ${userLikeTable}
-                WHERE comment_id = ? AND user_id = ?`;
-        const likeData = await commentRepository.manager.query(sql, [commentID, userID]) || [];
-        if (likeData.length <= 0) {
+        const sql1 = `SELECT id, user_id FROM ${commentTable} WHERE id = ? LIMIT 1`;
+        const sql2 = `SELECT comment_id, user_id FROM ${userLikeTable}
+            WHERE comment_id = ? AND user_id = ?`;
+
+        const [ commentData, userLikedData ] = await Promise.all([
+            commentRepository.manager.query(sql1, [ commentID ]),
+            commentRepository.manager.query(sql2, [ commentID, userID ]),
+        ]);
+
+        if (!commentData || commentData.length <= 0) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.ParamsError.CODE,
+            });
+        }
+        if (!userLikedData || userLikedData.length <= 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
                 message: '您还没有赞过此评论哦',
             });
         }
+        // 发表此评论的用户
+        const commentPublisher: number = commentData[0].user_id;
         await commentRepository.manager.connection.transaction(async manager => {
-            const sql1 = `DELETE FROM ${userLikeTable} WHERE comment_id = ? AND user_id = ?`;
-            const sql2 = `UPDATE ${commentTable} SET liked_count = liked_count - 1 WHERE id = ?`;
-            await manager.query(sql1, [commentID, userID]);
-            await manager.query(sql2, [commentID]);
+            const sql3 = `DELETE FROM ${userLikeTable} WHERE comment_id = ? AND user_id = ?`;
+            // 评论的点赞数减 1
+            const sql4 = `UPDATE ${commentTable} SET liked_count = liked_count - 1 WHERE id = ?`;
+            // 评论的发表者获得的点赞数减 1
+            const sql5 = `UPDATE users SET liked_count = liked_count - 1 WHERE id = ?`;
+            await manager.query(sql3, [ commentID, userID ]);
+            await manager.query(sql4, [ commentID ]);
+            await manager.query(sql5, [ commentPublisher ]);
         });
     }
 

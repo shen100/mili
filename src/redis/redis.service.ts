@@ -8,25 +8,30 @@ import { ConfigService } from '../config/config.service';
 import { Category } from '../entity/category.entity';
 
 class CacheKeys {
-    readonly user: string = 'golang123:user:%d';
-    readonly signupCode: string = 'golang123:signupcode:%s';
-    readonly userToken: string = 'golang123:usertoken:%d';
-    readonly publishArticle: string = 'golang123:publisharticle:%d';
-    readonly categories: string = 'golang123:categories';
-}
+    readonly user: string = 'user:%d';
+    readonly signupCode: string = 'signupcode:%s';
+    readonly userToken: string = 'usertoken:%d';
+    readonly publishArticle: string = 'publisharticle:%d';
+    readonly categories: string = 'categories';
 
-export const cacheKeys: CacheKeys = new CacheKeys();
+    constructor(prefix: string) {
+        for (const key of Object.keys(this)) {
+            this[key] = prefix + ':' + this[key];
+        }
+    }
+}
 
 @Injectable()
 export class RedisService {
     readonly originalClient: redis.RedisClient;
     readonly client: any;
-    readonly cacheKeys: CacheKeys = new CacheKeys();
+    readonly cacheKeys: CacheKeys;
 
     constructor(private readonly configService: ConfigService) {
         const client = redis.createClient(this.configService.redis);
         this.originalClient = client;
         this.client = bluebird.promisifyAll(client);
+        this.cacheKeys = new CacheKeys(configService.redis.prefix);
     }
 
     async getUser(userID): Promise<User> {
@@ -80,6 +85,10 @@ export class RedisService {
 
     async setCategories(categories: Category[]) {
         return await this.client.setAsync(this.cacheKeys.categories, JSON.stringify(categories), 'EX', 1 * 60 * 60);
+    }
+
+    async setCache(key: string, value: string, expire: number) {
+        return await this.client.setAsync(key, value, 'EX', expire);
     }
 
     async getCache(key: string) {

@@ -73,7 +73,6 @@ export default {
         },
         onSelectEmoji(imgURL, commands) {
             commands.image({ src: imgURL });
-            this.emojiVisible = false;
         },
         onImgUploading() {
         },

@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import bootstrap from './bootstrap';
+import { Logger } from '@nestjs/common';
 
 async function main() {
-    console.log('process.env.NODE_ENV', process.env.NODE_ENV);
     const app = await NestFactory.create(AppModule, {
-        logger: false,
+        logger: process.env.NODE_ENV === 'development' ? new Logger() : false,
     });
     await bootstrap(app);
 }

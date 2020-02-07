@@ -13,7 +13,7 @@ body {
     display: block!important;
     -webkit-font-smoothing: auto!important;
     -moz-osx-font-smoothing: auto!important;
-    font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;;
     font-size: 14px;
     line-height: 1.42857;
     color: #333;
@@ -1151,10 +1151,6 @@ nav .width-limit {
 }
 
 .article-img {
-    position: absolute;
-    top: 20px;
-    margin-top: 0;
-    right: 20px;
     width: 125px;
     height: 100px;
 }

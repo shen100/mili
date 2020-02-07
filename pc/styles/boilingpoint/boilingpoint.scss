@@ -286,13 +286,15 @@ ul.pin-list {
     margin-right: 10px;
 }
 
-.content-box img {
-    width: 24px;
-    height: 24px;
+.boilingpoint-content-box img {
+    width: 20px;
+    height: 20px;
     display: inline-block;
     vertical-align: top;
+    margin-top: 0;
 }
 
-.content-box p {
-    line-height: 24px;
+.boilingpoint-content-box p {
+    line-height: 20px;
+    margin-bottom: 2px;
 }

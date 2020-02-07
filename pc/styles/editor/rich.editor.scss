@@ -3,11 +3,19 @@
 
 $miliRichEditorWidth: 680px;
 
+body {
+    background: #fff;
+}
+
 // mili-editor 在编辑器、文章浏览页面中都存在的类
 .mili-editor {
     width: $miliRichEditorWidth;
     margin: 0 auto;
     height: 100%;
+}
+
+.mili-admin-editor .mili-editor-menubar {
+    top: 0;
 }
 
 .mili-editor-menubar {
@@ -100,6 +108,12 @@ $miliRichEditorWidth: 680px;
     color: #000;
     font-weight: 700;
     resize: none;
+}
+
+.mili-admin-editor .mili-editor-content {
+    margin-top: 40px;
+    margin-bottom: 0;
+    overflow: auto;
 }
 
 .mili-editor-content {

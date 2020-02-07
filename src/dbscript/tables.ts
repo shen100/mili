@@ -189,7 +189,7 @@ export const tablesRun = async function (connection) {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`;
         await connection.manager.query(sql);
 
-        await connection.manager.query(`CREATE TABLE user_like_articles (
+        await connection.manager.query(`CREATE TABLE like_articles (
             user_id int(11) unsigned NOT NULL,
             article_id int(11) unsigned NOT NULL,
             created_at datetime NOT NULL,
@@ -321,7 +321,7 @@ export const tablesRun = async function (connection) {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
         await connection.manager.query(sql);
 
-        await connection.manager.query(`CREATE TABLE user_like_boilingpoints (
+        await connection.manager.query(`CREATE TABLE like_boilingpoints (
           user_id int(11) unsigned NOT NULL,
           boilingpoint_id int(11) unsigned NOT NULL,
           created_at datetime NOT NULL,

@@ -6,8 +6,8 @@ import {
     HttpStatus,
 } from '@nestjs/common';
 import { ConfigService } from '../../config/config.service';
-import { MyLoggerService } from '../../common/logger.service';
 import { ErrorCode } from '../../constants/error';
+import { MyLoggerService } from '../../common/logger.service';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -48,14 +48,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             // 报错抛出的Error
             errorCode = ErrorCode.ERROR.CODE;
             message = ErrorCode.ERROR.MESSAGE;
-            this.logger.error([exception.message, exception.stack].join('\n'), '');
+            this.logger.error({
+                message: [ exception.message, exception.stack ].join('\n'),
+            });
         }
         const apiPrefix = this.configService.server.apiPrefix;
         if (errorCode === ErrorCode.LoginTimeout.CODE && request.originalUrl.indexOf(apiPrefix) !== 0) {
             const redirectURL = encodeURIComponent(request.originalUrl);
             let url = '/signin';
             if (redirectURL) {
-                url = `${url}?redirectURL=${redirectURL}`;
+                url = `${url}?miliref=${redirectURL}`;
             }
             response.redirect(url);
             return;

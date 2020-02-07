@@ -20,13 +20,6 @@ export class UserConstants {
     static readonly CAPTCHA_LENGTH: number = 6;
 }
 
-export class ArticleConstants {
-    static readonly SUMMARY_LENGTH: number = 100;
-    static readonly MAX_CATEGORY_COUNT: number = 1;
-    static readonly MAX_TAG_COUNT: number = 1;
-    static readonly MAX_TITLE_LENGTH: number = 100;
-}
-
 export class CollectionConstants {
     static readonly NAME_MIN_LENGTH: number = 1; // 专题名称最小长度
     static readonly NAME_MAX_LENGTH: number = 50; // 专题名称最大长度

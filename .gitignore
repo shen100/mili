@@ -17,8 +17,4 @@ npm-debug.log*
 /.nyc_output
 
 dist
-
-src/config/json.development.ts
-src/config/json.staging.ts
-src/config/json.test.ts
-src/config/json.production.ts
+package-lock.json

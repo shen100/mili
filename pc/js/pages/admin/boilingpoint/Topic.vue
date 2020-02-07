@@ -1,10 +1,6 @@
 <template>
-    <div>
-        <Breadcrumb>
-            <BreadcrumbItem to="/">首页</BreadcrumbItem>
-            <BreadcrumbItem>话题</BreadcrumbItem>
-        </Breadcrumb>
-        <div>
+    <Card>
+        <div style="margin-bottom: 16px;">
             <Button type="primary" @click="onNewTopic">创建话题</Button>
         </div>
         <Table :columns="columns" :data="topics">
@@ -39,7 +35,7 @@
                 <Button class="ok" size="large" type="primary" @click="onOk">确认</Button> 
             </div>
         </Modal>
-    </div>
+    </Card>
 </template>
 
 <script>

@@ -1,24 +1,16 @@
 import { createConnection } from 'typeorm';
 import { ConfigService } from '../config/config.service';
-import { commentRun } from './comment';
-import { commentRoot } from './commentRoot';
-import { mdToHTML } from './mdToHTML';
-import { tablesRun } from './tables';
-import { updateRootCommentCount } from './updateRootCommentCount';
-import { userRun } from './user';
-import { chapterMDToHTML } from './s_book_chapters';
+import { query } from './query';
+import { rename } from './rename_table';
 
 const config = new ConfigService();
 
+// tslint:disable-next-line: only-arrow-functions
 (async function() {
     const connection = await createConnection(config.db);
-    await commentRun(connection);
-    await commentRoot(connection);
-    await mdToHTML(connection);
-    await chapterMDToHTML(connection);
-    await tablesRun(connection);
-    await userRun(connection, config);
-    await updateRootCommentCount(connection);
+    await rename(connection);
+    await query(connection);
+    // tslint:disable-next-line: no-console
     console.log('all done ------------------------');
-    // process.exit(0);
+    process.exit(0);
 }());

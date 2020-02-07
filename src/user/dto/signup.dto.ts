@@ -28,7 +28,7 @@ export class SignUpDto {
             errorCode: ErrorCode.InvalidUserName.CODE,
         },
     })
-    readonly login: string;
+    readonly username: string;
 
     @Length(UserConstants.PASSWORD_MIN_LENGTH, UserConstants.PASSWORD_MAX_LENGTH, {
         message: ErrorCode.InvalidPassword.MESSAGE,

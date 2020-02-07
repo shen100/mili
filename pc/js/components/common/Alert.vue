@@ -24,7 +24,6 @@ Vue.component('Modal', Modal);
 export default {
     props: [
         'width',
-        'value',
     ],
     data () {
         return {

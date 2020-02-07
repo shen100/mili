@@ -86,6 +86,15 @@ export class TagService {
         };
     }
 
+    async all() {
+        return await this.tagRepository.find({
+            select: {
+                id: true,
+                name: true,
+            },
+        });
+    }
+
     async listWithCategories(page: number, pageSize: number): Promise<ListResult<Tag>> {
         const [list, count] = await this.tagRepository.findAndCount({
             select: {

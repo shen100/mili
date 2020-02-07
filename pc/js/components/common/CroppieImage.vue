@@ -32,6 +32,7 @@ import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import { ossResponseParse } from '~/js/utils/utils.js';
 import { ErrorCode } from '~/js/constants/error.js';
 import { myHTTP } from '~/js/common/net.js';
+import { globalEventEmitter, EVENTS } from '~/js/utils/event.js';
 
 Vue.component('Modal', Modal);
 Vue.component('Upload', Upload);
@@ -126,15 +127,12 @@ export default {
                         let imgData = ossResponseParse(res, this.uploadImgURL);
                         if (imgData.url) {
                             const url = `/common/oss/createimg`;
-                            console.log('=========================>');
                             myHTTP.post(url, { path: imgData.path }).then((res) => {
-                                console.log('=========================>2222222');
-                                console.log(res);
-                                console.log(ErrorCode);
                                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                                     this.lastImageURL = imgData.url;
                                     this.modalVisible = false;
                                     this.$emit('success', imgData.url, res.data.data);
+                                    globalEventEmitter.emit(EVENTS.USER_AVATAR_CHANGE, this.lastImageURL);
                                 }
                             }).catch((err) => {
                                 this.$emit('error', '上传失败');
@@ -142,7 +140,14 @@ export default {
                             return;
                         }
                     } else {
-
+                        if (res.errorCode === ErrorCode.SUCCESS.CODE) {
+                            const imgData = res.data;
+                            this.lastImageURL = imgData.url;
+                            this.modalVisible = false;
+                            this.$emit('success', imgData.url, res.data);
+                            globalEventEmitter.emit(EVENTS.USER_AVATAR_CHANGE, this.lastImageURL);
+                            return;
+                        }
                     }
                     this.$emit('error', '上传凭证过期，请刷新浏览器重试');
                 })

@@ -173,9 +173,13 @@ export default {
             this.$refs.reportAlert.show(boilingPointID);
         },
         onSuccess() {
-            this.$refs.successTip.show('沸点发布成功');
-            this.boilingPoints = [];
-            this.$refs.pinterest.refresh();
+            // this.$refs.successTip.show('沸点发布成功');
+            // this.boilingPoints = [];
+            // this.$refs.pinterest.refresh();
+            
+            // 暂时跳到推荐沸点页，将来改为跳到关注沸点页
+            // 关注沸点页会显示自己的沸点
+            location.href = '/boilings/recommend';
         },
         onError(message) {
             this.$refs.errorTip.show(message);

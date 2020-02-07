@@ -33,9 +33,18 @@ export class CommonController {
             };
         }
         console.log(JSON.stringify(body));
-        return {
-            Status: 'OK',
+
+        const imgData = {
+            mime: body.mimeType,
+            size: body.size,
+            url: body.filename,
+            width: body.width,
+            height: body.height,
+            format: body.format,
         };
+        const img: Image = await this.ossService.createImage(imgData);
+        img.url = this.configService.static.uploadImgURL + '/' + imgData.url;
+        return img;
     }
 
     @Post(`${APIPrefix}/common/oss/createimg`)

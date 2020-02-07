@@ -49,8 +49,8 @@
                 </div>
             </div>
             <div class="pin-content-row">
-                <div v-if="isContentExpand || !partialContent" class="content-box" v-html="boilingData.htmlContent"></div>
-                <div v-else class="content-box" v-html="partialContent"></div>
+                <div v-if="isContentExpand || !partialContent" class="boilingpoint-content-box" v-html="boilingData.htmlContent"></div>
+                <div v-else class="boilingpoint-content-box" v-html="partialContent"></div>
                 <div v-if="partialContent" class="content-limit-box">
                     <div @click="changeContentExpand" class="content-limit-btn">{{!isContentExpand ? '展开' : '收起'}}</div>
                 </div>
@@ -119,6 +119,7 @@
             </div>
             <div class="pin-action-row">
                 <div class="action-box action-box">
+                    <!-- 给沸点点赞 -->
                     <div class="like-action action">
                         <div @click="onLikeOrNot(boilingData)" class="action-title-box">
                             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" class="icon like-icon">
@@ -133,9 +134,10 @@
                                     </template>    
                                 </g>
                             </svg>
-                            <span class="action-title" :style="{color: boilingData.userLiked ? '#37c700' : '#8a93a0'}">{{boilingData.likedCount ? boilingData.likedCount : '赞'}}</span>
+                            <span class="action-title" :style="{color: boilingData.userLiked ? '#37c700' : '#8a93a0'}">{{likedCount ? likedCount : '赞'}}</span>
                         </div>
                     </div>
+                    <!-- 沸点的评论 -->
                     <div @click="onClickReply" class="comment-action action">
                         <div class="action-title-box">
                             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" class="icon comment-icon">
@@ -144,9 +146,10 @@
                                     <path stroke="#8A93A0" stroke-linejoin="round" d="M10 17c-4.142 0-7.5-2.91-7.5-6.5S5.858 4 10 4c4.142 0 7.5 2.91 7.5 6.5 0 1.416-.522 2.726-1.41 3.794-.129.156.41 3.206.41 3.206l-3.265-1.134c-.998.369-2.077.634-3.235.634z"></path>
                                 </g>
                             </svg>
-                            <span class="action-title">{{boilingData.commentCount}}</span>
+                            <span class="action-title">{{commentCount ? commentCount : '评论'}}</span>
                         </div>
                     </div>
+                    <!-- 分享沸点 -->
                     <div class="share-action action">
                         <div @click="changeShareVisible" v-clickoutside="clickoutsideShare" class="action-title-box">
                             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" class="icon share-icon">
@@ -163,9 +166,11 @@
                     </div>
                 </div>
             </div>
-            <div v-if="iSCommentsVisible" class="boilingpoint-comments-box">
-                <CommentList source="boilingpoint" :sourceID="boilingData.id" :user="user" 
+            <div v-if="iSCommentsVisible" class="boilingpoint-comments-box article">
+                <div class="comment-list">
+                    <CommentList @comment-success="onCommentSuccess" source="boilingpoint" :sourceID="boilingData.id" :user="user" 
                     :authorID="boilingData.user.id" :rootCommentCount="boilingData.rootCommentCount" />
+                </div>
             </div>
         </div>
     </li>
@@ -241,6 +246,8 @@ export default {
             };
         });
         return {
+            likedCount: this.boilingData.likedCount || 0, // 沸点获得的点赞数
+            commentCount: this.boilingData.commentCount || 0,
             maxMiddleImageWidth: this.maxMiddleImgWidth || defMaxMiddleImgWidth,
             gridTotalWidth,
             isContentExpand: false,
@@ -472,17 +479,20 @@ export default {
                 myHTTP.post(url).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         boilingPoint.userLiked = true;
-                        boilingPoint.likedCount++;
+                        this.likedCount++;
                     }
                 });
             } else {
                 myHTTP.delete(url).then((res) => {
                     if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                         boilingPoint.userLiked = false;
-                        boilingPoint.likedCount--;
+                        this.likedCount--;
                     }
                 });
             }
+        },
+        onCommentSuccess() {
+            this.commentCount++;
         },
         onBrowseBigImage() {
             this.$emit('bigImageChange', this.bigImgArr, this.curImgIndex);
@@ -741,7 +751,7 @@ svg:not(:root) {
     position: relative;
 }
 
-.content-box {
+.boilingpoint-content-box {
     padding-right: 24px;
     font-size: 15px;
     line-height: 1.6;

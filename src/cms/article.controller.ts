@@ -1,10 +1,10 @@
+import * as util from 'util';
 import {
-    Controller, Post, Body, Put, UseGuards, Get, Query, Param, Res,
+    Controller, Post, Body, Put, UseGuards, Get, Query, Param, Res, Delete,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { RedisService } from '../redis/redis.service';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
+import { EditArticleDto } from './dto/edit-article.dto';
 import { ActiveGuard } from '../core/guards/active.guard';
 import { CurUser } from '../core/decorators/user.decorator';
 import { MustIntPipe } from '../core/pipes/must-int.pipe';
@@ -44,6 +44,15 @@ export class ArticleController {
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
+
+        article.browseCount++;
+        article.user.articleViewCount++;
+
+        await Promise.all([
+            this.articleService.incArticleViewCount(article.id, article.userID),
+            this.redisService.delCache(util.format(this.redisService.cacheKeys.user, article.userID)),
+        ]);
+
         let userFollowed = false;
         if (user) {
             userFollowed = await this.userService.isUserFollowed(user.id, article.user.id);
@@ -53,6 +62,7 @@ export class ArticleController {
             imageURL: article.coverURL,
             url: '',
         };
+
         res.render('pages/article/articleDetail', {
             isAuthorSelf: !!user && user.id === article.user.id,
             userLevelChapterURL: this.configService.static.userLevelChapterURL,
@@ -68,7 +78,7 @@ export class ArticleController {
     }
 
     @Get(`${APIPrefix}/articles`)
-    async list(@Query('cPath') categoryPathName: string, @Query('page', ParsePagePipe) page: number) {
+    async list(@Query('cPath') categoryPathName: string, @Query('s') s: string, @Query('page', ParsePagePipe) page: number) {
         const pageSize = 20;
         const categories = await this.categoryService.all();
         const category = categories.find(c => c.pathname === categoryPathName);
@@ -77,10 +87,20 @@ export class ArticleController {
                 errorCode: ErrorCode.ParamsError.CODE,
             });
         }
-        if (category) {
-            return this.articleService.listInCategory(category.id, page, pageSize);
+        let sort = 'createdAt';
+        let order: 'DESC' | 'ASC' = 'DESC';
+        if (s === 'popular') {
+            sort = 'hot';
+        } else if (s === 'newest') {
+            sort = 'createdAt';
+        } else if (s === 'popular') {
+            sort = 'commentCount';
+            order = 'ASC';
         }
-        const listResult = await this.articleService.list(page, pageSize);
+        if (category) {
+            return this.articleService.listInCategory(category.id, sort, order, page, pageSize);
+        }
+        const listResult = await this.articleService.list(sort, order, page, pageSize);
         const list = listResult.list.map(article => {
             return {
                 ...article,
@@ -94,9 +114,16 @@ export class ArticleController {
     }
 
     @Get(`${APIPrefix}/articles/users/:authorID`)
-    async userArticles(@Param('authorID', MustIntPipe) authorID: number, @Query('page', ParsePagePipe) page: number) {
+    async userArticles(@Param('authorID', MustIntPipe) authorID: number, @Query('sort') s: string, @Query('page', ParsePagePipe) page: number) {
         const pageSize = 20;
-        const listResult = await this.articleService.userArticles(authorID, page, pageSize);
+        let sort = 'hot';
+        const order: 'DESC' | 'ASC' = 'DESC';
+        if (s === 'popular') {
+            sort = 'hot';
+        } else if (s === 'newest') {
+            sort = 'createdAt';
+        }
+        const listResult = await this.articleService.userArticles(authorID, sort, order, page, pageSize);
         const list = listResult.list.map(article => {
             return {
                 ...article,
@@ -130,11 +157,10 @@ export class ArticleController {
 
     @Post(`${APIPrefix}/articles`)
     @UseGuards(ActiveGuard)
-    async create(@CurUser() user, @Body() createArticleDto: CreateArticleDto) {
+    async create(@CurUser() user, @Body() createArticleDto: EditArticleDto) {
         user.articleCount++;
         const [ createResult ] = await Promise.all([
             this.articleService.create(createArticleDto, user.id),
-            this.userService.updateArticleCount(user.id),
             this.redisService.setUser(user),
             // this.redisService.delCache(this.redisService.cacheKeys.articles),
         ]);
@@ -144,14 +170,14 @@ export class ArticleController {
         };
     }
 
-    @Put(`${APIPrefix}/articles`)
+    @Put(`${APIPrefix}/articles/:id`)
     @UseGuards(ActiveGuard)
-    async update(@CurUser() user, @Body() updateArticleDto: UpdateArticleDto) {
+    async update(@CurUser() user, @Body() editArticleDto: EditArticleDto, @Param('id', MustIntPipe) id: number) {
         await Promise.all([
-            this.articleService.update(updateArticleDto, user.id),
+            this.articleService.update(editArticleDto, id, user.id),
         ]);
         return {
-            id: updateArticleDto.id,
+            id,
         };
     }
 
@@ -166,6 +192,13 @@ export class ArticleController {
     @UseGuards(ActiveGuard)
     async cancelLike(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.articleService.likeOrCancelLike(id, user.id);
+        return {};
+    }
+
+    @Delete(`${APIPrefix}/articles/:id`)
+    @UseGuards(ActiveGuard)
+    async delete(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        await this.articleService.deleteArticle(id, user.id);
         return {};
     }
 }

@@ -37,7 +37,7 @@ export default {
                         this.articleUserLiked = false;
                         this.articleLikedCount--;
                     } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
-                        location.href = '/signin?ref=' + encodeURIComponent(location.href);
+                        location.href = '/signin?miliref=' + encodeURIComponent(location.href);
                     }
                 });
             } else {
@@ -46,7 +46,7 @@ export default {
                         this.articleUserLiked = true;
                         this.articleLikedCount++;
                     } else if (res.data.errorCode === ErrorCode.LoginTimeout.CODE) {
-                        location.href = '/signin?ref=' + encodeURIComponent(location.href);
+                        location.href = '/signin?miliref=' + encodeURIComponent(location.href);
                     }
                 });
             }

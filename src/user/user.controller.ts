@@ -11,6 +11,8 @@ import {
     Put,
 } from '@nestjs/common';
 
+import * as url from 'url';
+import * as path from 'path';
 import * as util from 'util';
 import _ from 'lodash';
 import axios from 'axios';
@@ -75,12 +77,12 @@ export class UserController {
             res.redirect('/');
             return;
         }
-        let ref = query.ref || '/';
-        ref = decodeURIComponent(ref);
+        let ref = query.miliref || '/';
+        ref = encodeURIComponent(ref);
         return res.render('pages/signin', { loginReferer: ref });
     }
 
-    @Get('/users/signin/github.html')
+    @Get('/users/signin/github')
     async githubSignin(@Res() res) {
         const authorizeURL = this.configService.github.authorizeURL;
         const clientID = this.configService.github.clientID;
@@ -88,7 +90,7 @@ export class UserController {
         res.redirect(util.format(authorizeURL, clientID));
     }
 
-    @Get('/users/signup/github.html')
+    @Get('/users/signup/github')
     async githubSignup(@Res() res) {
         const authorizeURL = this.configService.github.authorizeURL;
         const clientID = this.configService.github.clientID;
@@ -96,7 +98,7 @@ export class UserController {
         res.redirect(util.format(authorizeURL, clientID));
     }
 
-    @Get('/users/auth/github/callback.html')
+    @Get('/users/auth/github/callback')
     async githubAuthCallback(@Query('code') code: string, @Res() res) {
         if (!code) {
             throw new MyHttpException({
@@ -113,7 +115,7 @@ export class UserController {
 
         if (!(result.status === 200 && !result.data.error)) {
             res.status(302);
-            res.redirect('/signup.html');
+            res.redirect('/signup');
             return;
         }
 
@@ -124,18 +126,26 @@ export class UserController {
 
         if (!(userResult.status === 200 && !userResult.data.error)) {
             res.status(302);
-            res.redirect('/signup.html');
+            res.redirect('/signup');
             return;
         }
 
-        const user: User = await this.userService.upsertGithubUser(userResult.data);
+        const urlData = url.parse(userResult.data.avatar_url);
+        const pathname = path.join('/avatar/github/', urlData.pathname);
+        const avatarURL: string = await this.ossService.uploadFromStreamURL(userResult.data.avatar_url, pathname);
+
+        const user: User = await this.userService.upsertGithubUser(userResult.data, avatarURL);
         await this.setToken(res, user);
         res.status(302);
         res.redirect('/');
     }
 
-    @Get('/users/signup/weibo.html')
+    @Get('/users/signin/weibo')
     async weiboSignin(@Res() res) {
+        res.header('Content-Type', 'text/html');
+        res.end('开发中，敬请期待');
+        return;
+
         const authorizeURL = this.configService.weibo.authorizeURL;
         const appKey = this.configService.weibo.appKey;
         const state = this.configService.weibo.state;
@@ -145,8 +155,11 @@ export class UserController {
         res.redirect(util.format(authorizeURL, state, appKey, redirectURL));
     }
 
-    @Get('/users/signup/weibo.html')
+    @Get('/users/signup/weibo')
     async weiboSignup(@Res() res) {
+        res.header('Content-Type', 'text/html');
+        res.end('开发中，敬请期待');
+        return;
         const authorizeURL = this.configService.weibo.authorizeURL;
         const appKey = this.configService.weibo.appKey;
         const state = this.configService.weibo.state;
@@ -156,7 +169,7 @@ export class UserController {
         res.redirect(util.format(authorizeURL, state, appKey, redirectURL));
     }
 
-    @Get('/users/auth/weibo/callback.html')
+    @Get('/users/auth/weibo/callback')
     async weiboAuthCallback(@Query('code') code: string, @Query('state') state: string, @Res() res) {
         if (state !== this.configService.weibo.state) {
             throw new MyHttpException({
@@ -176,7 +189,7 @@ export class UserController {
 
         if (!(result.status === 200 && result.data.access_token)) {
             res.status(302);
-            res.redirect('/signup.html');
+            res.redirect('/signup');
             return;
         }
 
@@ -186,7 +199,7 @@ export class UserController {
 
         if (!(userResult.status === 200 && userResult.data.id)) {
             res.status(302);
-            res.redirect('/signup.html');
+            res.redirect('/signup');
             return;
         }
 
@@ -202,7 +215,7 @@ export class UserController {
         return data;
     }
 
-    @Post('/api/v1/users/smscode')
+    @Post(`${APIPrefix}/users/smscode`)
     async sendSMSCode(@Body() smsDto: SMSDto) {
         const verifyResult: boolean = await this.userService.verifyGeetestCaptcha(smsDto);
         if (!verifyResult) {
@@ -211,14 +224,27 @@ export class UserController {
                 message: '验证码错误',
             });
         }
+        const existUser = await this.userService.findByPhoneOrUsername(smsDto.phone, smsDto.username);
+        if (existUser) {
+            if (existUser.phone === smsDto.phone) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.PhoneExists.CODE,
+                });
+            }
+            throw new MyHttpException({
+                errorCode: ErrorCode.UserNameExists.CODE,
+            });
+        }
+        const expire = 10 * 60; // 10分钟
         const code: string = await this.userService.sendSMSCode(smsDto.phone);
-        this.redisService.setSignupCode(smsDto.phone, code);
+        const cacheKey = util.format(this.redisService.cacheKeys.signupCode, smsDto.phone);
+        this.redisService.setCache(cacheKey, code, expire);
         return {};
     }
 
     @Post('/api/v1/users/signup')
     async signup(@Body() signupDto: SignUpDto, @Res() res) {
-        if (signupDto.login.indexOf('@') >= 0) {
+        if (signupDto.username.indexOf('@') >= 0) {
             throw new MyHttpException({
                 errorCode: ErrorCode.InvalidUserName.CODE,
             });
@@ -230,7 +256,7 @@ export class UserController {
             });
         }
 
-        const existUser = await this.userService.findByPhoneOrUsername(signupDto.phone, signupDto.login);
+        const existUser = await this.userService.findByPhoneOrUsername(signupDto.phone, signupDto.username);
         if (existUser) {
             if (existUser.phone === signupDto.phone) {
                 throw new MyHttpException({
@@ -281,13 +307,13 @@ export class UserController {
         let user: User | undefined;
         if (signinDto.verifyType === 'phone') {
             user = await this.userService.findUser({ phone: signinDto.login }, { id: true, pass: true });
-        } else if (signinDto.verifyType === 'email') {
-            user = await this.userService.findUser({ email: signinDto.login }, { id: true, pass: true });
+        } else if (signinDto.verifyType === 'username') {
+            user = await this.userService.findUser({ username: signinDto.login }, { id: true, pass: true });
         }
         if (!user || !this.userService.verifyPassword(signinDto.password, user.pass)) {
             throw new MyHttpException({
                 errorCode: ErrorCode.ParamsError.CODE,
-                message: '手机号码/邮箱地址或密码不正确',
+                message: '账号或密码不正确',
             });
         }
         await this.setToken(res, user);
@@ -307,10 +333,29 @@ export class UserController {
         return users;
     }
 
+    // 用户的登录信息
+    @Get(`${APIPrefix}/users/logininfo`)
+    @UseGuards(ActiveGuard)
+    async loginUserInfo(@CurUser() user) {
+        return user;
+    }
+
     // 用户关注了哪些人
     @Get(`${APIPrefix}/users/:id/follows`)
-    async userFollows(@Param('id', MustIntPipe) id: number) {
-        return await this.userService.userFollows(id, 1, 20);;
+    async userFollows(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        const listResult = await this.userService.userFollows(id, 1, 20);
+        if (user) {
+            const users = listResult.list.map(u => u.id);
+            const followedUsers = await this.userService.usersFilterByFollowerID(users, user.id);
+            const userFollowedMap = {};
+            followedUsers.forEach(followedUser => {
+                userFollowedMap[followedUser.userID] = true;
+            });
+            listResult.list.forEach((userData: any) => {
+                userData.isFollowed = !!userFollowedMap[userData.id];
+            });
+        }
+        return listResult;
     }
 
     // 用户有哪些粉丝
@@ -380,8 +425,8 @@ export class UserController {
         }
         await this.userService.followOrCancelFollow(user.id, userID);
         await Promise.all([
-            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
-            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, userID)),
+            this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
+            this.redisService.delCache(util.format(this.redisService.cacheKeys.user, userID)),
         ]);
         return {};
     }
@@ -392,8 +437,8 @@ export class UserController {
             return {};
         }
         await Promise.all([
-            await this.redisService.delCache(util.format(this.redisService.cacheKeys.userToken, user.id)),
-            await this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
+            this.redisService.delCache(util.format(this.redisService.cacheKeys.userToken, user.id)),
+            this.redisService.delCache(util.format(this.redisService.cacheKeys.user, user.id)),
         ]);
         return {};
     }

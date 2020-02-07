@@ -18,6 +18,7 @@ import * as moment from 'moment';
 import { ListResult } from '../entity/listresult.entity';
 import { ErrorCode } from '../constants/error';
 import { UpdateUserInfoDto } from './dto/update-userinfo.dto';
+import { MyLoggerService } from '../common/logger.service';
 
 @Injectable()
 export class UserService {
@@ -30,6 +31,7 @@ export class UserService {
         private readonly settingsRepository: Repository<Settings>,
         private readonly configService: ConfigService,
         private readonly redisService: RedisService,
+        private readonly logger: MyLoggerService,
     ) {
         this.geetestCaptcha = new Geetest({
             geetest_id: this.configService.geetestCaptcha.geetest_id,
@@ -57,23 +59,14 @@ export class UserService {
 
     async detail(id: number): Promise<User> {
         return await this.userRepository.createQueryBuilder('user')
-            .select(['user.id', 'user.createdAt', 'user.username', 'user.articleCount', 'user.likedCount', 'user.uLikeCount',
-                'user.commentCount', 'user.job', 'user.company', 'user.introduce', 'user.personalHomePage', 'user.role',
+            .select(['user.id', 'user.createdAt', 'user.username', 'user.articleCount', 'user.articleViewCount',
+                'user.likedCount', 'user.uLikeCount', 'user.commentCount', 'user.job', 'user.company', 'user.introduce',
+                'user.personalHomePage', 'user.role', 'user.followerCount', 'user.followCount',
                 'user.avatarURL', 'user.sex', 'c.id', 'c.name', 'c.coverURL', 'c.creatorID',
             ])
             .leftJoin('user.collections', 'c')
             .where('user.id = :id', { id })
             .getOne();
-    }
-
-    async updateArticleCount(id: number): Promise<UpdateResult> {
-        return await this.userRepository.createQueryBuilder()
-            .update()
-            .set({
-                articleCount: () => 'article_count + 1',
-            })
-            .where('id = :id', { id })
-            .execute();
     }
 
     async updateStatus(userID: number, status: UserStatus, operatorRole: UserRole): Promise<UpdateResult> {
@@ -143,11 +136,11 @@ export class UserService {
         });
     }
 
-    async findByPhoneOrUsername(phone: string, login: string): Promise<User | undefined> {
+    async findByPhoneOrUsername(phone: string, username: string): Promise<User | undefined> {
         const users: Array<User> = await this.userRepository.createQueryBuilder()
-            .select(['id', 'phone', 'login'])
+            .select(['id', 'phone', 'username'])
             .where('phone = :phone', { phone })
-            .orWhere('login = :login', { login })
+            .orWhere('username = :username', { username })
             .limit(1)
             .execute();
         if (users && users.length) {
@@ -260,7 +253,7 @@ export class UserService {
         newUser.updatedAt = newUser.createdAt;
         newUser.activatedAt = newUser.createdAt;
         newUser.phone = signupDto.phone;
-        newUser.username = signupDto.login.replace(/\s+/g, ''); // 用户名中不能有空格
+        newUser.username = signupDto.username.replace(/\s+/g, ''); // 用户名中不能有空格
         newUser.pass = this.generateHashPassword(signupDto.pass);
         newUser.role = UserRole.Normal;
         newUser.status = UserStatus.Actived;
@@ -294,7 +287,7 @@ export class UserService {
         return usernames[0];
     }
 
-    async upsertGithubUser(githubUser): Promise<User> {
+    async upsertGithubUser(githubUser, avatarURL: string): Promise<User> {
         const [ username, existUser ] = await Promise.all([
             this.generateSNSUsername(githubUser.name),
             this.userRepository.findOne({
@@ -315,7 +308,7 @@ export class UserService {
             newUser.status = UserStatus.Actived;
             newUser.commentCount = 0;
             newUser.sex = UserSex.Unknown;
-            newUser.avatarURL = githubUser.avatar_url;
+            newUser.avatarURL = avatarURL;
             newUser.githubID = githubUser.id;
             newUser.githubLogin = githubUser.login;
             newUser.githubName = githubUser.name;
@@ -323,17 +316,23 @@ export class UserService {
             await this.userRepository.save(newUser);
             return newUser;
         }
+        const now = new Date();
         await this.userRepository.createQueryBuilder()
             .update(User)
             .set({
-                updatedAt: new Date(),
-                avatarURL: githubUser.avatar_url,
+                updatedAt: now,
+                avatarURL,
                 githubLogin: githubUser.login,
                 githubName: githubUser.name,
                 githubAvatarURL: githubUser.avatar_url,
             })
             .where('githubID = :githubID', { githubID: githubUser.id })
             .execute();
+        existUser.updatedAt = now;
+        existUser.avatarURL = avatarURL;
+        existUser.githubLogin = githubUser.login;
+        existUser.githubName = githubUser.name;
+        existUser.githubAvatarURL = githubUser.avatar_url;
         return existUser;
     }
 
@@ -398,21 +397,60 @@ export class UserService {
     }
 
     async getUser(id: number): Promise<User> {
+        this.logger.info({
+            data: {
+                thecodeline: 'this.redisService.getUser nvnsiwpwo ' + id,
+            },
+        });
+
         let user: User = await this.redisService.getUser(id);
+
+        this.logger.info({
+            data: {
+                thecodeline: 'user null ?' + (!user),
+            },
+        });
+
         if (!user) {
+            this.logger.info({
+                data: {
+                    thecodeline: 'this.userRepository.findOne irueghahs',
+                },
+            });
+
             // TODO: users 表增加 level 字段， 然后查出 level
-            user = await this.userRepository.findOne({
-                select: [
-                    'id', 'status', 'createdAt', 'username', 'articleCount', 'collectionCount',
-                    'commentCount', 'followCount', 'followerCount', 'boilingPointCount',
-                    'introduce', 'role', 'avatarURL', 'sex', 'job', 'company',
-                ] as any,
-                where: {
-                    id,
+            try {
+                user = await this.userRepository.findOne({
+                    select: [
+                        'id', 'status', 'createdAt', 'username', 'articleCount', 'collectionCount',
+                        'commentCount', 'followCount', 'followerCount', 'boilingPointCount',
+                        'introduce', 'role', 'avatarURL', 'sex', 'job', 'company',
+                    ] as any,
+                    where: {
+                        id,
+                    },
+                });
+            } catch (err) {
+                this.logger.info({
+                    message: [ err.message, err.stack ].join('\n'),
+                });
+                throw err;
+            }
+
+            this.logger.info({
+                data: {
+                    thecodeline: 'this.redisService.setUser m97hejiriw',
                 },
             });
             await this.redisService.setUser(user);
         }
+
+        this.logger.info({
+            data: {
+                thecodeline: '===> user.service.getUser done irir89',
+            },
+        });
+
         return user;
     }
 
@@ -554,28 +592,30 @@ export class UserService {
     }
 
     async followOrCancelFollow(followerID: number, userID: number) {
-        const sql = `DELETE FROM user_follower
-                WHERE follower_id = ${followerID} AND user_id = ${userID}`;
-        const subFollowCountSQL = `UPDATE users SET follow_count = follow_count - 1 WHERE id = ${followerID}`;
-        const subFollowerCountSQL = `UPDATE users SET follower_count = follower_count - 1 WHERE id = ${userID}`;
-
-        const sql2 = `INSERT INTO user_follower (follower_id, user_id, created_at)
-                VALUES (${followerID}, ${userID}, "${moment(new Date()).format('YYYY.MM.DD HH:mm:ss')}")`;
-        const addFollowCountSQL = `UPDATE users SET follow_count = follow_count + 1 WHERE id = ${followerID}`;
-        const addFollowerCountSQL = `UPDATE users SET follower_count = follower_count + 1 WHERE id = ${userID}`;
+        if (followerID === userID) {
+            throw new MyHttpException({
+                message: '不能关注自己',
+            });
+        }
 
         const userFollowed = await this.isUserFollowed(followerID, userID);
 
         await this.userRepository.manager.connection.transaction(async manager => {
             if (userFollowed) {
-                await manager.query(sql);
-                await manager.query(subFollowerCountSQL);
-                await manager.query(subFollowCountSQL);
+                const sql = 'DELETE FROM user_follower WHERE follower_id = ? AND user_id = ?';
+                const cancelFollowCountSQL = 'UPDATE users SET follow_count = follow_count - 1 WHERE id = ?';
+                const cancelFollowerCountSQL = 'UPDATE users SET follower_count = follower_count - 1 WHERE id = ?';
+                await manager.query(sql, [ followerID, userID ]);
+                await manager.query(cancelFollowCountSQL, [ followerID ]);
+                await manager.query(cancelFollowerCountSQL, [ userID ]);
                 return;
             }
-            await manager.query(sql2);
-            await manager.query(addFollowerCountSQL);
-            await manager.query(addFollowCountSQL);
+            const sql2 = 'INSERT INTO user_follower (follower_id, user_id, created_at) VALUES (?, ?, ?)';
+            const addFollowCountSQL = 'UPDATE users SET follow_count = follow_count + 1 WHERE id = ?';
+            const addFollowerCountSQL = 'UPDATE users SET follower_count = follower_count + 1 WHERE id = ?';
+            await manager.query(sql2, [ followerID, userID, new Date() ]);
+            await manager.query(addFollowCountSQL, [ followerID ]);
+            await manager.query(addFollowerCountSQL, [ userID ]);
         });
     }
 

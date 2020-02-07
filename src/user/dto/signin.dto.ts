@@ -9,7 +9,7 @@ import { UserConstants } from '../../constants/constants';
 
 export enum SigninVerifyType {
 	phone = 'phone',
-	email = 'email',
+	email = 'username',
 }
 
 export class SigninDto {

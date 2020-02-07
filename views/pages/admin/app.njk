@@ -1,10 +1,24 @@
 {% extends '../../layout/admin.njk' %}
 
+{% block libcss %}
+<link charset="utf-8" href="{{cssPath}}/libs/simplemde.min.css" rel="stylesheet">
+{% endblock %}
+
 {% block main %}
 <div id="app"></div>
 {% endblock %}
 
+{% block pageData %}
+<script>
+    var adminPageURL = '{{ adminPageURL }}';
+    {# 当前登录用户 #}
+    var user = {{user | dump | safe}};
+</script>
+{% endblock %}
+
 {% block libjs %}
+  {{ super() }}
+  <script src="{{jsPath}}/libs/simplemde.min.js"></script>
 {% endblock %}
 
 {% block devjs %}

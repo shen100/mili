@@ -5,10 +5,10 @@
             <div v-if="user" class="tips-card">
                 <div class="card-content">
                     <div class="summary">
-                        <a target="_blank" :href="`/users/${userID}.html`" class="avatar"
+                        <a target="_blank" :href="`/uc/${userID}`" class="avatar"
                             :style="{'background-image': `url(${user.avatarURL})`}"></a>
                         <div class="name">
-                            <a target="_blank" :href="`/users/${userID}.html`" class="nickname">{{user.username}}</a>
+                            <a target="_blank" :href="`/uc/${userID}`" class="nickname">{{user.username}}</a>
                         </div>
                         <div class="intro">{{user.introduce || '暂无简介'}}</div>
                     </div>

@@ -4,22 +4,26 @@
         <ArticleShareQRCode ref="qrCodePopup" :url="weixinShareURL"/>
         <div class="done-header">
             <div class="done-title">
-                <a :href="`/p/${article.id}.html`" class="main-title">{{article.name}}</a><br>
-                <a :href="`/p/${article.id}.html`" class="sub-title">发布成功，点击查看文章</a>
+                <a :href="`/p/${article.id}`" class="main-title">{{article.name}}</a><br>
+                <a :href="`/p/${article.id}`" class="sub-title">发布成功，点击查看文章</a>
             </div>
             <ul class="article-share">
                 <li class="weibo">
-                    <a :href="weiboShareURL" target="_blank"><i class="fa fa-weibo"></i>微博</a>
+                    <!-- TODO -->
+                    <!-- <a :href="weiboShareURL" target="_blank"><i class="fa fa-weibo"></i>微博</a> -->
+                    <a @click="onInDevTip" ><i class="fa fa-weibo"></i>微博</a>
                 </li>
                 <li @click="showQRCodePopup" class="weixin"><i class="fa fa-wechat"></i>微信</li>
                 <li class="qq">
-                    <a :href="qqShareURL" target="_blank">&nbsp;&nbsp;&nbsp;&nbsp;QQ</a>
+                    <!-- TODO -->
+                    <!-- <a :href="qqShareURL" target="_blank">&nbsp;&nbsp;&nbsp;&nbsp;QQ</a> -->
+                    <a @click="onInDevTip" >&nbsp;&nbsp;&nbsp;&nbsp;QQ</a>
                 </li>
                 <li class="link" :data-clipboard-text="`${url}/p/${article.id}`" @click="onCopyLink"><i class="fa fa-link"></i>复制链接</li>
             </ul>
         </div>
         <div class="done-header-sep"></div>
-        <div class="done-box">
+        <div v-if="false" class="done-box">
             <div class="done-search">
                 <div class="done-search-input">
                     <i class="fa fa-search fa-2x"></i>
@@ -153,6 +157,9 @@ export default {
         });
     },
     methods: {
+        onInDevTip() {
+            window.alert('开发中，敬请期待');
+        },
         showQRCodePopup() {
             this.$refs.qrCodePopup.show();
         },

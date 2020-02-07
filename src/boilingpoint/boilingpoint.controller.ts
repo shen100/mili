@@ -225,7 +225,7 @@ export class BoilingPointController {
                 where: { id: authorID },
                 select: ['id', 'username', 'avatarURL'],
             }),
-            this.boilingPointService.userBoilingPoints(user.id, page, pageSize),
+            this.boilingPointService.userBoilingPoints(authorID, page, pageSize),
         ]);
         if (!author) {
             throw new MyHttpException({

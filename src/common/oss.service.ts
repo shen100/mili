@@ -14,6 +14,7 @@ import { extName, urlBaseName } from '../utils/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Image } from '../entity/image.entity';
+import { APIPrefix } from '../constants/constants';
 
 const PassThrough = stream.PassThrough;
 
@@ -54,8 +55,9 @@ export class OSSService {
 
         const base64Policy = base64Encode(JSON.stringify(policy));
         const signature = hmacSHA1(aliyun.accessKeySecret, base64Policy);
+        const domain = this.configService.server.domain;
         const callbackObj = {
-            callbackUrl: 'https://hi-theshen102.localtunnel.me/api/v1/common/oss/callback',
+            callbackUrl: `https://${domain}${APIPrefix}/common/oss/callback`,
             callbackBody: '{' + [
                 '\"mimeType\":${mimeType}',
                 '\"size\":${size}',
@@ -88,7 +90,7 @@ export class OSSService {
         };
     }
 
-    async uploadFromStreamURL(url: string) {
+    async uploadFromStreamURL(url: string, pathname: string): Promise<string> {
         const client = new OSS({
             region: this.configService.aliyunOSS.region,
             accessKeyId: this.configService.aliyunOSS.accessKeyID,
@@ -100,9 +102,7 @@ export class OSSService {
             url,
             responseType: 'stream',
         });
-        const baseName = urlBaseName(url);
-        const ext = extName(baseName);
-        const uploadName = `${this.configService.aliyunOSS.uploadPrefix}/tags/${uuid.v4() + ext}`;
+        const uploadName = `${this.configService.aliyunOSS.uploadPrefix}${pathname}`;
         const result = await client.putStream(uploadName, res.data.pipe(new PassThrough()));
         let name = result.name || '';
         if (name.charAt(0) !== '/') {
@@ -114,6 +114,9 @@ export class OSSService {
     getImageURL(path: string) {
         if (path.indexOf('https://') === 0) {
             return path;
+        }
+        if (path.charAt(0) !== '/') {
+            path = '/' + path;
         }
         return this.configService.static.uploadImgURL + path;
     }

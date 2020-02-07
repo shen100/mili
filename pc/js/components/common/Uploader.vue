@@ -76,7 +76,12 @@ export default {
                     return;
                 }
             } else {
-
+                if (res.errorCode === ErrorCode.SUCCESS.CODE) {
+                    const imgData = res.data;
+                    this.lastImageURL = imgData.url;
+                    this.$emit('success', imgData.url, res.data);
+                    return;
+                }
             }
             this.$emit('error', '上传凭证过期，请刷新浏览器重试');
         },
