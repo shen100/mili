@@ -19,4 +19,13 @@ export const registerDirective = (Vue) => {
             },
         });
     }
+
+    if (!Vue.directive('highlight')) {
+        Vue.directive('highlight', (el) => {
+            const blocks = el.querySelectorAll('pre code');
+            blocks.forEach((block) => {
+                hljs.highlightBlock(block);
+            });
+        });
+    }
 };

@@ -18,6 +18,17 @@
 </script>
 {% endblock %}
 
+{% block libcss %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{cssPath}}/libs/highlight.codestyle.css" type="text/css">
+{% endblock %}
+
+{% block libjs %}
+    {{ super() }}
+    <script src="{{jsPath}}/libs/highlight.min.js" type="text/javascript"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}
+
 {% block devjs %}
     {{ loadjs('entry/book/chapter.js') }}
 {% endblock %}
