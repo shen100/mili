@@ -163,8 +163,8 @@ npm start
 按快捷键`F5`来运行项目
 
 ### 访问
-首页: https://dev.golang123.com    
-管理后台: https://dev.golang123.com/admin/  
+首页: http://dev.golang123.com    
+管理后台: http://dev.golang123.com/admin/  
 用户名: mili  
 密码: 123456
 
