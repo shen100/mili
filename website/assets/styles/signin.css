@@ -1,0 +1,39 @@
+html, body {
+	background-color: #f7fafc;
+}
+
+#__nuxt {
+	height: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.golang-signin-container {
+	height: 100%;
+}
+
+.golang-signin-title {
+    display: block;
+	color: #2d8cf0;
+    font-size: 36px;
+    font-style: italic;
+    letter-spacing: 3px;
+	text-align: center;
+}
+
+.golang-signin-title:hover {
+    color: #2d8cf0;
+    text-decoration: none;
+}
+
+.golang-signin-desc {
+	color: #959595;
+	margin: 10px 0 20px 0;
+	text-align: center;
+	letter-spacing: 3px;
+	font-size: 14px;
+}
+
+a:hover {
+    text-decoration: underline;
+}

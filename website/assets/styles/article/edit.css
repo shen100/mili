@@ -1,0 +1,124 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.topic-box {
+	width: 1200px;
+	overflow: hidden;
+	font-size: 0;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+}
+
+.topic-main {
+	width: 900px;
+	font-size: 0;
+	display: inline-block;
+}
+
+.topic-nav {
+	width: 900px;
+	height: 40px;
+	display: inline-block;
+	padding-left: 20px;
+	background: #f6f6f6;
+}
+
+.topic-nav a {
+	color: #80bd01;
+}
+
+.topic-nav li {
+	float: left;
+	line-height: 40px;
+}
+
+.topic-nav span {
+	font-size: 14px;
+}
+
+.topic-nav-sep {
+	padding: 0 8px;
+}
+
+.publish-label {
+	color: #999;
+}
+
+.editor-box-wrap {
+	width: 900px;
+	padding-top: 24px;
+	min-height: 720px;
+	background: #fff;
+}
+
+.topic-area {
+	clear: both;
+	padding: 0 20px 1px 20px;
+}
+
+.topic-content .ivu-form-item-content {
+	margin-left: 0!important;
+}
+
+.topic-submit .ivu-form-item-content {
+	margin-left: 0!important;
+}
+
+.topic-sidebar {
+	width: 280px;
+	margin-left: 20px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.topic-sidebar li {
+	background: #fff;
+	font-size: 14px;
+	line-height: 40px;
+	margin-bottom: 20px;
+}
+
+.topic-sidebar-item p {
+	padding-left: 12px;
+    padding-right: 12px;
+}
+
+/* sidebar中的样式，和编辑器无关 */
+.markdown-codeblock p {
+    padding-top: 6px;
+    line-height: normal;
+    font-size: 14px;
+}
+
+.topic-sidebar-my {
+    padding: 8px 0;
+    line-height: normal;
+}
+
+.topic-sidebar-my a {
+    line-height: 22px;
+}
+
+.topic-sidebar-title {
+	padding-left: 12px;
+	background: #f6f6f6;
+	height: 40px;
+}
+
+.editor-fullScreen-save {
+    position: fixed;
+    top: 7px;
+    right: 20px;
+    z-index: 9;
+}
+
+.topic-none {
+	text-align: center;
+    color: #a8a8a8;
+}
+
+.CodeMirror {
+    height: 400px;
+}

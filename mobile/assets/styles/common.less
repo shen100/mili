@@ -1,0 +1,298 @@
+html, body, #__nuxt, .nuxt-box {
+    height: 100%;
+}
+
+li {
+    list-style-type: none;
+}
+
+@import './px2px.less';
+
+.header {
+    width: 7.5rem;
+    height: 52px;
+    position: fixed;
+    top: 0;
+}
+
+.header-bg {
+    z-index: -1;
+    position: absolute;
+    height: 52px;
+    width: 100%;
+    margin: 0 auto;
+    background: #0085F8 url(/images/header.png) no-repeat center;
+    background-size: cover;
+}
+
+.logo {
+    color: #fff;
+    margin-left: 0.28rem;
+    line-height: 52px;
+    float: left;
+    font-size: 22px;
+}
+
+.sub-title {
+    margin-left: 2px;
+    margin-top: 4px;
+    line-height: 48px;
+    font-size: 12px;
+    float: left;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+
+.tabbar-icon-color {
+    fill: #999;
+}
+
+.weui-tabbar__label span {
+    color: #999;
+}
+
+.tabbar-icon-selectcolor {
+    fill: #4285f4;
+}
+
+@editor-fontsize: 10;
+@editor-line-height: 13;
+@h1-fontsize: 16;
+
+.golang123-editor {
+    .px2px(font-size, @editor-fontsize);
+    .px2px(line-height, @editor-line-height);
+    color: #2f2f2f;
+    -webkit-font-smoothing: auto;
+}
+
+.golang123-editor h1 {
+    .px2px(font-size, @h1-fontsize);
+    .px2px(line-height, @h1-fontsize + 8);
+    font-weight: 700;
+    padding-bottom: 0.1rem;
+    margin-bottom: 0.3rem;
+    border-bottom: 1px solid #eaecef;
+}
+
+.golang123-editor h2 {
+    .px2px(font-size, @h1-fontsize - 2);
+    .px2px(line-height, @h1-fontsize - 2 + 8);
+    padding-bottom: 0.1rem;
+    margin-bottom: 0.3rem;
+    border-bottom: 1px solid #eaecef;
+}
+
+.golang123-editor h3 {
+    .px2px(font-size, @h1-fontsize - 4);
+    .px2px(line-height, @h1-fontsize - 4 + 8);
+    margin-bottom: 0.2rem;
+}
+
+.golang123-editor h4 {
+    .px2px(font-size, @h1-fontsize - 6);
+    .px2px(line-height, @h1-fontsize - 6 + 8);
+}
+
+.golang123-editor h5 {
+    .px2px(font-size, @h1-fontsize - 7);
+    .px2px(line-height, @h1-fontsize - 7 + 8);
+}
+
+.golang123-editor h6 {
+    .px2px(font-size, @h1-fontsize - 7);
+    .px2px(line-height, @h1-fontsize - 7 + 8);
+}
+
+.editor-box-wrap .cm-header-1 {
+    .px2px(font-size, @h1-fontsize)!important;
+}
+
+.editor-box-wrap .cm-header-2 {
+    .px2px(font-size, @h1-fontsize - 2)!important;
+}
+
+.editor-box-wrap .cm-header-3 {
+    .px2px(font-size, @h1-fontsize - 4)!important;
+}
+
+.editor-box-wrap .cm-header-4 {
+    .px2px(font-size, @h1-fontsize - 6)!important;
+}
+
+.editor-box-wrap .cm-header-5 {
+    .px2px(font-size, @h1-fontsize - 7)!important;
+}
+
+.editor-box-wrap .cm-header-6 {
+    .px2px(font-size, @h1-fontsize - 7)!important;
+}
+
+.golang123-editor em {
+    font-style: italic;
+}
+
+.golang123-editor ul {
+    padding-left: 0.28rem;
+    margin-bottom: 0.28rem;
+}
+
+.golang123-editor ul li {
+    list-style-type: disc;
+    padding-left: 0;
+    .px2px(line-height, @editor-fontsize);
+    .px2px(font-size, @editor-line-height);
+    margin-bottom: 0.2rem;
+    font-weight: normal;
+}
+
+.golang123-editor ol {
+    padding-left: 0.28rem;
+    margin-bottom: 0.2rem;
+}
+
+.golang123-editor ol li {
+    list-style-type: decimal;
+    padding-left: 0;
+    .px2px(font-size, @editor-fontsize);
+    .px2px(line-height, @editor-line-height);
+    margin-bottom: 0.2rem;
+}
+
+.CodeMirror-line  {
+    background: none!important;
+    padding: 0!important;
+    border: none!important;
+    margin-bottom: 0!important;
+}
+
+.golang123-editor .CodeMirror-measure pre {
+    padding: 0!important;
+}
+
+.editor-preview {
+    background: #fff;
+}
+
+.golang123-editor pre {
+    background: #f6f6f6;
+    word-spacing: normal;
+    padding: 0.2rem;
+    word-wrap: normal;
+    word-break: break-word!important;
+    word-break: break-all;
+    /*white-space: pre;*/
+    overflow: auto;
+    border-radius: 0;
+    .px2px(font-size, @editor-fontsize);
+    border: 1px solid #ccc;
+    margin-bottom: 0.2rem;
+    text-size-adjust: 100%;
+    box-sizing: border-box;
+}
+
+.golang123-editor pre code {
+    -webkit-font-smoothing: auto;
+    padding: 0;
+    border-radius: 0;
+    background: #f6f6f6;
+    border: none;
+    font-weight: normal;
+    .px2px(font-size, @editor-fontsize);
+    .px2px(line-height, @editor-line-height);
+    white-space: pre;
+    color: #657b83;
+}
+
+.golang123-editor code {
+    padding: 2px 4px;
+    border-radius: 3px;
+    background-color: #f6f6f6;
+    border: none;
+    color: #657b83;
+    .px2px(font-size, @editor-fontsize);
+    white-space: pre-wrap;
+    border-radius: 4px;
+}
+
+.golang123-editor blockquote {
+    padding: 0 1em;
+    border-left: 0.25em solid #dfe2e5;
+    margin-bottom: 0.2rem;
+}
+
+.golang123-editor table {
+    margin-bottom: 0.2rem;
+}
+
+#golang123-content-outter table {
+    display: block;
+    overflow-x: auto;
+}
+
+#golang123-content-outter .image-container-fill {
+    padding-bottom: 0!important;
+}
+
+#golang123-content-outter blockquote {
+    margin-top: 0.2rem;;
+}
+
+.golang123-editor th {
+    border: 1px solid #ddd;
+    padding: 6px 13px!important;
+    .px2px(line-height, @editor-line-height);
+    font-weight: bold;
+}
+
+.golang123-editor table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+}
+
+.golang123-editor td {
+    border: 1px solid #ddd;
+    padding: 6px 13px!important;
+    .px2px(line-height, @editor-line-height);
+}
+
+.golang123-editor hr {
+    margin-bottom: 0.2rem;
+    border: none;
+    height: 1px;
+    background-color: #e3e3e3;
+}
+
+.golang123-editor p {
+    .px2px(line-height, @editor-line-height);
+    margin-bottom: 0.18rem;
+}
+
+.golang123-editor img {
+    max-width: 100%;
+}
+
+.golang123-editor a {
+    color: #08c;
+    word-break: break-all;
+}
+
+.golang123-editor a:hover {
+    color: #08c;
+}
+
+.golang123-richtxt {
+    white-space: unset!important;
+}
+
+.golang123-richtxt pre > code {
+    overflow-x: hidden;
+}
+
+.golang123-richtxt code {
+    display: inline;
+}
+
+#golang123-content-outter {
+    .px2px(line-height, @editor-line-height);
+}

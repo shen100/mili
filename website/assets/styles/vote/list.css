@@ -1,0 +1,148 @@
+body {
+	background-color: #e1e1e1;
+}
+
+.common-body-left {
+    background: none;
+}
+
+.home-articles-box {
+    margin-bottom: 20px;
+    background: #fff;
+}
+
+#voteBanner {
+    width: 900px;
+    height: 64px;
+}
+
+.home-categoties-box {
+	background-color: #f6f6f6;
+	padding: 10px;
+	font-size: 14px;
+}
+
+.categoties-item {
+	color: #80bd01;
+}
+
+.categoties-item {
+	padding: 5px;
+	margin-right: 10px;
+	display: inline-block;
+	border-radius: 5px;
+}
+
+.categoties-item:hover, .categoties-select {
+	background-color: #80bd01;
+	text-decoration: none;
+}
+
+.categoties-item:hover, .categoties-select {
+	color: #fff;
+}
+
+.articles-cell:nth-child(1) {
+	border: 0;
+}
+
+.articles-cell {
+	padding: 10px;
+	line-height: 30px;
+	height: 50px;
+	font-size: 0;
+	border-top: 1px solid #f0f0f0;
+}
+
+.articles-cell:hover {
+	background-color: #f6f6f6;
+}
+
+.articles-cell span {
+	vertical-align: top;
+}
+
+.user-icon-box {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	display: inline-block;
+}
+
+.user-small-icon-box {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	display: inline-block;
+	float: right;
+}
+
+.articles-res-time {
+	font-size: 12px;
+	float: right;
+	color: #778087;
+	width: 7em;
+	line-height: 30px;
+	text-align: right;
+}
+
+.user-icon-box img {
+	width: 100%;
+    border-radius: 4px;
+}
+
+.user-small-icon-box img {
+	margin: 15% 0;
+	width: 70%;
+}
+
+.articles-click-num {
+	margin-left: 10px;
+	color: #9e78c0;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.articles-res-num {
+	color: #b4b4b4;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.home-articles-title {
+	margin-left: 10px;
+	font-size: 16px;
+	display: inline-block;
+	line-height: 30px;
+	text-align: center;
+	vertical-align: top;
+}
+
+.home-articles-title:hover {
+	text-decoration: underline;
+}
+
+.articles-categoties {
+	margin-left: 10px;
+	background-color: #80bd01;
+	color: #fff;
+	font-size: 12px;
+	padding: 3px;
+	border-radius: 5px;
+}
+
+.articles-num-split {
+	padding: 0 2px;
+	font-size: 12px;
+}
+
+.home-tip-container {
+	width: 60px;
+	text-align: center;
+	display: inline-block;
+}
+
+.home-tip-box {
+	vertical-align: text-bottom;
+    text-align: center;
+}

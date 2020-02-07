@@ -1,0 +1,164 @@
+.signup-head {
+	padding: 10px;
+	background-color: #f0f9ff;
+}
+
+.signup-head-content {
+	width: 1000px;
+	margin: 0 auto;
+}
+
+.signup-head-content a {
+    display: inline-block;
+}
+
+.signup-head-content a:hover {
+    text-decoration: none;
+}
+
+.signup-head-content img {
+	width: 60px;
+}
+
+.signup-head-content span {
+	font-size: 30px;
+	vertical-align: bottom;
+	line-height: 60px;
+}
+
+.signup-box {
+	width: 1000px;
+    min-height: 594px;
+	overflow: hidden;
+	background-color: #fff;
+	border: 1px solid #e9e9e9;
+	font-size: 0;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+    border-radius: 2px;
+    position: relative;
+    transition: all .3s;
+}
+
+.signup-box:hover {
+	box-shadow: 0 1px 6px rgba(0,0,0,.2);
+    border-color: transparent;
+}
+
+.signup-main {
+	width: 900px;
+	font-size: 0;
+	margin: 0 auto;
+	background-color: #fff;
+}
+
+.signup-nav {
+    height: 60px;
+    line-height: 60px;
+    background: #fff;
+    border-bottom: 1px solid #e9e9e9;
+    padding: 0 24px;
+    border-radius: 2px 2px 0 0;
+}
+
+.signup-label {
+    margin-left: 20px;
+    font-size: 14px;
+    color: gray;
+}
+
+.signup-nav-sep {
+	padding: 0 8px;
+}
+
+.signup-nav a {
+	color: #80bd01;
+}
+
+.signup-nav li {
+	float: left;
+	line-height: 40px;
+}
+
+.signup-nav .title {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.signup-nav .desc {
+	font-size: 12px;
+	float: right;
+	color: #000;
+}
+
+.signup-nav .desc a {
+	font-weight: bold;
+	color: #000;
+}
+
+.signup-nav .desc a:hover {
+	text-decoration: underline;
+}
+
+.signup-form {
+	margin-top: 32px;
+	margin-left: 80px;
+}
+.signup-input {
+	width: 400px;
+}
+
+.signup-button {
+	margin-left: 80px;
+	margin-bottom: 20px;
+	width: 400px;
+}
+
+.message-mail-right {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.signup-reminder-text {
+    font-size: 14px;
+    color: #000;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.signup-reminder-text .signup-resend {
+    margin-left: 5px;
+}
+
+.signup-text-bottom {
+    margin-top: 50px;
+}
+
+.signup-reminder-small {
+    font-size: 12px;
+    color: gray;
+    margin-bottom: 10px;
+}
+
+.message-mail-icon {
+    margin-left: 200px;
+    padding: 0 10px;
+    display: inline-block;
+    border-right: 1px solid;
+    border-image: linear-gradient(to bottom, rgba(158, 158, 158, 0.25) 0%, #9e9e9e 50%, rgba(158, 158, 158, 0.25) 100%) 30 30;
+}
+
+.signup-resend {
+    color: #2d8cf0;
+}
+
+.click-mouse {
+    cursor: pointer;
+}
+
+.message-mail-icon img {
+    width: 100px;
+}

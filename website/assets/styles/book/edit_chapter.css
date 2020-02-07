@@ -1,0 +1,97 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.book-chapter-box {
+    background-color: #fff;
+    padding: 0 20px 4px 0;
+}
+
+.book-name {
+    padding-left: 20px;
+    line-height: 40px;
+    background-color: #f7f7f7;
+    display: inline-block;
+    vertical-align: top;
+    width: 240px;
+    font-size: 14px;
+}
+
+.book-name-btngroup {
+    float: right;
+    margin-right: 17px;
+    margin-top: 8px;
+}
+
+.book-name-edit-box {
+    font-size: 0;
+    height: 40px;
+    background-color: #f7f7f7;
+}
+
+.book-name-input-box {
+    padding-left: 20px;
+    padding-top: 10px;
+    font-size: 0;
+}
+
+.curchapter-name {
+    line-height: 40px;
+}
+
+.book-chapter-tree-box {
+    width: 320px;
+    min-height: 600px;
+    padding-bottom: 20px;
+    display: inline-block;
+    vertical-align: top;
+    border-right: 1px #e2e2e2 solid;
+}
+
+.book-chapter-tree {
+    padding-left: 20px;
+}
+
+.book-chapter-editor {
+    margin-left: 20px;
+    width: 838px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.CodeMirror {
+    height: 400px;
+}
+
+.book-chapter-create {
+    margin-left: 20px;
+}
+
+.crawl-btn {
+    color: #08c;
+    margin-left: 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.chapter-html-editor {
+    margin-bottom: 14px;
+}
+
+.chapter-html-editor textarea {
+    height: 470px;
+}
+
+.create-book-step {
+    min-height: 85px;
+    padding: 24px 30px;
+    background: #fff;
+    border-bottom: 1px solid #e2e2e2;
+}
+
+
+
+
+
+
+

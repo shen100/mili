@@ -1,0 +1,6 @@
+.nuxt
+node_modules
+static
+utils/uuid.js
+plugins/bdStat.js
+plugins/adsense.js

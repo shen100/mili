@@ -1,0 +1,41 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.user-info-box {
+    padding: 10px;
+}
+
+.user-name {
+    font-size: 14px;
+    color: #778087;
+    margin-left: 10px;
+    font-weight: bold;
+    line-height: 30px;
+    vertical-align: text-bottom;
+}
+
+.user-info-line {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.signup-time {
+    color: #ababab;
+}
+
+.info-box {
+    margin-top: 20px;
+    width: 900px;
+}
+
+.info-content {
+    background-color: #fff;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.no-content {
+    min-height: 40px;
+    line-height: 40px;
+}

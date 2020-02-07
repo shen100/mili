@@ -1,0 +1,547 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.golang-main-top {
+    position: relative;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.mine-img-box {
+    min-height: 140px;
+    background-color: #96a1a9;
+    background-size: cover;
+    background-position: 50%;
+    background-repeat: no-repeat;
+}
+
+.mine-info-container {
+    position: relative;
+    height: 120px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.mine-edit-container {
+    position: relative;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.mine-info-icon {
+    cursor: default;
+    position: absolute;
+    top: -80px;
+    left: 20px;
+    padding: 5px;
+    background-color: #fff;
+    border-radius: 3px;
+    width: 160px;
+    height: 160px;
+    z-index: 2;
+}
+
+.mine-info-icon img {
+    width: 100%;
+}
+
+.mine-info-line {
+    margin-left: 200px;
+}
+
+.mine-info-upload {
+    cursor: pointer;
+    opacity: 0;
+    transition: all .3s ease-in;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-align: center;
+}
+
+.mine-info-icon:hover .mine-info-upload {
+    opacity: 1;
+}
+
+.mine-info-upload img {
+    width: 48px;
+    height: 48px;
+}
+
+.mine-info-upload p {
+    font-size: 14px;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: .1em;
+    margin-top: 10px;
+}
+
+.mine-info-upload-icon {
+    font-size: 50px;
+    color: #fff;
+    margin-top: 40px;
+}
+
+.mine-info-name {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.mine-info-desc {
+    font-size: 14px;
+    color: #8590a6;
+    margin-top: 20px;
+}
+
+.mine-info-btn {
+    position: absolute;
+    right: 20px;
+    top: 30px;
+}
+
+.golang-mine-content {
+    margin-top: 20px;
+}
+
+.mine-content-left {
+    width: 900px;
+    display: inline-block;
+    min-height: 450px;
+    border-radius: 3px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.mine-content-right {
+    width: 288px;
+    float: right;
+}
+
+.right-border {
+    border-right: 1px solid #ccd8e1;
+}
+
+.mine-attention-box {
+    background-color: #fff;
+    border-radius: 3px;
+    overflow: hidden;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.attention-item {
+    padding: 5px 0;
+    width: 50%;
+    display: inline-block;
+}
+
+.attention-item p {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.attention-item-label {
+    font-size: 14px;
+    color: #8590a6;
+}
+
+.attention-item-num {
+    color: #000;
+    font-size: 18px;
+}
+
+.attention-item:hover p {
+    color: #2d8cf0;
+    cursor: default;
+}
+
+.mine-menu-list {
+    background: #fff;
+    width: 900px;
+    padding: 0 20px 20px 20px;
+    display: inline-block;
+    vertical-align: top;
+    border-bottom: 1px solid #f0f2f7;
+}
+
+.mine-menu-item {
+    display: inline-block;
+    vertical-align: top;
+    font-weight: 400;
+    font-size: 16px;
+    padding: 0 20px;
+}
+
+.mine-menu-item-active {
+    font-weight: 500;
+    color: #333!important;
+}
+
+.mine-menu-item-active:after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 3px;
+    background: #0f88eb;
+    content: "";
+}
+
+.mine-menu-item a {
+    display: inline-block;
+    text-decoration: none;
+    position: relative;
+    padding: 14px 0;
+    font-size: 16px;
+    line-height: 22px;
+    color: #2e2e2e;
+}
+
+.mine-menu-meta {
+    margin-left: 6px;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #a1aebf;
+}
+
+.mine-content-box {
+    padding: 0 20px 20px;
+    background: #fff;
+}
+
+.article-top {
+    padding: 15px 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.article-top div {
+    font-size: 15px;
+    font-weight: 600;
+    font-family: -apple-system, system-ui, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif;
+}
+
+.articles-title {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.articles-title a {
+    line-height: 26px;
+}
+
+.articles-title a:hover {
+    color: #2d8cf0;
+    text-decoration: none;
+}
+
+.articles-user-info {
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+.articles-user-info-img {
+    width: 38px;
+    height: 38px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.articles-user-info-name {
+    margin-left: 14px;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 38px;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgb(85, 85, 85);
+}
+
+.golang123-editor {
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.articles-item {
+    padding: 15px 0;
+    min-height: 100px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.articles-item-no {
+    border: 0;
+}
+
+.articles-button {
+    text-align: right;
+    margin-top: 5px;
+    margin-right: 10px;
+}
+
+.articles-button a {
+    font-size: 14px;
+    color: #8590a6;
+}
+
+.articles-button .ivu-icon {
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+.articles-item-empty {
+    line-height: 200px;
+    font-size: 14px;
+    color: #8590a6;
+    text-align: center;
+}
+
+.mine-info-item {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.mine-info-label {
+    line-height: 30px;
+    width: 100px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.mine-edit-form {
+    width: 800px;
+    margin-top: 20px;
+    margin-left: 200px;
+}
+
+.mine-info-box {
+    margin-left: 200px;
+}
+
+.mine-info-edit-top {
+    font-size: 14px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 30px;
+}
+
+.mine-info-edit {
+    font-size: 14px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.mine-info-value {
+    display: inline-block;
+    min-width: 200px;
+}
+
+.mine-info-value .ivu-icon {
+    margin-right: 5px;
+}
+
+.mine-info-value:hover .edit-action {
+    display: inline;
+}
+
+.edit-action {
+    display: none;
+    color: #175199;
+    cursor: pointer;
+}
+
+.edit-action .ivu-icon {
+    margin-right: 0px;
+}
+
+.edit-item {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.edit-item .ivu-radio-wrapper {
+    margin-right: 30px;
+}
+
+.radio-label {
+    font-size: 14px;
+}
+
+.button-box {
+    margin-top: 20px;
+}
+
+.button-seq {
+    margin-right: 20px;
+}
+
+.home-link-box {
+    float: right;
+    font-size: 14px;
+    color: #8590a6;
+}
+
+.home-link-box:hover {
+    color: #8590a6;
+}
+
+.schools-item {
+    margin-left: 100px;
+    padding: 10px;
+    font-size: 15px;
+    color: #262626;
+    font-weight: 600;
+    width: 400px;
+}
+
+.schools-item:hover {
+    background-color: #f7f8fa;
+    border-radius: 4px;
+}
+
+.schools-item:hover .schools-delete {
+    display: inline;
+}
+
+.schools-delete {
+    float: right;
+    cursor: pointer;
+    display: none;
+}
+
+.mine-info-edit .schools-item:nth-of-type(1) {
+    margin-top: 10px;
+}
+
+.male {
+    color: #2196f3;
+}
+
+.women {
+    color: #fb8db2;
+}
+
+.collect-line {
+    margin-top: 10px;
+}
+
+.collect-line span {
+    color: #8590a6;
+    font-size: 14px;
+}
+
+#uploader-pop-title {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: normal;
+    height: 32px;
+    color: #262626;
+}
+
+#uploader-pop-subheading {
+    color: #8590a6;
+}
+
+#avatarUploader {
+    min-height: 294px;
+}
+
+#topicCountBox {
+    text-decoration: none;
+}
+
+#topicCountBox p {
+    cursor: pointer;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#replyCountBox {
+    text-decoration: none;
+}
+
+#replyCountBox p {
+    cursor: pointer;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.reply-no-source, .collect-no-source {
+    display: inline-block;
+    vertical-align: top;
+    background: #ededed;
+    color: #7e7e7e;
+    text-decoration: line-through;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.collect-content-count:before {
+    margin: 0 5px;
+    content: "\B7";
+}
+
+
+.collect-article-title {
+    line-height: 28px;
+}
+
+.book-title {
+    font-size: 18px;
+}
+
+.book-img-box {
+    display: inline-block;
+    vertical-align: top;
+    width: 188px;
+    height: 238px;
+    margin-right: 15px;
+}
+
+.book-intro {
+    display: inline-block;
+    vertical-align: top;
+    width: 650px;
+    height: 238px;
+    position: relative;
+}
+
+.book-actions {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.book-actions-btn {
+    color: #2d8cf0;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.book-actions-btn:hover {
+    color: #2d8cf0;
+    text-decoration: none;
+}
+
+.book-no-img {
+    color: #9b9b9b;
+    background: #e2e2e2;
+    text-align: center;
+    line-height: 238px;
+}
+
+

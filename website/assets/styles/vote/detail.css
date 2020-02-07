@@ -1,0 +1,271 @@
+body, .golang-home-body-left {
+    background-color: #e1e1e1;
+}
+
+.common-body-left {
+    background: none;
+}
+
+#voteBanner {
+    margin-top: 20px;
+}
+
+#voteBanner img {
+    width: 900px;
+    height: 64px;
+}
+
+.vote-detail-left {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.vote-detail-box {
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+.detail-title-box {
+    padding: 10px 20px;
+    background-color: #fff;
+    border-radius: 3px 3px 0 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.vote-detail-title {
+    margin: 8px 0;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.3;
+    -webkit-font-smoothing: auto;
+}
+
+.home-vote-box {
+    background-color: #fff;
+    padding: 20px;
+    padding-bottom: 0;
+    border-radius: 0 0 3px 3px;
+}
+
+.vote-title-info {
+    font-size: 12px;
+    color: #838383;
+}
+
+.vote-title-info-item {
+    margin-right: 5px;
+}
+
+.vote-title-info-item:before {
+    content: "•";
+}
+
+.vote-categoties {
+    margin-right: 10px;
+    color: #838383;
+    font-size: 12px;
+}
+
+.vote-categoties:before {
+    content: "\2022";
+}
+
+.total-reply-count {
+    padding-left: 20px!important;
+}
+
+.add-reply-title {
+    padding-left: 20px!important;
+}
+
+.comment-box {
+    margin-top: 20px;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+.comment-content {
+    background-color: #fff;
+    padding: 20px;
+    padding-top: 10px;
+}
+
+.comment-item {
+    padding: 15px 0;
+    border-top: 1px solid #e5e5e5;
+}
+
+.comment-item:nth-child(1) {
+    border: 0;
+}
+
+.comment-item .golang123-editor {
+    margin-top: 6px;
+}
+
+.comment-actions {
+    float: right;
+}
+
+.comment-delete {
+    color: rgb(128, 128, 128);
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.comment-edit {
+    color: rgb(128, 128, 128);
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.comment-edit-txt {
+    line-height: 17px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 2px;
+}
+
+.comment-delete-txt {
+    line-height: 17px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 2px;
+}
+
+.reply-user-icon-box {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.reply-user-icon {
+    float: left;
+}
+
+.reply-user-icon img {
+    width: 30px;
+    height: 30px;
+}
+
+.reply-user-box {
+    display: inline-block;
+    vertical-align: top;
+    width: 830px;
+    padding-left: 5px;
+}
+
+.reply-user-name {
+    color: #08c;
+    margin: 0 5px;
+    margin-left: 0;
+}
+
+.reply-user-name:hover {
+    color: #08c;
+}
+
+.reply-time {
+    color: gray;
+    cursor: default;
+}
+
+.comment-reply {
+    color: gray;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.comment-reply, .comment-reply-txt {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.comment-reply-txt {
+    line-height: 17px;
+    margin-left: 2px;
+}
+
+.author-info-text {
+    color: #000;
+    font-size: 14px;
+}
+
+.vote-item {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.vote-item-label {
+    margin: 0 5px;
+}
+
+.vote-actions {
+    background: #fff;
+    padding-left: 0;
+    padding-right: 0;
+    height: 40px;
+    color: #808080;
+}
+
+.vote-actions .ivu-icon {
+    vertical-align: top;
+}
+
+.vote-actions span {
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 16px;
+    margin-left: 4px;
+}
+
+.vote-share {
+    float: right;
+}
+
+.vote-share-btn {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.vote-share-btn a {
+    color: #808080;
+}
+
+.collects-item-label, .collects-item-label:hover {
+    color: #0f88eb;
+}
+
+
+.parent-comment {
+    margin-top: 6px;
+    padding: 6px 12px;
+    background-color: #f2f2f2;
+}
+
+.parent-comment span {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 8px;
+    line-height: 24px;
+    height: 24px;
+    color: #777;
+}
+
+.parent-comment img {
+    width: 24px;
+    height: 24px;
+}
+
+.parent-comment-user {
+    color: #000;
+}
+

@@ -1,0 +1,7 @@
+language: go
+sudo: false
+script: go test -v -cpu=1,2 ./...
+go:
+  - 1.7
+  - 1.8
+  - 1.9

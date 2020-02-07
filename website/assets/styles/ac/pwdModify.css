@@ -1,0 +1,91 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.golang-forget-container {
+    width: 1200px;
+    margin: 0 auto;
+    height: 560px;
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 20px;
+}
+
+.golang-forget-container h1 {
+    font-size: 24px;
+}
+
+.golang-forget-title {
+    height: 30px;
+    line-height: 30px;
+    background-color: #80bd01;
+    color: #fff;
+    font-size: 14px;
+    margin-top: 15px;
+    padding-left: 10px;
+}
+
+.golang-forget-form {
+    width: 400px;
+    margin: 0 auto;
+    margin-top: 60px;
+}
+
+.forget-button {
+    width: 400px;
+}
+
+.reset-pwd-button {
+    margin-left: 80px;
+    width: 300px;
+}
+
+.forget-success-icon {
+    text-align: center;
+}
+
+.forget-success-icon img {
+    widows: 80px;
+    height: 80px;
+}
+
+.forget-success-info {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 30px;
+}
+
+.reset-container {
+    padding-top: 20px;
+}
+
+.reset-form {
+    width: 380px;
+    margin: 0 auto;
+}
+
+.signup-input {
+    width: 300px;
+}
+
+.forget-resend {
+    color: #007fff;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.forget-resend:hover {
+    color: #007fff;
+    text-decoration: none;
+}
+
+.forget-resend:hover {
+    text-decoration: underline;
+}
+
+.not-resend {
+    color: #9e9e9e;
+    margin-left: 10px;
+    cursor: not-allowed;
+}

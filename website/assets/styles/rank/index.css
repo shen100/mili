@@ -1,0 +1,57 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.rank-container {
+    padding: 10px;
+    width: 900px;
+    min-height: 400px;
+    background-color: #fff;
+}
+
+.rank-container .ivu-table:before,
+.rank-container .ivu-table:after {
+    height: 0;
+}
+
+.rank-container .ivu-table-wrapper, .ivu-table td, .ivu-table th {
+    border: 0;
+}
+
+.ivu-table th {
+    background-color: #fff;
+}
+
+.top100-label {
+    color: #999;
+}
+
+.rank-line-active td {
+    background-color: #f9f9f9;
+}
+
+.rank-line-list-link {
+    display: block;
+    line-height: 30px;
+    height: 30px;
+}
+
+.rank-line-list-link span {
+    display: inline-block;
+    vertical-align: text-bottom;
+    color: #778087;
+}
+
+.rank-line-list-link span:hover {
+    text-decoration: underline;
+}
+
+.rank-line-list-img {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+}
+
+th .ivu-table-cell {
+    font-weight: bold;
+}

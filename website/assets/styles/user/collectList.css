@@ -1,0 +1,55 @@
+body {
+    background-color: #e1e1e1;
+}
+
+.golang-home-body-left {
+    padding: 10px;
+}
+
+.top100-link {
+    font-size: 13px;
+}
+
+.link-left {
+    float: left;
+}
+
+.link-right {
+    float: right;
+}
+
+.back-container {
+    height: 20px;
+}
+
+.collect-line {
+    margin-left: 9px;
+}
+
+.title {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.desc {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    color: #999;
+    font-size: 14px;
+}
+
+.desc a {
+   color: #999;
+}
+
+.collect-article-title a {
+    font-weight: 700;
+    font-size: 18px;
+    outline: 0;
+    color: #259;
+    line-height: 26px;
+}
+
+.collect-article-title a:hover {
+    text-decoration: none;
+}
