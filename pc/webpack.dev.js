@@ -28,7 +28,7 @@ module.exports = smp.wrap(merge(common, {
             'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
         },
         disableHostCheck: true,
-        open: true,
+        open: false,
         // openPage: '',
     },
     plugins: [

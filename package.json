@@ -1,6 +1,6 @@
 {
   "name": "mili",
-  "version": "1.0.0",
+  "version": "0.11.0",
   "description": "Modern, fast, powerful node.js web application",
   "private": true,
   "author": "shen100",

@@ -67,6 +67,7 @@ import { myHTTP } from '~/js/common/net.js';
 export default {
     data: function() {
         return {
+            captchaDisabled: window.captchaDisabled,
             login: '',
             password: '',
             errorVisible: false,
@@ -75,6 +76,10 @@ export default {
         };
     },
     mounted: function() {
+        // 如果禁用验证码的话，就不请求配置
+        if (this.captchaDisabled) {
+            return;
+        }
         const self = this;
         const url = '/users/geetestconfig';
         myHTTP.get(url).then((result) => {
@@ -117,6 +122,11 @@ export default {
             return true;
         },
         onSubmit: function() {
+            // 如果禁用验证码的话，直接提交
+            if (this.captchaDisabled) {
+                this.submit();
+                return;
+            }
             if (!this.verifyData()) {
                 return;
             }
@@ -130,8 +140,15 @@ export default {
             }
             this.errorVisible = false;
 
-            let captchaResult = this.geetestCaptcha.getValidate();
-            captchaResult = captchaResult || {};
+            let captchaResult;
+            if (!this.captchaDisabled) {
+                captchaResult = this.geetestCaptcha.getValidate();
+            }
+            captchaResult = captchaResult || {
+                geetest_challenge: '-',
+                geetest_validate: '-',
+                geetest_seccode: '-',
+            };
 
             let reqData = {
                 geetest_challenge: captchaResult.geetest_challenge,

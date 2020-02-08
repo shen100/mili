@@ -40,7 +40,7 @@ async function insertCrawler(connection) {
 (async function run() {
     const connection = await createConnection(config.db);
     await insertAdmin(connection);
-    await insertAdmin(insertCrawler);
+    await insertCrawler(connection);
 
     logger.info({ message: 'init db done' });
 

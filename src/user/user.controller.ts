@@ -79,7 +79,10 @@ export class UserController {
         }
         let ref = query.miliref || '/';
         ref = encodeURIComponent(ref);
-        return res.render('pages/signin', { loginReferer: ref });
+        return res.render('pages/signin', {
+            loginReferer: ref,
+            captchaDisabled: this.configService.geetestCaptcha.disabled,
+        });
     }
 
     @Get('/users/signin/github')
@@ -297,12 +300,15 @@ export class UserController {
 
     @Post('/api/v1/users/signin')
     async signin(@Body() signinDto: SigninDto, @Res() res) {
-        const verifyResult: boolean = await this.userService.verifyGeetestCaptcha(signinDto);
-        if (!verifyResult) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.InvalidCaptcha.CODE,
-                message: '验证码错误',
-            });
+        const captchaDisabled = this.configService.geetestCaptcha.disabled;
+        if (!captchaDisabled) {
+            const verifyResult: boolean = await this.userService.verifyGeetestCaptcha(signinDto);
+            if (!verifyResult) {
+                throw new MyHttpException({
+                    errorCode: ErrorCode.InvalidCaptcha.CODE,
+                    message: '验证码错误',
+                });
+            }
         }
         let user: User | undefined;
         if (signinDto.verifyType === 'phone') {
