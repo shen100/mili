@@ -7,17 +7,7 @@ mili
 **mili**前端使用**vue**、**iview**等技术来开发, 后端使用**typescript**、**nodejs**、**nestjs**、**typeorm**等技术来开发。 
 
 ## 💎系统截图
-### 首页
-<img src="https://img.golang123.com/upload/img/2020/2/8c235c9d-a15e-4e06-8296-be964a231ed1.png" width="1000" alt=""/>
-
-### 文章
-<img src="https://img.golang123.com/upload/img/2020/2/f7d11d3f-b1b8-424d-9524-af407be3dc78.jpg" width="1000" alt=""/>
-
-### 沸点
-<img src="https://img.golang123.com/upload/img/2020/2/766af6ae-9feb-4845-9353-dda9f00a89ab.jpg" width="1000" alt=""/>
-
-### 开源图书
-<img src="https://img.golang123.com/upload/img/2020/2/cc5015ac-858a-466b-b4f3-ba9ece16eaa5.jpg" width="1000" alt=""/>
+<img src="https://golang123-img.oss-cn-hangzhou.aliyuncs.com/upload/img/2020/2/1581129636269.gif" width="1000" alt=""/>
 
 ## ⚙️ 配置
 ### 配置hosts
