@@ -1,13 +1,19 @@
 mili   
 =
 
-**mili**是一个开源的社区系统，界面优雅，功能丰富，小巧迅速。
-已在[米粒网](https://www.golang123.com) 得到应用，你完全可以用它来搭建自己的社区。       
-
-**mili**前端使用**vue**、**iview**等技术来开发, 后端使用**typescript**、**nodejs**、**nestjs**、**typeorm**等技术来开发。 
+**mili**是一个开源的社区系统，界面优雅，功能丰富。
+已在[米粒网](https://www.golang123.com) 得到应用，你完全可以用它来搭建自己的社区。**mili**的前端使用**vue**、**iview**等技术来开发, 后端使用**typescript**、**nodejs**、**nestjs**、**typeorm**等技术来开发。 
 
 ## 💎系统截图
 <img src="https://golang123-img.oss-cn-hangzhou.aliyuncs.com/upload/img/2020/2/1581129636269.gif" width="1000" alt=""/>
+
+## 👉依赖的软件
+| 软件 | 版本|  
+|:---------|:-------:|
+| nginx  |  1.17.1 (及以上) |
+| node.js     |  8.4.0 (及以上) |
+| mysql  |  5.6.35 (及以上) |
+| redis  |  4.0.1 (及以上) |
 
 ## ⚙️ 配置
 ### 配置hosts
@@ -93,16 +99,21 @@ server {
 }
 ```
 
+### 配置数据库
+请修改{项目目录}/src/config/cfg.default.ts 文件中mysql的配置
+```
+export default {
+    db: {
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        ...
+    }
+    ...
+}
+```
+
 ## 🚀 安装
-
-### 依赖的软件
-| 软件 | 版本|  
-|:---------|:-------:|
-| nginx  |  1.17.1 (及以上) |
-| node.js     |  8.4.0 (及以上) |
-| mysql  |  5.6.35 (及以上) |
-| redis  |  4.0.1 (及以上) |
-
 ### 安装依赖的模块
 进入项目目录，输入命令
 ```
@@ -162,7 +173,7 @@ npm start
 密码: 123456
 
 ## 👥技术交流    
-<img src="https://user-images.githubusercontent.com/2443162/41331006-399f8648-6f09-11e8-988d-7fa5a7527765.png" width="600"/>
+<img src="https://img.golang123.com/upload/img/2020/2/22882d59-b935-4e41-b129-d97585d8a909.jpg" width="300"/>
 
 ## License
 [GPL](https://github.com/shen100/golang123-api/blob/master/LICENSE "")      
