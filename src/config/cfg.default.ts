@@ -26,7 +26,10 @@ export default {
     redis: {
         host: '127.0.0.1',
         port: 6379,
-        prefix: 'mili',
+        keyPrefix: 'mili:',
+        family: 4, // 4 (IPv4) or 6 (IPv6)
+        password: '',
+        db: 0,
     },
     static: {
         staticURL,
