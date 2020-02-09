@@ -5,7 +5,7 @@ mili
 已在[米粒网](https://www.golang123.com) 得到应用，你完全可以用它来搭建自己的社区。**mili**的前端使用**vue**、**iview**等技术来开发，后端使用**typescript**、**nodejs**、**nestjs**、**typeorm**等技术来开发。 
 
 ## 🎆 系统截图
-<img src="https://golang123-img.oss-cn-hangzhou.aliyuncs.com/upload/img/2020/2/1581129636269.gif" width="1000" alt=""/>
+<img src="https://img.golang123.com/upload/img/2020/2/1581129636269.gif" width="1000" alt=""/>
 
 ## 👉 依赖的软件
 | 软件 | 版本|  
