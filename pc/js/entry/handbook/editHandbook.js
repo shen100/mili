@@ -14,7 +14,7 @@ import {
     DatePicker,
     InputNumber,
 } from 'iview';
-import App from '~/js/pages/handbook/EditHandBookLayout.vue';
+import App from '~/js/pages/handbook/EditHandbookLayout.vue';
 
 import {
     registerDirective,
@@ -32,8 +32,8 @@ Vue.component('InputNumber', InputNumber);
 Vue.use(VueRouter);
 
 const routes = [
-    { path: `/handbooks/new`, component: () => import('~/js/pages/handbook/CreateHandbookAlert.vue') },
-    { path: `/handbooks/:handbookID/chapter/:chapterID/edit`, component: () => import('~/js/pages/handbook/EditHandBook.vue') },
+    { path: `/handbooks/new`, component: () => import('~/js/pages/handbook/CreateHandBookView.vue') },
+    { path: `/handbooks/:handbookID/chapters/:chapterID/edit`, component: () => import('~/js/pages/handbook/EditHandBookView.vue') },
 ];
 
 const router = new VueRouter({

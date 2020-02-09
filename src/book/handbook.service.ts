@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HandBook, HandBookChapter } from '../entity/handbook.entity';
 import { ConfigService } from '../config/config.service';
 import { CreateHandBookDto } from './dto/create-handbook.dto';
+import { UpdateHandBookDto } from './dto/update-handbook.dto';
 
 const defaultIntroduce = `## 作者介绍
 
@@ -32,14 +33,12 @@ export class HandBookService {
     constructor(
         @InjectRepository(HandBook)
         private readonly handBookRepository: Repository<HandBook>,
-
         @InjectRepository(HandBookChapter)
         private readonly handBookChapterRepository: Repository<HandBookChapter>,
-
         private readonly configService: ConfigService,
     ) {}
 
-    async create(userID: number, createHandBookDto: CreateHandBookDto) {
+    async create(userID: number, dto: CreateHandBookDto) {
         let introduce = defaultIntroduce;
         let regExp = new RegExp('{{xiaoceEmail}}', 'g');
         introduce = introduce.replace(regExp, this.configService.server.xiaoceEmail);
@@ -49,7 +48,7 @@ export class HandBookService {
         introduce = introduce.replace(regExp, this.configService.server.companyName);
 
         const handBook = new HandBook();
-        handBook.name = createHandBookDto.name;
+        handBook.name = dto.name;
         handBook.saleCount = 0;
         handBook.introduce = introduce;
         handBook.summary = '';
@@ -68,11 +67,23 @@ export class HandBookService {
             id,
             userID,
         }, {
-            introduce,
+            introduce: introduce || '',
         });
     }
 
-    async updateHandbook(id: number, data: any, userID: number) {
+    async updateHandbook(id: number, dto: UpdateHandBookDto, userID: number) {
+        const data = {
+            name: dto.name || '',
+            summary: dto.summary || '',
+            authorIntro: dto.authorIntro || '',
+            price: dto.price || 0,
+            completionAt: dto.completionAt ? new Date(dto.completionAt) : null,
+            isAllDone: dto.isAllDone,
+            isAgree: dto.isAgree,
+        };
+        if (!data.completionAt) {
+            delete data.completionAt;
+        }
         return await this.handBookRepository.update({
             id,
             userID,
@@ -87,7 +98,7 @@ export class HandBookService {
         });
     }
 
-    async basic(id: number) {
+    async detail(id: number) {
         return await this.handBookRepository.findOne({
             select: ['id', 'name', 'introduce', 'summary', 'authorIntro', 'price', 'completionAt', 'isAllDone', 'coverURL', 'isAgree'],
             where: {
@@ -147,8 +158,9 @@ export class HandBookService {
         chapter.bookID = bookID;
         chapter.userID = userID;
         chapter.browseCount = chapter.commentCount = 0;
-        chapter.createdAt = new Date();
+        chapter.rootCommentCount = 0;
         chapter.tryRead = false;
+        chapter.createdAt = new Date();
         chapter.updatedAt = chapter.createdAt;
         return await this.handBookChapterRepository.save(chapter);
     }

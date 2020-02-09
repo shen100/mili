@@ -1,16 +1,14 @@
 import { createConnection } from 'typeorm';
 import { ConfigService } from '../config/config.service';
-import { query } from './query';
-import { rename } from './rename_table';
+import { addColumn } from './addColumn';
 
 const config = new ConfigService();
 
-// tslint:disable-next-line: only-arrow-functions
-(async function() {
+(async function run() {
     const connection = await createConnection(config.db);
-    await rename(connection);
-    await query(connection);
+    await addColumn(connection);
+
     // tslint:disable-next-line: no-console
-    console.log('all done ------------------------');
+    console.log('----------------- all done -----------------');
     process.exit(0);
 }());

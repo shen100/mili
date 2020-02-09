@@ -45,11 +45,7 @@ export default {
                     return;
                 }
                 const id = res.data.data.id;
-                this.$emit('ok', {
-                    name: this.name,
-                    id,
-                });
-                this.$router.push({ path: `/handbooks/${id}/chapter/introduce/edit` });
+                this.$router.push({ path: `/handbooks/${id}/chapters/introduce/edit` });
             }).catch((err) => {
                 console.log(err);
             });

@@ -1,5 +1,5 @@
 import {
-    Controller, Post, Body, UseGuards, Get, Query, Param, Delete, Res, Put,
+    Controller, Post, Body, UseGuards, Get, Param, Delete, Res, Put,
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { ErrorCode } from '../constants/error';
@@ -17,7 +17,7 @@ import {
     UpdateHandbookChapterTryReadDto,
 } from './dto/update-handbook-chapter.dto';
 import { CreateHandbookChapterDto } from './dto/create-handbook-chapter.dto';
-import { UpdateHandbookIntroduceDto, CommitHandbookDto } from './dto/update-handbook.dto';
+import { UpdateHandBookIntroduceDto, UpdateHandBookDto } from './dto/update-handbook.dto';
 import { RolesGuard } from '../core/guards/roles.guard';
 import { Roles } from '../core/decorators/roles.decorator';
 import { UserRole } from '../entity/user.entity';
@@ -68,12 +68,11 @@ export class HandBookController {
     @Get('/handbooks/new')
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Admin)
-    async createView(@CurUser() user, @Res() res) {
+    async createView(@Res() res) {
         const uploadPolicy = await this.ossService.requestPolicy();
         res.render('pages/handbook/editHandbook', {
             siteName: this.configService.server.siteName,
             companyName: this.configService.server.companyName,
-            user,
             uploadPolicy,
         });
     }
@@ -93,55 +92,36 @@ export class HandBookController {
     /**
      * 编辑小册章节的页面
      */
-    @Get('/handbooks/:handbookID/chapter/:chapterID/edit')
+    @Get('/handbooks/:handbookID/chapters/:chapterID/edit')
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Admin)
-    async edit(@CurUser() user, @Param('handbookID', MustIntPipe) handbookID: number, @Param('chapterID') chapterID: string, @Res() res) {
+    async editView(@Param('handbookID', MustIntPipe) handbookID: number, @Param('chapterID') chapterID: string, @Res() res) {
         const uploadPolicy = await this.ossService.requestPolicy();
         res.render('pages/handbook/editHandbook', {
             siteName: this.configService.server.siteName,
             companyName: this.configService.server.companyName,
-            user,
             uploadPolicy,
         });
     }
 
-    @Get(`${APIPrefix}/handbooks/chapters/:id`)
-    @UseGuards(ActiveGuard)
-    async getHandBook(@Param('id', MustIntPipe) id: number) {
-        return await this.handBookService.basic(id);
+    /**
+     * 小册详请
+     */
+    @Get(`${APIPrefix}/handbooks/:id`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
+    async handBookDetail(@Param('id', MustIntPipe) id: number) {
+        return await this.handBookService.detail(id);
     }
 
-    @Get(`${APIPrefix}/handbooks/:id`)
-    @UseGuards(ActiveGuard)
-    async getChapter(@CurUser() user, @Param('id', MustIntPipe) id: number) {
-        // let isQueryChapger = true;
-        // let theChapterID;
-        // if (chapterID === 'introduce') {
-        //     isQueryChapger = false;
-        // } else {
-        //     theChapterID = parseInt(chapterID, 10);
-        //     if (isNaN(theChapterID) || theChapterID <= 0) {
-        //         throw new MyHttpException({
-        //             errorCode: ErrorCode.NotFound.CODE,
-        //         });
-        //     }
-        // }
-        const chapter = await this.handBookService.getChapter(id);
-        if (!chapter) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.NotFound.CODE,
-            });
-        }
-        if (chapter.userID !== user.id) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.Forbidden.CODE,
-            });
-        }
-        chapter.content = chapter.content || '';
-        return {
-            chapter,
-        };
+    /**
+     * 章节详请
+     */
+    @Get(`${APIPrefix}/handbooks/chapters/:id`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
+    async chapterDetail(@Param('id', MustIntPipe) id: number) {
+        return await this.handBookService.getChapter(id);
     }
 
     @Get(`${APIPrefix}/handbooks/:id/chapters`)
@@ -168,39 +148,6 @@ export class HandBookController {
         };
     }
 
-    @Put(`${APIPrefix}/handbooks/:id/introduce`)
-    @UseGuards(ActiveGuard)
-    async updateHandbookIntroduce(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateDto: UpdateHandbookIntroduceDto) {
-        await this.handBookService.updateIntroduce(id, updateDto.introduce, user.id);
-        return {
-        };
-    }
-
-    @Put(`${APIPrefix}/handbooks/:id/commit`)
-    @UseGuards(ActiveGuard)
-    async commitHandbook(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() handbookDto: CommitHandbookDto) {
-        if (!handbookDto.isAgree) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.Forbidden.CODE,
-            });
-        }
-        const data = {
-            name: handbookDto.name || '',
-            summary: handbookDto.summary || '',
-            authorIntro: handbookDto.authorIntro || '',
-            price: handbookDto.price || 0,
-            completionAt: handbookDto.completionAt ? new Date(handbookDto.completionAt) : null,
-            isAllDone: handbookDto.isAllDone,
-            isAgree: handbookDto.isAgree,
-        };
-        if (!data.completionAt) {
-            delete data.completionAt;
-        }
-        await this.handBookService.updateHandbook(id, data, user.id);
-        return {
-        };
-    }
-
     /**
      * 创建小册
      */
@@ -214,8 +161,12 @@ export class HandBookController {
         };
     }
 
+    /**
+     * 创建小册的章节
+     */
     @Post(`${APIPrefix}/handbooks/:id/chapters`)
-    @UseGuards(ActiveGuard)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
     async createChapter(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() chapterDto: CreateHandbookChapterDto) {
         const isHandbookOwner = this.handBookService.isOwner(id, user.id);
         if (!isHandbookOwner) {
@@ -230,8 +181,12 @@ export class HandBookController {
         };
     }
 
+    /**
+     * 更新小册的章节标题
+     */
     @Put(`${APIPrefix}/handbooks/chapters/:id/title`)
-    @UseGuards(ActiveGuard)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
     async updateChapterTitle(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateChapterDto: UpdateHandbookChapterNameDto) {
         await this.handBookService.updateChapterTitle(id, updateChapterDto.name, user.id);
         return {
@@ -239,28 +194,66 @@ export class HandBookController {
         };
     }
 
+    /**
+     * 更新小册介绍
+     */
+    @Put(`${APIPrefix}/handbooks/:id/introduce`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
+    async updateHandBookIntroduce(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateDto: UpdateHandBookIntroduceDto) {
+        await this.handBookService.updateIntroduce(id, updateDto.introduce, user.id);
+        return {};
+    }
+
+    /**
+     * 更新小册
+     */
+    @Put(`${APIPrefix}/handbooks/:id`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
+    async updateHandbook(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() handbookDto: UpdateHandBookDto) {
+        if (!handbookDto.isAgree) {
+            throw new MyHttpException({
+                message: '请先同意小册线上协议',
+            });
+        }
+        await this.handBookService.updateHandbook(id, handbookDto, user.id);
+        return {};
+    }
+
+    /**
+     * 更新章节内容
+     */
     @Put(`${APIPrefix}/handbooks/chapters/:id/content`)
-    @UseGuards(ActiveGuard)
-    async updateChapterContent(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateChapterDto: UpdateHandbookChapterContentDto) {
-        await this.handBookService.updateChapterContent(id, updateChapterDto.content, user.id);
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
+    async updateChapterContent(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandbookChapterContentDto) {
+        await this.handBookService.updateChapterContent(id, dto.content, user.id);
         return {
         };
     }
 
+    /**
+     * 章节试读
+     */
     @Put(`${APIPrefix}/handbooks/chapters/:id/tryread`)
-    @UseGuards(ActiveGuard)
-    async updateChapterTryRead(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateChapterDto: UpdateHandbookChapterTryReadDto) {
-        await this.handBookService.updateChapterTryRead(id, updateChapterDto.tryRead, user.id);
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
+    async updateChapterTryRead(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandbookChapterTryReadDto) {
+        await this.handBookService.updateChapterTryRead(id, dto.tryRead, user.id);
         return {
-            tryRead: updateChapterDto.tryRead,
+            tryRead: dto.tryRead,
         };
     }
 
+    /**
+     * 删除章节
+     */
     @Delete(`${APIPrefix}/handbooks/chapters/:id`)
-    @UseGuards(ActiveGuard)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
     async deleteChapter(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.handBookService.deleteChapter(id, user.id);
-        return {
-        };
+        return {};
     }
 }

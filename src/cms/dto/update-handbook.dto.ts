@@ -1,13 +1,13 @@
 import {
     IsInt, MinLength, MaxLength, IsString, Min, Max, ValidateIf, IsBoolean, IsUrl,
 } from 'class-validator';
-import { HandbookConstants } from '../../constants/constants';
+import { HandBookConstants } from '../../constants/constants';
 
 export class UpdateHandbookIntroduceDto {
-    @MinLength(HandbookConstants.INTRODUCE_MIN_LENGTH, {
+    @MinLength(HandBookConstants.INTRODUCE_MIN_LENGTH, {
         message: '小册介绍不能为空',
     })
-    @MaxLength(HandbookConstants.INTRODUCE_MAX_LENGTH, {
+    @MaxLength(HandBookConstants.INTRODUCE_MAX_LENGTH, {
         message: '小册介绍不能超过 $constraint1 个字符',
     })
     @IsString()
@@ -16,30 +16,30 @@ export class UpdateHandbookIntroduceDto {
 
 export class CommitHandbookDto {
     @ValidateIf(o => o.name !== '' || o.isAllDone === true)
-    @MinLength(HandbookConstants.TITLE_MIN_LENGTH, {
+    @MinLength(HandBookConstants.TITLE_MIN_LENGTH, {
         message: '小册标题不能为空',
     })
-    @MaxLength(HandbookConstants.TITLE_MAX_LENGTH, {
+    @MaxLength(HandBookConstants.TITLE_MAX_LENGTH, {
         message: '小册标题不能超过 $constraint1 个字符',
     })
     @IsString()
     readonly name: string;
 
     @ValidateIf(o => o.summary !== '' || o.isAllDone === true)
-    @MinLength(HandbookConstants.SUMMARY_MIN_LENGTH, {
+    @MinLength(HandBookConstants.SUMMARY_MIN_LENGTH, {
         message: '小册摘要不能为空',
     })
-    @MaxLength(HandbookConstants.SUMMARY_MAX_LENGTH, {
+    @MaxLength(HandBookConstants.SUMMARY_MAX_LENGTH, {
         message: '小册摘要不能超过 $constraint1 个字符',
     })
     @IsString()
     readonly summary: string;
 
     @ValidateIf(o => o.authorIntro !== '' || o.isAllDone === true)
-    @MinLength(HandbookConstants.AUTHOR_MIN_LENGTH, {
+    @MinLength(HandBookConstants.AUTHOR_MIN_LENGTH, {
         message: '作者简介不能为空',
     })
-    @MaxLength(HandbookConstants.AUTHOR_MAX_LENGTH, {
+    @MaxLength(HandBookConstants.AUTHOR_MAX_LENGTH, {
         message: '作者简介不能超过 $constraint1 个字符',
     })
     @IsString()
@@ -50,7 +50,7 @@ export class CommitHandbookDto {
     @Min(0, {
         message: '价格不能为负数',
     })
-    @Max(HandbookConstants.MAX_PRICE, {
+    @Max(HandBookConstants.MAX_PRICE, {
         message: '价格不能超过 $constraint1 元',
     })
     readonly price: number;

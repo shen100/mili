@@ -1,11 +1,14 @@
 <template>
     <div class="editor-header">
         <ErrorTip ref="errorTip" />
+        <!-- 米粒小册平台写作线上协议 -->
         <AgreementAlert ref="agreementAlert" @cancel="onAgreementAlertCancel" width="556" />
+        <!-- 收益与结算弹框 -->
         <PriceAlert ref="priceAlert" @cancel="onPriceAlertCancel" width="500" />
         <input v-model="name" class="editor-title-input" type="text" placeholder="输入小册标题..." />
         <div class="user-actions-box">
             <UserDropdown :userID="userID" :avatarURL="avatarURL" menuAlign="right" />
+            <!-- 发布小册 -->
             <div v-clickoutside="onClickOutsidePublishToggle" class="publish-popup">
                 <div @click="onPublishToggle" class="toggle-btn">
                     <span class="publish-popup-btn">提交</span>
@@ -57,7 +60,9 @@
                     <button @click="onFinalPublish" class="publish-btn handbook-publish">确定并更新</button>
                 </div>
             </div>
+            <!-- 添加小册封面 -->
             <div v-clickoutside="onClickOutsideCoverToggle" class="upload-cover">
+                <!-- 点击小图标来切换 [添加小册封面] 的面板 -->
                 <div v-if="!coverURL" @click="onCoverToggle" class="upload-cover-img"></div>
                 <div v-else @click="onCoverToggle" class="upload-cover-img2"></div>
                 <div v-if="coverToggled" class="panel">
@@ -94,28 +99,26 @@ import { trim } from '~/js/utils/utils.js';
 
 export default {
     props: [
-        'isContentSaved',
+        'saveIntroduceOrChapter',
         'userID',
         'avatarURL',
         'siteName'
     ],
     data () {
-        const theData = {
-            id: undefined,
+        return {
+            id: undefined, // 小册id
             name: '',
             summary: '',
             authorIntro: '',
             price: 0,
-            completionAt: null,
+            completionAt: null, // 小册完成时间
             isAgree: false,
-            isAllDone: false,
+            isAllDone: false, // 所有章节已完成
             coverURL: '',
             isCoverUploading: false, // 是否正在上传封面图片
-            coverToggled: false,
-            publishToggled: false,
+            coverToggled: false, // [上传封面面板] 显示与隐藏的开关
+            publishToggled: false, // [发布面板] 显示与隐藏的开关
         };
-        console.log(theData);
-        return theData;
     },
     mounted() {
     },
@@ -136,20 +139,19 @@ export default {
         onDateChange(date) {
             this.completionAt = new Date(date);
         },
+        // 更新小册
         onFinalPublish() {
-            if (this.isAllDone) {
-                if (!this.name) {
-                    this.$refs.errorTip.show('小册标题不能为空');
-                    return;
-                }
-                if (!this.summary) {
-                    this.$refs.errorTip.show('摘要不能为空');
-                    return;
-                }
-                if (!this.authorIntro) {
-                    this.$refs.errorTip.show('作者简介不能为空');
-                    return;
-                }
+            if (!this.name) {
+                this.$refs.errorTip.show('小册标题不能为空');
+                return;
+            }
+            if (!this.summary) {
+                this.$refs.errorTip.show('摘要不能为空');
+                return;
+            }
+            if (!this.authorIntro) {
+                this.$refs.errorTip.show('作者简介不能为空');
+                return;
             }
 
             if (!this.isAgree) {
@@ -162,12 +164,12 @@ export default {
                 return;
             }
 
-            this.isContentSaved((result) => {
-                if (!result) {
-                    this.$refs.errorTip.show('没有网络连接，请稍后重试');
-                    return;
+            // 先更新当前选中的章节，也可能先更新当前选中的小册介绍, 然后回调过来，再保存小册
+            this.saveIntroduceOrChapter().then((res) => {
+                if (res.data.errorCode !== ErrorCode.SUCCESS.CODE) {
+                    throw new Error(res.data.message);
                 }
-                const url = `/handbooks/${this.id}/commit`;
+                const url = `/handbooks/${this.id}`;
                 myHTTP.put(url, {
                     name: this.name || '',
                     summary: this.summary || '',
@@ -183,6 +185,9 @@ export default {
 
                     }
                 });
+            }).catch(err => {
+                this.$refs.errorTip.show('网络异常，请稍后重试');
+                return;
             });
         },
         onRemoveCover() {
@@ -206,9 +211,6 @@ export default {
         },
         onClickOutsideCoverToggle() {
             this.coverToggled = false;
-        },
-        onClickOutsideMarkdownToggle() {
-            this.markdownToggled = false;
         },
         onPublishToggle() {
             this.publishToggled = !this.publishToggled;
@@ -259,158 +261,158 @@ export default {
 </script>
 
 <style scoped>
-    .upload-cover .panel:before {
-        right: 104px;
-    }
+.upload-cover .panel:before {
+    right: 104px;
+}
 
-    .upload-cover .panel {
-        width: 230px;
-        margin-right: -93px;
-    }
+.upload-cover .panel {
+    width: 230px;
+    margin-right: -93px;
+}
 
-    .panel .title {
-        font-size: 18px;
-        color: #333;
-        margin-bottom: 10px;
-    }
+.panel .title {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
 
-    .book-img-size {
-        color: #8f9193;
-        margin-bottom: 8px;
-    }
+.book-img-size {
+    color: #8f9193;
+    margin-bottom: 8px;
+}
 
-    .cover-area {
-        width: 180px;
-        height: 250px;
-        font-size: 14px;
-        color: rgba(51, 51, 51, .4);
-        background-image: url(../../../images/handbook/poster-cover.png);
-        background-repeat: no-repeat;
-        background-position: 0 0;
-        background-size: contain;
-        border-radius: 0;
-        border: none;
-        outline: none;
-        cursor: pointer;
-    }
+.cover-area {
+    width: 180px;
+    height: 250px;
+    font-size: 14px;
+    color: rgba(51, 51, 51, .4);
+    background-image: url(../../../images/handbook/poster-cover.png);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: contain;
+    border-radius: 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
 
-    .cover-img-area {
-        width: 180px;
-        height: 250px;   
-    }
+.cover-img-area {
+    width: 180px;
+    height: 250px;   
+}
 
-    .cover-img-area img {
-        width: 100%;
-        height: 100%;
-        -o-object-fit: cover;
-        object-fit: cover;
-    }
+.cover-img-area img {
+    width: 100%;
+    height: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+}
 
-    .panel .title {
-        margin-bottom: 18px;
-        font-size: 18px;
-        font-weight: 700;
-        color: #333;
-    }
+.panel .title {
+    margin-bottom: 18px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+}
 
-    .panel .summary-box {
-        margin-bottom: 12px;
-    }
+.panel .summary-box {
+    margin-bottom: 12px;
+}
 
-    .panel .sub-title {
-        margin-bottom: 12px;
-        font-size: 16px;
-        color: #333;
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-align: center;
-        align-items: center;
-    }
+.panel .sub-title {
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #333;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+}
 
-    .panel .summary-box .summary-textarea {
-        width: 100%;
-        height: 90px;
-        line-height: 18px;
-        padding: 8px;
-        resize: none;
-        outline: none;
-        border: 1px solid #ccc;
-        overflow: auto;
-        font-size: 14px;
-        color: #000;
-    }
+.panel .summary-box .summary-textarea {
+    width: 100%;
+    height: 90px;
+    line-height: 18px;
+    padding: 8px;
+    resize: none;
+    outline: none;
+    border: 1px solid #ccc;
+    overflow: auto;
+    font-size: 14px;
+    color: #000;
+}
 
-    .panel .summary-box .summary-textarea::-webkit-input-placeholder {
-        color: #888;
-    }
+.panel .summary-box .summary-textarea::-webkit-input-placeholder {
+    color: #888;
+}
 
-    .panel .price-box {
-        margin-bottom: 20px;
-    }
+.panel .price-box {
+    margin-bottom: 20px;
+}
 
-    .panel .price-box .sub-title {
-        margin-bottom: 8px;
-    }
+.panel .price-box .sub-title {
+    margin-bottom: 8px;
+}
 
-    .panel .price-box .price-input {
-        padding-left: 10px;
-        width: 100%;
-        height: 40px;
-        outline: none;
-        border: 1px solid #ccc;
-        overflow: visible;
-        font-size: 14px;
-    }
+.panel .price-box .price-input {
+    padding-left: 10px;
+    width: 100%;
+    height: 40px;
+    outline: none;
+    border: 1px solid #ccc;
+    overflow: visible;
+    font-size: 14px;
+}
 
-    .panel .price-box .price-input::-webkit-input-placeholder {
-        color: #888;
-    }
+.panel .price-box .price-input::-webkit-input-placeholder {
+    color: #888;
+}
 
-    .panel .sub-title .quarterly-earnings {
-        width: 16px;
-        height: 16px;
-        border: 1px solid #007fff;
-        color: #007fff;
-        text-align: center;
-        line-height: 16px;
-        border-radius: 50%;
-        font-size: 12px;
-        font-weight: 700;
-        margin-left: 5px;
-        cursor: pointer;
-    }
+.panel .sub-title .quarterly-earnings {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #007fff;
+    color: #007fff;
+    text-align: center;
+    line-height: 16px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 5px;
+    cursor: pointer;
+}
 
-    .panel input:focus, .panel textarea:focus {
-        border: 1px solid #007fff!important;
-    }
+.panel input:focus, .panel textarea:focus {
+    border: 1px solid #007fff!important;
+}
 
-    .panel .line-confirmation {
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-align: center;
-        align-items: center;
-        cursor: pointer;
-        margin-bottom: 5px;
-        color: #000;
-    }
+.panel .line-confirmation {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 5px;
+    color: #000;
+}
 
-    .panel .line-confirmation input {
-        margin-right: 5px;
-    }
+.panel .line-confirmation input {
+    margin-right: 5px;
+}
 
-    [type=checkbox], [type=radio] {
-        box-sizing: border-box;
-        padding: 0;
-    }
+[type=checkbox], [type=radio] {
+    box-sizing: border-box;
+    padding: 0;
+}
 
-    .panel .line-confirmation .agreement {
-        color: #007fff;
-        text-decoration: none;
-    }
+.panel .line-confirmation .agreement {
+    color: #007fff;
+    text-decoration: none;
+}
 
-    .panel .handbook-publish {
-        margin-top: 20px;
-        font-size: 14px;
-        padding: 7px 14px!important;
-    }
+.panel .handbook-publish {
+    margin-top: 20px;
+    font-size: 14px;
+    padding: 7px 14px!important;
+}
 </style>

@@ -83,8 +83,8 @@ export default {
             'pc/js/components/editor/EditorHeader.vue',
             'pc/js/components/editor/MarkdownEditor.vue',
             'pc/js/components/editor/RichEditor.vue',
-
             'pc/js/components/handbook/HandBookComment.vue',
+            'pc/js/components/handbook/HandBookHeader.vue',
             'pc/js/components/handbook/StarModal.vue',
             'pc/js/components/handbook/UserList.vue',
 
@@ -127,8 +127,8 @@ export default {
             'pc/js/pages/editor/EditMarkdownDraft.vue',
             'pc/js/pages/editor/EditRichDraft.vue',
 
-            'pc/js/pages/handbook/CreateHandbookAlert.vue',
-            'pc/js/pages/handbook/EditHandbook.vue',
+            'pc/js/pages/handbook/CreateHandbookView.vue',
+            'pc/js/pages/handbook/EditHandbookLayout.vue',
             
             'pc/js/pages/Index.vue',
             'pc/js/pages/settings/Layout.vue',
@@ -178,6 +178,7 @@ export default {
             'src/book/dto/create-handbook.dto.ts',
             'src/book/dto/update-book-chapter.dto.ts',
             'src/book/dto/update-book.dto.ts',
+            'src/book/dto/update-handbook.dto.ts',
 
             'src/cms/dto/crawler-article.dto.ts',
             'src/cms/dto/crawler.dto.ts',
