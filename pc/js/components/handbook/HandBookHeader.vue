@@ -95,21 +95,21 @@ import { trim } from '~/js/utils/utils.js';
 export default {
     props: [
         'isContentSaved',
+        'userID',
+        'avatarURL',
+        'siteName'
     ],
     data () {
         const theData = {
-            userID: window.userID,
-            avatarURL: window.avatarURL,
-            siteName: window.siteName,
-            id: window.handbook.id,
-            name: window.handbook.name || '',
-            summary: window.handbook.summary,
-            authorIntro: window.handbook.authorIntro,
-            price: window.handbook.price ? window.handbook.price / 100 : null,
-            completionAt: window.handbook.completionAt ? new Date(window.handbook.completionAt) : null,
-            isAgree: !!window.handbook.isAgree,
-            isAllDone: !!window.handbook.isAllDone,
-            coverURL: window.handbook.coverURL,
+            id: undefined,
+            name: '',
+            summary: '',
+            authorIntro: '',
+            price: 0,
+            completionAt: null,
+            isAgree: false,
+            isAllDone: false,
+            coverURL: '',
             isCoverUploading: false, // 是否正在上传封面图片
             coverToggled: false,
             publishToggled: false,
@@ -122,6 +122,17 @@ export default {
     computed: {
     },
     methods: {
+        setHandBook(handbook) {
+            this.id = handbook.id;
+            this.name = handbook.name || '';
+            this.summary = handbook.summary;
+            this.authorIntro = handbook.authorIntro;
+            this.price = handbook.price ? handbook.price / 100 : null;
+            this.completionAt = handbook.completionAt ? new Date(handbook.completionAt) : null;
+            this.isAgree = !!handbook.isAgree;
+            this.isAllDone = !!handbook.isAllDone;
+            this.coverURL = handbook.coverURL;
+        },
         onDateChange(date) {
             this.completionAt = new Date(date);
         },

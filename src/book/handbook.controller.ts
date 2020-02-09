@@ -18,6 +18,10 @@ import {
 } from './dto/update-handbook-chapter.dto';
 import { CreateHandbookChapterDto } from './dto/create-handbook-chapter.dto';
 import { UpdateHandbookIntroduceDto, CommitHandbookDto } from './dto/update-handbook.dto';
+import { RolesGuard } from '../core/guards/roles.guard';
+import { Roles } from '../core/decorators/roles.decorator';
+import { UserRole } from '../entity/user.entity';
+import { CreateHandBookDto } from './dto/create-handbook.dto';
 
 @Controller()
 export class HandBookController {
@@ -58,20 +62,24 @@ export class HandBookController {
         res.render('pages/handbook/handbooks.njk', data);
     }
 
+    /**
+     * 创建小册的页面
+     */
     @Get('/handbooks/new')
-    @UseGuards(ActiveGuard)
-    async create(@CurUser() user, @Query() query, @Res() res) {
-        if (user.username !== 'shen100') {
-            throw new MyHttpException({
-                errorCode: ErrorCode.NotFound.CODE,
-            });
-        }
-        const handBook = await this.handBookService.create(user.id);
-        res.redirect(`/handbooks/${handBook.id}/chapter/introduce/edit`);
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
+    async createView(@CurUser() user, @Res() res) {
+        const uploadPolicy = await this.ossService.requestPolicy();
+        res.render('pages/handbook/editHandbook', {
+            siteName: this.configService.server.siteName,
+            companyName: this.configService.server.companyName,
+            user,
+            uploadPolicy,
+        });
     }
 
     @Get('/handbooks/:id')
-    async detail(@CurUser() user, @Res() res) {
+    async detailView(@CurUser() user, @Res() res) {
         res.render('pages/handbook/handbookDetail.njk', {
             handbooks: [
                 {},
@@ -82,40 +90,64 @@ export class HandBookController {
         });
     }
 
+    /**
+     * 编辑小册章节的页面
+     */
     @Get('/handbooks/:handbookID/chapter/:chapterID/edit')
-    @UseGuards(ActiveGuard)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
     async edit(@CurUser() user, @Param('handbookID', MustIntPipe) handbookID: number, @Param('chapterID') chapterID: string, @Res() res) {
-        let isQueryChapger = true;
-        let theChapterID;
-        if (chapterID === 'introduce') {
-            isQueryChapger = false;
-        } else {
-            theChapterID = parseInt(chapterID, 10);
-            if (isNaN(theChapterID) || theChapterID <= 0) {
-                throw new MyHttpException({
-                    errorCode: ErrorCode.NotFound.CODE,
-                });
-            }
-        }
-        const [ handbook, chapters, chapter, uploadPolicy ] = await Promise.all([
-            this.handBookService.basic(handbookID),
-            this.handBookService.getChapters(handbookID),
-            isQueryChapger ? this.handBookService.getChapter(theChapterID) : Promise.resolve(null),
-            this.ossService.requestPolicy(),
-        ]);
-
+        const uploadPolicy = await this.ossService.requestPolicy();
         res.render('pages/handbook/editHandbook', {
             siteName: this.configService.server.siteName,
             companyName: this.configService.server.companyName,
             user,
-            handbook: {
-                ...handbook,
-                completionAt: handbook.completionAt ? handbook.completionAt.getTime() : undefined,
-            },
-            chapters,
-            chapter,
             uploadPolicy,
         });
+    }
+
+    @Get(`${APIPrefix}/handbooks/chapters/:id`)
+    @UseGuards(ActiveGuard)
+    async getHandBook(@Param('id', MustIntPipe) id: number) {
+        return await this.handBookService.basic(id);
+    }
+
+    @Get(`${APIPrefix}/handbooks/:id`)
+    @UseGuards(ActiveGuard)
+    async getChapter(@CurUser() user, @Param('id', MustIntPipe) id: number) {
+        // let isQueryChapger = true;
+        // let theChapterID;
+        // if (chapterID === 'introduce') {
+        //     isQueryChapger = false;
+        // } else {
+        //     theChapterID = parseInt(chapterID, 10);
+        //     if (isNaN(theChapterID) || theChapterID <= 0) {
+        //         throw new MyHttpException({
+        //             errorCode: ErrorCode.NotFound.CODE,
+        //         });
+        //     }
+        // }
+        const chapter = await this.handBookService.getChapter(id);
+        if (!chapter) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.NotFound.CODE,
+            });
+        }
+        if (chapter.userID !== user.id) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.Forbidden.CODE,
+            });
+        }
+        chapter.content = chapter.content || '';
+        return {
+            chapter,
+        };
+    }
+
+    @Get(`${APIPrefix}/handbooks/:id/chapters`)
+    @UseGuards(ActiveGuard)
+    async getChapters(@Param('id', MustIntPipe) id: number) {
+        return await this.handBookService.getChapters(id);
     }
 
     /**
@@ -169,6 +201,19 @@ export class HandBookController {
         };
     }
 
+    /**
+     * 创建小册
+     */
+    @Post(`${APIPrefix}/handbooks`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
+    async create(@CurUser() user, @Body() createHandBookDto: CreateHandBookDto) {
+        const createResult = await this.handBookService.create(user.id, createHandBookDto);
+        return {
+            id: createResult.id,
+        };
+    }
+
     @Post(`${APIPrefix}/handbooks/:id/chapters`)
     @UseGuards(ActiveGuard)
     async createChapter(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() chapterDto: CreateHandbookChapterDto) {
@@ -216,26 +261,6 @@ export class HandBookController {
     async deleteChapter(@CurUser() user, @Param('id', MustIntPipe) id: number) {
         await this.handBookService.deleteChapter(id, user.id);
         return {
-        };
-    }
-
-    @Get(`${APIPrefix}/handbooks/chapters/:id`)
-    @UseGuards(ActiveGuard)
-    async getChapter(@CurUser() user, @Param('id', MustIntPipe) id: number) {
-        const chapter = await this.handBookService.getChapter(id);
-        if (!chapter) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.NotFound.CODE,
-            });
-        }
-        if (chapter.userID !== user.id) {
-            throw new MyHttpException({
-                errorCode: ErrorCode.Forbidden.CODE,
-            });
-        }
-        chapter.content = chapter.content || '';
-        return {
-            chapter,
         };
     }
 }

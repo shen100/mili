@@ -180,9 +180,6 @@ npm start
 用户名: mili  
 密码: 123456
 
-## 👥 技术交流    
-<img src="https://img.golang123.com/upload/img/2020/2/22882d59-b935-4e41-b129-d97585d8a909.jpg" width="300"/>
-
 ## License
 [GPL](https://github.com/shen100/golang123-api/blob/master/LICENSE "")      
-Copyright (c) 2013-present, shen100
+Mili is GPL licensed.

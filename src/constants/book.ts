@@ -10,3 +10,8 @@ export class BookConstants {
     static readonly MAX_CHAPTER_TITLE_LENGTH: number = 50;
     static readonly MAX_CHAPTER_CONTENT_LENGTH: number = 20000;
 }
+
+export class HandBookConstants {
+    static readonly MIN_TITLE_LENGTH: number = 1;
+    static readonly MAX_TITLE_LENGTH: number = 50;
+}

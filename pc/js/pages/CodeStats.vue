@@ -87,6 +87,7 @@ export default {
             'pc/js/components/handbook/HandBookComment.vue',
             'pc/js/components/handbook/StarModal.vue',
             'pc/js/components/handbook/UserList.vue',
+
             'pc/js/components/tag/TagInfo.vue',
             'pc/js/components/TopNavSearch.vue',
             'pc/js/components/user/FollowBtn.vue',
@@ -101,6 +102,7 @@ export default {
             'pc/js/entry/editor/drafts.js',
             'pc/js/entry/editor/editMarkdownDraft.js',
             'pc/js/entry/editor/editRichDraft.js',
+            'pc/js/entry/handbook/editHandbook.js',
             'pc/js/entry/index.js',
             'pc/js/entry/settings/settings.js',
             'pc/js/entry/tag/tag.js',
@@ -125,6 +127,9 @@ export default {
             'pc/js/pages/editor/EditMarkdownDraft.vue',
             'pc/js/pages/editor/EditRichDraft.vue',
 
+            'pc/js/pages/handbook/CreateHandbookAlert.vue',
+            'pc/js/pages/handbook/EditHandbook.vue',
+            
             'pc/js/pages/Index.vue',
             'pc/js/pages/settings/Layout.vue',
             'pc/js/pages/settings/PasswordView.vue',
@@ -170,6 +175,7 @@ export default {
             'src/book/book.controller.ts',
             'src/book/book.service.ts',
             'src/book/dto/create-book-chapter.dto.ts',
+            'src/book/dto/create-handbook.dto.ts',
             'src/book/dto/update-book-chapter.dto.ts',
             'src/book/dto/update-book.dto.ts',
 
@@ -219,6 +225,7 @@ export default {
             'views/pages/editor/drafts.njk',
             'views/pages/editor/editMarkdownArticle.njk',
             'views/pages/editor/editRichArticle.njk',
+            'views/pages/handbook/editHandbook.njk',
             'views/pages/index.njk',
             'views/pages/settings/settings.njk',
             'views/pages/tag/tag.njk',

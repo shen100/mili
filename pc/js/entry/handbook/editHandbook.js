@@ -5,6 +5,7 @@ import '~/styles/editor/md.editor.scss';
 import '~/styles/handbook/editHandbook.scss';
 
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import {
     Modal,
     Select,
@@ -13,7 +14,7 @@ import {
     DatePicker,
     InputNumber,
 } from 'iview';
-import App from '~/js/pages/handbook/EditHandBook.vue';
+import App from '~/js/pages/handbook/EditHandBookLayout.vue';
 
 import {
     registerDirective,
@@ -28,7 +29,27 @@ Vue.component('Spin', Spin);
 Vue.component('DatePicker', DatePicker);
 Vue.component('InputNumber', InputNumber);
 
+Vue.use(VueRouter);
+
+const routes = [
+    { path: `/handbooks/new`, component: () => import('~/js/pages/handbook/CreateHandbookAlert.vue') },
+    { path: `/handbooks/:handbookID/chapter/:chapterID/edit`, component: () => import('~/js/pages/handbook/EditHandBook.vue') },
+];
+
+const router = new VueRouter({
+    routes,
+    mode: 'history',
+    scrollBehavior (to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition;
+        } else {
+            return { x: 0, y: 0 };
+        }
+    }
+});
+
 new Vue({
+    router,
     render: h => h(App),
 }).$mount('#app');
 

@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HandBook, HandBookChapter } from '../entity/handbook.entity';
 import { ConfigService } from '../config/config.service';
+import { CreateHandBookDto } from './dto/create-handbook.dto';
 
 const defaultIntroduce = `## 作者介绍
 
@@ -38,7 +39,7 @@ export class HandBookService {
         private readonly configService: ConfigService,
     ) {}
 
-    async create(userID: number) {
+    async create(userID: number, createHandBookDto: CreateHandBookDto) {
         let introduce = defaultIntroduce;
         let regExp = new RegExp('{{xiaoceEmail}}', 'g');
         introduce = introduce.replace(regExp, this.configService.server.xiaoceEmail);
@@ -48,7 +49,7 @@ export class HandBookService {
         introduce = introduce.replace(regExp, this.configService.server.companyName);
 
         const handBook = new HandBook();
-        handBook.name = '';
+        handBook.name = createHandBookDto.name;
         handBook.saleCount = 0;
         handBook.introduce = introduce;
         handBook.summary = '';
