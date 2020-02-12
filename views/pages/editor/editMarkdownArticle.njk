@@ -2,10 +2,6 @@
 
 {% extends '../../layout/empty.njk' %}
 
-{% block libcss %}
-<link charset="utf-8" href="{{cssPath}}/libs/simplemde.min.css" rel="stylesheet">
-{% endblock %}
-
 {% block main %}
 <div id="app"></div>
 {% endblock %}
@@ -26,11 +22,6 @@
 
   var uploadPolicy = {{ uploadPolicy | dump | safe }};
 </script>
-{% endblock %}
-
-{% block libjs %}
-  {{ super() }}
-  <script src="{{jsPath}}/libs/simplemde.min.js"></script>
 {% endblock %}
 
 {% block devjs %}

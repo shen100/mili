@@ -1,7 +1,7 @@
 import {
     IsInt, MinLength, MaxLength, IsString, Min, Max, ValidateIf, IsBoolean, IsUrl,
 } from 'class-validator';
-import { HandBookConstants } from '../../constants/book';
+import { HandBookConstants } from '../../constants/handbook';
 
 export class UpdateHandBookIntroduceDto {
     @MaxLength(HandBookConstants.INTRODUCE_MAX_LENGTH, {
@@ -18,7 +18,9 @@ export class UpdateHandBookDto {
     @MaxLength(HandBookConstants.TITLE_MAX_LENGTH, {
         message: '小册标题不能超过 $constraint1 个字符',
     })
-    @IsString()
+    @IsString({
+        message: '小册标题不能为空',
+    })
     readonly name: string;
 
     @MinLength(HandBookConstants.SUMMARY_MIN_LENGTH, {
@@ -27,16 +29,17 @@ export class UpdateHandBookDto {
     @MaxLength(HandBookConstants.SUMMARY_MAX_LENGTH, {
         message: '小册摘要不能超过 $constraint1 个字符',
     })
-    @IsString()
+    @IsString({
+        message: '小册摘要不能为空',
+    })
     readonly summary: string;
 
-    @MinLength(HandBookConstants.AUTHOR_INTRO_MIN_LENGTH, {
-        message: '作者简介不能为空',
-    })
     @MaxLength(HandBookConstants.AUTHOR_INTRO_MAX_LENGTH, {
         message: '作者简介不能超过 $constraint1 个字符',
     })
-    @IsString()
+    @IsString({
+        message: '无效的作者简介',
+    })
     readonly authorIntro: string;
 
     @IsInt()
@@ -46,7 +49,7 @@ export class UpdateHandBookDto {
     @Max(HandBookConstants.MAX_PRICE, {
         message: '价格不能超过 $constraint1 元',
     })
-    readonly price: number;
+    readonly price: number; // 单位分
 
     @ValidateIf(o => o.coverURL !== '')
     @IsUrl({

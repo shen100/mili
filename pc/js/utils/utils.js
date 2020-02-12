@@ -43,3 +43,7 @@ export const countToK = (count) => {
 export const readDuration = (wordCount) => {
     return parseInt((wordCount / 300 * 60), 10) + '分钟';
 };
+
+export const displayPrice = (price) => {
+    return (price / 100).toFixed(2);
+};

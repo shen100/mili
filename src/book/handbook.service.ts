@@ -8,6 +8,12 @@ import { HandBook, HandBookChapter } from '../entity/handbook.entity';
 import { ConfigService } from '../config/config.service';
 import { CreateHandBookDto } from './dto/create-handbook.dto';
 import { UpdateHandBookDto } from './dto/update-handbook.dto';
+import { ListResult } from '../entity/listresult.entity';
+
+marked.setOptions({
+    gfm: true,
+    breaks: true,
+});
 
 const defaultIntroduce = `## 作者介绍
 
@@ -71,7 +77,7 @@ export class HandBookService {
         });
     }
 
-    async updateHandbook(id: number, dto: UpdateHandBookDto, userID: number) {
+    async updateHandBook(id: number, dto: UpdateHandBookDto, userID: number) {
         const data = {
             name: dto.name || '',
             summary: dto.summary || '',
@@ -116,6 +122,41 @@ export class HandBookService {
             },
         });
         return !!handbook;
+    }
+
+    /**
+     * 撰写的小册
+     */
+    async getMyHandBooks(userID: number, page: number, pageSize: number): Promise<ListResult<HandBook>> {
+        const [ list, count ] = await this.handBookRepository.findAndCount({
+            select: {
+                id: true,
+                name: true,
+                summary: true,
+                saleCount: true,
+                price: true,
+                createdAt: true,
+                user: {
+                    id: true,
+                    username: true,
+                },
+            },
+            where: {
+                userID,
+            },
+            relations: ['user'],
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        });
+        return {
+            list,
+            count,
+            page,
+            pageSize,
+        };
     }
 
     async getChapters(bookID: number) {

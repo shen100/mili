@@ -45,7 +45,7 @@ const copyOptions = {
             }
             output += injectAssets;
             // 查找 {{ loadjs('entry/xxx.js') }} 得到entry
-            let entry = output.match(/\{\{\s*loadjs\s*\(['"]([a-zA-Z0-9_\/\-]+)\.js['"]\)\s*\}\}/);
+            let entry = output.match(/\{\{\s*loadjs\s*\(['"]([a-zA-Z0-9_\/\-\.]+)\.js['"]\)\s*\}\}/);
             entry = entry[1];
 
             viewInjects.push(new HtmlWebpackPlugin({

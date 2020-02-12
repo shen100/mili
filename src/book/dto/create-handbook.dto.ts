@@ -3,7 +3,7 @@ import {
     MinLength,
     MaxLength,
 } from 'class-validator';
-import { HandBookConstants } from '../../constants/book';
+import { HandBookConstants } from '../../constants/handbook';
 
 export class CreateHandBookDto {
     @MinLength(HandBookConstants.TITLE_MIN_LENGTH, {

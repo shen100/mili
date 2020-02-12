@@ -1,0 +1,28 @@
+/* 这个样式文件只在套markdown编辑器的iframe中用到 */
+body {
+    display: block!important;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#app {
+    overflow: hidden;
+}
+
+/* 隐藏tui.editor的 toolbal */
+.te-toolbar-section {
+    display: none;
+}
+
+.te-editor .CodeMirror-wrap {
+    background: #f8f9fa;
+}
+
+.te-preview {
+    background: #fff;
+}

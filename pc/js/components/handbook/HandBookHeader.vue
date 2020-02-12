@@ -149,10 +149,6 @@ export default {
                 this.$refs.errorTip.show('摘要不能为空');
                 return;
             }
-            if (!this.authorIntro) {
-                this.$refs.errorTip.show('作者简介不能为空');
-                return;
-            }
 
             if (!this.isAgree) {
                 this.$refs.errorTip.show('请先同意小册写作线上协议');
@@ -179,10 +175,10 @@ export default {
                     isAgree: this.isAgree,
                     isAllDone: this.isAllDone,
                     coverURL: this.coverURL || '',
-                }).then(function(res) {
+                }).then((res) => {
                     const result = res.data;
                     if (result.errorCode === ErrorCode.SUCCESS.CODE) {
-
+                        location = `/uc/${this.userID}/writehandbooks`;
                     }
                 });
             }).catch(err => {

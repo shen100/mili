@@ -1,5 +1,5 @@
 import {
-    Controller, Post, Body, UseGuards, Get, Param, Delete, Res, Put,
+    Controller, Post, Body, UseGuards, Get, Param, Delete, Res, Put, Query,
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { ErrorCode } from '../constants/error';
@@ -12,16 +12,16 @@ import { HandBookService } from './handbook.service';
 import { OSSService } from '../common/oss.service';
 import { APIPrefix } from '../constants/constants';
 import {
-    UpdateHandbookChapterNameDto,
-    UpdateHandbookChapterContentDto,
-    UpdateHandbookChapterTryReadDto,
+    UpdateHandBookChapterContentDto,
+    UpdateHandBookChapterTryReadDto,
+    UpdateHandBookChapterDto,
 } from './dto/update-handbook-chapter.dto';
-import { CreateHandbookChapterDto } from './dto/create-handbook-chapter.dto';
 import { UpdateHandBookIntroduceDto, UpdateHandBookDto } from './dto/update-handbook.dto';
 import { RolesGuard } from '../core/guards/roles.guard';
 import { Roles } from '../core/decorators/roles.decorator';
 import { UserRole } from '../entity/user.entity';
 import { CreateHandBookDto } from './dto/create-handbook.dto';
+import { ParsePagePipe } from '../core/pipes/parse-page.pipe';
 
 @Controller()
 export class HandBookController {
@@ -32,7 +32,7 @@ export class HandBookController {
     ) {}
 
     @Get('/handbooks')
-    async list(@CurUser() user, @Res() res) {
+    async listView(@CurUser() user, @Res() res) {
         const data = {
             icp: this.configService.server.icp,
             categories: [
@@ -149,13 +149,24 @@ export class HandBookController {
     }
 
     /**
+     * 撰写的小册
+     */
+    @Get(`${APIPrefix}/handbooks/users/:id/my`)
+    @UseGuards(ActiveGuard, RolesGuard)
+    @Roles(UserRole.Admin)
+    async myHandBooks(@Param('id', MustIntPipe) authorID: number, @Query('page', ParsePagePipe) page: number) {
+        const pageSize = 20;
+        return await this.handBookService.getMyHandBooks(authorID, page, pageSize);
+    }
+
+    /**
      * 创建小册
      */
     @Post(`${APIPrefix}/handbooks`)
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Admin)
-    async create(@CurUser() user, @Body() createHandBookDto: CreateHandBookDto) {
-        const createResult = await this.handBookService.create(user.id, createHandBookDto);
+    async create(@CurUser() user, @Body() dto: CreateHandBookDto) {
+        const createResult = await this.handBookService.create(user.id, dto);
         return {
             id: createResult.id,
         };
@@ -167,17 +178,17 @@ export class HandBookController {
     @Post(`${APIPrefix}/handbooks/:id/chapters`)
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Admin)
-    async createChapter(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() chapterDto: CreateHandbookChapterDto) {
+    async createChapter(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandBookChapterDto) {
         const isHandbookOwner = this.handBookService.isOwner(id, user.id);
         if (!isHandbookOwner) {
             throw new MyHttpException({
                 errorCode: ErrorCode.Forbidden.CODE,
             });
         }
-        const createResult = await this.handBookService.createChapter(id, chapterDto.name, user.id);
+        const createResult = await this.handBookService.createChapter(id, dto.name, user.id);
         return {
             id: createResult.id,
-            name: chapterDto.name,
+            name: dto.name,
         };
     }
 
@@ -187,10 +198,10 @@ export class HandBookController {
     @Put(`${APIPrefix}/handbooks/chapters/:id/title`)
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Admin)
-    async updateChapterTitle(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateChapterDto: UpdateHandbookChapterNameDto) {
-        await this.handBookService.updateChapterTitle(id, updateChapterDto.name, user.id);
+    async updateChapterTitle(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandBookChapterDto) {
+        await this.handBookService.updateChapterTitle(id, dto.name, user.id);
         return {
-            name: updateChapterDto.name,
+            name: dto.name,
         };
     }
 
@@ -200,8 +211,8 @@ export class HandBookController {
     @Put(`${APIPrefix}/handbooks/:id/introduce`)
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Admin)
-    async updateHandBookIntroduce(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() updateDto: UpdateHandBookIntroduceDto) {
-        await this.handBookService.updateIntroduce(id, updateDto.introduce, user.id);
+    async updateHandBookIntroduce(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandBookIntroduceDto) {
+        await this.handBookService.updateIntroduce(id, dto.introduce, user.id);
         return {};
     }
 
@@ -211,13 +222,13 @@ export class HandBookController {
     @Put(`${APIPrefix}/handbooks/:id`)
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Admin)
-    async updateHandbook(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() handbookDto: UpdateHandBookDto) {
-        if (!handbookDto.isAgree) {
+    async updateHandbook(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandBookDto) {
+        if (!dto.isAgree) {
             throw new MyHttpException({
                 message: '请先同意小册线上协议',
             });
         }
-        await this.handBookService.updateHandbook(id, handbookDto, user.id);
+        await this.handBookService.updateHandBook(id, dto, user.id);
         return {};
     }
 
@@ -227,7 +238,7 @@ export class HandBookController {
     @Put(`${APIPrefix}/handbooks/chapters/:id/content`)
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Admin)
-    async updateChapterContent(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandbookChapterContentDto) {
+    async updateChapterContent(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandBookChapterContentDto) {
         await this.handBookService.updateChapterContent(id, dto.content, user.id);
         return {
         };
@@ -239,7 +250,7 @@ export class HandBookController {
     @Put(`${APIPrefix}/handbooks/chapters/:id/tryread`)
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Admin)
-    async updateChapterTryRead(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandbookChapterTryReadDto) {
+    async updateChapterTryRead(@CurUser() user, @Param('id', MustIntPipe) id: number, @Body() dto: UpdateHandBookChapterTryReadDto) {
         await this.handBookService.updateChapterTryRead(id, dto.tryRead, user.id);
         return {
             tryRead: dto.tryRead,

@@ -33,6 +33,7 @@ $noSideBySideWidth: 850px;
     position: absolute;
     line-height: 1.42857;
     padding: 0;
+    margin-top: 0;
     border: none;
 }
 
@@ -46,6 +47,7 @@ $noSideBySideWidth: 850px;
     padding-top: 56px;
     padding-bottom: 42px;
     box-sizing: border-box;
+    font-size: 0;
 }
 
 .md-editor-no-padding-top .md-editor-body {
@@ -68,8 +70,14 @@ $noSideBySideWidth: 850px;
     position: absolute;
 }
 
+.md-editor-footer-splitter {
+    border-left: 1px solid #e5e5e5;
+    height: 100%;
+    position: absolute;
+    left: 50%;
+}
+
 .md-editor-footer-right {
-    border-left: 1px solid #ddd;
     right: 0;
     box-sizing: unset;
 }

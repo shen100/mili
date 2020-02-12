@@ -1,5 +1,12 @@
 <template>
     <div class="handbooks">
+        <div class="sub-header">
+            <div class="sub-header-title">小册</div>
+            <div class="sub-type-box">
+                <router-link :to="`/uc/${author.id}/buyhandbooks`" class="sub-type active">购买的</router-link>
+                <router-link :to="`/uc/${author.id}/writehandbooks`" class="sub-type">撰写的</router-link>
+            </div>
+        </div>
         <!--
         <Pinterest :url="`/handbooks/users/${author.id}/buy`" @load="onLoad">
             <template v-slot:content>

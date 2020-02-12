@@ -16,15 +16,6 @@
 </script>
 {% endblock %}
 
-{% block libcss %}
-<link charset="utf-8" href="{{cssPath}}/libs/simplemde.min.css" rel="stylesheet">
-{% endblock %}
-
-{% block libjs %}
-    {{ super() }}
-    <script src="{{jsPath}}/libs/simplemde.min.js"></script>
-{% endblock %}
-
 {% block devjs %}
     {{ loadjs('entry/handbook/editHandbook.js') }}
 {% endblock %}

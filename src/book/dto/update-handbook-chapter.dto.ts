@@ -1,31 +1,32 @@
 import {
     MinLength, MaxLength, IsString, IsBoolean,
 } from 'class-validator';
-import { HandBookConstants } from '../../constants/book';
+import { HandBookConstants } from '../../constants/handbook';
 
-export class UpdateHandbookChapterNameDto {
+export class UpdateHandBookChapterDto {
     @MinLength(1, {
-        message: '名称不能为空',
+        message: '章节标题不能为空',
     })
     @MaxLength(HandBookConstants.CHAPTER_NAME_MAX_LENGTH, {
-        message: '名称不能超过 $constraint1 个字符',
+        message: '章节标题不能超过 $constraint1 个字符',
     })
-    @IsString()
+    @IsString({
+        message: '章节标题不能为空',
+    })
     readonly name: string;
 }
 
-export class UpdateHandbookChapterContentDto {
-    @MinLength(HandBookConstants.CHAPTER_CONTENT_MIN_LENGTH, {
-        message: '章节内容不能为空',
-    })
+export class UpdateHandBookChapterContentDto {
     @MaxLength(HandBookConstants.CHAPTER_CONTENT_MAX_LENGTH, {
         message: '章节内容不能超过 $constraint1 个字符',
     })
-    @IsString()
+    @IsString({
+        message: '无效的章节内容',
+    })
     readonly content: string;
 }
 
-export class UpdateHandbookChapterTryReadDto {
+export class UpdateHandBookChapterTryReadDto {
     @IsBoolean()
     readonly tryRead: boolean;
 }

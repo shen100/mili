@@ -34,6 +34,12 @@ export class EditorController {
         private readonly collectionService: CollectionService,
     ) {}
 
+    @Get('/editor/markdown')
+    @UseGuards(ActiveGuard)
+    async markdown(@Res() res) {
+        res.render('pages/editor/editor.md.njk', {});
+    }
+
     @Get('/editor/drafts')
     @UseGuards(ActiveGuard)
     async listView(@Res() res) {

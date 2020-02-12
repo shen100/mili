@@ -62,7 +62,7 @@
                             <router-link :to="`/uc/${author.id}/follows`" class="nav-item" :class="{active: isFollowPage}">
                                 <div class="item-title">关注</div>
                             </router-link>
-                            <router-link :to="`/uc/${author.id}/writehandbooks`" class="nav-item" :class="{active: isHandbookPage}">
+                            <router-link :to="`/uc/${author.id}/buyhandbooks`" class="nav-item" :class="{active: isHandbookPage}">
                                 <div class="item-title">小册</div>
                             </router-link>
                             <router-link :to="`/uc/${author.id}/collections`" class="nav-item" active-class="active">

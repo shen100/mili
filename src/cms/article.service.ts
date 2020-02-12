@@ -17,6 +17,11 @@ import { Tag } from '../entity/tag.entity';
 import { MyLoggerService } from '../common/logger.service';
 import { ArticleConstants } from '../constants/article';
 
+marked.setOptions({
+    gfm: true,
+    breaks: true,
+});
+
 @Injectable()
 export class ArticleService {
     constructor(

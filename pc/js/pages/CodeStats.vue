@@ -85,9 +85,9 @@ export default {
             'pc/js/components/editor/RichEditor.vue',
             'pc/js/components/handbook/HandBookComment.vue',
             'pc/js/components/handbook/HandBookHeader.vue',
+            'pc/js/components/handbook/MyHandBookItem.vue',
             'pc/js/components/handbook/StarModal.vue',
             'pc/js/components/handbook/UserList.vue',
-
             'pc/js/components/tag/TagInfo.vue',
             'pc/js/components/TopNavSearch.vue',
             'pc/js/components/user/FollowBtn.vue',
@@ -101,6 +101,7 @@ export default {
             'pc/js/entry/codeStats.js',
             'pc/js/entry/editor/drafts.js',
             'pc/js/entry/editor/editMarkdownDraft.js',
+            'pc/js/entry/editor/editor.md.js',
             'pc/js/entry/editor/editRichDraft.js',
             'pc/js/entry/handbook/editHandbook.js',
             'pc/js/entry/index.js',
@@ -144,6 +145,8 @@ export default {
             'pc/js/pages/user/Layout.vue',
             'pc/js/pages/user/LikeArticleView.vue',
             'pc/js/pages/user/LikeBoilingPointView.vue',
+            'pc/js/pages/user/WriteHandBookView.vue',
+
             'pc/js/utils/event.js',
             'pc/js/utils/vue.js',
 
@@ -157,6 +160,7 @@ export default {
             'pc/styles/editor/drafts.scss',
             'pc/styles/editor/editDraft.scss',
             'pc/styles/editor/md.editor.scss',
+            'pc/styles/editor/md.editor.frame.scss',
             'pc/styles/editor/rich.editor.scss',
             'pc/styles/settings/settings.scss',
             'pc/styles/tag/tagDetail.scss',
@@ -179,6 +183,7 @@ export default {
             'src/book/dto/update-book-chapter.dto.ts',
             'src/book/dto/update-book.dto.ts',
             'src/book/dto/update-handbook.dto.ts',
+            'src/book/dto/update-handbook-chapter.dto.ts',
 
             'src/cms/dto/crawler-article.dto.ts',
             'src/cms/dto/crawler.dto.ts',
@@ -225,7 +230,9 @@ export default {
             'views/pages/codeStats.njk',
             'views/pages/editor/drafts.njk',
             'views/pages/editor/editMarkdownArticle.njk',
+            'views/pages/editor/editor.md.njk',
             'views/pages/editor/editRichArticle.njk',
+
             'views/pages/handbook/editHandbook.njk',
             'views/pages/index.njk',
             'views/pages/settings/settings.njk',

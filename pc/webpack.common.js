@@ -11,6 +11,9 @@ function getEntries(entryPath, entryObj) {
 		if (info.isDirectory()) {
 			getEntries(fullpath, entryObj);
 		} else {
+            if (fullpath && fullpath.indexOf('.DS_Store') >= 0) {
+                return;
+            }
             let key = fullpath.replace('./js/', '');
             key = key.replace('.js', '');
             entryObj[key] = fullpath;

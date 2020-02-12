@@ -14,7 +14,6 @@
                 :logoBoxWidth="logoBoxWidth" />
             <MarkdownEditor 
                 ref="mdEditor"
-                :content="initialContent" 
                 @togglesidebyside="onToggleSideBySide" />
         </div>
     </div>
@@ -71,6 +70,9 @@ export default {
         }
     },
     mounted () {
+        this.$nextTick(() => {
+            this.$refs.mdEditor.setContent(this.initialContent);
+        });
     },
     components: {
         EditorHeader,

@@ -18,3 +18,17 @@ export const formatYMDHMS = (date, sep1, sep2) => {
     let str = `${year}${sep1}${month}${sep1}${d} ${h}${sep2}${m}${sep2}${s}`;
     return str;
 };
+
+export const formatYMD = (date, sep1) => {
+    if (typeof date === 'string' || typeof date === 'number') {
+        date = new Date(date);
+    }
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let d = date.getDate();
+    month = month < 10 ? '0' + month : month;
+    d = d < 10 ? '0' + d : d;
+    sep1 = sep1 || '-';
+    let str = `${year}${sep1}${month}${sep1}${d}`;
+    return str;
+};

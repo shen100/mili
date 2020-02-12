@@ -107,10 +107,11 @@ body {
     height: 20px;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
+    display: block;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     color: #71777c;
+    white-space: nowrap;
 }
 
 .handbooks .info .author {

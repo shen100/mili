@@ -1,0 +1,17 @@
+{# iframe加载此页面，页面里是markdown编辑器 #}
+
+{% extends '../../layout/empty.njk' %}
+
+{% block main %}
+<div id="app">
+</div>
+{% endblock %}
+
+{% block pageData %}
+<script>
+</script>
+{% endblock %}
+
+{% block devjs %}
+  {{ loadjs('entry/editor/editor.md.js') }}
+{% endblock %}

@@ -18,6 +18,11 @@ import { NO_PARENT } from '../constants/constants';
 import { UpdateBookChapterDto } from './dto/update-book-chapter.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 
+marked.setOptions({
+    gfm: true,
+    breaks: true,
+});
+
 @Injectable()
 export class BookService {
 

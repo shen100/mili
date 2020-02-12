@@ -44,7 +44,7 @@
                     </div>
                 </div>
                 <div class="md-editor-body-box-wrap">
-                    <MarkdownEditor ref="mdEditor" :content="initialContent" />
+                    <MarkdownEditor ref="mdEditor" />
                 </div>
             </div>
         </div>
@@ -72,7 +72,6 @@ export default {
             isIntroduceSelected: true, // 是否选中小册介绍
             chapters: [],
             chapterMap: {},
-            initialContent: '',
             moreToggled: [], // 分别表示章节的 "更多按钮" 是否激活，激活的话，会显示相应的下拉列表
             curChapter: null,
             delChapterID: 0,
@@ -88,10 +87,7 @@ export default {
         ]).then(arr => {
             const [ handbook, chapters, curChapter ] = arr;
             if (chapterID === 'introduce') {
-                this.initialContent = handbook.introduce;
-                setTimeout(() => {
-                    this.$refs.mdEditor.setContent(this.initialContent || '');
-                }, 100);
+                this.$refs.mdEditor.setContent(handbook.introduce || '');
             } else {
                 curChapter.content = curChapter.content || '';
             }
@@ -186,7 +182,7 @@ export default {
                 return Promise.resolve({ data: { errorCode: ErrorCode.SUCCESS.CODE } });
             }
             const url = `/handbooks/chapters/${oldCurChapter.id}/content`;
-            return myHTTP.put(url, { content }).then(res => {
+            return myHTTP.put(url, { content: content || '' }).then(res => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     oldCurChapter.content = content;
                 }
@@ -243,7 +239,6 @@ export default {
             }
 
             // 创建章节时，先保存当前选中的小册介绍或章节，再选中新创建的章节
-            const content = this.getEditorMarkdown();
             this.isLoading = true;
             this.saveIntroduceOrChapter().then((res) => {
                 if (res.data.errorCode !== ErrorCode.SUCCESS.CODE) {

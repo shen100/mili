@@ -1,14 +1,8 @@
 <template>
-    <div class="md-editor-body-box" :class="{'md-editor-no-padding-top': noPaddingTop}"
-        :style="{'display': inited ? 'block' : 'none'}">
+    <div class="md-editor-body-box" :class="{'md-editor-no-padding-top': noPaddingTop}">
         <ErrorTip ref="errorTip" />
-        <div class="md-editor-body" :class="{'md-editor-expand': !isSideBySide}">
-            <div class="mili-editor">
-                <textarea style="border: none;" ref="textarea"></textarea>
-            </div>
-        </div>
         <div class="md-editor-footer">
-            <div class="md-editor-footer-left" :style="{width: isSideBySide ? '50%' : '100%'}">
+            <div class="md-editor-footer-left" style="width: 50%;">
                 <div class="md-editor-markdown-btn">
                     <img src="../../../images/editor/markdown.svg">
                     <div class="md-editor-shotcut-panel">
@@ -29,23 +23,26 @@
                 <Uploader @success="onImgUploadSuccess" @error="onImgUploadFail">
                     <div class="md-editor-uploadimg-btn"><img src="../../../images/editor/uploadimg.svg"></div>
                 </Uploader>
-                <div v-if="isSideBySide" class="md-editor-togglelayout-btn" @click="onToggleSideBySide">
+                <!-- <div class="md-editor-togglelayout-btn">
                     <img src="../../../images/editor/togglelayout.svg" />
-                </div>
-                <div v-else class="md-editor-togglelayout-btn" @click="onToggleSideBySide">
-                    <img src="../../../images/editor/togglelayout2.svg" />
-                </div>
+                </div> -->
             </div>
-            <div v-if="isSideBySide" class="md-editor-footer-right">
+            <div class="md-editor-footer-splitter"></div>
+            <div class="md-editor-footer-right">
                 <div class="md-editor-footer-preview">预览</div>
                 <div class="md-editor-footer-wordcount">{{wordCount}}字</div>
+            </div>
+        </div>
+        <div class="md-editor-body">
+            <div class="mili-editor">
+                <iframe ref="editorFrame" src="/editor/markdown"></iframe>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-// https://github.com/sparksuite/simplemde-markdown-editor
+// https://nhn.github.io/tui.editor/latest/
 
 import marked from 'marked';
 import striptags from 'striptags';
@@ -53,22 +50,16 @@ import Uploader from '~/js/components/common/Uploader.vue';
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
 import { trim } from '~/js/utils/utils.js';
 
-marked.setOptions({
-    breaks: true,
-});
-
 export default {
     props: [
-        'content',
         'noPaddingTop'
     ],
     data () {
         return {
-            SimpleMDE: null,
-            simplemde: null,
-            inited: false,
-            isSideBySide: true,     
+            isReady: false,
             wordCount: 0,
+            mdContent: '',
+            messageCallbackProxy: null,
             shotcutArr: [
                 [ '# 标题', 'H1', 'Ctrl / ⌘ + H' ],
                 [ '## 标题', 'H2', 'Ctrl / ⌘ + H' ],
@@ -79,93 +70,64 @@ export default {
                 [ '![alt](http://)', '图片', 'Ctrl / ⌘ + Alt-I' ],
                 [ '* item', '列表', 'Ctrl / ⌘ + L' ],
             ],
-            initialContent: this.content || '',
-            mdContent: '',
         }
     },
     methods: {
-        initSimplemde() {
-            const SimpleMDE = window.SimpleMDE;
-            this.SimpleMDE = SimpleMDE;
-            let simplemde = new SimpleMDE({
-                element: this.$refs.textarea,
-                autoDownloadFontAwesome: false,
-                autosave: {
-                    enabled: false
-                },
-                // If set to false, indent using spaces instead of tabs. Defaults to true.
-                indentWithTabs: false,
-                // 在这设初始文本有样式问题，改为实例化后
-                // 通过value方法传simplemde.value(this.mdContent);
-                initialValue: '',
-                // Custom placeholder that should be displayed
-                placeholder: '输入正文...',
-                promptURLs: false,
-                codeSyntaxHighlighting: true,
-                spellChecker: false,
-                status: false,
-                toolbar: false,
-                previewRender: this.previewRender.bind(this)
-            });
-            this.simplemde = simplemde;
-            const pt = SimpleMDE.prototype;
-            if (!pt.getImageURL) {
-                pt.getImageURL = function () {
-                    return this.theImageURL || '';
-                }
-                pt.setImageURL = function (url) {
-                    this.theImageURL = url;
-                }
-            }
-            this.simplemde.toggleSideBySide();
-            // 初始时，编辑区会抖动一下，延时100ms显示编辑器，避免抖动
-            setTimeout(() => {
-                this.inited = true;
-                this.$nextTick(() => {
-                    this.simplemde.value(this.initialContent);
-                    this.mdContent = this.initialContent;
-                    const self = this;
-                    this.simplemde.codemirror.on('change', function () {
-                        self.mdContent = self.simplemde.value();
-                    });
-                });
-            }, 100);
-        },
         onImgUploadSuccess(imgURL) {
-            this.simplemde.setImageURL(imgURL);
-            this.SimpleMDE.drawImage(this.simplemde);
+            this.postMessage('addImage', { imgURL });
         },
         onImgUploadFail(message) {
             this.$refs.errorTip.show(message);
-        },
-        previewRender(plainText, preview) {
-            // this.simplemde.codemirror.on('change', function () {
-            //     self.$emit('change', self.simplemde.value())
-            // });
-            this.mdContent = plainText;
-            const html = marked(plainText || '');
-            const txt = trim(striptags(html));
-            this.wordCount = txt.length || 0;
-            return html;
-        },
-        onToggleSideBySide() {
-            this.isSideBySide = !this.isSideBySide;
-            this.$nextTick(() => {
-                this.simplemde.toggleSideBySide();
-                this.$emit('togglesidebyside', this.isSideBySide);
-            });
         },
         getContent() {
             return this.mdContent;
         },
         setContent(content) {
-            this.simplemde.value(content);
+            console.log('setContent', content);
+            this.mdContent = content;
+            this.setWordCount(this.mdContent);
+            this.postMessage('setContent', { content });
+        },
+        setWordCount(content) {
+            const html = marked(content || '');
+            const txt = trim(striptags(html));
+            this.wordCount = txt.length || 0;
+        },
+        postMessage(action, data) {
+            if (!this.isReady) {
+                return;
+            }
+            this.$refs.editorFrame.contentWindow.postMessage({
+                action,
+                data,
+            }, '*');
+        },
+        messageCallback(event) {
+            if (!(event.data && event.data.action)) {
+                return;
+            }
+            console.log('[MarkdownEditor]', JSON.stringify(event.data), new Date().getTime());
+            switch (event.data.action) {
+                case 'contentUpdated': {
+                    this.mdContent = event.data.data.content;
+                    this.setWordCount(this.mdContent);
+                    break;
+                }
+                case 'ready': {
+                    this.isReady = true;
+                    this.postMessage('setContent', { content: this.mdContent });
+                }
+            }
         }
     },
     mounted() {
         this.$nextTick(() => {
-            this.initSimplemde();
+            this.messageCallbackProxy = this.messageCallback.bind(this);
+            window.addEventListener('message', this.messageCallbackProxy);
         });
+    },
+    beforeDestroy() {
+        window.removeEventListener('message', this.messageCallbackProxy);
     },
     components: {
         Uploader,
@@ -174,3 +136,17 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.mili-editor {
+    overflow: hidden;
+}
+
+.md-editor-footer-splitter {
+    border-left: 1px solid #ddd;
+}
+</style>
