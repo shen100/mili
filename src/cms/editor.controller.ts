@@ -37,7 +37,8 @@ export class EditorController {
     @Get('/editor/markdown')
     @UseGuards(ActiveGuard)
     async markdown(@Res() res) {
-        res.render('pages/editor/editor.md.njk', {});
+        const uploadPolicy = await this.ossService.requestPolicy();
+        res.render('pages/editor/editor.md.njk', { uploadPolicy });
     }
 
     @Get('/editor/drafts')

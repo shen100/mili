@@ -22,7 +22,7 @@
                         <RichEditor title="" content="" ref="richEditor" mode="admin" />
                     </div>
                     <div v-else class="md-editor-body-box-wrap">
-                        <MarkdownEditor v-if="uploadPolicy" :noPaddingTop="true" ref="mdEditor" content="" @togglesidebyside="onToggleSideBySide" />
+                        <MarkdownEditor v-if="uploadPolicy" :noPaddingTop="true" ref="mdEditor" />
                     </div>
                     <div style="border-top: 1px solid #e8eaec;"></div>
                     <div class="curchapter-name-box">
@@ -173,9 +173,7 @@
             setEditorContent(content) {
                 this.content = content;
                 if (this.contentType === ArticleContentType.Markdown) {
-                    setTimeout(() => {
-                        this.$refs.mdEditor.setContent(content);
-                    }, 100);
+                    this.$refs.mdEditor.setContent(content);
                 } else if (this.contentType === ArticleContentType.HTML) {
                     setTimeout(() => {
                         this.setRichEditorContentHeight();
@@ -347,9 +345,6 @@
 
                     }
                 })
-            },
-            onToggleSideBySide() {
-
             },
             onSaveChapterContent() {
                 let data;

@@ -1,6 +1,9 @@
 import * as marked from 'marked';
 import * as bluebird from 'bluebird';
+import { MarkedConstants } from '../constants/article';
 // import { VoteComment } from '../entity/comment.entity';
+
+marked.setOptions(MarkedConstants.options);
 
 const CommentContentType = {
     Markdown: 1,

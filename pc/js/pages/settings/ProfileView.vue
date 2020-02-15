@@ -10,12 +10,12 @@
                         <div class="avatar-loaded" :style="{'background-image': `url(${avatarURL})`}"></div>
                         <div class="action-box">
                             <div class="hint">支持 jpg、png 格式大小 {{imgMaxSizeLabel}}M 以内的图片</div>
-                            <CroppieImage :uploadPolicy="uploadPolicy"
+                            <UploaderCroppieImage :uploadPolicy="uploadPolicy"
                                     :imageFormat="imageFormat"
                                     @uploading="onImgUploading"
                                     @success="onImgUploadSuccess" @error="onImgUploadFail">
                                 <button class="upload-btn">点击上传</button>
-                            </CroppieImage>
+                            </UploaderCroppieImage>
                         </div>
                     </div>
                 </li>
@@ -96,7 +96,7 @@
 
 <script>
 import ErrorTip from '~/js/components/common/ErrorTip.vue';
-import CroppieImage from '~/js/components/common/CroppieImage.vue';
+import UploaderCroppieImage from '~/js/components/common/UploaderCroppieImage.vue';
 import { trim } from '~/js/utils/utils.js';
 import { myHTTP } from '~/js/common/net.js';
 import { ErrorCode } from '~/js/constants/error.js';
@@ -230,7 +230,7 @@ export default {
         },
     },
     components: {
-        CroppieImage,
+        UploaderCroppieImage,
         ErrorTip,
     }
 }

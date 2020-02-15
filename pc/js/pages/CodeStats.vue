@@ -82,7 +82,10 @@ export default {
             'pc/js/components/editor/CommentRichEditorEmojiIcons.vue',
             'pc/js/components/editor/EditorHeader.vue',
             'pc/js/components/editor/MarkdownEditor.vue',
+            'pc/js/components/editor/MarkdownEditorMenubar.vue',
             'pc/js/components/editor/RichEditor.vue',
+            'pc/js/components/editor/tui-editor-ext',
+
             'pc/js/components/handbook/HandBookComment.vue',
             'pc/js/components/handbook/HandBookHeader.vue',
             'pc/js/components/handbook/MyHandBookItem.vue',

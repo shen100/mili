@@ -14,15 +14,293 @@ html, body {
     overflow: hidden;
 }
 
-/* 隐藏tui.editor的 toolbal */
-.te-toolbar-section {
-    display: none;
-}
-
 .te-editor .CodeMirror-wrap {
     background: #f8f9fa;
 }
 
 .te-preview {
     background: #fff;
+}
+
+// 以下样式是设置编辑器的 toolbar
+.te-toolbar-section {
+    height: 47px!important;
+    position: relative!important;
+}
+
+.mili-md-editor-tooltip {
+    position: absolute;
+    left: 100px;
+    z-index: 3;
+    transition: opacity 0.3s ease-out, top 0.3s ease;
+    pointer-events: none;
+}
+
+.mili-md-editor-tooltip-caret, .mili-md-editor-tooltip:after {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    margin-left: -6px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-bottom-color: #ebebeb;
+}
+
+.mili-md-editor-tooltip-caret:after {
+    content: " ";
+    top: -5px;
+    left: -6px;
+    border: 6px solid transparent;
+    border-bottom-color: #fff;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.mili-md-editor-tooltip-text {
+    display: block;
+    padding: 6px 15px;
+    border-radius: 3px;
+    color: #84878b;
+    background-color: #fff;
+    border: 1px solid #ebebeb;
+    box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.06);
+    font-size: 12px;
+}
+
+.tui-editor-defaultUI-toolbar {
+    height: 46px!important;
+}
+
+.tui-editor-defaultUI-toolbar .tui-toolbar-divider {
+    display: none!important;
+}
+
+.tui-editor-defaultUI-toolbar .tui-scrollsync {
+    display: none!important;
+}
+
+.tui-custom-button {
+    width: 36px!important;
+    height: 36px!important;
+    border: none!important;
+}
+
+.tui-custom-button:hover, .tui-custom-button-active {
+    background-color: #f6f7f8 !important;
+}
+
+.tui-custom-button i {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: 50% no-repeat;
+    background-size: contain;
+}
+
+.mili-editor-icon-bold {
+    background-image: url(../../images/editor/rich.bold.png)!important;
+}
+
+.mili-editor-icon-italic {
+    background-image: url(../../images/editor/rich.italic.png)!important;
+}
+
+.mili-editor-icon-underline {
+    background-image: url(../../images/editor/rich.underline.png)!important;
+}
+
+.mili-editor-icon-h1 {
+    background-image: url(../../images/editor/rich.h1.png)!important;
+}
+
+.mili-editor-icon-h2 {
+    background-image: url(../../images/editor/rich.h2.png)!important;
+}
+
+.mili-editor-icon-blockquote {
+    background-image: url(../../images/editor/rich.blockquote.png)!important;
+}
+
+.mili-editor-icon-codeblock {
+    background-image: url(../../images/editor/rich.blockcode.png)!important;
+}
+
+.mili-editor-icon-code {
+    background-image: url(../../images/editor/rich.code.png)!important;
+}
+
+.mili-editor-icon-ol {
+    background-image: url(../../images/editor/rich.ol.png)!important;
+}
+
+.mili-editor-icon-ul {
+    background-image: url(../../images/editor/rich.ul.png)!important;
+}
+
+.mili-editor-icon-link {
+    background-image: url(../../images/editor/rich.link.png)!important;
+}
+
+#customToolbarImgUploaderBox {
+    background-image: url(../../images/editor/rich.image.png)!important;
+    background-size: 24px 24px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    width: 36px;
+    height: 36px;
+    margin: 5px 3px;
+    padding: 3px;
+    box-sizing: border-box;
+    float: left;
+    cursor: pointer;
+}
+
+.tui-custom-button-sep {
+    height: 100%;
+    width: 1px;
+    background: #eee;
+}
+
+.tui-custom-button-right-box {
+    width: 50%;
+    height: 100%;
+    border-left: 1px solid #e5e5e5;
+    float: right;
+    box-sizing: border-box;
+}
+
+.tui-custom-preview {
+    color: #ccc;
+    font-size: 14px;
+    line-height: 46px;
+    margin-top: 0;
+    margin-left: 25px;
+    float: left;
+}
+
+.tui-custom-wordcount {
+    float: right;
+    color: #ccc;
+    font-size: 14px;
+    line-height: 46px;
+    margin-top: 0;
+    margin-right: 12px;
+}
+
+.tui-custom-button-md-syntax {
+    float: right;
+    height: 100%;
+    padding-right: 25px;
+    line-height: 46px;
+}
+
+.tui-custom-button-md-syntax a {
+    color: #007fff;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.tui-custom-button-md-syntax a:hover {
+    text-decoration: none;
+}
+
+.tui-toolbar-icons {
+    background-image: url(../../images/editor/rich.link.png)!important;
+    background-size: 24px 24px!important;
+    background-position: 0 0!important;
+    width: 36px!important;
+    height: 36px!important;
+    background-size: 24px 24px!important;
+    background-position: 50% 50%!important;
+    background-repeat: no-repeat;
+    background-color: #fff;
+}
+
+.tui-editor-defaultUI-toolbar button, .tui-editor-defaultUI-toolbar button:hover {
+    border: none;
+}
+
+.tui-editor-defaultUI-toolbar button:hover {
+    border: none;
+    background-color: #f6f7f8;
+}
+
+.tui-tooltip {
+    display: none!important;
+}
+// 以上样式是设置编辑器的 toolbar
+
+.te-popup-add-link {
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1)!important;
+    border: 1px solid rgba(0, 0, 0, 0.1)!important;
+    border-radius: 3px!important;
+    top: 50px;
+}
+
+.te-popup-add-link .tui-popup-header {
+    padding: 16px 30px;
+    border-bottom: 1px solid #f1f1f1!important;
+}
+
+.te-popup-add-link .tui-popup-header .tui-popup-title {
+    font-size: 18px;
+    color: #333;
+}
+
+.te-popup-add-link .tui-popup-body {
+    padding: 20px 30px;
+    padding-top: 5px;
+    padding-bottom: 30px;
+}
+
+.te-popup-add-link .tui-popup-body input {
+    height: 30px;
+    border-color: #e2e2e2 !important;
+}
+
+.te-popup-add-link .tui-popup-body label {
+    line-height: 30px;
+}
+
+.te-popup-add-link .tui-popup-body label:first-child {
+    margin-top: 0;
+}
+
+.te-popup-add-link .tui-popup-body input:focus {
+    outline-style: none;
+    border-color: #007fff !important;
+}
+
+.te-popup-add-link .tui-popup-body label {
+    font-size: 14px;
+    color: #333;
+    font-weight: 400;
+    font-family: -apple-system, "SF UI Text", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+}
+
+.te-popup-add-link .te-ok-button {
+    color: #ea6f5a;
+    border-color: rgba(236, 97, 73, 0.7);
+    padding: 5px 22px;
+    margin-right: 30px;
+    border: 1px solid;
+    border-radius: 3px;
+    height: 32px;
+    line-height: 20px;
+    box-sizing: border-box;
+    background-color: #fff!important;
+}
+
+.te-popup-add-link .te-close-button {
+    padding: 0;
+    margin: 0;
+    background-color: transparent!important;
+    border: 0;
+    font-size: 13px;
+    color: #969696;
+    height: 32px;
+    line-height: 32px;
 }

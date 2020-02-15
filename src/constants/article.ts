@@ -16,3 +16,10 @@ export class CrawlerConstants {
 
     static readonly FROM_TEMPLATE_MIN_LENGTH = 1; // 来源模板最小长度
 }
+
+export class MarkedConstants {
+    static readonly options = {
+        gfm: true,
+        breaks: true,
+    };
+}

@@ -9,11 +9,9 @@ import { ConfigService } from '../config/config.service';
 import { CreateHandBookDto } from './dto/create-handbook.dto';
 import { UpdateHandBookDto } from './dto/update-handbook.dto';
 import { ListResult } from '../entity/listresult.entity';
+import { MarkedConstants } from '../constants/article';
 
-marked.setOptions({
-    gfm: true,
-    breaks: true,
-});
+marked.setOptions(MarkedConstants.options);
 
 const defaultIntroduce = `## 作者介绍
 

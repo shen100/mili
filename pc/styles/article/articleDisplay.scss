@@ -8,7 +8,7 @@ $miliEditorDefaultSize: 15px;
 $miliEditorCodeSize: 13px;
 
 // mili-editor 在编辑器、文章浏览页面中都存在的类
-.mili-editor {
+.mili-editor, .te-preview {
     height: 100%;
 	font-size: $miliEditorDefaultSize;
     font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
@@ -19,7 +19,8 @@ $miliEditorCodeSize: 13px;
     overflow-x: hidden;
 }
 
-.mili-editor h1, .mili-editor h2, .mili-editor h3, .mili-editor h4, .mili-editor h5, .mili-editor h6 {
+.mili-editor h1, .mili-editor h2, .mili-editor h3, .mili-editor h4, .mili-editor h5, .mili-editor h6,
+.te-preview h1, .te-preview h2, .te-preview h3, .te-preview h4, .te-preview h5, .te-preview h6 {
     color: #333;
     line-height: 1.5;
     margin-top: 35px;
@@ -27,7 +28,7 @@ $miliEditorCodeSize: 13px;
     padding-bottom: 5px;
 }
 
-.mili-editor h1 {
+.mili-editor h1, .te-preview h1 {
 	font-size: $miliEditorSizeH1;
     font-weight: 700;
     margin-bottom: 20px;
@@ -35,30 +36,31 @@ $miliEditorCodeSize: 13px;
     border-bottom: 1px solid #eaecef;
 }
 
-.mili-editor h2 {
+.mili-editor h2, .te-preview h2 {
 	font-size: $miliEditorSizeH2;
     padding-bottom: 12px;
     border-bottom: 1px solid #ececec;
 }
 
-.mili-editor h3 {
+.mili-editor h3, .te-preview h3 {
 	font-size: $miliEditorSizeH3;
     padding-bottom: 0;
 }
 
-.mili-editor h4 {
+.mili-editor h4, .te-preview h4 {
 	font-size: $miliEditorSizeH4;
 }
 
-.mili-editor h5 {
+.mili-editor h5, .te-preview h5 {
 	font-size: $miliEditorSizeH5;
 }
 
-.mili-editor h6 {
+.mili-editor h6, .te-preview h6 {
 	font-size: $miliEditorSizeH6;
 }
 
-.mili-editor .heading+.heading {
+.mili-editor .heading+.heading,
+.te-preview .heading+.heading {
     margin-top: 0;
 }
 
@@ -81,15 +83,13 @@ $miliEditorCodeSize: 13px;
     list-style: inherit;
 }
 
-.mili-editor pre {
+.mili-editor pre, .te-preview pre {
     background: #f6f6f6;
     word-spacing: normal;
     padding: 15px;
     word-wrap: normal;
     word-break: break-word!important;
     word-break: break-all;
-    /*white-space: pre;*/
-    overflow: auto;
     border-radius: 0;
     line-height: 26px;
     border: 0;
@@ -137,13 +137,43 @@ $miliEditorCodeSize: 13px;
 
 .mili-editor blockquote.warning {
     position: relative;
-    border-left-color: #f75151;
+    border-left: 4px solid #f75151;
     margin-left: 8px;
 }
 
 .mili-editor blockquote.warning:before {
     position: absolute;
     top: 14px;
+    left: -12px;
+    background: #f75151;
+    border-radius: 50%;
+    content: "!";
+    width: 20px;
+    height: 20px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.te-preview code div.warning {
+    position: relative;
+    font-size: 15px;
+    color: #666;
+}
+
+.te-preview code div.warning-circle {
+    position: absolute;
+    left: -15px;
+    top: -15px;
+    border-left: 4px solid #f75151;
+    height: calc(100% + 30px);
+}
+
+.te-preview code div.warning-circle:before {
+    position: absolute;
+    margin-top: -10px;
+    top: 50%;
     left: -12px;
     background: #f75151;
     border-radius: 50%;
@@ -188,10 +218,11 @@ $miliEditorCodeSize: 13px;
     background-color: #e3e3e3;
 }
 
-.mili-editor p {
+.mili-editor p, .te-preview p {
     line-height: 26px;
     margin-top: 22px;
     margin-bottom: 22px;
+    font-size: $miliEditorDefaultSize;
 }
 
 .mili-editor figure {

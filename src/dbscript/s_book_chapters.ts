@@ -1,5 +1,8 @@
 import * as marked from 'marked';
 import * as striptags from 'striptags';
+import { MarkedConstants } from '../constants/article';
+
+marked.setOptions(MarkedConstants.options);
 
 let errCount = 0;
 

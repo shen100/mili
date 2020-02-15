@@ -9,6 +9,9 @@ import { Category } from '../entity/category.entity';
 import { Draft } from '../entity/draft.entity';
 import { CreateDraftDto } from './dto/create-draft.dto';
 import { Tag } from '../entity/tag.entity';
+import { MarkedConstants } from '../constants/article';
+
+marked.setOptions(MarkedConstants.options);
 
 @Injectable()
 export class DraftService {

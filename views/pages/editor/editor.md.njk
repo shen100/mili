@@ -3,12 +3,13 @@
 {% extends '../../layout/empty.njk' %}
 
 {% block main %}
-<div id="app">
-</div>
+<div id="app"></div>
+<div id="menubar"></div>
 {% endblock %}
 
 {% block pageData %}
 <script>
+    var uploadPolicy = {{ uploadPolicy | dump | safe }};
 </script>
 {% endblock %}
 

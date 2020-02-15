@@ -17,11 +17,9 @@ import { CreateBookChapterDto } from './dto/create-book-chapter.dto';
 import { NO_PARENT } from '../constants/constants';
 import { UpdateBookChapterDto } from './dto/update-book-chapter.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { MarkedConstants } from '../constants/article';
 
-marked.setOptions({
-    gfm: true,
-    breaks: true,
-});
+marked.setOptions(MarkedConstants.options);
 
 @Injectable()
 export class BookService {

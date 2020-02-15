@@ -15,12 +15,9 @@ import { MyHttpException } from '../core/exception/my-http.exception';
 import { ListResult } from '../entity/listresult.entity';
 import { Tag } from '../entity/tag.entity';
 import { MyLoggerService } from '../common/logger.service';
-import { ArticleConstants } from '../constants/article';
+import { ArticleConstants, MarkedConstants } from '../constants/article';
 
-marked.setOptions({
-    gfm: true,
-    breaks: true,
-});
+marked.setOptions(MarkedConstants.options);
 
 @Injectable()
 export class ArticleService {
