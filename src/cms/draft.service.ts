@@ -70,7 +70,7 @@ export class DraftService {
         });
     }
 
-    async list(page: number, limit: number) {
+    async list(userID: number, page: number, limit: number) {
         return await this.draftRepository.find({
             select: {
                 id: true,
@@ -79,6 +79,7 @@ export class DraftService {
                 wordCount: true,
                 contentType: true,
             },
+            where: { userID },
             order: {
                 createdAt: 'DESC',
             },
@@ -94,6 +95,7 @@ export class DraftService {
                 name: true,
                 content: true,
                 htmlContent: true,
+                userID: true,
                 createdAt: true,
                 wordCount: true,
                 contentType: true,

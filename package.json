@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
-    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start": "cross-env NODE_ENV=development node --nolazy -r ts-node/register src/main.ts | ./node_modules/.bin/pino-pretty",
     "start:dev": "concurrently --handle-input \"wait-on dist/main.js && nodemon\" \"tsc -w -p tsconfig.build.json\" ",
     "start:debug": "nodemon --config nodemon-debug.json",
     "prestart:prod": "npm run build",
@@ -65,6 +65,7 @@
     "@types/request-ip": "0.0.34",
     "@types/supertest": "^2.0.7",
     "concurrently": "^4.1.0",
+    "cross-env": "7.0.0",
     "jest": "^23.6.0",
     "nodemon": "^1.18.9",
     "pino-pretty": "^3.5.0",

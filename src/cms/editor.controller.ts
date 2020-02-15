@@ -79,6 +79,11 @@ export class EditorController {
                 errorCode: ErrorCode.NotFound.CODE,
             });
         }
+        if (user.id !== draft.userID) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.Forbidden.CODE,
+            });
+        }
         if (draft.contentType === ArticleContentType.HTML) {
             res.render('pages/editor/editRichArticle', {
                 user,
@@ -101,6 +106,11 @@ export class EditorController {
             this.articleService.detailForEditor(id),
             this.ossService.requestPolicy(),
         ]);
+        if (user.id !== article.userID) {
+            throw new MyHttpException({
+                errorCode: ErrorCode.Forbidden.CODE,
+            });
+        }
         if (article.contentType === ArticleContentType.HTML) {
             res.render('pages/editor/editRichArticle', {
                 user,
@@ -154,11 +164,11 @@ export class EditorController {
 
     @Get(`${APIPrefix}/editor/drafts`)
     @UseGuards(ActiveGuard)
-    async list(@Query('page') pageStr) {
+    async list(@CurUser() user, @Query('page') pageStr) {
         const page: number = strToPage(pageStr);
         const limit = 20;
         const [drafts, count] = await Promise.all([
-            this.draftService.list(page, limit),
+            this.draftService.list(user.id, page, limit),
             this.draftService.count(),
         ]);
         const list = drafts.map(draft => {

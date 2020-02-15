@@ -1,26 +1,36 @@
-$miliEditorSizeH1: 26px;
+$miliEditorSizeH1: 30px;
 $miliEditorSizeH2: 24px;
 $miliEditorSizeH3: 18px;
-$miliEditorSizeH4: 20px;
-$miliEditorSizeH5: 18px;
+$miliEditorSizeH4: 16px;
+$miliEditorSizeH5: 16px;
 $miliEditorSizeH6: 16px;
 $miliEditorDefaultSize: 15px;
 $miliEditorCodeSize: 13px;
 
-// mili-editor 在编辑器、文章浏览页面中都存在的类
+// mili-editor 是在 文章详情页 存在的类
+// te-preview 是在 markdown编辑器(iframe里) 存在的类
 .mili-editor, .te-preview {
-    height: 100%;
 	font-size: $miliEditorDefaultSize;
     font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
     color: #333;
     word-break: break-word;
-    line-height: 1.75;
+    line-height: 1.73;
     font-weight: 400;
     overflow-x: hidden;
 }
 
-.mili-editor h1, .mili-editor h2, .mili-editor h3, .mili-editor h4, .mili-editor h5, .mili-editor h6,
-.te-preview h1, .te-preview h2, .te-preview h3, .te-preview h4, .te-preview h5, .te-preview h6 {
+.mili-editor h1,
+.mili-editor h2,
+.mili-editor h3,
+.mili-editor h4,
+.mili-editor h5,
+.mili-editor h6,
+.te-preview h1,
+.te-preview h2,
+.te-preview h3,
+.te-preview h4,
+.te-preview h5,
+.te-preview h6 {
     color: #333;
     line-height: 1.5;
     margin-top: 35px;
@@ -31,9 +41,9 @@ $miliEditorCodeSize: 13px;
 .mili-editor h1, .te-preview h1 {
 	font-size: $miliEditorSizeH1;
     font-weight: 700;
-    margin-bottom: 20px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid #eaecef;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border: none;
 }
 
 .mili-editor h2, .te-preview h2 {
@@ -44,7 +54,6 @@ $miliEditorCodeSize: 13px;
 
 .mili-editor h3, .te-preview h3 {
 	font-size: $miliEditorSizeH3;
-    padding-bottom: 0;
 }
 
 .mili-editor h4, .te-preview h4 {
@@ -59,28 +68,66 @@ $miliEditorCodeSize: 13px;
 	font-size: $miliEditorSizeH6;
 }
 
+// heading 后紧跟着 heading
 .mili-editor .heading+.heading,
 .te-preview .heading+.heading {
     margin-top: 0;
 }
 
-.mili-editor em {
+.mili-editor em, .te-preview em {
     font-style: italic;
     font-weight: 400;
 }
 
-.mili-editor u {
+.mili-editor u, .te-preview u {
     text-decoration: underline;
 }
 
-.mili-editor ul, .mili-editor ol {
-	padding-left: 28px;
-	margin: 0;
+.mili-editor hr, .te-preview hr {
+	margin-bottom: 20px;
+    border: none;
+    height: 1px;
+    background-color: #e3e3e3;
 }
 
-.mili-editor ul li, .mili-editor ol li {
+.mili-editor p, .te-preview p {
+    line-height: 26px;
+    margin-top: 22px;
+    margin-bottom: 22px;
+    font-size: $miliEditorDefaultSize;
+}
+
+.mili-editor figure, .te-preview figure {
+    margin: 22px auto;
+    text-align: center;
+}
+
+.mili-editor img, .te-preview img {
+    max-width: 100%;
+}
+
+.mili-editor a, .te-preview a {
+    color: #08c;
+    word-break: break-all;
+}
+
+.mili-editor a:hover, .te-preview a:hover {
+    color: #08c;
+}
+
+.mili-editor ul, .mili-editor ol, .te-preview ul, .te-preview ol {
+	padding-left: 28px;
+    margin: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: $miliEditorDefaultSize;
+}
+
+.mili-editor ul li, .mili-editor ol li, .te-preview ul li, .te-preview ol li {
 	margin-bottom: 0;
     list-style: inherit;
+    font-size: $miliEditorDefaultSize;
+    line-height: 26px;
 }
 
 .mili-editor pre, .te-preview pre {
@@ -99,7 +146,7 @@ $miliEditorCodeSize: 13px;
     box-sizing: border-box;
 }
 
-.mili-editor pre code {
+.mili-editor pre code, .te-preview pre code {
     -webkit-font-smoothing: auto;
     padding: 0;
     border-radius: 0;
@@ -113,7 +160,7 @@ $miliEditorCodeSize: 13px;
     line-height: 1.42857;
 }
 
-.mili-editor code {
+.mili-editor code, .te-preview code {
     font-family: Menlo, Monaco, Consolas, Courier New, monospace;
     padding: 0 5px;
     border-radius: 2px;
@@ -127,21 +174,21 @@ $miliEditorCodeSize: 13px;
     margin: 0;
 }
 
-.mili-editor blockquote {
+.mili-editor blockquote, .te-preview blockquote {
     color: #666;
-    padding: 1px 23px;
+    padding: 10px 23px;
     margin: 22px 0;
     border-left: 4px solid #cbcbcb;
     background-color: #f8f8f8;
 }
 
-.mili-editor blockquote.warning {
+.mili-editor blockquote.warning, .te-preview blockquote.warning {
     position: relative;
     border-left: 4px solid #f75151;
     margin-left: 8px;
 }
 
-.mili-editor blockquote.warning:before {
+.mili-editor blockquote.warning:before, .te-preview blockquote.warning:before {
     position: absolute;
     top: 14px;
     left: -12px;
@@ -156,13 +203,13 @@ $miliEditorCodeSize: 13px;
     justify-content: center;
 }
 
-.te-preview code div.warning {
+.mili-editor code div.warning, .te-preview code div.warning {
     position: relative;
     font-size: 15px;
     color: #666;
 }
 
-.te-preview code div.warning-circle {
+.mili-editor code div.warning-circle, .te-preview code div.warning-circle {
     position: absolute;
     left: -15px;
     top: -15px;
@@ -170,7 +217,7 @@ $miliEditorCodeSize: 13px;
     height: calc(100% + 30px);
 }
 
-.te-preview code div.warning-circle:before {
+.mili-editor code div.warning-circle:before, .te-preview code div.warning-circle:before {
     position: absolute;
     margin-top: -10px;
     top: 50%;
@@ -186,91 +233,32 @@ $miliEditorCodeSize: 13px;
     justify-content: center;
 }
 
-.mili-editor blockquote>p {
+.mili-editor blockquote>p, .te-preview blockquote>p {
     margin: 10px 0;
 }
 
-.mili-editor table {
+.mili-editor table, .te-preview table {
 	margin-bottom: 20px;
 }
 
-.mili-editor th {
+.mili-editor th, .te-preview th {
     border: 1px solid #eee;
     padding: 6px 13px!important;
     line-height: 32px;
     font-weight: bold;
 }
 
-.mili-editor table tr:nth-child(2n) {
+.mili-editor table tr:nth-child(2n), .te-preview table tr:nth-child(2n) {
     background-color: #f9f9f9;
 }
 
-.mili-editor td {
+.mili-editor td, .te-preview td {
     border: 1px solid #eee;
     padding: 6px 13px!important;
     line-height: 32px;
 }
 
-.mili-editor hr {
-	margin-bottom: 20px;
-    border: none;
-    height: 1px;
-    background-color: #e3e3e3;
-}
-
-.mili-editor p, .te-preview p {
-    line-height: 26px;
-    margin-top: 22px;
-    margin-bottom: 22px;
-    font-size: $miliEditorDefaultSize;
-}
-
-.mili-editor figure {
-    margin: 22px auto;
-    text-align: center;
-}
-
-.mili-editor img {
-    max-width: 100%;
-}
-
-.mili-editor a {
-    color: #08c;
-    word-break: break-all;
-}
-
-.mili-editor a:hover {
-    color: #08c;
-}
-
-.mili-editor .CodeMirror-measure pre {
-    padding: 0!important;
-}
-
-.mili-editor .CodeMirror-line  {
-    background: none!important;
-    padding: 0!important;
-    border: none!important;
-    margin-bottom: 0!important;
-}
-
-.mili-editor-preview, .editor-preview-side {
-    white-space: unset!important;
-}
-
-.mili-editor-preview pre > code, .editor-preview-side pre > code {
-    overflow-x: hidden;
-}
-
-.mili-editor-preview code, .editor-preview-side code {
-    display: inline;
-}
-
-.mili-editor-preview .CodeMirror, .mili-editor-preview .CodeMirror-scroll, .editor-preview-side .CodeMirror, .editor-preview-side .CodeMirror-scroll {
-    min-height: 200px;
-}
-
-/* 以下为老版golang123文章来源(转载)的样式 */
+/* ↓↓↓↓↓ 以下为老版golang123文章来源(转载)的样式 ↓↓↓↓↓ */
 #golang123-content-outter table {
     display: block;
     overflow-x: auto;
@@ -287,8 +275,9 @@ $miliEditorCodeSize: 13px;
 #golang123-content-outter {
     line-height: 26px;
 }
+/* ↑↑↑↑↑↑↑↑ 上面为老版golang123文章来源(转载)的样式  ↑↑↑↑↑↑↑↑ */
 
-/* 以下为文章来源(转载)的样式 */
+/* ↓↓↓↓↓ 以下为文章来源(转载)的样式 ↓↓↓↓↓ */
 #mili-content-outter table {
     display: block;
     overflow-x: auto;
@@ -309,3 +298,4 @@ $miliEditorCodeSize: 13px;
 #mili-content-outter-footer {
     font-size: 12px;
 }
+/* ↑↑↑↑↑↑↑↑↑↑↑ 上面为文章来源(转载)的样式  ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */

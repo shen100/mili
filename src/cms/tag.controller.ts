@@ -197,6 +197,12 @@ export class TagController {
     @UseGuards(ActiveGuard, RolesGuard)
     @Roles(UserRole.Editor, UserRole.Admin, UserRole.SuperAdmin)
     async create(@Body() createArticleDto: CreateTagDto) {
+        const theTag = await this.tagService.findByName(createArticleDto.name);
+        if (theTag) {
+            throw new MyHttpException({
+                message: `标签 ${createArticleDto.name} 已存在`,
+            });
+        }
         const tag: Tag = await this.tagService.create(createArticleDto);
         return { id: tag.id };
     }

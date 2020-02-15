@@ -43,7 +43,6 @@
 
 <script>
     import '~/styles/editor/editDraft.scss';
-    import '~/styles/editor/md.editor.scss';
     import '~/styles/editor/rich.editor.scss';
     import { myHTTP } from '~/js/common/net';
     import { getWindowSize } from '~/js/utils/dom';

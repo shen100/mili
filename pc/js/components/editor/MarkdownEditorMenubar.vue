@@ -95,6 +95,9 @@ export default {
         heading2EventHanlder() {
             this.editor.exec('Heading', 2);
         },
+        /**
+         * 代码很恶心，效果很优雅的toolbar😛
+         */
         initToolbar() {
             const editor = this.editor;
             editor.eventManager.addEventType('CustomHeading2');

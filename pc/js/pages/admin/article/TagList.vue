@@ -22,6 +22,16 @@
                 <Button type="primary" size="small" @click="onEdit(row)">编辑</Button>
             </template>
         </Table>
+        <Row v-if="count" style="margin-top: 15px;" type="flex" justify="end">
+            <span class="ivu-page-total">共 {{count}} 条</span>
+            <Page
+                class="common-page"
+                :current="page"
+                :page-size="pageSize"
+                :total="count"
+                @on-change="onPageChange"
+                :show-elevator="true"/>
+        </Row>
         <Modal
             @on-visible-change="onModalVisibleChange"
             :value="modalVisible"
@@ -134,6 +144,9 @@ export default {
             ],
             tags: [],
             allCategories: [], // 所有的分类
+            count: 0,
+            page: 1,
+            pageSize: 20,
         };
     },
     mounted() {
@@ -199,8 +212,11 @@ export default {
         onCancel() {
             this.modalVisible = false;
         },
-        reqList() {
-            myHTTP.get('/tags/with_categories').then((res) => {
+        onPageChange(value) {
+            this.reqList(value);
+        },
+        reqList(page) {
+            myHTTP.get(`/tags/with_categories?page=${page}`).then((res) => {
                 if (res.data.errorCode === ErrorCode.SUCCESS.CODE) {
                     let tags = res.data.data.list;
                     tags = tags.map(tag => {
@@ -211,6 +227,8 @@ export default {
                         };
                     });
                     this.tags = tags;
+                    this.page = res.data.data.page;
+                    this.count = res.data.data.count;
                 }
             });
         },

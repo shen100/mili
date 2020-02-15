@@ -15,6 +15,12 @@ export class TagService {
         private readonly tagRepository: Repository<Tag>,
     ) {}
 
+    async findByName(name: string) {
+        return await this.tagRepository.findOne({
+            where: { name }
+        });
+    }
+
     async create(createTagDto: CreateTagDto) {
         const categoryIDArr: number[] = Array.from(new Set(createTagDto.categories));
         const categories: Category[] = categoryIDArr.map(cID => {

@@ -22,7 +22,7 @@ html, body {
     background: #fff;
 }
 
-// 以下样式是设置编辑器的 toolbar
+/* ↓↓↓↓↓↓↓↓↓↓ 以下样式是设置编辑器的 toolbar ↓↓↓↓↓↓↓↓↓↓ */
 .te-toolbar-section {
     height: 47px!important;
     position: relative!important;
@@ -87,7 +87,7 @@ html, body {
     border: none!important;
 }
 
-.tui-custom-button:hover, .tui-custom-button-active {
+.tui-custom-button:hover, .tui-custom-button:active {
     background-color: #f6f7f8 !important;
 }
 
@@ -157,12 +157,6 @@ html, body {
     cursor: pointer;
 }
 
-.tui-custom-button-sep {
-    height: 100%;
-    width: 1px;
-    background: #eee;
-}
-
 .tui-custom-button-right-box {
     width: 50%;
     height: 100%;
@@ -207,6 +201,7 @@ html, body {
     text-decoration: none;
 }
 
+// 链接按钮
 .tui-toolbar-icons {
     background-image: url(../../images/editor/rich.link.png)!important;
     background-size: 24px 24px!important;
@@ -231,8 +226,9 @@ html, body {
 .tui-tooltip {
     display: none!important;
 }
-// 以上样式是设置编辑器的 toolbar
+/* ↑↑↑↑↑↑↑↑↑↑ 上面的样式是设置编辑器的 toolbar ↑↑↑↑↑↑↑↑↑↑ */
 
+/* ↓↓↓↓↓↓↓↓↓↓ 以下是插入链接的弹框的样式 ↓↓↓↓↓↓↓↓↓↓ */
 .te-popup-add-link {
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1)!important;
     border: 1px solid rgba(0, 0, 0, 0.1)!important;
@@ -304,3 +300,4 @@ html, body {
     height: 32px;
     line-height: 32px;
 }
+/* ↑↑↑↑↑↑↑↑↑↑ 上面是插入链接的弹框的样式  ↑↑↑↑↑↑↑↑↑↑↑↑↑ */
