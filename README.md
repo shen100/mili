@@ -174,11 +174,14 @@ npm start
 ### 通过vscode来运行
 按快捷键`F5`来运行项目
 
-### 访问
+### 本地访问
 首页: http://dev.golang123.com    
 管理后台: http://dev.golang123.com/admin/  
 用户名: mili  
 密码: 123456
+
+### 线上体验
+https://www.golang123.com    
 
 ## License
 [GPL](https://github.com/shen100/golang123-api/blob/master/LICENSE "")      
