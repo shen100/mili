@@ -1,0 +1,136 @@
+services:
+  frontend:
+    # build:
+    #   context: ./pc
+    image: ghcr.io/eric-gitta-moore/mili/mili-frontend:master
+    container_name: mili-frontend
+    platform: linux/amd64
+    restart: always
+    environment:
+      PUBLIC_PATH: "/static/"
+    # ports:
+    #   - "9906:9906"
+    networks:
+      - mili-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:9906" ]
+      start_period: 10s
+
+  backend:
+    # build:
+    #   context: .
+    image: ghcr.io/eric-gitta-moore/mili/mili-backend:master
+    container_name: mili-web
+    platform: linux/amd64
+    restart: always
+    environment:
+      PORT: 9905
+      DB_HOST: mysql
+      REDIS_HOST: redis
+      STATS_D_HOST: graphite
+      STATIC_URL: "/static"
+      MAIN_URL: "/"
+    # ports:
+    #   - "9905:9905"
+    networks:
+      - mili-network
+    depends_on:
+      - mysql
+      - redis
+      - graphite
+      - frontend
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:9905" ]
+      start_period: 10s
+
+  canddy:
+    image: caddy:2-alpine
+    container_name: mili-canddy
+    restart: always
+    ports:
+      - "7780:80"
+      - "7443:443"
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./runtime/caddy_data:/data
+      - ./runtime/caddy_config:/config
+    networks:
+      - mili-network
+    depends_on:
+      - frontend
+      - backend
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://127.0.0.1/health" ]
+      start_period: 10s
+
+  mysql:
+    image: mysql:5.6
+    container_name: mili-mysql
+    platform: linux/amd64
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: ${MILI_MYSQL_DB:-mili}
+      MYSQL_USER: ${MILI_MYSQL_USER:-mili}
+      MYSQL_PASSWORD: ${MILI_MYSQL_PASSWORD:-mili_password}
+    ports:
+      - "3306:3306"
+    volumes:
+      # - ./runtime/mysql_data:/var/lib/mysql
+      - ./sql/init-database:/docker-entrypoint-initdb.d
+    networks:
+      - mili-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1" ]
+      start_period: 10s
+
+  redis:
+    image: redis:latest
+    container_name: mili-redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_password}
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./runtime/redis_data:/data
+    networks:
+      - mili-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      start_period: 10s
+
+  graphite:
+    image: graphiteapp/graphite-statsd
+    container_name: ops-graphite
+    restart: always
+    ports:
+      - "8880:80"
+      - "2003-2004:2003-2004"
+      - "2023-2024:2023-2024"
+      - "8125:8125/udp"
+      - "8126:8126"
+    networks:
+      - mili-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://127.0.0.1/" ]
+      start_period: 10s
+
+  grafana:
+    image: grafana/grafana
+    container_name: ops-grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - mili-network
+    depends_on:
+      - graphite
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:3000/api/health" ]
+      start_period: 10s
+
+networks:
+  mili-network:
+    driver: bridge

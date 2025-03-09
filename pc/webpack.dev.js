@@ -7,6 +7,9 @@ const common = require('./webpack.common.js');
 
 const smp = new SpeedMeasurePlugin();
 
+const public = process.env.PUBLIC_PATH || 'http://localhost:9906/';
+const publicPath = process.env.PUBLIC_PATH || '/';
+
 module.exports = smp.wrap(merge(common, {
     mode: 'development',
     devtool: 'inline-source-map',
@@ -17,7 +20,8 @@ module.exports = smp.wrap(merge(common, {
         contentBase: path.join(__dirname),
         hot: true,
         overlay: true,
-        public: 'http://dev.golang123.com',
+        // public,
+        publicPath,
         host: '0.0.0.0',
         port: 9906,
         inline: true,

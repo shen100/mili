@@ -13,7 +13,7 @@ import {
     DatePicker,
     InputNumber,
 } from 'iview';
-import App from '~/js/pages/handbook/EditHandbookLayout.vue';
+import App from '~/js/pages/handbook/EditHandBookLayout.vue';
 
 import {
     registerDirective,

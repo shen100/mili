@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const publicPath = process.env.PUBLIC_PATH || 'http://dev.golang123.com/';
+const publicPath = process.env.PUBLIC_PATH || 'http://localhost:9906/';
 
 function getEntries(entryPath, entryObj) {
 	const files = fs.readdirSync(entryPath);

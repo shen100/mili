@@ -118,6 +118,7 @@ export class CrawlerService {
                 // 不能用 head 方法，有的图片地址会二次跳转, 用head可能会 403
                 return axios.get(imgURL).then((imgInfoRes) => {
                     const contentType = getContentTypeFromHeaders(imgInfoRes.headers);
+                    // @ts-ignore
                     ext = mime.getExtension(contentType);
                     ext = (ext && ext.charAt(0) !== '.') ? `.${ext}` : ext;
                     return this.ossService.uploadFromStreamURL(imgURL, newPathname + ext);

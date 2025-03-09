@@ -1,22 +1,22 @@
 import * as path from 'path';
 
-const domain = 'dev.golang123.com';
-const port = 9905;
-const url = `http://${domain}`;
+const domain = process.env.DOMAIN || 'localhost';
+const port = process.env.PORT || 9905;
+const url = process.env.MAIN_URL || `http://${domain}`;
 const mDomain = 'm-dev.golang123.com';
 const mURL = `http://${mDomain}`;
 
-const staticURL = `http://${domain}`;
+const staticURL = process.env.STATIC_URL || `http://${domain}:9906`;
 
 export default {
     db: {
         type: 'mysql',
-        host: 'localhost',
-        port: 3306,
+        host: process.env.DB_HOST || 'localhost',
+        port: process.env.DB_PORT || 3306,
         charset: 'utf8mb4',
-        username: '',
-        password: '',
-        database: 'mili',
+        username: process.env.DB_USER || 'mili',
+        password: process.env.DB_PASSWORD || 'mili_password',
+        database: process.env.DB_NAME || 'mili',
         synchronize: false,
         entities: [path.join(__dirname, '../entity/**/*.entity{.ts,.js}')],
         logging: 'all', // query, error, schema, warn, info, log, all
@@ -24,12 +24,12 @@ export default {
         maxQueryExecutionTime: 500, // 单位毫秒
     },
     redis: {
-        host: '127.0.0.1',
-        port: 6379,
-        keyPrefix: 'mili:',
+        host: process.env.REDIS_HOST ||'127.0.0.1',
+        port: process.env.REDIS_PORT || 6379,
+        keyPrefix: process.env.REDIS_KEY_PREFIX || 'mili:',
         family: 4, // 4 (IPv4) or 6 (IPv6)
-        password: '',
-        db: 0,
+        password: process.env.REDIS_PASSWORD || 'redis_password',
+        db: process.env.REDIS_DB_IDX || 0,
     },
     static: {
         staticURL,
@@ -44,10 +44,10 @@ export default {
         userLevelChapterURL: 'https://www.golang123.com/books/90/chapters/1515', // 用户等级在《如何使用米粒社区》中的章节url
     },
     statsD: {
-        host: 'localhost',
-        port: 8125,
-        prefix: 'mili_',
-        protocol: 'udp',
+        host: process.env.STATS_D_HOST || 'localhost',
+        port: process.env.STATS_D_PORT || 8125,
+        prefix: process.env.STATS_D_PREFIX || 'mili_',
+        protocol: process.env.STATS_D_PROTOCOL || 'udp',
     },
     server: {
         siteName: '米粒',

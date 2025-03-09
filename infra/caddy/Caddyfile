@@ -1,0 +1,29 @@
+{
+	admin off
+}
+
+:80 {
+	# 健康检查路由
+	handle /health {
+		respond "OK" 200
+	}
+
+	handle /static* {
+		# uri strip_prefix /static
+		reverse_proxy frontend:9906
+	}
+
+	handle /sockjs-node* {
+		reverse_proxy frontend:9906
+	}
+
+	# 处理其他所有路径，代理到后端服务
+	handle /* {
+		reverse_proxy backend:9905
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

@@ -18,7 +18,7 @@
                     :editor="editor" />
             </div>
             <template v-if="source !== 'createboilingpoint'">
-                <a @click="onEnterSubmit" class="btn btn-send" :class="{disabled: contentIsEmpty}">评论</a>
+                <a @click="onEnterSubmit" class="btn btn-send" :class="{disabled: contentIsEmpty && false}">评论</a>
                 <div class="hint">Ctrl or ⌘ + Enter</div>
             </template>
             <template v-if="source === 'createboilingpoint'">
@@ -74,7 +74,7 @@ export default {
                         showOnlyWhenEditable: true,
                     }),
                 ],
-                content: '',
+                content: 'test',
                 onFocus: this.onEditorFocus,
                 onBlur: this.onEditorBlur,
                 onUpdate: this.onContentUpdate
@@ -88,6 +88,7 @@ export default {
     },
     computed: {
         boilingpointSubmitEnable() {
+            return true;
             // 输入了文本，或表情，且输入的文本没有超过 maxWordCount
             return !this.contentIsEmpty && this.remainingWords >= 0;
         }

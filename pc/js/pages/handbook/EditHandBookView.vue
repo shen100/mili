@@ -59,7 +59,7 @@ import Alert from '~/js/components/common/Alert.vue';
 import GlobalLoading from '~/js/components/common/GlobalLoading';
 import { getWindowSize } from '~/js/utils/dom.js';
 import AddChapterAlert from '~/js/components/handbook/AddChapterAlert.vue';
-import HandbookHeader from '~/js/components/handbook/HandbookHeader.vue';
+import HandbookHeader from '~/js/components/handbook/HandBookHeader.vue';
 import MarkdownEditor from '~/js/components/editor/MarkdownEditor.vue';
 
 export default {

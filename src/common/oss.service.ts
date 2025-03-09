@@ -135,6 +135,7 @@ export class OSSService {
         }
         const imgData = JSON.parse(result.content.toString());
         return {
+            // @ts-ignore
             mime: mime.getType(imgData.Format.value),
             size: parseInt(imgData.FileSize.value, 10),
             url: path,

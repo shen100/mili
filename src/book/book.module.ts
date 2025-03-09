@@ -5,7 +5,7 @@ import { Article } from '../entity/article.entity';
 import { UserModule } from '../user/user.module';
 import { Settings } from '../entity/settings.entity';
 import { BookChapterComment, ArticleComment, BoilingPointComment } from '../entity/comment.entity';
-import { HandBookController } from './handBook.controller';
+import { HandBookController } from './handbook.controller';
 import { BookController } from './book.controller';
 import { BookService } from './book.service';
 import { Book, BookCategory, BookChapter, BookStar } from '../entity/book.entity';

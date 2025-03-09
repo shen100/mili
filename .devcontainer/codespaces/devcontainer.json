@@ -1,0 +1,36 @@
+{
+  "name": "Mili Container",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+    // "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "Gxl.git-graph-3",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-mysql",
+        "mtxr.sqltools-driver-pg",
+        "Vue.volar",
+        "mxsdev.typescript-explorer",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "matthewpi.caddyfile-support",
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.linkedEditing": true,
+      }
+    }
+  },
+  "forwardPorts": [
+    "backend:9905", // 后端API服务端口
+    "frontend:9906", // 前端服务端口
+    "mysql:3306", // MySQL数据库端口
+    "redis:6379", // Redis端口
+    "graphite:8880", // Graphite监控服务端口
+    "grafana:3000" // Grafana监控面板端口
+  ],
+  "postStartCommand": "cd /workspaces/mili/ && sudo rm -rf ./runtime && docker compose up -d"
+}

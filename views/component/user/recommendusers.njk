@@ -6,7 +6,7 @@
         {% for user in recommendUsers %}
         <li class="item">
             <div class="link">
-                <a href="/uc/{{user.id}}" target="_blank" class="recommended-avatar" style="background-image: url({{staticURL | imgAbsoluteURL(user.avatarURL)}});"></a>
+                <a href="/uc/{{user.id}}" target="_blank" class="recommended-avatar" style="background-image: url({{user.avatarURL}});"></a>
                 <div class="user-info">
                     <a href="/uc/{{user.id}}" target="_blank" class="username">{{user.username}}</a>
                     <a href="{{userLevelChapterURL}}" target="_blank" class="rank">

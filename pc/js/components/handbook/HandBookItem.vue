@@ -2,7 +2,7 @@
     <div class="handbooks">
         <a href="/handbooks/1.html" target="_blank" class="item">
             <div class="poster">
-                <div class="lazy thumb poster-img loaded" style="background-image: url(&quot;http://localhost:9906/images/handbook2.png&quot;); background-size: cover;"></div>
+                <div class="lazy thumb poster-img loaded" style="background-image: url(&quot;/static/images/handbook2.png&quot;); background-size: cover;"></div>
             </div>
             <div class="info">
                 <div class="title">

@@ -17,7 +17,8 @@ npm-debug.log*
 /.nyc_output
 
 dist
-package-lock.json
 
 ossconfig
 publish.sh
+
+/runtime
